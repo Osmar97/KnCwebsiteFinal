@@ -3,6 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { RealEstateInvestmentBenefits } from "@/components/our-approach/RealEstateInvestmentBenefits";
 import { Services } from "@/components/Services";
 import { CoInvestmentOpportunities } from "@/components/services/CoInvestmentOpportunities";
+import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 import { Footer } from "@/components/Footer";
 
 const ServicesPage = () => {
@@ -14,6 +15,7 @@ const ServicesPage = () => {
         <RealEstateInvestmentBenefits />
         <CoInvestmentOpportunities />
       </div>
+      <GenerationalWealthHero />
       <Footer />
     </div>
   );

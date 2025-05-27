@@ -2,6 +2,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Testimonials } from "@/components/Testimonials";
 import { Contact } from "@/components/Contact";
+import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 import { Footer } from "@/components/Footer";
 
 const ResourcesPage = () => {
@@ -12,6 +13,7 @@ const ResourcesPage = () => {
         <Testimonials />
         <Contact />
       </div>
+      <GenerationalWealthHero />
       <Footer />
     </div>
   );

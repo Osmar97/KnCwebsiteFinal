@@ -9,6 +9,7 @@ import { ExclusiveAccess } from "@/components/our-approach/ExclusiveAccess";
 import { TailoredStrategies } from "@/components/our-approach/TailoredStrategies";
 import { LongTermPartnership } from "@/components/our-approach/LongTermPartnership";
 import { InvestorTimeline } from "@/components/our-approach/InvestorTimeline";
+import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 
 const OurApproachPage = () => {
   return (
@@ -24,6 +25,7 @@ const OurApproachPage = () => {
         <LongTermPartnership />
         <InvestorTimeline />
       </div>
+      <GenerationalWealthHero />
       <Footer />
     </div>
   );

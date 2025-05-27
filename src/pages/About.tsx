@@ -1,6 +1,7 @@
 
 import { Navigation } from "@/components/Navigation";
 import { About } from "@/components/About";
+import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 import { Footer } from "@/components/Footer";
 
 const AboutPage = () => {
@@ -10,6 +11,7 @@ const AboutPage = () => {
       <div className="pt-16">
         <About />
       </div>
+      <GenerationalWealthHero />
       <Footer />
     </div>
   );
