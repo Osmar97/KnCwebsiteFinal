@@ -1,5 +1,4 @@
 
-
 import { TrendingUp, Users, Shield } from "lucide-react";
 export const LongTermPartnership = () => {
   const partnerships = [{
@@ -37,9 +36,6 @@ export const LongTermPartnership = () => {
           </p>
         </div>
 
-        {/* Horizontal Line */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-yellow-200 to-transparent mb-16"></div>
-
         <div className="grid lg:grid-cols-3 gap-8 mb-16">
           {partnerships.map((partnership, index) => <div key={index} className="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
               <div className="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center mb-6">
@@ -55,4 +51,3 @@ export const LongTermPartnership = () => {
       </div>
     </section>;
 };
-
