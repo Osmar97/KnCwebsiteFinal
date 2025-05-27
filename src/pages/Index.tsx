@@ -1,26 +1,12 @@
 
-import { Hero } from "@/components/Hero";
-import { Services } from "@/components/Services";
-import { About } from "@/components/About";
-import { Markets } from "@/components/Markets";
-import { Network } from "@/components/Network";
-import { Team } from "@/components/Team";
-import { Testimonials } from "@/components/Testimonials";
-import { Contact } from "@/components/Contact";
-import { Navigation } from "@/components/Navigation";
-
 const Index = () => {
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navigation />
-      <Hero />
-      <Services />
-      <About />
-      <Markets />
-      <Network />
-      <Team />
-      <Testimonials />
-      <Contact />
+      <div className="flex items-center justify-center min-h-screen">
+        <h1 className="text-4xl font-light text-white">
+          Welcome to Kings 'n Company
+        </h1>
+      </div>
     </div>
   );
 };
