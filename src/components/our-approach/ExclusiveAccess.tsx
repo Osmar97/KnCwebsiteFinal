@@ -1,4 +1,3 @@
-
 import { Eye, Handshake, Zap } from "lucide-react";
 
 export const ExclusiveAccess = () => {
@@ -21,14 +20,7 @@ export const ExclusiveAccess = () => {
   ];
 
   return (
-    <section 
-      className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden"
-      style={{
-        backgroundImage: 'linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
-    >
+    <section className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-6">
