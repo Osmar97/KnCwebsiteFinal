@@ -63,13 +63,13 @@ export const Footer = () => {
               <li className="flex items-start space-x-3">
                 <Phone className="w-4 h-4 text-gold mt-1 flex-shrink-0" />
                 <span className="text-gray-400 text-sm">
-                  +351 XXX XXX XXX
+                  +351 939 953 609
                 </span>
               </li>
               <li className="flex items-start space-x-3">
                 <Mail className="w-4 h-4 text-gold mt-1 flex-shrink-0" />
                 <span className="text-gray-400 text-sm">
-                  info@kingsncompany.com
+                  services@kingsncompany.com
                 </span>
               </li>
             </ul>
