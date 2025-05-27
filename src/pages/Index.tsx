@@ -10,9 +10,6 @@ const Index = () => {
       <Navigation />
       <Hero />
       
-      {/* Sections Carousel */}
-      <SectionsCarousel />
-      
       {/* Company Introduction Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -29,6 +26,9 @@ const Index = () => {
           </p>
         </div>
       </section>
+      
+      {/* Sections Carousel */}
+      <SectionsCarousel />
       
       <Footer />
     </div>
