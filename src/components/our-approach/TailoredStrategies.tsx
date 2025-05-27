@@ -54,7 +54,7 @@ export const TailoredStrategies = () => {
         {/* Process Timeline */}
         <div className="bg-gray-900 p-12 rounded-lg shadow-xl border border-gray-800">
           <h3 className="text-3xl font-semibold text-white text-center mb-12">Our Strategic Process</h3>
-          <div className="flex items-center justify-center space-x-8 md:space-x-16">
+          <div className="flex items-center justify-center">
             {processSteps.map((step, index) => (
               <div key={index} className="flex items-center">
                 <div className="flex flex-col items-center">
@@ -64,7 +64,9 @@ export const TailoredStrategies = () => {
                   <span className="mt-4 text-lg font-medium text-white">{step}</span>
                 </div>
                 {index < processSteps.length - 1 && (
-                  <ArrowRight className="w-8 h-8 text-gold mx-6 hidden md:block" />
+                  <div className="flex items-center mx-8 md:mx-16">
+                    <ArrowRight className="w-8 h-8 text-gold" />
+                  </div>
                 )}
               </div>
             ))}
