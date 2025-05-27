@@ -42,7 +42,7 @@ export const Hero = () => {
 
       {/* Animated Background Image */}
       <div className="absolute inset-0 opacity-20 animate-slow-zoom" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1920&q=80)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?auto=format&fit=crop&w=1920&q=80)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         transform: `translateY(${scrollY * 0.3}px)`
