@@ -1,6 +1,8 @@
 
 import { Navigation } from "@/components/Navigation";
+import { RealEstateInvestmentBenefits } from "@/components/our-approach/RealEstateInvestmentBenefits";
 import { Services } from "@/components/Services";
+import { CoInvestmentOpportunities } from "@/components/services/CoInvestmentOpportunities";
 import { Footer } from "@/components/Footer";
 
 const ServicesPage = () => {
@@ -9,6 +11,8 @@ const ServicesPage = () => {
       <Navigation />
       <div className="pt-16">
         <Services />
+        <RealEstateInvestmentBenefits />
+        <CoInvestmentOpportunities />
       </div>
       <Footer />
     </div>
