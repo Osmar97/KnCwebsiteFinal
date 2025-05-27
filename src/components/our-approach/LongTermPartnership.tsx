@@ -1,4 +1,3 @@
-
 import { TrendingUp, Users, Shield } from "lucide-react";
 export const LongTermPartnership = () => {
   const partnerships = [{
@@ -29,7 +28,7 @@ export const LongTermPartnership = () => {
             <div className="w-8 h-0.5 bg-yellow-200"></div>
           </div>
           <h2 className="text-3xl md:text-4xl font-light mb-6 tracking-wider">
-            SUSTAINED <span className="bg-gradient-to-r from-black to-gold bg-clip-text text-transparent">COLLABORATION</span>
+            SUSTAINED <span className="text-yellow-200">COLLABORATION</span>
           </h2>
           <p className="text-gray-100 text-lg max-w-3xl mx-auto">
             We believe in building lasting relationships that extend far beyond individual transactions, focusing on your long-term success and legacy.
