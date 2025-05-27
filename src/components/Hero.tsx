@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
@@ -13,8 +12,8 @@ export const Hero = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate opacity based on scroll position
-  const backgroundOpacity = Math.max(0, 1 - scrollY / 600);
+  // Calculate opacity based on scroll position with smoother fade
+  const backgroundOpacity = Math.max(0, 1 - scrollY / 800);
 
   const scrollToServices = () => {
     const contactSection = document.getElementById('services');
@@ -31,7 +30,7 @@ export const Hero = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
     {/* Background Animation with fade effect */}
     <div 
-      className="absolute inset-0 transition-opacity duration-300"
+      className="absolute inset-0 transition-opacity duration-500 ease-out"
       style={{ opacity: backgroundOpacity }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" style={{
@@ -51,7 +50,7 @@ export const Hero = () => {
 
     {/* Floating Geometric Elements */}
     <div 
-      className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+      className="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out"
       style={{ opacity: backgroundOpacity }}
     >
       <div className="absolute top-20 left-10 w-32 h-32 border border-gold/20 rotate-45 animate-float"></div>
