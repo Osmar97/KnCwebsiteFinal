@@ -1,6 +1,7 @@
 
 import { Hero } from "@/components/Hero";
 import { Navigation } from "@/components/Navigation";
+import { SectionsCarousel } from "@/components/SectionsCarousel";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
@@ -8,6 +9,9 @@ const Index = () => {
     <div className="min-h-screen bg-white text-gray-900 scroll-smooth">
       <Navigation />
       <Hero />
+      
+      {/* Sections Carousel */}
+      <SectionsCarousel />
       
       {/* Company Introduction Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
