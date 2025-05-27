@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
@@ -73,10 +74,10 @@ export const Hero = () => {
       </div>
 
       <div className="animate-fade-up">
-        <h1 className="text-5xl md:text-7xl font-light text-white mb-6 tracking-wider">
-          <span className="text-gold">KINGS 'N</span>
+        <h1 className="text-5xl md:text-7xl font-light mb-6 tracking-wider" style={{ color: '#85754E' }}>
+          <span style={{ color: '#85754E' }}>KINGS 'N</span>
           <br />
-          <span className="text-white">COMPANY</span>
+          <span style={{ color: '#85754E' }}>COMPANY</span>
         </h1>
 
         <p className="text-gold text-lg md:text-xl mb-4 tracking-widest font-light">
