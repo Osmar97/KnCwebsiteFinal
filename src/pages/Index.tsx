@@ -2,6 +2,7 @@
 import { Hero } from "@/components/Hero";
 import { Navigation } from "@/components/Navigation";
 import { SectionsCarousel } from "@/components/SectionsCarousel";
+import { Testimonials } from "@/components/Testimonials";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
@@ -29,6 +30,9 @@ const Index = () => {
       
       {/* Sections Carousel */}
       <SectionsCarousel />
+      
+      {/* Testimonials Section */}
+      <Testimonials />
       
       <Footer />
     </div>
