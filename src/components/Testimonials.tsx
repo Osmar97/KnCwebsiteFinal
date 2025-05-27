@@ -93,9 +93,7 @@ export const Testimonials = () => {
           
           <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-8"></div>
           
-          <p className="text-gray-300 text-xl max-w-4xl mx-auto font-light leading-relaxed">
-            Real stories from clients who transformed their property ownership journey with Kings in Company
-          </p>
+          <p className="text-gray-300 text-xl max-w-4xl mx-auto font-light leading-relaxed">Real stories from clients who transformed their property ownership journey with Kings 'n Company</p>
         </div>
 
         {/* Main Testimonial Display */}
