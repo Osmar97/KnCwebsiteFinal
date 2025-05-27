@@ -28,11 +28,11 @@ export const Navigation = () => {
   ];
 
   // Define text colors based on background
-  const textColor = isWhiteBackground ? 'text-black' : 'text-white';
+  const textColor = isWhiteBackground ? 'text-[#85754E]' : 'text-white';
   const hoverColor = isWhiteBackground ? 'hover:text-gold' : 'hover:text-gold';
-  const logoTextColor = isWhiteBackground ? 'text-black' : 'text-gold';
+  const logoTextColor = isWhiteBackground ? 'text-[#85754E]' : 'text-gold';
   const subtitleColor = isWhiteBackground ? 'text-gray-600' : 'text-gray-400';
-  const mobileTextColor = isWhiteBackground ? 'text-black' : 'text-white';
+  const mobileTextColor = isWhiteBackground ? 'text-[#85754E]' : 'text-white';
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
