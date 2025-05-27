@@ -99,9 +99,14 @@ export const InvestorTimeline = () => {
           <div className="bg-gradient-to-r from-[#85754E] to-gold p-8 rounded-xl text-white">
             <h3 className="text-2xl font-semibold mb-4">Ready to Begin Your Investment Journey?</h3>
             <p className="text-gray-100 mb-6">Join our exclusive network and gain access to premium European and West African property opportunities.</p>
-            <button className="bg-white text-[#85754E] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300">
+            <a 
+              href="https://form.jotform.com/241827522878366"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-white text-[#85754E] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
+            >
               Start Your Journey
-            </button>
+            </a>
           </div>
         </div>
       </div>
