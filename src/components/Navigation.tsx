@@ -30,8 +30,8 @@ export const Navigation = () => {
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
       scrolled 
-        ? 'bg-black/95 backdrop-blur-md border-b border-gray-700/50 shadow-2xl' 
-        : 'bg-black/90 backdrop-blur-sm border-b border-gray-600/30'
+        ? 'bg-transparent backdrop-blur-md border-b border-gray-700/50 shadow-2xl' 
+        : 'bg-transparent backdrop-blur-sm border-b border-gray-600/30'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
