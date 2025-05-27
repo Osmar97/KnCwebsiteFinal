@@ -13,9 +13,6 @@ export const Hero = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate opacity based on scroll position with smoother fade
-  const backgroundOpacity = Math.max(0, 1 - scrollY / 800);
-
   const scrollToServices = () => {
     const contactSection = document.getElementById('services');
     contactSection?.scrollIntoView({
@@ -29,11 +26,8 @@ export const Hero = () => {
     });
   };
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-    {/* Background Animation with fade effect */}
-    <div 
-      className="absolute inset-0 transition-opacity duration-500 ease-out"
-      style={{ opacity: backgroundOpacity }}
-    >
+    {/* Background Animation without fade effect */}
+    <div className="absolute inset-0">
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" style={{
         transform: `translateY(${scrollY * 0.5}px)`
       }}>
@@ -50,10 +44,7 @@ export const Hero = () => {
     </div>
 
     {/* Floating Geometric Elements */}
-    <div 
-      className="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out"
-      style={{ opacity: backgroundOpacity }}
-    >
+    <div className="absolute inset-0 pointer-events-none">
       <div className="absolute top-20 left-10 w-32 h-32 border border-gold/20 rotate-45 animate-float"></div>
       <div className="absolute bottom-20 right-10 w-24 h-24 border border-gold/30 rotate-12 animate-float" style={{
         animationDelay: '2s'
