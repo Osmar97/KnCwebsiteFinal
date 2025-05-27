@@ -20,8 +20,6 @@ export const Services = () => {
     cards?.forEach(card => observer.observe(card));
     return () => observer.disconnect();
   }, []);
-
-
   const services = [{
     title: "PROPERTY OWNERSHIP ACADEMY",
     subtitle: "TAILORED EDUCATION",
@@ -59,12 +57,12 @@ export const Services = () => {
     badge: "ONGOING",
     size: "large"
   }];
-
   const scrollToContact = () => {
     const contactSection = document.getElementById('resources');
-    contactSection?.scrollIntoView({ behavior: 'smooth' });
+    contactSection?.scrollIntoView({
+      behavior: 'smooth'
+    });
   };
- 
   const getCardClassName = (size: string, index: number) => {
     const baseClasses = "group relative overflow-hidden transition-all duration-700 transform hover:scale-105";
     const visibilityClasses = visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8";
@@ -107,9 +105,7 @@ export const Services = () => {
             <div className="relative h-80 overflow-hidden">
               {/* Badge */}
               <div className="absolute top-4 left-4 z-20">
-                <span className="bg-gold text-black px-3 py-1 text-xs font-medium tracking-wider rounded-full">
-                  {service.badge}
-                </span>
+                
               </div>
 
               {/* Image with Overlay */}
@@ -119,9 +115,7 @@ export const Services = () => {
 
               {/* Icon */}
               <div className="absolute top-4 right-4 z-20">
-                <div className="w-12 h-12 bg-gold/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-gold/30">
-                  <service.icon className="w-6 h-6 text-gold" />
-                </div>
+                
               </div>
 
               {/* Hover Overlay */}
