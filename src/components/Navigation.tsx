@@ -1,12 +1,16 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from '../assets/logo.png';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  // Check if we're on a page with white background
+  const isWhiteBackground = location.pathname !== '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +26,13 @@ export const Navigation = () => {
     { name: "OUR APPROACH", href: "/our-approach" },
     { name: "RESOURCES", href: "/resources" }
   ];
+
+  // Define text colors based on background
+  const textColor = isWhiteBackground ? 'text-black' : 'text-white';
+  const hoverColor = isWhiteBackground ? 'hover:text-gold' : 'hover:text-gold';
+  const logoTextColor = isWhiteBackground ? 'text-black' : 'text-gold';
+  const subtitleColor = isWhiteBackground ? 'text-gray-600' : 'text-gray-400';
+  const mobileTextColor = isWhiteBackground ? 'text-black' : 'text-white';
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
@@ -42,10 +53,10 @@ export const Navigation = () => {
               className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" 
             />
             <div>
-              <div className="text-gold font-light text-lg tracking-wider group-hover:text-gold-light transition-colors">
+              <div className={`${logoTextColor} font-light text-lg tracking-wider group-hover:text-gold-light transition-colors`}>
                 Kings 'n Company
               </div>
-              <div className="text-xs text-gray-400 tracking-widest">
+              <div className={`text-xs ${subtitleColor} tracking-widest`}>
                 REAL ESTATE NETWORK
               </div>
             </div>
@@ -57,7 +68,7 @@ export const Navigation = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className="relative text-white hover:text-gold transition-colors duration-300 text-sm tracking-wider font-light group"
+                className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-sm tracking-wider font-light group`}
               >
                 {item.name}
                 <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
@@ -69,7 +80,7 @@ export const Navigation = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-white hover:text-gold transition-colors duration-300 p-2"
+              className={`${textColor} ${hoverColor} transition-colors duration-300 p-2`}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -84,7 +95,7 @@ export const Navigation = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="block px-3 py-2 text-white hover:text-gold hover:bg-gold/5 rounded-md transition-all duration-300 text-sm tracking-wider"
+                  className={`block px-3 py-2 ${mobileTextColor} hover:text-gold hover:bg-gold/5 rounded-md transition-all duration-300 text-sm tracking-wider`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
