@@ -1,3 +1,4 @@
+
 import { TrendingUp, Users, Shield } from "lucide-react";
 export const LongTermPartnership = () => {
   const partnerships = [{
@@ -19,7 +20,7 @@ export const LongTermPartnership = () => {
     title: "Portfolio Investor",
     location: "Portugal"
   };
-  return <section className="py-20 bg-gradient-to-br from-[#85754E] to-gold text-white">
+  return <section className="py-20 bg-gradient-to-br from-black to-gold text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-6">
