@@ -1,12 +1,20 @@
-
 import { Button } from "@/components/ui/button";
 import { Award, Globe, Users, TrendingUp, Target, Eye, Heart } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 export const About = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [countUp, setCountUp] = useState({ projects: 0, clients: 0, years: 0, satisfaction: 0 });
   const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -85,8 +93,10 @@ export const About = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Company Title and Description */}
         <div className={`text-center mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h1 className="text-5xl md:text-6xl font-light text-white mb-8 tracking-wider">
-            THE <span className="text-gold">COMPANY</span>
+          <h1 className={`text-5xl md:text-6xl font-light mb-8 tracking-wider transition-colors duration-300 ${
+            scrolled ? 'text-white' : 'text-white'
+          }`}>
+            THE <span className={`transition-colors duration-300 ${scrolled ? 'text-white' : 'text-gold'}`}>COMPANY</span>
           </h1>
           <div className="max-w-4xl mx-auto">
             <p className="text-gray-300 text-xl md:text-2xl leading-relaxed font-light mb-4">
@@ -106,8 +116,10 @@ export const About = () => {
             <div className="w-12 h-0.5 bg-gold"></div>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-light text-white mb-8 tracking-wider leading-tight">
-            OUR <span className="text-gold">FOUNDATION</span>
+          <h2 className={`text-4xl md:text-5xl font-light mb-8 tracking-wider leading-tight transition-colors duration-300 ${
+            scrolled ? 'text-white' : 'text-white'
+          }`}>
+            OUR <span className={`transition-colors duration-300 ${scrolled ? 'text-white' : 'text-gold'}`}>FOUNDATION</span>
           </h2>
         </div>
 
