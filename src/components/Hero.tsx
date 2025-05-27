@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
@@ -12,17 +11,18 @@ export const Hero = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
   const scrollToServices = () => {
     const contactSection = document.getElementById('services');
-    contactSection?.scrollIntoView({ behavior: 'smooth' });
+    contactSection?.scrollIntoView({
+      behavior: 'smooth'
+    });
   };
-
   const scrollToContact = () => {
     const contactSection = document.getElementById('resources');
-    contactSection?.scrollIntoView({ behavior: 'smooth' });
+    contactSection?.scrollIntoView({
+      behavior: 'smooth'
+    });
   };
-
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
     {/* Background Animation */}
     <div className="absolute inset-0">
@@ -59,11 +59,7 @@ export const Hero = () => {
     <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
       {/* Animated Logo */}
       <div className="flex justify-center mb-8 ">
-        <img
-          src={logo}
-          alt="Logo"
-          className="w-20 h-20 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]"
-        />
+        <img src={logo} alt="Logo" className="w-20 h-20 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" />
       </div>
 
       <div className="animate-fade-up">
@@ -79,30 +75,11 @@ export const Hero = () => {
 
         <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-8"></div>
 
-        <p className="text-gray-300 text-lg md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed font-light">
-          Tailored investment services for aspiring relocators and investors at all stages of their journey.
-          Whether you're just starting out or refining your strategy, we'll answer your questions and equip you with confidence.
-        </p>
+        <p className="text-gray-300 text-lg md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed font-bold">Connecting Visionary Investors to Remarkable Properties</p>
       </div>
 
       {/* CTA Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up">
-        <Button
-          size="lg"
-          className="bg-gold hover:bg-gold-light text-black font-medium tracking-wider px-8 py-3 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
-          onClick={scrollToServices}
-        >
-          EXPLORE SERVICES
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          className="border-gold text-gold hover:bg-gold hover:text-black font-medium tracking-wider px-8 py-3 transition-all duration-300 transform hover:scale-105"
-          onClick={scrollToContact}
-        >
-          LEARN MORE
-        </Button>
-      </div>
+      
     </div>
   </section>;
 };
