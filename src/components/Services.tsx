@@ -61,13 +61,8 @@ export const Services = () => {
   }];
 
   const scrollToContact = () => {
-    // Check if we're on a page with contact section, otherwise navigate to resources
     const contactSection = document.getElementById('resources');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.location.href = '/resources';
-    }
+    contactSection?.scrollIntoView({ behavior: 'smooth' });
   };
  
   const getCardClassName = (size: string, index: number) => {
