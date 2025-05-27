@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
@@ -7,11 +6,25 @@ import logo from '../assets/logo.png'; // Adjust path as needed
 
 export const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [backgroundOpacity, setBackgroundOpacity] = useState(1);
+  
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
+      
+      // Calculate opacity based on scroll position
+      // Fade starts at 300px and completes at 600px
+      const fadeStart = 300;
+      const fadeEnd = 600;
+      const opacity = Math.max(0, Math.min(1, 1 - (currentScrollY - fadeStart) / (fadeEnd - fadeStart)));
+      setBackgroundOpacity(opacity);
+    };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
   const scrollToServices = () => {
     const contactSection = document.getElementById('services');
     contactSection?.scrollIntoView({
@@ -24,6 +37,7 @@ export const Hero = () => {
       behavior: 'smooth'
     });
   };
+
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
     {/* Background Animation */}
     <div className="absolute inset-0">
@@ -33,13 +47,17 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
       </div>
 
-      {/* Animated Background Image */}
-      <div className="absolute inset-0 opacity-20 animate-slow-zoom" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1920&q=80)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        transform: `translateY(${scrollY * 0.3}px)`
-      }}></div>
+      {/* Animated Background Image with Fade Effect */}
+      <div 
+        className="absolute inset-0 animate-slow-zoom transition-opacity duration-500" 
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1920&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transform: `translateY(${scrollY * 0.3}px)`,
+          opacity: backgroundOpacity
+        }}
+      ></div>
     </div>
 
     {/* Floating Geometric Elements */}
