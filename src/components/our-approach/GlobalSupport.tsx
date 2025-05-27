@@ -1,22 +1,31 @@
 
-import { Globe, Headphones, ShoppingBag } from "lucide-react";
+import { Search, DollarSign, FileText, TrendingUp } from "lucide-react";
 
 export const GlobalSupport = () => {
   const supports = [
     {
-      icon: Globe,
-      title: "End-to-End Solutions",
-      description: "Complete real estate investment solutions from initial consultation to ongoing property management."
+      icon: Search,
+      title: "Market Research",
+      description: "Comprehensive analysis of European and West African markets to identify optimal investment opportunities.",
+      whyItMatters: "Data-driven decisions reduce risk and maximize potential returns."
     },
     {
-      icon: Headphones,
-      title: "Customized Support",
-      description: "Personalized assistance tailored to your unique investment goals and market preferences."
+      icon: DollarSign,
+      title: "Financing",
+      description: "Access to competitive financing options and strategic funding solutions tailored to international investments.",
+      whyItMatters: "Proper financing structure amplifies investment capacity and optimizes cash flow."
     },
     {
-      icon: ShoppingBag,
-      title: "One-Stop Shop",
-      description: "All your real estate investment needs handled under one roof for maximum convenience and efficiency."
+      icon: FileText,
+      title: "Transaction Management",
+      description: "End-to-end management of complex international property transactions and legal compliance.",
+      whyItMatters: "Expert handling ensures smooth transactions and legal protection across borders."
+    },
+    {
+      icon: TrendingUp,
+      title: "Portfolio Scaling",
+      description: "Strategic guidance for expanding and optimizing your real estate portfolio across multiple markets.",
+      whyItMatters: "Systematic scaling builds long-term wealth and diversifies investment risk."
     }
   ];
 
@@ -24,22 +33,35 @@ export const GlobalSupport = () => {
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 mb-6">
+            <div className="w-8 h-0.5 bg-gold"></div>
+            <span className="text-gold text-sm tracking-widest font-light">OUR COMMITMENT</span>
+            <div className="w-8 h-0.5 bg-gold"></div>
+          </div>
           <h2 className="text-3xl md:text-4xl font-light text-[#85754E] mb-6 tracking-wider">
-            GLOBAL <span className="text-gold">SUPPORT</span>
+            END-TO-END INVESTMENT <span className="text-gold">SOLUTIONS</span>
           </h2>
           <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            Comprehensive support services available worldwide to ensure your investment success regardless of location.
+            Tailored solutions to investor needs and goals. All-in-one solution combining education, consultancy, and exclusive access.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8">
           {supports.map((support, index) => (
-            <div key={index} className="text-center group">
-              <div className="w-24 h-24 bg-gradient-to-br from-[#85754E] to-gold rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <support.icon className="w-12 h-12 text-white" />
+            <div key={index} className="bg-gray-50 p-8 rounded-lg hover:shadow-lg transition-all duration-300 group">
+              <div className="flex items-start space-x-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#85754E] to-gold rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                  <support.icon className="w-8 h-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-[#85754E] mb-3">{support.title}</h3>
+                  <p className="text-gray-600 leading-relaxed mb-4">{support.description}</p>
+                  <div className="border-l-4 border-gold pl-4">
+                    <p className="text-sm text-gold font-medium">Why it matters:</p>
+                    <p className="text-sm text-gray-600 italic">{support.whyItMatters}</p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl font-semibold text-[#85754E] mb-4">{support.title}</h3>
-              <p className="text-gray-600 leading-relaxed max-w-sm mx-auto">{support.description}</p>
             </div>
           ))}
         </div>
