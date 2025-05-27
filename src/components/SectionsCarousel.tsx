@@ -69,7 +69,7 @@ export const SectionsCarousel = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+    <section className="py-20 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gold/10 to-transparent"></div>
@@ -84,11 +84,11 @@ export const SectionsCarousel = () => {
             <div className="w-12 h-0.5 bg-gold"></div>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-8 tracking-wider leading-tight">
+          <h2 className="text-4xl md:text-5xl font-light text-white mb-8 tracking-wider leading-tight">
             DISCOVER <span className="text-gold">OUR WORLD</span>
           </h2>
 
-          <p className="text-gray-600 text-xl max-w-3xl mx-auto font-light leading-relaxed">
+          <p className="text-gray-300 text-xl max-w-3xl mx-auto font-light leading-relaxed">
             Explore our comprehensive approach to real estate investment and discover how we can help you achieve your goals
           </p>
         </div>
