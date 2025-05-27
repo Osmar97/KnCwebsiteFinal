@@ -1,18 +1,28 @@
 
 import { Navigation } from "@/components/Navigation";
-import { Markets } from "@/components/Markets";
-import { Network } from "@/components/Network";
-import { Team } from "@/components/Team";
 import { Footer } from "@/components/Footer";
+import { OurApproachHero } from "@/components/our-approach/OurApproachHero";
+import { InvestmentBenefits } from "@/components/our-approach/InvestmentBenefits";
+import { PortfolioServices } from "@/components/our-approach/PortfolioServices";
+import { GlobalSupport } from "@/components/our-approach/GlobalSupport";
+import { ExclusiveAccess } from "@/components/our-approach/ExclusiveAccess";
+import { TailoredStrategies } from "@/components/our-approach/TailoredStrategies";
+import { LongTermPartnership } from "@/components/our-approach/LongTermPartnership";
+import { TimelineProcess } from "@/components/our-approach/TimelineProcess";
 
 const OurApproachPage = () => {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       <Navigation />
       <div className="pt-16">
-        <Markets />
-        <Network />
-        <Team />
+        <OurApproachHero />
+        <InvestmentBenefits />
+        <PortfolioServices />
+        <GlobalSupport />
+        <ExclusiveAccess />
+        <TailoredStrategies />
+        <LongTermPartnership />
+        <TimelineProcess />
       </div>
       <Footer />
     </div>

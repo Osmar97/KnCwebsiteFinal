@@ -1,0 +1,49 @@
+
+import { TrendingUp, Users, Shield } from "lucide-react";
+
+export const LongTermPartnership = () => {
+  const partnerships = [
+    {
+      icon: TrendingUp,
+      title: "Sustained Growth",
+      description: "Building lasting relationships focused on long-term wealth creation and portfolio growth over time."
+    },
+    {
+      icon: Users,
+      title: "Legacy Planning",
+      description: "Strategic planning to ensure your real estate investments can be effectively passed to future generations."
+    },
+    {
+      icon: Shield,
+      title: "Trust and Transparency",
+      description: "Built on a foundation of trust with complete transparency in all transactions and investment decisions."
+    }
+  ];
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-[#85754E] to-gold text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-light mb-6 tracking-wider">
+            LONG-TERM <span className="text-yellow-200">PARTNERSHIP</span>
+          </h2>
+          <p className="text-gray-100 text-lg max-w-3xl mx-auto">
+            We believe in building lasting relationships that extend far beyond individual transactions, focusing on your long-term success.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {partnerships.map((partnership, index) => (
+            <div key={index} className="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center mb-6">
+                <partnership.icon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold mb-4">{partnership.title}</h3>
+              <p className="text-gray-100 leading-relaxed">{partnership.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
