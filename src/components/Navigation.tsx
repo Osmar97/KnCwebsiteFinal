@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import logo from '../assets/logo.png';
@@ -21,6 +22,11 @@ export const Navigation = () => {
     { name: "RESOURCES", href: "#resources" }
   ];
 
+  const handleLogoClick = () => {
+    window.location.hash = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
       scrolled 
@@ -30,7 +36,10 @@ export const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3 group cursor-pointer">
+          <div 
+            className="flex items-center space-x-3 group cursor-pointer"
+            onClick={handleLogoClick}
+          >
             <img 
               src={logo} 
               alt="Logo" 
