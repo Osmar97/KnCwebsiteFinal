@@ -36,25 +36,25 @@ export const RealEstateInvestmentBenefits = () => {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-light text-[#85754E] mb-6 tracking-wider">
+          <h2 className="text-3xl md:text-4xl font-light text-white mb-6 tracking-wider">
             REAL ESTATE INVESTMENT <span className="text-gold">BENEFITS</span>
           </h2>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+          <p className="text-gray-300 text-lg max-w-3xl mx-auto">
             Understanding the fundamental advantages that make real estate a cornerstone of wealth building strategies.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {benefits.map((benefit, index) => (
-            <div key={index} className="bg-gray-50 p-8 rounded-lg hover:shadow-lg transition-all duration-300 group">
-              <div className="w-16 h-16 bg-[#85754E] rounded-lg flex items-center justify-center mb-6 group-hover:bg-gold transition-colors">
+            <div key={index} className="bg-gray-900 p-8 rounded-lg hover:shadow-xl hover:shadow-gold/20 transition-all duration-300 group border border-gray-800">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#85754E] to-gold rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <benefit.icon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-[#85754E] mb-4">{benefit.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
+              <h3 className="text-xl font-semibold text-white mb-4">{benefit.title}</h3>
+              <p className="text-gray-300 leading-relaxed">{benefit.description}</p>
             </div>
           ))}
         </div>
