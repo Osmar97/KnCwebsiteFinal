@@ -1,6 +1,7 @@
 
 import { Navigation } from "@/components/Navigation";
 import { Services } from "@/components/Services";
+import { Footer } from "@/components/Footer";
 
 const ServicesPage = () => {
   return (
@@ -9,6 +10,7 @@ const ServicesPage = () => {
       <div className="pt-16">
         <Services />
       </div>
+      <Footer />
     </div>
   );
 };

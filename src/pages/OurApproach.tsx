@@ -3,6 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { Markets } from "@/components/Markets";
 import { Network } from "@/components/Network";
 import { Team } from "@/components/Team";
+import { Footer } from "@/components/Footer";
 
 const OurApproachPage = () => {
   return (
@@ -13,6 +14,7 @@ const OurApproachPage = () => {
         <Network />
         <Team />
       </div>
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,7 @@
 import { Navigation } from "@/components/Navigation";
 import { Testimonials } from "@/components/Testimonials";
 import { Contact } from "@/components/Contact";
+import { Footer } from "@/components/Footer";
 
 const ResourcesPage = () => {
   return (
@@ -11,6 +12,7 @@ const ResourcesPage = () => {
         <Testimonials />
         <Contact />
       </div>
+      <Footer />
     </div>
   );
 };

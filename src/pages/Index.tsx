@@ -1,6 +1,7 @@
 
 import { Hero } from "@/components/Hero";
 import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -24,6 +25,8 @@ const Index = () => {
           </p>
         </div>
       </section>
+      
+      <Footer />
     </div>
   );
 };
