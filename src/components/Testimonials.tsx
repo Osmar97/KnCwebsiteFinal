@@ -1,17 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Quote, ChevronLeft, ChevronRight, Play } from "lucide-react";
+
 export const Testimonials = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const sectionRef = useRef<HTMLElement>(null);
+
   const testimonials = [{
     id: 1,
     name: "Osmar da Graça",
     role: "Software Engineer",
     location: "Portugal",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    image: "/lovable-uploads/bf8148de-409a-4bd5-88c1-11dca2d5bdab.png",
     rating: 5,
     text: "After following Ismael's sale of my parents' house, I decided to ask for advice on possible investments. He was tireless in the search for the best solutions for me and my family. Helped me at every stage of the process, from buying to remodeling and then selling. In less than 6 months I managed to quadruple the invested capital! He walked me through some of the biggest decisions I have had to make — for that I am forever grateful. We will certainly do more business together.",
     highlight: "Quadrupled capital in 6 months",
@@ -37,6 +39,7 @@ export const Testimonials = () => {
     highlight: "Complete relocation support",
     videoTestimonial: true
   }];
+
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
@@ -50,6 +53,7 @@ export const Testimonials = () => {
     }
     return () => observer.disconnect();
   }, []);
+
   useEffect(() => {
     if (!isAutoPlaying) return;
     const interval = setInterval(() => {
@@ -57,18 +61,22 @@ export const Testimonials = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, testimonials.length]);
+
   const nextTestimonial = () => {
     setIsAutoPlaying(false);
     setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
   };
+
   const prevTestimonial = () => {
     setIsAutoPlaying(false);
     setCurrentTestimonial(prev => (prev - 1 + testimonials.length) % testimonials.length);
   };
+
   const goToTestimonial = (index: number) => {
     setIsAutoPlaying(false);
     setCurrentTestimonial(index);
   };
+
   return <section ref={sectionRef} className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
       {/* Background Animation */}
       <div className="absolute inset-0">
