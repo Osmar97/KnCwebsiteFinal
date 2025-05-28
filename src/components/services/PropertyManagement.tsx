@@ -33,7 +33,7 @@ export const PropertyManagement = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-white via-gray-50 to-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image */}
@@ -64,18 +64,18 @@ export const PropertyManagement = () => {
               <span className="text-[#85754E] text-sm tracking-widest font-light">HANDS-OFF OWNERSHIP</span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-6 tracking-wider">
+            <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-wider">
               PROPERTY <span className="text-[#85754E]">MANAGEMENT</span>
             </h2>
 
             <div className="w-24 h-0.5 bg-gradient-to-r from-[#85754E] to-transparent mb-8"></div>
 
-            <p className="text-gray-600 text-xl mb-8 leading-relaxed">
+            <p className="text-gray-300 text-xl mb-8 leading-relaxed">
               Complete property management as if it were our own, whether you're abroad 
               or simply prefer the convenience of professional oversight.
             </p>
 
-            <p className="text-gray-500 mb-12 leading-relaxed">
+            <p className="text-gray-400 mb-12 leading-relaxed">
               Our comprehensive management service ensures your investment properties are 
               maintained to the highest standards while maximizing rental income and value.
             </p>
@@ -83,21 +83,21 @@ export const PropertyManagement = () => {
             {/* Services List */}
             <div className="space-y-6 mb-12">
               {services.map((service, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm hover:shadow-md transition-shadow">
                   <div className="w-12 h-12 bg-[#85754E]/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <service.icon className="w-6 h-6 text-[#85754E]" />
                   </div>
                   <div>
-                    <h3 className="text-gray-900 font-semibold mb-2">{service.title}</h3>
-                    <p className="text-gray-600">{service.description}</p>
+                    <h3 className="text-white font-semibold mb-2">{service.title}</h3>
+                    <p className="text-gray-300">{service.description}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-6 mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Why Choose Our Management?</h3>
-              <ul className="space-y-2 text-gray-600">
+            <div className="bg-gray-800/50 rounded-lg p-6 mb-8 border border-gray-700/50">
+              <h3 className="text-lg font-semibold text-white mb-3">Why Choose Our Management?</h3>
+              <ul className="space-y-2 text-gray-300">
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-[#85754E] rounded-full mr-3"></div>
                   Local expertise in Portuguese and Cabo Verdean markets
