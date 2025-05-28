@@ -1,11 +1,9 @@
 
 import { AboutHero } from "./about/AboutHero";
 import { AboutFoundation } from "./about/AboutFoundation";
-import { AboutStats } from "./about/AboutStats";
 import { AboutCTA } from "./about/AboutCTA";
 import { TeamSection } from "./about/TeamSection";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { useCountUp } from "@/hooks/useCountUp";
 
 export const About = () => {
   const {
@@ -13,7 +11,6 @@ export const About = () => {
     scrolled,
     sectionRef
   } = useScrollAnimation(0.3);
-  const countUp = useCountUp(isVisible);
   
   return (
     <section ref={sectionRef} id="about" className="py-20 bg-black relative overflow-hidden">
@@ -27,7 +24,6 @@ export const About = () => {
         <AboutHero isVisible={isVisible} scrolled={scrolled} />
         <AboutFoundation isVisible={isVisible} scrolled={scrolled} />
         <TeamSection />
-        <AboutStats isVisible={isVisible} countUp={countUp} />
         <AboutCTA isVisible={isVisible} />
       </div>
     </section>
