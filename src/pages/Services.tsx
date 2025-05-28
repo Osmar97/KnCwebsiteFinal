@@ -1,7 +1,6 @@
 
 import { Navigation } from "@/components/Navigation";
 import { RealEstateInvestmentBenefits } from "@/components/our-approach/RealEstateInvestmentBenefits";
-import { Services } from "@/components/Services";
 import { PropertyOwnershipAcademy } from "@/components/services/PropertyOwnershipAcademy";
 import { PropertyOwnershipConsultancy } from "@/components/services/PropertyOwnershipConsultancy";
 import { PropertyOwnershipTour } from "@/components/services/PropertyOwnershipTour";
@@ -15,7 +14,6 @@ const ServicesPage = () => {
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-gray-100">
       <Navigation />
       <div className="pt-16">
-        <Services />
         <PropertyOwnershipAcademy />
         <PropertyOwnershipConsultancy />
         <PropertyOwnershipTour />
