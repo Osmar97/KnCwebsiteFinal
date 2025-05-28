@@ -13,7 +13,7 @@ export const Testimonials = () => {
     name: "Osmar da Graça",
     role: "Software Engineer",
     location: "Portugal",
-    image: "/lovable-uploads/bf8148de-409a-4bd5-88c1-11dca2d5bdab.png",
+    image: "/lovable-uploads/1d26c56b-38c3-4794-8395-e91a14b5344e.png",
     rating: 5,
     text: "After following Ismael's sale of my parents' house, I decided to ask for advice on possible investments. He was tireless in the search for the best solutions for me and my family. Helped me at every stage of the process, from buying to remodeling and then selling. In less than 6 months I managed to quadruple the invested capital! He walked me through some of the biggest decisions I have had to make — for that I am forever grateful. We will certainly do more business together.",
     highlight: "Quadrupled capital in 6 months",
