@@ -22,19 +22,7 @@ export const About = () => {
         <AboutHero isVisible={isVisible} scrolled={scrolled} />
         
         {/* Company Introduction Section with Image */}
-        <section className="py-20 bg-black">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* Text Content */}
-              
-              
-              {/* Image */}
-              <div className="flex justify-center lg:justify-end">
-                <img src="/lovable-uploads/a8a5c882-3315-404b-918c-2e215e999a2c.png" alt="Property with pool and mountain view" className="w-full max-w-lg h-auto rounded-lg shadow-2xl" />
-              </div>
-            </div>
-          </div>
-        </section>
+        
         
         <AboutFoundation isVisible={isVisible} scrolled={scrolled} />
         <AboutStats isVisible={isVisible} countUp={countUp} />
