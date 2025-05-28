@@ -12,7 +12,7 @@ import { Footer } from "@/components/Footer";
 
 const ServicesPage = () => {
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-gray-100">
       <Navigation />
       <div className="pt-16">
         <Services />

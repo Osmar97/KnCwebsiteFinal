@@ -33,7 +33,7 @@ export const PropertyOwnershipConsultancy = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-white to-gray-50 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image */}
@@ -63,18 +63,18 @@ export const PropertyOwnershipConsultancy = () => {
               <span className="text-[#85754E] text-sm tracking-widest font-light">COMPLETE SUPPORT</span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-6 tracking-wider">
+            <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-wider">
               PROPERTY OWNERSHIP <span className="text-[#85754E]">CONSULTANCY</span>
             </h2>
 
             <div className="w-24 h-0.5 bg-gradient-to-r from-[#85754E] to-transparent mb-8"></div>
 
-            <p className="text-gray-600 text-xl mb-8 leading-relaxed">
+            <p className="text-gray-300 text-xl mb-8 leading-relaxed">
               Complete support for those ready to buy, rent, or invest. You bring the vision, 
               we handle everything else from start to finish.
             </p>
 
-            <p className="text-gray-500 mb-12 leading-relaxed">
+            <p className="text-gray-400 mb-12 leading-relaxed">
               Our end-to-end consultancy service takes care of every aspect of your property 
               journey, ensuring smooth transactions and optimal outcomes.
             </p>
@@ -82,13 +82,13 @@ export const PropertyOwnershipConsultancy = () => {
             {/* Services Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-12">
               {services.map((service, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm">
                   <div className="w-10 h-10 bg-[#85754E]/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <service.icon className="w-5 h-5 text-[#85754E]" />
                   </div>
                   <div>
-                    <h3 className="text-gray-900 font-medium mb-2">{service.title}</h3>
-                    <p className="text-gray-600 text-sm">{service.description}</p>
+                    <h3 className="text-white font-medium mb-2">{service.title}</h3>
+                    <p className="text-gray-300 text-sm">{service.description}</p>
                   </div>
                 </div>
               ))}
