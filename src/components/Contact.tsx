@@ -44,13 +44,6 @@ export const Contact = () => {
       description: "Available Mon-Fri, 9AM-6PM CET",
       action: "whatsapp"
     },
-    {
-      icon: MapPin,
-      label: "Service Areas",
-      value: "Portugal & Cabo Verde",
-      description: "Premium locations, premium service",
-      action: "none"
-    },
   ];
 
   const handleContactClick = (action: string, value: string) => {
