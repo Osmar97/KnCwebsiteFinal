@@ -3,7 +3,6 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { OurApproachHero } from "@/components/our-approach/OurApproachHero";
 import { RealEstateInvestmentBenefits } from "@/components/our-approach/RealEstateInvestmentBenefits";
-import { CoreServices } from "@/components/our-approach/CoreServices";
 import { GlobalSupport } from "@/components/our-approach/GlobalSupport";
 import { ExclusiveAccess } from "@/components/our-approach/ExclusiveAccess";
 import { TailoredStrategies } from "@/components/our-approach/TailoredStrategies";
@@ -18,7 +17,6 @@ const OurApproachPage = () => {
       <div className="pt-16">
         <OurApproachHero />
         <RealEstateInvestmentBenefits />
-        <CoreServices />
         <GlobalSupport />
         <ExclusiveAccess />
         <TailoredStrategies />
