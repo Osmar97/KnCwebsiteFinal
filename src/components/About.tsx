@@ -19,7 +19,23 @@ export const About = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <AboutHero isVisible={isVisible} scrolled={scrolled} />
+        {/* Company Introduction with Image */}
+        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Left Column - Text Content */}
+          <div>
+            <AboutHero isVisible={isVisible} scrolled={scrolled} />
+          </div>
+          
+          {/* Right Column - Image */}
+          <div className="flex justify-center">
+            <img 
+              src="/lovable-uploads/7ddfc27e-5b82-4d8f-801e-a52772cc9d71.png" 
+              alt="Beautiful property with pool and mountain view" 
+              className="max-w-full h-auto rounded-lg shadow-2xl"
+            />
+          </div>
+        </div>
+
         <AboutFoundation isVisible={isVisible} scrolled={scrolled} />
         <AboutStats isVisible={isVisible} countUp={countUp} />
         <AboutCTA isVisible={isVisible} />
