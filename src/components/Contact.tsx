@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Calendar, Send, Sparkles } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { ContactForm } from "@/components/ContactForm";
 
 export const Contact = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,31 +33,31 @@ export const Contact = () => {
     {
       icon: Mail,
       label: "Direct Contact",
-      value: "hello@kingsincompany.com",
-      description: "Get a response within 24 hours"
+      value: "services@kingsncompany.com",
+      description: "Get a response within 24 hours",
+      action: "email"
     },
     {
       icon: Phone,
       label: "Consultation Line",
-      value: "+351 XXX XXX XXX",
-      description: "Available Mon-Fri, 9AM-6PM CET"
+      value: "+351 939 953 609",
+      description: "Available Mon-Fri, 9AM-6PM CET",
+      action: "whatsapp"
     },
     {
       icon: MapPin,
       label: "Service Areas",
       value: "Portugal & Cabo Verde",
-      description: "Premium locations, premium service"
+      description: "Premium locations, premium service",
+      action: "none"
     },
- 
   ];
 
-  const serviceOptions = [
-    "Property Ownership Academy",
-    "Property Ownership Consultancy",
-    "Property Ownership Tour",
-    "Property Management",
-    "General Inquiry"
-  ];
+  const handleContactClick = (action: string, value: string) => {
+    if (action === "whatsapp") {
+      window.open("https://api.whatsapp.com/send/?phone=351939953609&text=&type=phone_number&app_absent=0", "_blank");
+    }
+  };
 
   return (
     <section ref={sectionRef} id="resources" className="py-20 bg-gradient-to-b from-gray-900 via-black to-gray-900 relative overflow-hidden">
@@ -87,20 +88,20 @@ export const Contact = () => {
           </p>
         </div>
 
-        <div className="flex justify-center  w-full px-4">
+        <div className="flex justify-center w-full px-4">
           {/* Contact Information */}
-          <div className="w-full max-w-3xl ">
+          <div className="w-full max-w-3xl">
             <Card
               className={`bg-gradient-to-br from-gray-900/80 to-black/80 border border-gray-700/50 backdrop-blur-sm transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                 }`}
             >
-              <CardContent className="p-8 ">
+              <CardContent className="p-8">
                 <h3 className="text-2xl font-light text-gold mb-8 tracking-wider flex items-center gap-3 justify-center">
                   <div className="w-8 h-0.5 bg-gold" />
                   CONNECT WITH US
                 </h3>
 
-                <div className="space-y-8 ">
+                <div className="space-y-8">
                   {contactInfo.map((info, index) => (
                     <div
                       key={index}
@@ -112,9 +113,24 @@ export const Contact = () => {
                         <div className="w-12 h-12 bg-gold/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-gray-600/50 group-hover:border-gray-500/50 transition-colors">
                           <info.icon className="w-5 h-5 text-gold" />
                         </div>
-                        <div>
+                        <div className="flex-1">
                           <h4 className="text-white font-medium mb-1 tracking-wide">{info.label}</h4>
-                          <p className="text-gold text-sm mb-1">{info.value}</p>
+                          {info.action === "email" ? (
+                            <ContactForm>
+                              <p className="text-gold text-sm mb-1 cursor-pointer hover:text-gold/80 transition-colors">
+                                {info.value}
+                              </p>
+                            </ContactForm>
+                          ) : info.action === "whatsapp" ? (
+                            <p 
+                              className="text-gold text-sm mb-1 cursor-pointer hover:text-gold/80 transition-colors"
+                              onClick={() => handleContactClick(info.action, info.value)}
+                            >
+                              {info.value}
+                            </p>
+                          ) : (
+                            <p className="text-gold text-sm mb-1">{info.value}</p>
+                          )}
                           <p className="text-gray-400 text-xs">{info.description}</p>
                         </div>
                       </div>
@@ -125,7 +141,6 @@ export const Contact = () => {
             </Card>
           </div>
         </div>
-
       </div>
     </section>
   );
