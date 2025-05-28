@@ -1,49 +1,37 @@
-
 import { Users, Search, FileText, TrendingUp, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
 export const PropertyOwnershipConsultancy = () => {
-  const services = [
-    {
-      icon: Search,
-      title: "Strategic Planning",
-      description: "Market research and strategic planning based on your timeline and goals"
-    },
-    {
-      icon: FileText,
-      title: "Property Negotiations",
-      description: "Expert property negotiations and transaction management"
-    },
-    {
-      icon: Users,
-      title: "Trusted Network",
-      description: "Access to our network of legal, banking, and renovation partners"
-    },
-    {
-      icon: TrendingUp,
-      title: "Portfolio Building",
-      description: "From first homes to complete investment portfolios"
-    }
-  ];
-
+  const services = [{
+    icon: Search,
+    title: "Strategic Planning",
+    description: "Market research and strategic planning based on your timeline and goals"
+  }, {
+    icon: FileText,
+    title: "Property Negotiations",
+    description: "Expert property negotiations and transaction management"
+  }, {
+    icon: Users,
+    title: "Trusted Network",
+    description: "Access to our network of legal, banking, and renovation partners"
+  }, {
+    icon: TrendingUp,
+    title: "Portfolio Building",
+    description: "From first homes to complete investment portfolios"
+  }];
   const scrollToContact = () => {
     const contactSection = document.getElementById('resources');
-    contactSection?.scrollIntoView({ behavior: 'smooth' });
+    contactSection?.scrollIntoView({
+      behavior: 'smooth'
+    });
   };
-
-  return (
-    <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black relative overflow-hidden">
+  return <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image */}
           <div className="relative order-2 lg:order-1">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img 
-                src="/lovable-uploads/86d21acb-8ce5-42c4-86ab-4cc15bec6191.png" 
-                alt="Property Ownership Consultancy - Property Tour"
-                className="w-full h-[600px] object-cover"
-              />
+              <img src="/lovable-uploads/86d21acb-8ce5-42c4-86ab-4cc15bec6191.png" alt="Property Ownership Consultancy - Property Tour" className="w-full h-[600px] object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             </div>
             
@@ -58,10 +46,7 @@ export const PropertyOwnershipConsultancy = () => {
 
           {/* Content */}
           <div className="order-1 lg:order-2">
-            <div className="inline-flex items-center gap-2 mb-6">
-              <Users className="w-6 h-6 text-[#85754E]" />
-              <span className="text-[#85754E] text-sm tracking-widest font-light">COMPLETE SUPPORT</span>
-            </div>
+            
 
             <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-wider">
               PROPERTY OWNERSHIP <span className="text-[#85754E]">CONSULTANCY</span>
@@ -81,8 +66,7 @@ export const PropertyOwnershipConsultancy = () => {
 
             {/* Services Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-12">
-              {services.map((service, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm">
+              {services.map((service, index) => <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm">
                   <div className="w-10 h-10 bg-[#85754E]/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <service.icon className="w-5 h-5 text-[#85754E]" />
                   </div>
@@ -90,20 +74,15 @@ export const PropertyOwnershipConsultancy = () => {
                     <h3 className="text-white font-medium mb-2">{service.title}</h3>
                     <p className="text-gray-300 text-sm">{service.description}</p>
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
 
-            <Button 
-              onClick={scrollToContact}
-              className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium group"
-            >
+            <Button onClick={scrollToContact} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium group">
               GET CONSULTATION
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
