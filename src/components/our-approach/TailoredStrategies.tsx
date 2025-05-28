@@ -14,7 +14,7 @@ export const TailoredStrategies = () => {
     description: "Continuous consultation to adjust strategies as the market evolves and goals change."
   }];
   const processSteps = ["Consult", "Plan", "Execute", "Adjust"];
-  return <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
+  return <section className="py-20 bg-gradient-to-r from-gray-900 to-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 mb-6">
