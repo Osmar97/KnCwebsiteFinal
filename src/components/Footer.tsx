@@ -62,9 +62,14 @@ export const Footer = () => {
               </li>
               <li className="flex items-start space-x-3">
                 <Phone className="w-4 h-4 text-gold mt-1 flex-shrink-0" />
-                <span className="text-gray-400 text-sm">
+                <a 
+                  href="https://api.whatsapp.com/send/?phone=351939953609&text=&type=phone_number&app_absent=0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 text-sm hover:text-gold transition-colors cursor-pointer"
+                >
                   +351 939 953 609
-                </span>
+                </a>
               </li>
               <li className="flex items-start space-x-3">
                 <Mail className="w-4 h-4 text-gold mt-1 flex-shrink-0" />
