@@ -25,8 +25,8 @@ export const About = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <AboutHero isVisible={isVisible} scrolled={scrolled} />
-        <TeamSection />
         <AboutFoundation isVisible={isVisible} scrolled={scrolled} />
+        <TeamSection />
         <AboutStats isVisible={isVisible} countUp={countUp} />
         <AboutCTA isVisible={isVisible} />
       </div>
