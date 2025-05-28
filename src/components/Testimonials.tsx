@@ -33,7 +33,7 @@ export const Testimonials = () => {
     name: "Neville Gayle",
     role: "CEO, Gayle Financial",
     location: "USA",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+    image: "/lovable-uploads/5daf1c44-d3c9-4c81-8340-33636bc3813f.png",
     rating: 5,
     text: "My family and I moved to Lisbon in August 2022 and Ishmael was a major part of our move. We actually 'found' him by mistake after a poor experience with another agency — and it turned out to be the best thing. Ishmael went above and beyond expectations: securing an apartment, guiding us through public services, applying for our NIFs, even picking us up at the airport. He did countless video calls while we were still in the US. His service was professional, personal, and ongoing even after we settled. We highly recommend him. Fantastic human being! Bonus: He speaks several languages — communication was effortless.",
     highlight: "Complete relocation support",
