@@ -24,7 +24,8 @@ export const Navigation = () => {
     { name: "ABOUT", href: "/about" },
     { name: "SERVICES", href: "/services" },
     { name: "OUR APPROACH", href: "/our-approach" },
-    { name: "RESOURCES", href: "/resources" }
+    { name: "RESOURCES", href: "/resources" },
+    { name: "CONTACT", href: "/contact" }
   ];
 
   // Define text colors based on background

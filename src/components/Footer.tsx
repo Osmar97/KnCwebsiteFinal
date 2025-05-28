@@ -47,6 +47,11 @@ export const Footer = () => {
                   Resources
                 </Link>
               </li>
+              <li>
+                <Link to="/contact" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
 
