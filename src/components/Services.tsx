@@ -74,7 +74,7 @@ export const Services = () => {
   return <section ref={sectionRef} id="services" className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
     {/* Background Pattern */}
     <div className="absolute inset-0 opacity-5">
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gold/10 to-transparent"></div>
+      
     </div>
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
