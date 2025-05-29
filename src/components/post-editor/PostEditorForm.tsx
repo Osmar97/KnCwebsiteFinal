@@ -40,6 +40,7 @@ export const PostEditorForm = ({
       return;
     }
 
+    // Call the parent's submit handler which should close the dialog
     onSubmit(e);
   };
 
