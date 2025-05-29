@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,15 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
   const [imageUrl, setImageUrl] = useState("");
   const { addPost, updatePost } = usePosts();
   const { toast } = useToast();
+
+  // Reset state when dialog closes
+  useEffect(() => {
+    if (!isOpen) {
+      setContent(post?.content || "");
+      setImages(post?.images || []);
+      setImageUrl("");
+    }
+  }, [isOpen, post]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +57,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       });
     }
 
+    // Reset form and close dialog
     setContent("");
     setImages([]);
     setImageUrl("");
@@ -93,8 +103,15 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     setImages(images.filter((_, i) => i !== index));
   };
 
+  const handleDialogClose = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      onClose?.();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
         {isEdit ? (
           <Button variant="outline" size="sm">
