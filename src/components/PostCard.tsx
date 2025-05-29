@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Edit, Trash2, User } from "lucide-react";
 import { type Post, usePosts } from "@/contexts/PostsContext";
 import { PostEditor } from "./PostEditor";
+import { ImageModal } from "./ImageModal";
 import { useToast } from "@/hooks/use-toast";
 
 interface PostCardProps {
@@ -16,6 +17,8 @@ export const PostCard = ({ post }: PostCardProps) => {
   const { deletePost } = usePosts();
   const { toast } = useToast();
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const handleDelete = () => {
     deletePost(post.id);
@@ -33,6 +36,11 @@ export const PostCard = ({ post }: PostCardProps) => {
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
+  };
+
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setImageModalOpen(true);
   };
 
   return (
@@ -102,7 +110,8 @@ export const PostCard = ({ post }: PostCardProps) => {
                     key={index}
                     src={image}
                     alt={`Post image ${index + 1}`}
-                    className="w-full h-48 object-cover rounded-lg"
+                    className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => handleImageClick(index)}
                   />
                 ))}
               </div>
@@ -118,6 +127,13 @@ export const PostCard = ({ post }: PostCardProps) => {
           onClose={() => setShowEditDialog(false)}
         />
       )}
+
+      <ImageModal
+        images={post.images}
+        initialIndex={selectedImageIndex}
+        isOpen={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+      />
     </>
   );
 };
