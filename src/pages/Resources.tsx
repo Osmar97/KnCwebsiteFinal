@@ -1,7 +1,5 @@
 
 import { Navigation } from "@/components/Navigation";
-import { Testimonials } from "@/components/Testimonials";
-import { Contact } from "@/components/Contact";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 import { Footer } from "@/components/Footer";
 import { AdminPostsFeed } from "@/components/AdminPostsFeed";
@@ -19,8 +17,19 @@ const ResourcesPage = () => {
             <AdminPostsFeed />
           </div>
         )}
-        <Testimonials />
-        <Contact />
+        {!isAdminLoggedIn && (
+          <div className="py-20 px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-4xl md:text-6xl font-light text-gray-900 mb-6 tracking-wider">
+                RESOURCES
+              </h1>
+              <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-8"></div>
+              <p className="text-gray-600 text-xl font-light leading-relaxed">
+                Discover insights and updates from Kings 'n Company
+              </p>
+            </div>
+          </div>
+        )}
       </div>
       <GenerationalWealthHero />
       <Footer />
