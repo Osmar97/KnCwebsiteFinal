@@ -29,6 +29,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
   }, [isOpen, post]);
 
   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (isEdit && post) {
       updatePost(post.id, content, images);
       toast({
@@ -88,6 +90,10 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     }
   };
 
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
@@ -117,7 +123,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           onFileUpload={handleFileUpload}
           onRemoveImage={removeImage}
           onSubmit={handleSubmit}
-          onCancel={() => setIsOpen(false)}
+          onCancel={handleCancel}
         />
       </DialogContent>
     </Dialog>
