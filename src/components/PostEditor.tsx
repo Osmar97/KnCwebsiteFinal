@@ -2,9 +2,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Image, X, Upload } from "lucide-react";
+import { Plus, X, Upload } from "lucide-react";
 import { usePosts, type Post } from "@/contexts/PostsContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,7 +17,6 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState(post?.content || "");
   const [images, setImages] = useState<string[]>(post?.images || []);
-  const [imageUrl, setImageUrl] = useState("");
   const { addPost, updatePost } = usePosts();
   const { toast } = useToast();
 
@@ -27,7 +25,6 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     if (!isOpen) {
       setContent(post?.content || "");
       setImages(post?.images || []);
-      setImageUrl("");
     }
   }, [isOpen, post]);
 
@@ -60,16 +57,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     // Reset form and close dialog
     setContent("");
     setImages([]);
-    setImageUrl("");
     setIsOpen(false);
     onClose?.();
-  };
-
-  const addImageFromUrl = () => {
-    if (imageUrl.trim() && !images.includes(imageUrl.trim())) {
-      setImages([...images, imageUrl.trim()]);
-      setImageUrl("");
-    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,20 +156,6 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
                 onChange={handleFileUpload}
                 className="hidden"
               />
-            </div>
-
-            {/* URL Input */}
-            <div className="flex gap-2">
-              <Input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="Or enter image URL..."
-                className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-              />
-              <Button type="button" onClick={addImageFromUrl} variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700">
-                <Image className="w-4 h-4" />
-              </Button>
             </div>
           </div>
 
