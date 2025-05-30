@@ -6,14 +6,12 @@ interface AboutHeroProps {
 
 export const AboutHero = ({ isVisible, scrolled }: AboutHeroProps) => {
   return (
-    <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+    <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Text Content */}
         <div className="text-center lg:text-left">
-          <h1 className={`text-5xl md:text-6xl font-light mb-8 tracking-wider transition-colors duration-300 ${
-            scrolled ? 'text-white' : 'text-white'
-          }`}>
-            THE <span className={`transition-colors duration-300 ${scrolled ? 'text-white' : 'text-gold'}`}>COMPANY</span>
+          <h1 className="text-5xl md:text-6xl font-light mb-8 tracking-wider text-white">
+            THE <span className="text-gold">COMPANY</span>
           </h1>
           <div className="max-w-4xl">
             <p className="text-gray-300 text-xl md:text-2xl leading-relaxed font-light mb-4">
