@@ -9,7 +9,7 @@ export const AboutFoundationHeader = ({
   scrolled
 }: AboutFoundationHeaderProps) => {
   return (
-    <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+    <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
       {/* Header */}
       <div className="text-center mb-12">
         <h2 className="text-4xl md:text-6xl font-light text-white mb-6 tracking-wider">
