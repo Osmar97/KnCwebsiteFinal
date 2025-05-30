@@ -60,21 +60,11 @@ export const Hero = () => {
     {/* Main Content */}
     <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
       {/* Animated Logo */}
-      <div className="flex justify-center mb-8 ">
+      <div className="flex justify-center mb-8">
         <img src={logo} alt="Logo" className="w-20 h-20 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" />
       </div>
 
       <div className="animate-fade-up">
-        <h1 className="text-5xl md:text-7xl font-light mb-6 tracking-wider" style={{ color: '#85754E' }}>
-          <span style={{ color: '#85754E' }}>KINGS 'N</span>
-          <br />
-          <span style={{ color: '#85754E' }}>COMPANY</span>
-        </h1>
-
-        <p className="text-gold text-lg md:text-xl mb-4 tracking-widest font-light">
-          REAL ESTATE NETWORK
-        </p>
-
         <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-8"></div>
 
         <p className="text-gray-300 text-lg md:text-xl mb-3 max-w-3xl mx-auto leading-relaxed font-bold">Connecting Visionary Investors to Remarkable Properties</p>
