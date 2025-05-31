@@ -1,3 +1,4 @@
+
 import { Home, Wrench, Users, BarChart3, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,7 @@ export const PropertyManagement = () => {
           {/* Image */}
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img src="/lovable-uploads/00ec5d0d-9402-4d6c-ab2f-75fbaf19ddb7.png" alt="Property Management - Construction Oversight" className="w-full h-[600px] object-cover" />
+              <img src="/lovable-uploads/50793ec6-8356-407b-ae7e-74047b5c8186.png" alt="Property Management - Renovation Oversight" className="w-full h-[600px] object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             </div>
             

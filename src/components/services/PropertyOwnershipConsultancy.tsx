@@ -1,3 +1,4 @@
+
 import { Users, Search, FileText, TrendingUp, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,7 @@ export const PropertyOwnershipConsultancy = () => {
           {/* Image */}
           <div className="relative order-2 lg:order-1">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img src="/lovable-uploads/86d21acb-8ce5-42c4-86ab-4cc15bec6191.png" alt="Property Ownership Consultancy - Property Tour" className="w-full h-[600px] object-cover" />
+              <img src="/lovable-uploads/f7d5895b-3367-447c-b4e4-f7accb416dc1.png" alt="Property Ownership Consultancy - Expert Guidance" className="w-full h-[600px] object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             </div>
             

@@ -1,3 +1,4 @@
+
 import { MapPin, Plane, Camera, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ export const PropertyOwnershipTour = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
               <div className="relative rounded-xl overflow-hidden shadow-xl">
-                <img src="/lovable-uploads/1c5d2031-9980-4138-9bd8-ea846cf90e49.png" alt="Luxury Property Tour - Aerial View" className="w-full h-64 object-cover hover:scale-105 transition-transform duration-700" />
+                <img src="/lovable-uploads/c46aeb83-ab9f-407e-9ec8-c76006faf792.png" alt="Luxury Property Tour - Coastal Development" className="w-full h-64 object-cover hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               </div>
               
