@@ -7,7 +7,7 @@ interface AboutMissionVisionProps {
 
 export const AboutMissionVision = ({ isVisible }: AboutMissionVisionProps) => {
   return (
-    <div className={`space-y-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}>
+    <div className={`space-y-12 transition-all duration-1000 opacity-100 translate-x-0`}>
       {/* Mission */}
       <div className="space-y-6">
         <div className="flex items-center gap-4">
