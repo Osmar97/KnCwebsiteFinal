@@ -89,13 +89,14 @@ export const Footer = () => {
           <div className="space-y-6">
             <h4 className="text-white font-medium tracking-wider">CONNECT</h4>
             <div className="flex space-x-4">
-              <a href="https://www.linkedin.com/company/kings-n-company/"
+              <a
+                href="https://www.linkedin.com/company/kings-n-company/"
                 target="_blank"
                 rel="noopener noreferrer"
-              className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300">
+                className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="https://www.instagram.com/kingsncompany_/" className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300">
+              <a href="#" className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300">
                 <Instagram className="w-5 h-5" />
               </a>
               <a href="#" className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300">
