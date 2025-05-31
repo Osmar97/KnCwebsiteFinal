@@ -25,8 +25,7 @@ export const TeamSection = () => {
     experience: "4 years in the real estate industry",
     image: "/lovable-uploads/c604037a-50c4-4093-9191-6538e9563a1f.png",
     quote: "My mission is to create valuable connections and long-term wealth for our clients, guiding them through one of the most impactful decisions of their lives.",
-    linkedin: "https://pt.linkedin.com/in/ismaelgq",
-    highlights: ["Develops and implements strategic plans that drive business growth", "Leads the company with a vision of excellence and innovation", "Builds and maintains a vast network of industry professionals", "Oversees real estate projects from start to finish with flawless execution", "Ensures every deal meets Kings 'n Company's high standards"]
+    linkedin: "https://pt.linkedin.com/in/ismaelgq"
   }, {
     id: 2,
     name: "Nuno Andrade",
@@ -34,8 +33,7 @@ export const TeamSection = () => {
     experience: "8 years in the real estate industry",
     image: "/lovable-uploads/8f5ead94-373d-4a9d-aa09-97bad7f590d0.png",
     quote: "I believe in delivering solid, data-driven insights to help investors make the most strategic decisions possible.",
-    linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/",
-    highlights: ["Specialist in identifying high-return investment opportunities", "Deep understanding of real estate finance and profitability", "Passionate about building strong, trust-based client relationships", "Committed to achieving ambitious investment goals for clients"]
+    linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/"
   }];
   return <section ref={sectionRef} className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
       {/* Background Elements */}
@@ -97,17 +95,6 @@ export const TeamSection = () => {
                     <p className="text-gray-300 text-base leading-relaxed italic pl-4 border-l-2 border-gold/30">
                       "{member.quote}"
                     </p>
-                  </div>
-
-                  {/* Highlights */}
-                  <div className="mb-6">
-                    <h4 className="text-white text-lg font-medium mb-3">Key Strengths:</h4>
-                    <ul className="space-y-2">
-                      {member.highlights.map((highlight, highlightIndex) => <li key={highlightIndex} className="text-gray-300 text-sm flex items-start">
-                          <span className="w-2 h-2 bg-gold rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                          {highlight}
-                        </li>)}
-                    </ul>
                   </div>
 
                   {/* CTA Buttons */}
