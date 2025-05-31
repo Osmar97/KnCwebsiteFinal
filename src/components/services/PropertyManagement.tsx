@@ -79,24 +79,6 @@ export const PropertyManagement = () => {
                 </div>)}
             </div>
 
-            <div className="bg-gray-800/50 rounded-lg p-6 mb-8 border border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-3">Why Choose Our Management?</h3>
-              <ul className="space-y-2 text-gray-300">
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-[#85754E] rounded-full mr-3"></div>
-                  Local expertise in Portuguese and Cabo Verdean markets
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-[#85754E] rounded-full mr-3"></div>
-                  24/7 emergency response and maintenance coordination
-                </li>
-                <li className="flex items-center">
-                  <div className="w-2 h-2 bg-[#85754E] rounded-full mr-3"></div>
-                  Transparent reporting and financial management
-                </li>
-              </ul>
-            </div>
-
             <Button onClick={scrollToContact} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium">
               MANAGE MY PROPERTY
             </Button>
