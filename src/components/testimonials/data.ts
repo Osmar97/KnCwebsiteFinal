@@ -18,7 +18,7 @@ export const testimonials: Testimonial[] = [
     name: "Trevor Lyons",
     role: "International Investor",
     location: "USA",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    image: "/lovable-uploads/trevor.jpg",
     rating: 5,
     text: "Knowledgeable about all things Lisbon and surrounding areas. He worked hard to make sure I chose the right investment property. I highly recommend him.",
     highlight: "Perfect investment property",
