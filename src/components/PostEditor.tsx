@@ -28,51 +28,107 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     }
   }, [isOpen, post]);
 
+  const validateContent = (content: string): boolean => {
+    const trimmedContent = content.trim();
+    return trimmedContent.length > 0 && trimmedContent.length <= 5000;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (isEdit && post) {
-      updatePost(post.id, content, images);
+    if (!validateContent(content)) {
       toast({
-        title: "Success",
-        description: "Post updated successfully.",
+        title: "Invalid Content",
+        description: "Post content must be between 1 and 5000 characters.",
+        variant: "destructive",
       });
-    } else {
-      addPost(content, images);
-      toast({
-        title: "Success",
-        description: "Post created successfully.",
-      });
+      return;
     }
 
-    // Reset form and close dialog
-    setContent("");
-    setImages([]);
-    setIsOpen(false);
-    onClose?.();
+    try {
+      let success = false;
+      
+      if (isEdit && post) {
+        success = updatePost(post.id, content, images);
+        if (success) {
+          toast({
+            title: "Success",
+            description: "Post updated successfully.",
+          });
+        }
+      } else {
+        success = addPost(content, images);
+        if (success) {
+          toast({
+            title: "Success",
+            description: "Post created successfully.",
+          });
+        }
+      }
+
+      if (!success) {
+        toast({
+          title: "Error",
+          description: "Failed to save post. Please check your content and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Reset form and close dialog
+      setContent("");
+      setImages([]);
+      setIsOpen(false);
+      onClose?.();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
+    if (images.length + files.length > 10) {
+      toast({
+        title: "Too Many Images",
+        description: "Maximum 10 images allowed per post.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     Array.from(files).forEach(file => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const result = event.target?.result as string;
-          if (result && !images.includes(result)) {
-            setImages(prev => [...prev, result]);
-          }
-        };
-        reader.readAsDataURL(file);
-      } else {
+      if (!file.type.startsWith('image/')) {
         toast({
-          title: "Error",
+          title: "Invalid File Type",
           description: "Please select only image files.",
           variant: "destructive",
         });
+        return;
       }
+
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: "File Too Large",
+          description: "Images must be smaller than 5MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        if (result && !images.includes(result)) {
+          setImages(prev => [...prev, result]);
+        }
+      };
+      reader.readAsDataURL(file);
     });
     
     // Reset the input

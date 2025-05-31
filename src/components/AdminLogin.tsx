@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { User, LogIn, LogOut } from "lucide-react";
+import { User, LogIn, LogOut, Shield } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,32 +12,62 @@ export const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { isAdminLoggedIn, adminUser, login, logout } = useAdmin();
+  const { isAdminLoggedIn, adminUser, login, logout, loginAttempts, isLocked } = useAdmin();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    const success = login(email, password);
     
-    if (success) {
+    if (isLocked) {
       toast({
-        title: "Login Successful",
-        description: `Welcome back, ${adminUser?.name}!`,
-      });
-      setEmail("");
-      setPassword("");
-      setIsOpen(false);
-    } else {
-      toast({
-        title: "Login Failed",
-        description: "Invalid email or password.",
+        title: "Account Locked",
+        description: "Too many failed login attempts. Please try again later.",
         variant: "destructive",
       });
+      return;
     }
-    
-    setIsLoading(false);
+
+    if (!email.trim() || !password.trim()) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter both email and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const success = await login(email, password);
+      
+      if (success) {
+        toast({
+          title: "Login Successful",
+          description: `Welcome back, ${adminUser?.name || 'Admin'}!`,
+        });
+        setEmail("");
+        setPassword("");
+        setIsOpen(false);
+      } else {
+        const remainingAttempts = Math.max(0, 5 - loginAttempts - 1);
+        toast({
+          title: "Login Failed",
+          description: remainingAttempts > 0 
+            ? `Invalid credentials. ${remainingAttempts} attempts remaining.`
+            : "Account will be locked after this attempt.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred during login. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleLogout = () => {
@@ -82,49 +112,69 @@ export const AdminLogin = () => {
       <DialogContent className="bg-gradient-to-br from-gray-900 to-black border border-gray-700 text-white max-w-md">
         <DialogHeader>
           <DialogTitle className="text-gold text-xl font-light tracking-wider flex items-center gap-3">
-            <LogIn className="w-5 h-5" />
-            Admin Login
+            <Shield className="w-5 h-5" />
+            Secure Admin Login
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white focus:border-gold"
-              required
-            />
+        {isLocked ? (
+          <div className="text-center py-8">
+            <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-red-400 mb-2">Account Locked</h3>
+            <p className="text-gray-300 text-sm">
+              Too many failed login attempts. Please try again in 15 minutes.
+            </p>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-gray-800 border-gray-600 text-white focus:border-gold"
+                required
+                disabled={isLoading}
+                autoComplete="username"
+              />
+            </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white focus:border-gold"
-              required
-            />
-          </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-gray-800 border-gray-600 text-white focus:border-gold"
+                required
+                disabled={isLoading}
+                autoComplete="current-password"
+              />
+            </div>
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gold hover:bg-gold/90 text-black font-medium"
-          >
-            <LogIn className="w-4 h-4 mr-2" />
-            {isLoading ? "Logging in..." : "Login"}
-          </Button>
-        </form>
+            {loginAttempts > 0 && (
+              <div className="text-center text-sm text-yellow-400">
+                {5 - loginAttempts} login attempts remaining
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              disabled={isLoading || isLocked}
+              className="w-full bg-gold hover:bg-gold/90 text-black font-medium"
+            >
+              <LogIn className="w-4 h-4 mr-2" />
+              {isLoading ? "Authenticating..." : "Secure Login"}
+            </Button>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
