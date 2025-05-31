@@ -25,7 +25,7 @@ export const AboutValues = ({ isVisible }: AboutValuesProps) => {
   ];
 
   return (
-    <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}>
+    <div className="transition-all duration-1000 opacity-100 translate-x-0">
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Heart className="w-8 h-8 text-gold" />
@@ -36,10 +36,7 @@ export const AboutValues = ({ isVisible }: AboutValuesProps) => {
           {values.map((value, index) => (
             <div 
               key={index}
-              className={`p-6 bg-gradient-to-br from-gray-900/50 to-black/50 rounded-lg border border-gold/20 transition-all duration-700 hover:border-gold/40 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-              }`}
-              style={{ transitionDelay: `${index * 150 + 400}ms` }}
+              className="p-6 bg-gradient-to-br from-gray-900/50 to-black/50 rounded-lg border border-gold/20 transition-all duration-700 hover:border-gold/40 opacity-100 translate-y-0"
             >
               <div className="flex items-start gap-4">
                 <value.icon className="w-6 h-6 text-gold mt-1 flex-shrink-0" />

@@ -17,7 +17,7 @@ export const AboutFoundation = ({
       <AboutFoundationHeader isVisible={isVisible} scrolled={scrolled} />
 
       {/* Mission, Vision, Values Grid */}
-      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{ transitionDelay: '600ms' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 transition-all duration-1000 opacity-100 translate-y-0">
         {/* Left Column - Mission & Vision */}
         <AboutMissionVision isVisible={isVisible} />
         
