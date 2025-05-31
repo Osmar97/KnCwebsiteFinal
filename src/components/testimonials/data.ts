@@ -33,6 +33,6 @@ export const testimonials: Testimonial[] = [
     rating: 5,
     text: "My family and I moved to Lisbon in August 2022 and Ishmael was a major part of our move. We actually 'found' him by mistake after a poor experience with another agency — and it turned out to be the best thing. Ishmael went above and beyond expectations: securing an apartment, guiding us through public services, applying for our NIFs, even picking us up at the airport. He did countless video calls while we were still in the US. His service was professional, personal, and ongoing even after we settled. We highly recommend him. Fantastic human being! Bonus: He speaks several languages — communication was effortless.",
     highlight: "Complete relocation support",
-    videoTestimonial: true
+    videoTestimonial: false
   }
 ];
