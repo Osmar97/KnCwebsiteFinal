@@ -95,11 +95,7 @@ export const PostCard = ({ post }: PostCardProps) => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div 
-              className="text-gray-900"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-              style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-            />
+            <p className="text-gray-900 whitespace-pre-wrap">{post.content}</p>
             
             {post.images.length > 0 && (
               <div className={`grid gap-2 ${
