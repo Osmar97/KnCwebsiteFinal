@@ -2,6 +2,7 @@
 import { Users, Search, FileText, TrendingUp, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
 export const PropertyOwnershipConsultancy = () => {
   const services = [{
     icon: Search,
@@ -20,12 +21,15 @@ export const PropertyOwnershipConsultancy = () => {
     title: "Portfolio Building",
     description: "From first homes to complete investment portfolios"
   }];
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('resources');
-    contactSection?.scrollIntoView({
-      behavior: 'smooth'
-    });
+
+  const handleBooking = () => {
+    window.open(
+      "https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false",
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
+
   return <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -78,7 +82,7 @@ export const PropertyOwnershipConsultancy = () => {
                 </div>)}
             </div>
 
-            <Button onClick={scrollToContact} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium group">
+            <Button onClick={handleBooking} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium group">
               GET CONSULTATION
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
