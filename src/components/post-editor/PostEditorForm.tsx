@@ -1,6 +1,5 @@
-
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "./RichTextEditor";
 import { ImageUpload } from "./ImageUpload";
 import { ImagePreview } from "./ImagePreview";
 import { useToast } from "@/hooks/use-toast";
@@ -31,7 +30,10 @@ export const PostEditorForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!content.trim()) {
+    // Strip HTML tags for validation but keep the formatted content
+    const textContent = content.replace(/<[^>]*>/g, '').trim();
+    
+    if (!textContent) {
       toast({
         title: "Error",
         description: "Post content cannot be empty.",
@@ -50,13 +52,11 @@ export const PostEditorForm = ({
         <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">
           Post Content
         </label>
-        <Textarea
-          id="content"
+        <RichTextEditor
           value={content}
-          onChange={(e) => onContentChange(e.target.value)}
+          onChange={onContentChange}
           placeholder="What's on your mind?"
-          className="min-h-[120px] bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-          required
+          className="focus:ring-gold"
         />
       </div>
 
