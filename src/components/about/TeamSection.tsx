@@ -24,6 +24,7 @@ export const TeamSection = () => {
     role: "Founder & CEO",
     experience: "4 years in the real estate industry",
     image: "/lovable-uploads/c604037a-50c4-4093-9191-6538e9563a1f.png",
+    quote: "My mission is to create valuable connections and long-term wealth for our clients, guiding them through one of the most impactful decisions of their lives.",
     linkedin: "https://pt.linkedin.com/in/ismaelgq"
   }, {
     id: 2,
@@ -31,6 +32,7 @@ export const TeamSection = () => {
     role: "Investment Consultant",
     experience: "8 years in the real estate industry",
     image: "/lovable-uploads/8f5ead94-373d-4a9d-aa09-97bad7f590d0.png",
+    quote: "I believe in delivering solid, data-driven insights to help investors make the most strategic decisions possible.",
     linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/"
   }];
   return <section ref={sectionRef} className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
@@ -87,6 +89,13 @@ export const TeamSection = () => {
                   <p className="text-gold text-lg mb-2 font-light">{member.role}</p>
                   
                   
+                  {/* Quote */}
+                  <div className="relative mb-6">
+                    <Quote className="w-8 h-8 text-gold/30 mb-3" />
+                    <p className="text-gray-300 text-base leading-relaxed italic pl-4 border-l-2 border-gold/30">
+                      "{member.quote}"
+                    </p>
+                  </div>
 
                   {/* CTA Buttons */}
                   <div className="flex gap-3">
