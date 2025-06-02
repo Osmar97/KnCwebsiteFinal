@@ -83,7 +83,7 @@ export const PropertyOwnershipConsultancy = () => {
             </div>
 
             <Button onClick={handleBooking} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium group">
-              GET CONSULTATION
+              Let’s Talk Strategy 
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>

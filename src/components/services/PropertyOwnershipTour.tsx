@@ -68,7 +68,7 @@ export const PropertyOwnershipTour = () => {
             </div>
 
             <Button onClick={scrollToContact} variant="outline" className="border-gold text-gold hover:bg-gold hover:text-black px-8 py-3 text-lg font-medium transition-all duration-300">
-              BOOK YOUR TOUR
+              Start the Experience
             </Button>
           </div>
 
