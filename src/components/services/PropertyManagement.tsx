@@ -78,10 +78,6 @@ export const PropertyManagement = () => {
                   </div>
                 </div>)}
             </div>
-
-            <Button onClick={scrollToContact} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium">
-              MANAGE MY PROPERTY
-            </Button>
           </div>
         </div>
       </div>
