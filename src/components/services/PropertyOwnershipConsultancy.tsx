@@ -80,7 +80,7 @@ export const PropertyOwnershipConsultancy = () => {
                   </div>
                 </div>)}
             </div>
-            <Button onClick={handleBooking} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-15 py-10 text-lg font-medium group">
+            <Button onClick={handleBooking} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-30 py-25 text-lg font-medium group">
               <div className="flex flex-col items-center space-y-1">
                 <div className="font-bold text-white/90 text-base">Your One Stop Shop</div>
                 <div className="text-base">Let's Talk Strategy</div>
