@@ -106,7 +106,7 @@ export const AdminLogin = () => {
           className="border-gold text-gold hover:bg-gold hover:text-black"
         >
           <User className="w-4 h-4 mr-2" />
-          Admin
+    
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-gradient-to-br from-gray-900 to-black border border-gray-700 text-white max-w-md">
