@@ -101,7 +101,7 @@ export const PropertyOwnershipAcademy = () => {
                     <GraduationCap className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">Interactive Learning</p>
+                    <p className="font-semibold text-gray-900">Foundations First</p>
                     <p className="text-sm text-gray-600">Personalized 1:1 Sessions</p>
                   </div>
                 </div>
