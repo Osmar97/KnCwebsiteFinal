@@ -2,7 +2,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { OurApproachHero } from "@/components/our-approach/OurApproachHero";
-import { RealEstateInvestmentBenefits } from "@/components/our-approach/RealEstateInvestmentBenefits";
 import { GlobalSupport } from "@/components/our-approach/GlobalSupport";
 import { ExclusiveAccess } from "@/components/our-approach/ExclusiveAccess";
 import { TailoredStrategies } from "@/components/our-approach/TailoredStrategies";
@@ -16,7 +15,6 @@ const OurApproachPage = () => {
       <Navigation />
       <div className="pt-16">
         <OurApproachHero />
-        <RealEstateInvestmentBenefits />
         <GlobalSupport />
         <ExclusiveAccess />
         <TailoredStrategies />
