@@ -35,6 +35,10 @@ export const PropertyOwnershipAcademy = () => {
     );
   };
 
+  const handleSetmoreClick = () => {
+    window.open("https://kingsncompany.setmore.com", "_blank", "noopener,noreferrer");
+  };
+
   return (
     <section className="py-20 bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
       {/* Background Pattern */}
@@ -95,7 +99,10 @@ export const PropertyOwnershipAcademy = () => {
             
             {/* Floating Card */}
             <Card className="absolute -bottom-8 -left-8 bg-white/95 backdrop-blur-sm border-0 shadow-xl">
-              <CardContent className="p-6">
+              <CardContent 
+                className="p-6 cursor-pointer hover:bg-gray-50 transition-colors" 
+                onClick={handleSetmoreClick}
+              >
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center">
                     <GraduationCap className="w-6 h-6 text-white" />
