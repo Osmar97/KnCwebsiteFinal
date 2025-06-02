@@ -31,7 +31,7 @@ export const TeamSection = () => {
     name: "Nuno Andrade",
     role: "Investment Consultant",
     experience: "8 years in the real estate industry",
-    image: "/lovable-uploads/nunoPhoto.png",
+    image: "/lovable-uploads/2.png",
     quote: "I believe in delivering solid, data-driven insights to help investors make the most strategic decisions possible.",
     linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/"
   }];
