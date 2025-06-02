@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
@@ -59,7 +58,7 @@ export const Hero = () => {
     <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
       {/* Animated Logo */}
       <div className="flex justify-center mb-8">
-        <img src="/lovable-uploads/logo_horizontal.png" alt="Logo" className="w-20 h-20 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" />
+        <img src="/lovable-uploads/logo_horizontal.png" alt="Logo" className="w-32 h-32 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" />
       </div>
 
       <div className="animate-fade-up">
