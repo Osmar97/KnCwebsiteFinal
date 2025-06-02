@@ -80,7 +80,7 @@ export const PropertyOwnershipConsultancy = () => {
                   </div>
                 </div>)}
             </div>
-
+                {/* COLOCAR BRAKE ENTRE LINHAS  */}
             <Button onClick={handleBooking} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-8 py-3 text-lg font-medium group">
               <div className="font-bold text-base text-white/90">Your One Stop Shop</div>
               Let’s Talk Strategy 

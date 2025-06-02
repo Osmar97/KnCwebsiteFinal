@@ -76,14 +76,14 @@ export const PropertyOwnershipTour = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
               <div className="relative rounded-xl overflow-hidden shadow-xl">
-                <img src="/lovable-uploads/c46aeb83-ab9f-407e-9ec8-c76006faf792.png" alt="Luxury Property Tour - Coastal Development" className="w-full h-64 object-cover hover:scale-105 transition-transform duration-700" />
+                <img src="/lovable-uploads/Portugal.HEIC" alt="Luxury Property Tour - Coastal Development" className="w-full h-64 object-cover hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               </div>
               
               <Card className="bg-gold/10 backdrop-blur-sm border border-gold/20">
                 <CardContent className="p-4 text-center">
                   <div className="text-lg font-bold text-gold mb-1">Portugal</div>
-                  <div className="text-sm text-gray-300">Premium Properties</div>
+                  <div className="text-sm text-gray-300">Solidified Markets</div>
                 </CardContent>
               </Card>
             </div>
@@ -97,7 +97,7 @@ export const PropertyOwnershipTour = () => {
               </Card>
               
               <div className="relative rounded-xl overflow-hidden shadow-xl">
-                <img src="/lovable-uploads/4f60991d-35ff-4e2f-85ce-c6b5adfaa17a.png" alt="Property Tour - Coastal Development" className="w-full h-64 object-cover hover:scale-105 transition-transform duration-700" />
+                <img src="/lovable-uploads/Caboverde.HEIC" alt="Property Tour - Coastal Development" className="w-full h-64 object-cover hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               </div>
             </div>
