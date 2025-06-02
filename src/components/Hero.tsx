@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
-import logo from '../assets/logo.png'; // Adjust path as needed
+import logo from '../assets/logo_horizontal.png'; // Adjust path as needed
 
 export const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
