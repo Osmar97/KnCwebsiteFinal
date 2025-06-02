@@ -43,7 +43,7 @@ export const PropertyOwnershipConsultancy = () => {
             {/* Floating Stats */}
             <Card className="absolute -top-8 -right-8 bg-[#85754E] border-0 shadow-xl">
               <CardContent className="p-6 text-center">
-                <div className="text-sm text-white/90">Your One Stop Shop</div>
+                <div className="text-base text-white/90">Your One Stop Shop</div>
               </CardContent>
             </Card>
           </div>
