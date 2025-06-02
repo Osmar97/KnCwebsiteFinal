@@ -1,6 +1,5 @@
 
 import { Navigation } from "@/components/Navigation";
-import { RealEstateInvestmentBenefits } from "@/components/our-approach/RealEstateInvestmentBenefits";
 import { PropertyOwnershipAcademy } from "@/components/services/PropertyOwnershipAcademy";
 import { PropertyOwnershipConsultancy } from "@/components/services/PropertyOwnershipConsultancy";
 import { PropertyOwnershipTour } from "@/components/services/PropertyOwnershipTour";
@@ -18,7 +17,6 @@ const ServicesPage = () => {
         <PropertyOwnershipConsultancy />
         <PropertyOwnershipTour />
         <PropertyManagement />
-        <RealEstateInvestmentBenefits />
         <CoInvestmentOpportunities />
       </div>
       <GenerationalWealthHero />
