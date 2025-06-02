@@ -23,7 +23,7 @@ export const TeamSection = () => {
     name: "Ismael Gomes Queta",
     role: "Founder & CEO",
     experience: "4 years in the real estate industry",
-    image: "/lovable-uploads/c604037a-50c4-4093-9191-6538e9563a1f.png",
+    image: "/lovable-uploads/IsmaelTeam.png",
     quote: "My mission is to create valuable connections and long-term wealth for our clients, guiding them through one of the most impactful decisions of their lives.",
     linkedin: "https://pt.linkedin.com/in/ismaelgq"
   }, {
@@ -31,7 +31,7 @@ export const TeamSection = () => {
     name: "Nuno Andrade",
     role: "Investment Consultant",
     experience: "8 years in the real estate industry",
-    image: "/lovable-uploads/8f5ead94-373d-4a9d-aa09-97bad7f590d0.png",
+    image: "/lovable-uploads/nunoPhoto.png",
     quote: "I believe in delivering solid, data-driven insights to help investors make the most strategic decisions possible.",
     linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/"
   }];
