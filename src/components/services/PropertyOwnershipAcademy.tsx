@@ -80,10 +80,6 @@ export const PropertyOwnershipAcademy = () => {
                 </div>
               ))}
             </div>
-
-            <Button onClick={handleBooking} className="bg-gold text-black hover:bg-gold/90 px-8 py-3 text-lg font-medium">
-              GET STARTED
-            </Button>
           </div>
 
           {/* Image */}
