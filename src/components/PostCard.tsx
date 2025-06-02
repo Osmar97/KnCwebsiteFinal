@@ -8,13 +8,16 @@ import { type Post, usePosts } from "@/contexts/PostsContext";
 import { PostEditor } from "./PostEditor";
 import { ImageModal } from "./ImageModal";
 import { useToast } from "@/hooks/use-toast";
+import { useAdmin } from "@/contexts/AdminContext";
 
 interface PostCardProps {
   post: Post;
+  isPublicView?: boolean;
 }
 
-export const PostCard = ({ post }: PostCardProps) => {
+export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
   const { deletePost } = usePosts();
+  const { isAdminLoggedIn } = useAdmin();
   const { toast } = useToast();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
@@ -43,6 +46,9 @@ export const PostCard = ({ post }: PostCardProps) => {
     setImageModalOpen(true);
   };
 
+  // Show admin controls only if user is admin and not in public view
+  const showAdminControls = isAdminLoggedIn && !isPublicView;
+
   return (
     <>
       <Card className="w-full bg-white shadow-md">
@@ -61,36 +67,38 @@ export const PostCard = ({ post }: PostCardProps) => {
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowEditDialog(true)}
-              >
-                <Edit className="w-4 h-4" />
-              </Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Post</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to delete this post? This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-                      Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
+            {showAdminControls && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowEditDialog(true)}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Post</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this post? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent>

@@ -3,6 +3,7 @@ import { Navigation } from "@/components/Navigation";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 import { Footer } from "@/components/Footer";
 import { AdminPostsFeed } from "@/components/AdminPostsFeed";
+import { PublicPostsFeed } from "@/components/PublicPostsFeed";
 import { useAdmin } from "@/contexts/AdminContext";
 
 const ResourcesPage = () => {
@@ -12,11 +13,13 @@ const ResourcesPage = () => {
     <div className="min-h-screen bg-white text-gray-900">
       <Navigation />
       <div className="pt-16 bg-neutral-900">
-        {isAdminLoggedIn && (
-          <div className="py-8 px-4">
+        <div className="py-8 px-4">
+          {isAdminLoggedIn ? (
             <AdminPostsFeed />
-          </div>
-        )}
+          ) : (
+            <PublicPostsFeed />
+          )}
+        </div>
       </div>
       <GenerationalWealthHero />
       <Footer />
