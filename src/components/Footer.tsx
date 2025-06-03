@@ -60,7 +60,7 @@ export const Footer = () => {
               <li className="flex items-start space-x-3">
                 <MapPin className="w-4 h-4 text-gold mt-1 flex-shrink-0" />
                 <span className="text-gray-400 text-sm">
-                  Portugal & Cabo Verde
+                  Lisbon, Portugal | Sal, Cabo Verde
                 </span>
               </li>
               <li className="flex items-start space-x-3">
