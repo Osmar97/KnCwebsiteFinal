@@ -20,7 +20,7 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 // Move credentials to environment variables (this should be handled by Supabase in production)
 const ADMIN_EMAIL = 'ismael@kingsncompany.com';
-const ADMIN_PASSWORD_HASH = 'admin'; // In production, this should be properly hashed
+const ADMIN_PASSWORD_HASH = 'Myqdeq-zejka7-sirjyf'; // In production, this should be properly hashed
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
 
