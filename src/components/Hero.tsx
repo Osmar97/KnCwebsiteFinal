@@ -32,7 +32,7 @@ export const Hero = () => {
       </div>
 
       {/* Animated Background Image */}
-      <div className="absolute inset-0 opacity-20 animate-slow-zoom" style={{
+      <div className="absolute inset-0  animate-slow-zoom" style={{
         backgroundImage: 'url(/lovable-uploads/337220a5-f9c3-4004-8340-e9f3d28e4466.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
