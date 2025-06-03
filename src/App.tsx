@@ -20,7 +20,7 @@ const AppContent = () => {
   useScrollToTop();
   
   return (
-    <Routes>
+    <Routes basename='/kingsncompany'>
       <Route path="/" element={<Index />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/services" element={<ServicesPage />} />
