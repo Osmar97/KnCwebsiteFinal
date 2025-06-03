@@ -26,7 +26,7 @@ export const AboutHero = ({ isVisible, scrolled }: AboutHeroProps) => {
         {/* Image */}
         <div className="flex justify-center lg:justify-end">
           <img 
-            src="/lovable-uploads/a8a5c882-3315-404b-918c-2e215e999a2c.png" 
+            src="/lovable-uploads/empresa.png" 
             alt="Property with pool and mountain view" 
             className="w-full max-w-lg h-auto rounded-lg shadow-2xl" 
           />
