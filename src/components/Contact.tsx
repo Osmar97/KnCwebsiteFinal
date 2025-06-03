@@ -41,7 +41,7 @@ export const Contact = () => {
       icon: Phone,
       label: "Consultation Line",
       value: "+351 939 953 609",
-      description: "Available Mon-Fri, 9AM-6PM CET",
+      description: "Available Mon-Fri",
       action: "whatsapp"
     },
     {

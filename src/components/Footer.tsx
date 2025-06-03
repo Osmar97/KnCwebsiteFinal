@@ -16,8 +16,7 @@ export const Footer = () => {
                 Kings 'n Company
               </h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                A real estate investment consultancy firm blending regional expertise 
-                with international networks.
+                Real estate consulting, blending local expertise and global vision.
               </p>
             </div>
           </div>

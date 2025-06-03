@@ -18,7 +18,7 @@ export const AboutHero = ({ isVisible, scrolled }: AboutHeroProps) => {
               Based in Europe and rooted in West Africa, we pride ourselves in connecting investors with the right properties, people, and opportunities.
             </p>
             <p className="text-gray-300 text-xl md:text-2xl leading-relaxed font-light">
-              Building profitable, purposeful ventures across Portugal and Cape Verde.
+              Building profitable, purposeful ventures across Portugal and Cabo Verde.
             </p>
           </div>
         </div>
