@@ -44,11 +44,20 @@ export const Contact = () => {
       description: "Available Mon-Fri, 9AM-6PM CET",
       action: "whatsapp"
     },
+    {
+      icon: Calendar,
+      label: "Schedule a Consultation",
+      value: "Book your appointment",
+      description: "Choose your preferred time slot",
+      action: "schedule"
+    },
   ];
 
   const handleContactClick = (action: string, value: string) => {
     if (action === "whatsapp") {
       window.open("https://api.whatsapp.com/send/?phone=351939953609&text=&type=phone_number&app_absent=0", "_blank");
+    } else if (action === "schedule") {
+      window.open("https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false", "_blank");
     }
   };
 
@@ -115,6 +124,13 @@ export const Contact = () => {
                               </p>
                             </ContactForm>
                           ) : info.action === "whatsapp" ? (
+                            <p 
+                              className="text-gold text-sm mb-1 cursor-pointer hover:text-gold/80 transition-colors"
+                              onClick={() => handleContactClick(info.action, info.value)}
+                            >
+                              {info.value}
+                            </p>
+                          ) : info.action === "schedule" ? (
                             <p 
                               className="text-gold text-sm mb-1 cursor-pointer hover:text-gold/80 transition-colors"
                               onClick={() => handleContactClick(info.action, info.value)}
