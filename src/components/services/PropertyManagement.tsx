@@ -1,43 +1,59 @@
-
 import { Home, Wrench, Users, BarChart3, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
 export const PropertyManagement = () => {
-  const services = [{
-    icon: Wrench,
-    title: "Renovation Coordination",
-    description: "Complete renovation management and coordination with trusted contractors"
-  }, {
-    icon: Users,
-    title: "Tenant Services",
-    description: "Long-term rental tenant sourcing, screening, and management"
-  }, {
-    icon: Shield,
-    title: "Maintenance Oversight",
-    description: "Proactive maintenance scheduling and emergency response"
-  }, {
-    icon: BarChart3,
-    title: "Regular Reporting",
-    description: "Detailed reports and updates on property performance and status"
-  }];
+  const services = [
+    {
+      icon: Wrench,
+      title: "Renovation Coordination",
+      description: "Complete renovation management and coordination with trusted contractors"
+    }, {
+      icon: Users,
+      title: "Tenant Services",
+      description: "Long-term rental tenant sourcing, screening, and management"
+    }, {
+      icon: Shield,
+      title: "Maintenance Oversight",
+      description: "Proactive maintenance scheduling and emergency response"
+    }, {
+      icon: BarChart3,
+      title: "Regular Reporting",
+      description: "Detailed reports and updates on property performance and status"
+    }
+  ];
+
   const scrollToContact = () => {
     const contactSection = document.getElementById('resources');
     contactSection?.scrollIntoView({
       behavior: 'smooth'
     });
   };
-  return <section className="py-20 bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
+
+  const handleBookingClick = () => {
+    window.open('https://kingsncompany.setmore.co', '_blank');
+  };
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image */}
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img src="/lovable-uploads/50793ec6-8356-407b-ae7e-74047b5c8186.png" alt="Property Management - Renovation Oversight" className="w-full h-[600px] object-cover" />
+              <img 
+                src="/lovable-uploads/50793ec6-8356-407b-ae7e-74047b5c8186.png" 
+                alt="Property Management - Renovation Oversight" 
+                className="w-full h-[600px] object-cover" 
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             </div>
             
-            {/* Floating Badge */}
-            <Card className="absolute -bottom-8 -right-8 bg-[#85754E] border-0 shadow-xl">
+            {/* Floating Badge - Now Clickable */}
+            <Card 
+              className="absolute -bottom-8 -right-8 bg-[#85754E] border-0 shadow-xl cursor-pointer hover:bg-[#85754E]/90 transition-colors"
+              onClick={handleBookingClick}
+            >
               <CardContent className="p-6 text-center">
                 <Home className="w-8 h-8 text-white mx-auto mb-2" />
                 <div className="text-sm font-medium text-white">Professional</div>
@@ -48,8 +64,6 @@ export const PropertyManagement = () => {
 
           {/* Content */}
           <div>
-            
-
             <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-wider">
               PROPERTY <span className="text-[#85754E]">MANAGEMENT</span>
             </h2>
@@ -81,5 +95,6 @@ export const PropertyManagement = () => {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
