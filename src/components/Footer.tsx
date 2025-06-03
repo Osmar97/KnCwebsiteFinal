@@ -1,4 +1,3 @@
-
 import { MapPin, Phone, Mail, Globe, Linkedin, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -68,9 +67,7 @@ export const Footer = () => {
               <li className="flex items-start space-x-3">
                 <Phone className="w-4 h-4 text-gold mt-1 flex-shrink-0" />
                 <a 
-                  href="https://api.whatsapp.com/send/?phone=351939953609&text=&type=phone_number&app_absent=0"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="tel:+351939953609"
                   className="text-gray-400 text-sm hover:text-gold transition-colors cursor-pointer"
                 >
                   +351 939 953 609
