@@ -105,8 +105,13 @@ export const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </a>
 
-              <a href="#" className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300">
-                <Globe className="w-5 h-5" />
+              <a 
+                href="https://api.whatsapp.com/send/?phone=351939953609&text=&type=phone_number&app_absent=0" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300"
+              >
+                <Phone className="w-5 h-5" />
               </a>
             </div>
           </div>
