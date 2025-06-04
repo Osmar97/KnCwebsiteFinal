@@ -17,10 +17,10 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState(post?.content || "");
   const [images, setImages] = useState<string[]>(post?.images || []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { addPost, updatePost } = usePosts();
   const { toast } = useToast();
 
-  // Reset state when dialog closes
   useEffect(() => {
     if (!isOpen) {
       setContent(post?.content || "");
@@ -33,7 +33,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     return trimmedContent.length > 0 && trimmedContent.length <= 5000;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateContent(content)) {
@@ -46,10 +46,11 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     }
 
     try {
+      setIsSubmitting(true);
       let success = false;
       
       if (isEdit && post) {
-        success = updatePost(post.id, content, images);
+        success = await updatePost(post.id, content, images);
         if (success) {
           toast({
             title: "Success",
@@ -57,7 +58,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           });
         }
       } else {
-        success = addPost(content, images);
+        success = await addPost(content, images);
         if (success) {
           toast({
             title: "Success",
@@ -75,7 +76,6 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
         return;
       }
 
-      // Reset form and close dialog
       setContent("");
       setImages([]);
       setIsOpen(false);
@@ -86,6 +86,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -112,7 +114,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
         return;
       }
 
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
         toast({
           title: "File Too Large",
           description: "Images must be smaller than 5MB.",
@@ -131,7 +133,6 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       reader.readAsDataURL(file);
     });
     
-    // Reset the input
     e.target.value = '';
   };
 
@@ -175,6 +176,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           content={content}
           images={images}
           isEdit={isEdit}
+          isSubmitting={isSubmitting}
           onContentChange={setContent}
           onFileUpload={handleFileUpload}
           onRemoveImage={removeImage}

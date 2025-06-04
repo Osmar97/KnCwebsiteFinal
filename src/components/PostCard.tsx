@@ -22,16 +22,37 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDelete = () => {
-    deletePost(post.id);
-    toast({
-      title: "Success",
-      description: "Post deleted successfully.",
-    });
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      const success = await deletePost(post.id);
+      if (success) {
+        toast({
+          title: "Success",
+          description: "Post deleted successfully.",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to delete post.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
-  const formatDate = (date: Date) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'short',
@@ -46,7 +67,6 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
     setImageModalOpen(true);
   };
 
-  // Show admin controls only if user is admin and not in public view
   const showAdminControls = isAdminLoggedIn && !isPublicView;
 
   return (
@@ -61,9 +81,9 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
               <div>
                 <p className="font-semibold text-gray-900">Ismael Gomes Queta</p>
                 <p className="text-sm text-gray-500">Founder</p>
-                <p className="text-xs text-gray-400">{formatDate(post.createdAt)}</p>
-                {post.updatedAt > post.createdAt && (
-                  <p className="text-xs text-gray-400">Edited {formatDate(post.updatedAt)}</p>
+                <p className="text-xs text-gray-400">{formatDate(post.created_at)}</p>
+                {post.updated_at && post.updated_at !== post.created_at && (
+                  <p className="text-xs text-gray-400">Edited {formatDate(post.updated_at)}</p>
                 )}
               </div>
             </div>
@@ -78,7 +98,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
                 </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" disabled={isDeleting}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </AlertDialogTrigger>
@@ -91,8 +111,12 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-                        Delete
+                      <AlertDialogAction 
+                        onClick={handleDelete} 
+                        className="bg-red-600 hover:bg-red-700"
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Deleting..." : "Delete"}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -105,7 +129,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
           <div className="space-y-4">
             <p className="text-gray-900 whitespace-pre-wrap">{post.content}</p>
             
-            {post.images.length > 0 && (
+            {post.images && post.images.length > 0 && (
               <div className={`grid gap-2 ${
                 post.images.length === 1 
                   ? 'grid-cols-1' 
@@ -137,7 +161,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
       )}
 
       <ImageModal
-        images={post.images}
+        images={post.images || []}
         initialIndex={selectedImageIndex}
         isOpen={imageModalOpen}
         onClose={() => setImageModalOpen(false)}

@@ -9,6 +9,7 @@ interface PostEditorFormProps {
   content: string;
   images: string[];
   isEdit: boolean;
+  isSubmitting?: boolean;
   onContentChange: (content: string) => void;
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveImage: (index: number) => void;
@@ -20,6 +21,7 @@ export const PostEditorForm = ({
   content,
   images,
   isEdit,
+  isSubmitting = false,
   onContentChange,
   onFileUpload,
   onRemoveImage,
@@ -40,7 +42,6 @@ export const PostEditorForm = ({
       return;
     }
 
-    // Call the parent's submit handler which should close the dialog
     onSubmit(e);
   };
 
@@ -57,6 +58,7 @@ export const PostEditorForm = ({
           placeholder="What's on your mind?"
           className="min-h-[120px] bg-gray-800 border-gray-600 text-white placeholder-gray-400"
           required
+          disabled={isSubmitting}
         />
       </div>
 
@@ -69,11 +71,16 @@ export const PostEditorForm = ({
           variant="outline"
           onClick={onCancel}
           className="border-gray-600 text-gray-300 hover:bg-gray-700"
+          disabled={isSubmitting}
         >
           Cancel
         </Button>
-        <Button type="submit" className="bg-gold hover:bg-gold/90 text-black">
-          {isEdit ? "Update Post" : "Create Post"}
+        <Button 
+          type="submit" 
+          className="bg-gold hover:bg-gold/90 text-black"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : isEdit ? "Update Post" : "Create Post"}
         </Button>
       </div>
     </form>

@@ -1,54 +1,54 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Post {
-  id: string;
-  content: string;
-  images: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Use the auto-generated type from Supabase
+type Post = Database['public']['Tables']['posts']['Row'];
+type PostInsert = Database['public']['Tables']['posts']['Insert'];
+type PostUpdate = Database['public']['Tables']['posts']['Update'];
 
 interface PostsContextType {
   posts: Post[];
-  addPost: (content: string, images: string[]) => boolean;
-  updatePost: (id: string, content: string, images: string[]) => boolean;
-  deletePost: (id: string) => boolean;
+  addPost: (content: string, images: string[]) => Promise<boolean>;
+  updatePost: (id: string, content: string, images: string[]) => Promise<boolean>;
+  deletePost: (id: string) => Promise<boolean>;
+  loading: boolean;
+  refreshPosts: () => Promise<void>;
 }
 
 const PostsContext = createContext<PostsContextType | undefined>(undefined);
 
 export const PostsProvider = ({ children }: { children: ReactNode }) => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const savedPosts = localStorage.getItem('adminPosts');
-    if (savedPosts) {
-      try {
-        const parsedPosts = JSON.parse(savedPosts).map((post: any) => ({
-          ...post,
-          createdAt: new Date(post.createdAt),
-          updatedAt: new Date(post.updatedAt)
-        }));
-        setPosts(parsedPosts);
-      } catch (error) {
-        console.error('Failed to parse saved posts:', error);
-        localStorage.removeItem('adminPosts');
-      }
-    }
-  }, []);
-
-  const savePosts = (newPosts: Post[]) => {
+  const fetchPosts = async () => {
     try {
-      setPosts(newPosts);
-      localStorage.setItem('adminPosts', JSON.stringify(newPosts));
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching posts:', error);
+        return;
+      }
+
+      setPosts(data || []);
     } catch (error) {
-      console.error('Failed to save posts:', error);
+      console.error('Failed to fetch posts:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
   const sanitizeContent = (content: string): string => {
-    // Basic HTML sanitization - in production, use a library like DOMPurify
     return content
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -58,16 +58,13 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const validateImages = (images: string[]): boolean => {
-    if (images.length > 10) return false; // Limit number of images
+    if (images.length > 10) return false;
     
     return images.every(image => {
-      // Check if it's a data URL for uploaded images
       if (image.startsWith('data:image/')) {
-        // Basic validation for data URLs
         const sizeInBytes = (image.length * 3) / 4;
-        return sizeInBytes < 5 * 1024 * 1024; // 5MB limit
+        return sizeInBytes < 5 * 1024 * 1024;
       }
-      // Check if it's a valid URL for external images
       try {
         new URL(image);
         return true;
@@ -77,30 +74,28 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const generateSecureId = (): string => {
-    // Generate a more secure random ID
-    const timestamp = Date.now().toString(36);
-    const randomPart = Math.random().toString(36).substring(2, 15);
-    return `${timestamp}_${randomPart}`;
-  };
-
-  const addPost = (content: string, images: string[]): boolean => {
+  const addPost = async (content: string, images: string[]): Promise<boolean> => {
     try {
       if (!content.trim()) return false;
       if (!validateImages(images)) return false;
 
       const sanitizedContent = sanitizeContent(content);
       
-      const newPost: Post = {
-        id: generateSecureId(),
+      const postData: PostInsert = {
         content: sanitizedContent,
-        images: images.slice(0, 10), // Limit to 10 images
-        createdAt: new Date(),
-        updatedAt: new Date()
+        images: images.slice(0, 10),
       };
       
-      const newPosts = [newPost, ...posts];
-      savePosts(newPosts);
+      const { error } = await supabase
+        .from('posts')
+        .insert([postData]);
+
+      if (error) {
+        console.error('Error adding post:', error);
+        return false;
+      }
+
+      await fetchPosts();
       return true;
     } catch (error) {
       console.error('Failed to add post:', error);
@@ -108,25 +103,30 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updatePost = (id: string, content: string, images: string[]): boolean => {
+  const updatePost = async (id: string, content: string, images: string[]): Promise<boolean> => {
     try {
       if (!content.trim()) return false;
       if (!validateImages(images)) return false;
 
       const sanitizedContent = sanitizeContent(content);
       
-      const newPosts = posts.map(post =>
-        post.id === id
-          ? { 
-              ...post, 
-              content: sanitizedContent, 
-              images: images.slice(0, 10), 
-              updatedAt: new Date() 
-            }
-          : post
-      );
+      const updateData: PostUpdate = {
+        content: sanitizedContent,
+        images: images.slice(0, 10),
+        updated_at: new Date().toISOString(),
+      };
       
-      savePosts(newPosts);
+      const { error } = await supabase
+        .from('posts')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error updating post:', error);
+        return false;
+      }
+
+      await fetchPosts();
       return true;
     } catch (error) {
       console.error('Failed to update post:', error);
@@ -134,10 +134,19 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const deletePost = (id: string): boolean => {
+  const deletePost = async (id: string): Promise<boolean> => {
     try {
-      const newPosts = posts.filter(post => post.id !== id);
-      savePosts(newPosts);
+      const { error } = await supabase
+        .from('posts')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting post:', error);
+        return false;
+      }
+
+      await fetchPosts();
       return true;
     } catch (error) {
       console.error('Failed to delete post:', error);
@@ -145,8 +154,19 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const refreshPosts = async () => {
+    await fetchPosts();
+  };
+
   return (
-    <PostsContext.Provider value={{ posts, addPost, updatePost, deletePost }}>
+    <PostsContext.Provider value={{ 
+      posts, 
+      addPost, 
+      updatePost, 
+      deletePost, 
+      loading, 
+      refreshPosts 
+    }}>
       {children}
     </PostsContext.Provider>
   );
@@ -159,3 +179,6 @@ export const usePosts = () => {
   }
   return context;
 };
+
+// Export the Post type for other components to use
+export type { Post };

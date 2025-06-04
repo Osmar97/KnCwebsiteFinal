@@ -5,21 +5,29 @@ import { usePosts } from "@/contexts/PostsContext";
 import { useAdmin } from "@/contexts/AdminContext";
 
 export const AdminPostsFeed = () => {
-  const { posts } = usePosts();
+  const { posts, loading } = usePosts();
   const { isAdminLoggedIn } = useAdmin();
 
   if (!isAdminLoggedIn) {
     return null;
   }
 
+  if (loading) {
+    return (
+      <div className="w-full max-w-2xl mx-auto space-y-6">
+        <div className="text-center py-12">
+          <p className="text-gray-500">Loading posts...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
-      {/* Post Creation Button */}
       <div className="flex justify-end">
         <PostEditor />
       </div>
 
-      {/* Posts Feed */}
       <div className="space-y-4">
         {posts.length === 0 ? (
           <div className="text-center py-12">
