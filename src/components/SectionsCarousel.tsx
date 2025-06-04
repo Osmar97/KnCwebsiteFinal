@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Target, Building, MapPin, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+
 export const SectionsCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -53,7 +54,8 @@ export const SectionsCarousel = () => {
     setCurrentSlide(index);
     setIsAutoPlaying(false);
   };
-  return <section className="py-20 relative overflow-hidden">
+  return (
+    <section className="py-20 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gold/10 to-transparent"></div>
@@ -118,7 +120,10 @@ export const SectionsCarousel = () => {
           </div>
 
           {/* Navigation Arrows */}
-          <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gold/30 hover:border-gold/50">
+          <button 
+            onClick={prevSlide} 
+            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gold/30 hover:border-gold/50"
+          >
             <ChevronLeft className="w-6 h-6" />
           </button>
 
@@ -135,5 +140,6 @@ export const SectionsCarousel = () => {
         {/* Auto-play Toggle */}
         
       </div>
-    </section>;
+    </section>
+  );
 };
