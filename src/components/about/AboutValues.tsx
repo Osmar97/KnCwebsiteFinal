@@ -1,5 +1,5 @@
 
-import { Heart, Users, Globe } from "lucide-react";
+import { Columns, Users, Globe } from "lucide-react";
 
 interface AboutValuesProps {
   isVisible: boolean;
@@ -8,7 +8,7 @@ interface AboutValuesProps {
 export const AboutValues = ({ isVisible }: AboutValuesProps) => {
   const values = [
     {
-      icon: Heart,
+      icon: Columns,
       title: "Integrity",
       description: "Do what's right, even when no one is watching."
     },
@@ -28,7 +28,7 @@ export const AboutValues = ({ isVisible }: AboutValuesProps) => {
     <div className="transition-all duration-1000 opacity-100 translate-x-0">
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Heart className="w-8 h-8 text-gold" />
+          <Columns className="w-8 h-8 text-gold" />
           <h3 className="text-2xl font-light text-gold tracking-wider">VALUES</h3>
         </div>
         
