@@ -127,7 +127,10 @@ export const SectionsCarousel = () => {
             <ChevronLeft className="w-6 h-6" />
           </button>
 
-          <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gold/30 hover:border-gold/50">
+          <button 
+            onClick={nextSlide} 
+            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gold/30 hover:border-gold/50"
+          >
             <ChevronRight className="w-6 h-6" />
           </button>
 
