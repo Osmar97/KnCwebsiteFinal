@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,7 +21,7 @@ const AppContent = () => {
   useScrollToTop();
   
   return (
-    <Routes basename='/kingsncompany'>
+    <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/services" element={<ServicesPage />} />
@@ -39,7 +40,7 @@ const App = () => (
         <PostsProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter basename="/kingsncompany">
             <AppContent />
           </BrowserRouter>
         </PostsProvider>
