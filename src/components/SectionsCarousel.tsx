@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSwipeable } from "react-swipeable";
 import { ChevronLeft, ChevronRight, Target, Building, MapPin, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -6,35 +7,42 @@ import { Link } from "react-router-dom";
 export const SectionsCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const sections = [{
-    title: "ABOUT",
-    subtitle: "Our Foundation",
-    description: "Discover our mission, vision, and values that drive our commitment to excellence in real estate investment consulting.",
-    icon: Target,
-    href: "/about",
-    gradient: "from-gold/20 to-gold-dark/20"
-  }, {
-    title: "SERVICES",
-    subtitle: "Our Expertise",
-    description: "Comprehensive real estate solutions from property ownership academy to complete investment consultancy and management.",
-    icon: Building,
-    href: "/services",
-    gradient: "from-blue-500/20 to-blue-700/20"
-  }, {
-    title: "OUR APPROACH",
-    subtitle: "Our Method",
-    description: "Learn about our strategic methodology and proven processes that ensure successful real estate investments.",
-    icon: MapPin,
-    href: "/our-approach",
-    gradient: "from-emerald-500/20 to-emerald-700/20"
-  }, {
-    title: "RESOURCES",
-    subtitle: "Your Support",
-    description: "Access testimonials from satisfied clients and get in touch with our expert team for personalized assistance.",
-    icon: BookOpen,
-    href: "/resources",
-    gradient: "from-purple-500/20 to-purple-700/20"
-  }];
+
+  const sections = [
+    {
+      title: "ABOUT",
+      subtitle: "Our Foundation",
+      description: "Discover our mission, vision, and values that drive our commitment to excellence in real estate investment consulting.",
+      icon: Target,
+      href: "/about",
+      gradient: "from-gold/20 to-gold-dark/20"
+    },
+    {
+      title: "SERVICES",
+      subtitle: "Our Expertise",
+      description: "Comprehensive real estate solutions from property ownership academy to complete investment consultancy and management.",
+      icon: Building,
+      href: "/services",
+      gradient: "from-blue-500/20 to-blue-700/20"
+    },
+    {
+      title: "OUR APPROACH",
+      subtitle: "Our Method",
+      description: "Learn about our strategic methodology and proven processes that ensure successful real estate investments.",
+      icon: MapPin,
+      href: "/our-approach",
+      gradient: "from-emerald-500/20 to-emerald-700/20"
+    },
+    {
+      title: "RESOURCES",
+      subtitle: "Your Support",
+      description: "Access testimonials from satisfied clients and get in touch with our expert team for personalized assistance.",
+      icon: BookOpen,
+      href: "/resources",
+      gradient: "from-purple-500/20 to-purple-700/20"
+    }
+  ];
+
   useEffect(() => {
     if (!isAutoPlaying) return;
     const interval = setInterval(() => {
@@ -42,18 +50,30 @@ export const SectionsCarousel = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, sections.length]);
+
   const nextSlide = () => {
     setCurrentSlide(prev => (prev + 1) % sections.length);
     setIsAutoPlaying(false);
   };
+
   const prevSlide = () => {
     setCurrentSlide(prev => (prev - 1 + sections.length) % sections.length);
     setIsAutoPlaying(false);
   };
+
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
     setIsAutoPlaying(false);
   };
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => nextSlide(),
+    onSwipedRight: () => prevSlide(),
+    preventDefaultTouchmoveEvent: true,
+    trackTouch: true,
+    trackMouse: false
+  });
+
   return (
     <section className="py-20 relative overflow-hidden">
       {/* Background Pattern */}
@@ -79,35 +99,48 @@ export const SectionsCarousel = () => {
           </p>
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative">
+        {/* Carousel Container with swipe handlers */}
+        <div className="relative" {...swipeHandlers}>
           {/* Main Carousel */}
           <div className="relative h-96 overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-black">
             {sections.map((section, index) => {
-            const isActive = index === currentSlide;
-            const isPrev = index === (currentSlide - 1 + sections.length) % sections.length;
-            const isNext = index === (currentSlide + 1) % sections.length;
-            return <div key={index} className={`absolute inset-0 transition-all duration-700 ease-in-out ${isActive ? 'opacity-100 translate-x-0 scale-100' : isPrev ? 'opacity-50 -translate-x-full scale-95' : isNext ? 'opacity-50 translate-x-full scale-95' : 'opacity-0 translate-x-full scale-95'}`}>
+              const isActive = index === currentSlide;
+              const isPrev = index === (currentSlide - 1 + sections.length) % sections.length;
+              const isNext = index === (currentSlide + 1) % sections.length;
+
+              return (
+                <div
+                  key={index}
+                  className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                    isActive
+                      ? 'opacity-100 translate-x-0 scale-100'
+                      : isPrev
+                      ? 'opacity-50 -translate-x-full scale-95'
+                      : isNext
+                      ? 'opacity-50 translate-x-full scale-95'
+                      : 'opacity-0 translate-x-full scale-95'
+                  }`}
+                >
                   <div className={`absolute inset-0 bg-gradient-to-br ${section.gradient}`}></div>
-                  
+
                   <div className="relative h-full flex items-center justify-center p-12">
                     <div className="text-center max-w-2xl">
                       <div className="mb-6">
                         <section.icon className="w-16 h-16 text-gold mx-auto mb-4" />
                       </div>
-                      
+
                       <h3 className="text-3xl md:text-4xl font-light text-white mb-2 tracking-wider">
                         {section.title}
                       </h3>
-                      
+
                       <p className="text-gold text-sm tracking-widest mb-6 uppercase">
                         {section.subtitle}
                       </p>
-                      
+
                       <p className="text-gray-300 text-lg leading-relaxed mb-8 font-light">
                         {section.description}
                       </p>
-                      
+
                       <Link to={section.href}>
                         <Button className="bg-gold hover:bg-gold-light text-black font-medium tracking-wider px-8 py-3 transition-all duration-300 transform hover:scale-105">
                           EXPLORE {section.title}
@@ -115,8 +148,9 @@ export const SectionsCarousel = () => {
                       </Link>
                     </div>
                   </div>
-                </div>;
-          })}
+                </div>
+              );
+            })}
           </div>
 
           {/* Navigation Arrows */}
@@ -134,14 +168,19 @@ export const SectionsCarousel = () => {
             <ChevronRight className="w-6 h-6" />
           </button>
 
-          {/* Dots Indicator */}
-          <div className="flex justify-center mt-8 space-x-3">
-            {sections.map((_, index) => <button key={index} onClick={() => goToSlide(index)} className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-gold scale-125' : 'bg-gray-400 hover:bg-gray-600'}`} />)}
+          {/* Slide Indicators */}
+          <div className="mt-6 flex justify-center gap-2">
+            {sections.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentSlide ? 'bg-gold' : 'bg-gray-500/30'
+                }`}
+              />
+            ))}
           </div>
         </div>
-
-        {/* Auto-play Toggle */}
-        
       </div>
     </section>
   );
