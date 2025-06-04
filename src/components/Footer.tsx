@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail, Globe, Linkedin, Instagram } from "lucide-react";
+import { MapPin, Phone, Mail, Linkedin, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -12,9 +12,11 @@ export const Footer = () => {
           {/* Company Info */}
           <div className="space-y-6">
             <div>
-              <h3 className="text-gold text-xl font-light tracking-wider mb-4">
-                Kings 'n Company
-              </h3>
+              <Link to="/">
+                <h3 className="text-gold text-xl font-light tracking-wider mb-4 hover:underline">
+                  Kings 'n Company
+                </h3>
+              </Link>
               <p className="text-gray-400 text-sm leading-relaxed">
                 Real estate consulting, blending local expertise and global vision.
               </p>
@@ -22,9 +24,14 @@ export const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-6">
+          <div className="space-y-6 border border-gold/40 rounded-2xl p-6">
             <h4 className="text-white font-medium tracking-wider">QUICK LINKS</h4>
             <ul className="space-y-3">
+              <li>
+                <Link to="/" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                  Home
+                </Link>
+              </li>
               <li>
                 <Link to="/about" className="text-gray-400 hover:text-gold transition-colors text-sm">
                   About Us
