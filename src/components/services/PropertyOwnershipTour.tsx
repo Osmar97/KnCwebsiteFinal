@@ -75,13 +75,15 @@ export const PropertyOwnershipTour = () => {
               ))}
             </div>
 
-            <Button 
-              onClick={handleBookingClick} 
-              className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
-            >
-              <Plane className="w-5 h-5" />
-              Start the Experience
-            </Button>
+            <div className="flex gap-4">
+              <Button 
+                onClick={handleBookingClick} 
+                className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
+              >
+                <Plane className="w-5 h-5" />
+                Start the Experience
+              </Button>
+            </div>
           </div>
 
           {/* Images Grid */}

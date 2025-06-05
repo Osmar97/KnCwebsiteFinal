@@ -75,13 +75,15 @@ export const PropertyOwnershipConsultancy = () => {
               ))}
             </div>
 
-            <Button 
-              onClick={handleBooking} 
-              className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
-            >
-              <Users className="w-5 h-5" />
-              Let's Talk Strategy
-            </Button>
+            <div className="flex gap-4">
+              <Button 
+                onClick={handleBooking} 
+                className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
+              >
+                <Users className="w-5 h-5" />
+                Let's Talk Strategy
+              </Button>
+            </div>
           </div>
         </div>
       </div>
