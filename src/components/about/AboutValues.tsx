@@ -1,4 +1,4 @@
-import { Users, Globe, ShieldCheck } from "lucide-react";
+import { Users, Globe } from "lucide-react";
 
 interface AboutValuesProps {
   isVisible: boolean;
@@ -7,19 +7,27 @@ interface AboutValuesProps {
 export const AboutValues = ({ isVisible }: AboutValuesProps) => {
   const values = [
     {
-      icon: ShieldCheck,
+      icon: () => (
+        <img
+          src="/lovable-uploads/pilar.svg"
+          alt="Integrity Icon"
+          className="w-6 h-6 text-gold"
+        />
+      ),
       title: "Integrity",
       description: "Do what's right, even when no one is watching."
     },
     {
       icon: Users,
       title: "Unity",
-      description: "Success is built through collaboration, shared purpose, and mutual respect."
+      description:
+        "Success is built through collaboration, shared purpose, and mutual respect."
     },
     {
       icon: Globe,
       title: "Empowerment",
-      description: "Striving to leave a meaningful mark on our communities and future generations."
+      description:
+        "Striving to leave a meaningful mark on our communities and future generations."
     }
   ];
 
@@ -28,7 +36,12 @@ export const AboutValues = ({ isVisible }: AboutValuesProps) => {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <div className="text-gold">
-            <img src="/lovable-uploads/pilar.svg" alt="Values Icon" className="w-8 h-8" />
+            <img
+              src="/lovable-uploads/pilar.svg"
+              alt="Integrity Icon"
+              className="w-8 h-8 text-gold"
+              style={{ filter: 'invert(74%) sepia(62%) saturate(747%) hue-rotate(5deg) brightness(95%) contrast(90%)' }}
+            />
           </div>
           <h3 className="text-2xl font-light text-gold tracking-wider">VALUES</h3>
         </div>
@@ -41,7 +54,11 @@ export const AboutValues = ({ isVisible }: AboutValuesProps) => {
             >
               <div className="flex items-start gap-4">
                 <div className="text-gold mt-1 flex-shrink-0">
-                  <value.icon className="w-6 h-6" />
+                  {typeof value.icon === "function" ? (
+                    <value.icon />
+                  ) : (
+                    <value.icon className="w-6 h-6" />
+                  )}
                 </div>
                 <div>
                   <h4 className="text-white font-medium mb-2 tracking-wider">{value.title}</h4>
