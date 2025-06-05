@@ -28,7 +28,7 @@ export const AboutValues = ({ isVisible }: AboutValuesProps) => {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <div className="text-gold">
-            <ShieldCheck className="w-8 h-8" />
+            <img src="/lovable-uploads/pilar.svg" alt="Values Icon" className="w-8 h-8" />
           </div>
           <h3 className="text-2xl font-light text-gold tracking-wider">VALUES</h3>
         </div>
