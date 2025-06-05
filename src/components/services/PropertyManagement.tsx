@@ -32,28 +32,20 @@ export const PropertyManagement = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image */}
-          <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+          <div className="grid grid-cols-1 gap-6">
+            <div className="relative rounded-xl overflow-hidden shadow-xl">
               <img 
                 src="/lovable-uploads/50793ec6-8356-407b-ae7e-74047b5c8186.png" 
                 alt="Property Management - Renovation Oversight" 
-                className="w-full h-[600px] object-cover" 
+                className="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-700" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             </div>
-
-            {/* Floating Card CTA */}
-            <Card className="absolute -bottom-10 -right-10 bg-gold/10 backdrop-blur-sm border border-gold/20 shadow-xl">
-              <CardContent className="p-5 text-center">
-                <Home className="w-8 h-8 text-gold mx-auto mb-2" />
-                <div className="text-lg font-semibold text-gold">Let’s Talk</div>
-                <div className="text-sm text-gray-300">Full Property Oversight</div>
-                <Button 
-                  onClick={handleBookingClick} 
-                  className="mt-4 bg-gold text-white hover:bg-gold/90 px-5 py-2 text-sm font-medium transition-all"
-                >
-                  Book Now
-                </Button>
+            
+            <Card className="bg-gold/10 backdrop-blur-sm border border-gold/20">
+              <CardContent className="p-4 text-center">
+                <div className="text-lg font-bold text-gold mb-1">Management</div>
+                <div className="text-sm text-gray-300">Professional Oversight</div>
               </CardContent>
             </Card>
           </div>
@@ -77,21 +69,28 @@ export const PropertyManagement = () => {
             </p>
 
             {/* Services List */}
-            <div className="space-y-6 mb-12">
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
               {services.map((service, index) => (
-                <div 
-                  key={index} 
-                  className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <service.icon className="w-6 h-6 text-gold" />
+                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                  <div className="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <service.icon className="w-5 h-5 text-gold" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold mb-2">{service.title}</h3>
-                    <p className="text-gray-300">{service.description}</p>
+                    <h3 className="text-white font-medium mb-2">{service.title}</h3>
+                    <p className="text-gray-400 text-sm">{service.description}</p>
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="flex gap-4">
+              <Button 
+                onClick={handleBookingClick} 
+                className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
+              >
+                <Home className="w-5 h-5" />
+                Request Management
+              </Button>
             </div>
           </div>
         </div>
