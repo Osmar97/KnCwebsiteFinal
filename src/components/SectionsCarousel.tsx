@@ -69,7 +69,6 @@ export const SectionsCarousel = () => {
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => nextSlide(),
     onSwipedRight: () => prevSlide(),
-    preventDefaultTouchmoveEvent: true,
     trackTouch: true,
     trackMouse: false
   });
