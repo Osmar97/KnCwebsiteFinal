@@ -1,3 +1,4 @@
+
 import { MapPin, Phone, Mail, Linkedin, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -24,36 +25,36 @@ export const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-6 border border-gold/40 rounded-2xl p-6">
+          <div className="space-y-6">
             <h4 className="text-white font-medium tracking-wider">QUICK LINKS</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                <Link to="/" className="text-gray-400 hover:text-gold transition-colors text-sm border border-gold/40 rounded-2xl px-4 py-2 block text-center">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                <Link to="/about" className="text-gray-400 hover:text-gold transition-colors text-sm border border-gold/40 rounded-2xl px-4 py-2 block text-center">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                <Link to="/services" className="text-gray-400 hover:text-gold transition-colors text-sm border border-gold/40 rounded-2xl px-4 py-2 block text-center">
                   Services
                 </Link>
               </li>
               <li>
-                <Link to="/our-approach" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                <Link to="/our-approach" className="text-gray-400 hover:text-gold transition-colors text-sm border border-gold/40 rounded-2xl px-4 py-2 block text-center">
                   Our Approach
                 </Link>
               </li>
               <li>
-                <Link to="/resources" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                <Link to="/resources" className="text-gray-400 hover:text-gold transition-colors text-sm border border-gold/40 rounded-2xl px-4 py-2 block text-center">
                   Resources
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-400 hover:text-gold transition-colors text-sm">
+                <Link to="/contact" className="text-gray-400 hover:text-gold transition-colors text-sm border border-gold/40 rounded-2xl px-4 py-2 block text-center">
                   Contact
                 </Link>
               </li>
