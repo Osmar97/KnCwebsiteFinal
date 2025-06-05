@@ -1,4 +1,3 @@
-
 import { MapPin, Plane, Camera, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,13 +75,22 @@ export const PropertyOwnershipTour = () => {
             </div>
 
             <div className="flex gap-4">
-              <Button 
-                onClick={handleBookingClick} 
-                className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
+              <Card
+                className="bg-white/95 backdrop-blur-sm border-0 shadow-xl rounded-2xl cursor-pointer"
+                onClick={handleBookingClick}
               >
-                <Plane className="w-5 h-5" />
-                Start the Experience
-              </Button>
+                <CardContent className="p-6 hover:bg-gray-50 transition-colors rounded-2xl">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center">
+                      <Plane className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Start the Experience</p>
+                      <p className="text-sm text-gray-600">Book Your Property Tour</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
