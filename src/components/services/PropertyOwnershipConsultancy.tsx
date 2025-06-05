@@ -1,26 +1,29 @@
-
-import { Users, Search, FileText, TrendingUp, ArrowRight } from "lucide-react";
+import { Users, Search, FileText, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 export const PropertyOwnershipConsultancy = () => {
-  const services = [{
-    icon: Search,
-    title: "Strategic Planning",
-    description: "Market research and strategic planning based on your timeline and goals"
-  }, {
-    icon: FileText,
-    title: "Property Negotiations",
-    description: "Expert property negotiations and transaction management"
-  }, {
-    icon: Users,
-    title: "Trusted Network",
-    description: "Access to our network of legal, banking, and renovation partners"
-  }, {
-    icon: TrendingUp,
-    title: "Portfolio Building",
-    description: "From first homes to complete investment portfolios"
-  }];
+  const services = [
+    {
+      icon: Search,
+      title: "Strategic Planning",
+      description: "Market research and strategic planning based on your timeline and goals"
+    },
+    {
+      icon: FileText,
+      title: "Property Negotiations",
+      description: "Expert property negotiations and transaction management"
+    },
+    {
+      icon: Users,
+      title: "Trusted Network",
+      description: "Access to our network of legal, banking, and renovation partners"
+    },
+    {
+      icon: TrendingUp,
+      title: "Portfolio Building",
+      description: "From first homes to complete investment portfolios"
+    }
+  ];
 
   const handleBooking = () => {
     window.open(
@@ -37,7 +40,11 @@ export const PropertyOwnershipConsultancy = () => {
           {/* Image */}
           <div className="relative order-2 lg:order-1">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img src="/lovable-uploads/f7d5895b-3367-447c-b4e4-f7accb416dc1.png" alt="Property Ownership Consultancy - Expert Guidance" className="w-full h-[600px] object-cover" />
+              <img
+                src="/lovable-uploads/f7d5895b-3367-447c-b4e4-f7accb416dc1.png"
+                alt="Property Ownership Consultancy - Expert Guidance"
+                className="w-full h-[600px] object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             </div>
           </div>
@@ -51,19 +58,22 @@ export const PropertyOwnershipConsultancy = () => {
             <div className="w-24 h-0.5 bg-gradient-to-r from-[#85754E] to-transparent mb-8"></div>
 
             <p className="text-gray-300 text-xl mb-8 leading-relaxed">
-              Complete support for those ready to buy, rent, or invest. You bring the vision, 
+              Complete support for those ready to buy, rent, or invest. You bring the vision,
               we handle everything else from start to finish.
             </p>
 
             <p className="text-gray-400 mb-12 leading-relaxed">
-              Our end-to-end consultancy service takes care of every aspect of your property 
+              Our end-to-end consultancy service takes care of every aspect of your property
               journey, ensuring smooth transactions and optimal outcomes.
             </p>
 
             {/* Services Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-12">
               {services.map((service, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm">
+                <div
+                  key={index}
+                  className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm"
+                >
                   <div className="w-10 h-10 bg-[#85754E]/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <service.icon className="w-5 h-5 text-[#85754E]" />
                   </div>
@@ -75,14 +85,24 @@ export const PropertyOwnershipConsultancy = () => {
               ))}
             </div>
 
+            {/* Custom Styled Card Button */}
             <div className="flex gap-4">
-              <Button 
-                onClick={handleBooking} 
-                className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
+              <Card
+                className="bg-white/95 backdrop-blur-sm border-0 shadow-xl rounded-2xl cursor-pointer"
+                onClick={handleBooking}
               >
-                <Users className="w-5 h-5" />
-                Let's Talk Strategy
-              </Button>
+                <CardContent className="p-6 hover:bg-gray-50 transition-colors rounded-2xl">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-[#85754E] rounded-full flex items-center justify-center">
+                      <Users className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Let’s Talk Strategy</p>
+                      <p className="text-sm text-gray-600">1:1 Planning Session</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
