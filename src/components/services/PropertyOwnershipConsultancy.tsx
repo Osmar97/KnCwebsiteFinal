@@ -30,7 +30,8 @@ export const PropertyOwnershipConsultancy = () => {
     );
   };
 
-  return <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black relative overflow-hidden">
+  return (
+    <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Image */}
@@ -39,19 +40,10 @@ export const PropertyOwnershipConsultancy = () => {
               <img src="/lovable-uploads/f7d5895b-3367-447c-b4e4-f7accb416dc1.png" alt="Property Ownership Consultancy - Expert Guidance" className="w-full h-[600px] object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
             </div>
-            
-            {/* Floating Stats 
-            <Card className="absolute -top-8 -right-8 bg-[#85754E] border-0 shadow-xl">
-              <CardContent className="p-6 text-center">
-                <div className="text-base text-white/90">Your One Stop Shop</div>
-              </CardContent>
-            </Card>*/}
           </div>
 
           {/* Content */}
           <div className="order-1 lg:order-2">
-            
-
             <h2 className="text-4xl md:text-5xl font-light text-white mb-6 tracking-wider">
               PROPERTY OWNERSHIP <span className="text-[#85754E]">CONSULTANCY</span>
             </h2>
@@ -70,7 +62,8 @@ export const PropertyOwnershipConsultancy = () => {
 
             {/* Services Grid */}
             <div className="grid md:grid-cols-2 gap-6 mb-12">
-              {services.map((service, index) => <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm">
+              {services.map((service, index) => (
+                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 shadow-sm">
                   <div className="w-10 h-10 bg-[#85754E]/10 rounded-lg flex items-center justify-center flex-shrink-0">
                     <service.icon className="w-5 h-5 text-[#85754E]" />
                   </div>
@@ -78,17 +71,20 @@ export const PropertyOwnershipConsultancy = () => {
                     <h3 className="text-white font-medium mb-2">{service.title}</h3>
                     <p className="text-gray-300 text-sm">{service.description}</p>
                   </div>
-                </div>)}
+                </div>
+              ))}
             </div>
-            <Button onClick={handleBooking} className="bg-[#85754E] text-white hover:bg-[#85754E]/90 px-20 py-10 text-lg font-medium group">
-              <div className="flex flex-col items-center space-y-1">
-                <div className="font-bold text-white/90 text-base">Your One Stop Shop</div>
-                <div className="text-base">Let's Talk Strategy</div>
-              </div>
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+
+            <Button 
+              onClick={handleBooking} 
+              className="bg-gold text-white hover:bg-gold/90 px-8 py-3 text-lg font-medium transition-all duration-300 flex items-center gap-2"
+            >
+              <Users className="w-5 h-5" />
+              Let's Talk Strategy
             </Button>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
