@@ -96,9 +96,8 @@ export const PropertyOwnershipAcademy = () => {
             {/* Floating Card */}
             <Card className="absolute -bottom-8 -left-8 bg-white/95 backdrop-blur-sm border-0 shadow-xl">
               <CardContent 
-                className="p-6 cursor-pointer hover:bg-gray-50 transition-colors" 
-                onClick={handleSetmoreClick}
-              >
+                className="p-6 cursor-pointer rounded-2xl hover:bg-gray-100/80 transition-colors" 
+                onClick={handleSetmoreClick}>
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center">
                     <GraduationCap className="w-6 h-6 text-white" />
