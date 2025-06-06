@@ -76,7 +76,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gold">
                 <img 
-                  src="/lovable-uploads/bf8148de-409a-4bd5-88c1-11dca2d5bdab.png" 
+                  src="/lovable-uploads/ismaPerfil.JPG" 
                   alt="Admin Profile" 
                   className="w-full h-full object-cover"
                 />
