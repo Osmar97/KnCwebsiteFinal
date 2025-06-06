@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,6 +83,13 @@ export const AdminLogin = () => {
         <div className="text-right">
           <p className="text-sm font-medium text-gold">{adminUser.name}</p>
           <p className="text-xs text-gray-400">{adminUser.title}</p>
+        </div>
+        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gold">
+          <img 
+            src="/lovable-uploads/bf8148de-409a-4bd5-88c1-11dca2d5bdab.png" 
+            alt="Admin Profile" 
+            className="w-full h-full object-cover"
+          />
         </div>
         <Button
           onClick={handleLogout}
