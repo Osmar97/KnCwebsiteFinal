@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,14 @@ export const TeamSection = () => {
     image: "/lovable-uploads/2.png",
     quote: "I believe in delivering solid, data-driven insights to help investors make the most strategic decisions possible.",
     linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/"
+  }, {
+    id: 3,
+    name: "Daniela Oliveira",
+    role: "Client Operations Manager",
+    experience: "5 years in client operations",
+    image: "/lovable-uploads/0e951407-727d-4275-979f-2fd779d59773.png",
+    quote: "I ensure every client receives exceptional service and support throughout their property ownership journey.",
+    linkedin: "#"
   }];
   return <section ref={sectionRef} className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
       {/* Background Elements */}
@@ -65,7 +74,7 @@ export const TeamSection = () => {
         </div>
 
         {/* Team Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-12 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {teamMembers.map((member, index) => <Card key={member.id} className={`bg-gradient-to-br from-gray-900/80 to-black/80 border-gray-700/50 backdrop-blur-sm overflow-hidden group hover:border-gray-600/50 transition-all duration-500 transform hover:scale-105 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} style={{
           transitionDelay: `${index * 200}ms`
         }}>
