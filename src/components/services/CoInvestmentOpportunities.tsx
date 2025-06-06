@@ -44,7 +44,7 @@ export const CoInvestmentOpportunities = () => {
           <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-8"></div>
 
           <p className="text-gray-300 text-xl max-w-4xl mx-auto font-light leading-relaxed mb-8">
-            Partner with Kings 'n Company to access exclusive investment opportunities through our co-investment model.
+            Partner with Kings 'n Company to access exclusive investments through our co-investment model.
             <br />Share capital, reduce risk, and maximize returns through strategic collaboration.
           </p>
 

@@ -98,7 +98,7 @@ export const PropertyOwnershipConsultancy = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900">Let’s Talk Strategy</p>
-                      <p className="text-sm text-gray-600">1:1 Planning Session</p>
+                      <p className="text-sm text-gray-600">Book Discovery Call</p>
                     </div>
                   </div>
                 </CardContent>

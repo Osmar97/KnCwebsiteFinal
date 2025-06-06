@@ -86,7 +86,7 @@ export const PropertyOwnershipTour = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900">Start the Experience</p>
-                      <p className="text-sm text-gray-600">Book Your Property Tour</p>
+                      <p className="text-sm text-gray-600">Plan Your Tour</p>
                     </div>
                   </div>
                 </CardContent>
