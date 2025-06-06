@@ -1,4 +1,5 @@
 
+import { Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { AdminProvider } from "@/contexts/AdminContext";
 import { PostsProvider } from "@/contexts/PostsContext";
+import { Loading } from "@/components/Loading";
 import Index from "./pages/Index";
 import AboutPage from "./pages/About";
 import ServicesPage from "./pages/Services";
@@ -21,15 +23,17 @@ const AppContent = () => {
   useScrollToTop();
   
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/services" element={<ServicesPage />} />
-      <Route path="/our-approach" element={<OurApproachPage />} />
-      <Route path="/resources" element={<ResourcesPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/our-approach" element={<OurApproachPage />} />
+        <Route path="/resources" element={<ResourcesPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 
