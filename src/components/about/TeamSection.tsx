@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Linkedin, Flag, Users, Instagram } from "lucide-react";
+import { Linkedin, Users, Instagram } from "lucide-react";
 
 export const TeamSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -118,7 +118,6 @@ export const TeamSection = () => {
                   <div className="relative mb-6">
                     <div className="flex items-center mb-3">
                       <span className="text-3xl mr-2">{member.flagEmoji}</span>
-                      <Flag className="w-6 h-6 text-gold/30" />
                     </div>
                     <p className="text-gray-300 text-base leading-relaxed italic pl-4 border-l-2 border-gold/30">
                       "{member.quote}"
