@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Linkedin, Quote, Users, Instagram } from "lucide-react";
+import { Linkedin, Flag, Users, Instagram } from "lucide-react";
 
 export const TeamSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,7 +32,8 @@ export const TeamSection = () => {
     image: "/lovable-uploads/IsmaelTeam.png",
     quote: "My mission is to create valuable connections and long-term wealth for our clients, guiding them through one of the most impactful decisions of their lives.",
     linkedin: "https://pt.linkedin.com/in/ismaelgq",
-    instagram: "https://www.instagram.com/ismaelgq_/profilecard/?igsh=ZWloM3JwdTE4aWgz"
+    instagram: "https://www.instagram.com/ismaelgq_/profilecard/?igsh=ZWloM3JwdTE4aWgz",
+    flagEmoji: "🇬🇼" // Guinea-Bissau flag
   }, {
     id: 2,
     name: "Nuno Andrade",
@@ -40,7 +41,8 @@ export const TeamSection = () => {
     experience: "8 years in the real estate industry",
     image: "/lovable-uploads/2.png",
     quote: "I believe in delivering solid, data-driven insights to help investors make the most strategic decisions possible.",
-    linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/"
+    linkedin: "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/",
+    flagEmoji: "🇨🇻" // Cape Verde flag
   }, {
     id: 3,
     name: "Daniela Oliveira",
@@ -48,7 +50,8 @@ export const TeamSection = () => {
     experience: "5 years in client operations",
     image: "/lovable-uploads/0e951407-727d-4275-979f-2fd779d59773.png",
     quote: "I ensure every client receives exceptional service and support throughout their property ownership journey.",
-    linkedin: "#"
+    linkedin: "#",
+    flagEmoji: "🇨🇻" // Cape Verde flag
   }];
 
   return (
@@ -111,9 +114,12 @@ export const TeamSection = () => {
                   <h3 className="text-2xl font-medium text-white mb-2 tracking-wide">{member.name}</h3>
                   <p className="text-gold text-lg mb-2 font-light">{member.role}</p>
                   
-                  {/* Quote */}
+                  {/* Quote with Flag */}
                   <div className="relative mb-6">
-                    <Quote className="w-8 h-8 text-gold/30 mb-3" />
+                    <div className="flex items-center mb-3">
+                      <span className="text-3xl mr-2">{member.flagEmoji}</span>
+                      <Flag className="w-6 h-6 text-gold/30" />
+                    </div>
                     <p className="text-gray-300 text-base leading-relaxed italic pl-4 border-l-2 border-gold/30">
                       "{member.quote}"
                     </p>
