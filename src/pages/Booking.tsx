@@ -41,7 +41,7 @@ const Booking = () => {
                   <div className="flex items-center justify-center gap-6 text-sm text-gray-300 mb-4">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4" />
-                      <span>60 Minutes</span>
+                      <span>15 Minutes</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Globe className="w-4 h-4" />
@@ -56,28 +56,35 @@ const Booking = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <p className="text-gray-300 text-sm">
-                      You're a <span className="text-white font-medium">B2B Company</span> making over <span className="text-white font-medium">500k/Year</span>
+                      You’re planning to <span className="text-white font-medium">buy, invest, or relocate</span> to Portugal
                     </p>
                   </div>
-                  
+
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <p className="text-gray-300 text-sm">
-                      You rely heavily on <span className="text-white font-medium">word of mouth</span>
+                      You feel <span className="text-white font-medium">overwhelmed by the steps</span>, or don’t know where to start
                     </p>
                   </div>
-                  
+
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <p className="text-gray-300 text-sm">
-                      You lack <span className="text-white font-medium">growth predictability</span>
+                      You’ve been relying on <span className="text-white font-medium">luck, online listings, or word-of-mouth</span> with little progress
                     </p>
                   </div>
-                  
+
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <p className="text-gray-300 text-sm">
-                      Your <span className="text-white font-medium">sales department is underperforming</span>
+                      You want <span className="text-white font-medium">expert support</span> to avoid costly mistakes and delays
+                    </p>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-gray-300 text-sm">
+                      You value <span className="text-white font-medium">clarity, structure, and a trusted team</span> to guide your journey
                     </p>
                   </div>
                 </div>
