@@ -61,7 +61,7 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
                   {/* Left Content Area */}
                   <div className="flex-1 space-y-4">
                     {/* Category Label */}
-                    <div className="text-xs font-medium text-purple-400 uppercase tracking-wider">
+                    <div className="text-xs font-medium text-white uppercase tracking-wider">
                       {post.category}s
                     </div>
 
@@ -78,7 +78,7 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
                     {/* CTA Element */}
                     <Button 
                       variant="ghost" 
-                      className="text-purple-400 hover:text-white p-0 h-auto font-medium group/btn"
+                      className="text-white hover:text-white p-0 h-auto font-medium group/btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         handlePostClick(post);

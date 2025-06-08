@@ -121,7 +121,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
         return;
       }
 
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 100 * 1024 * 1024) {
         toast({
           title: "File Too Large",
           description: "Images must be smaller than 5MB.",
