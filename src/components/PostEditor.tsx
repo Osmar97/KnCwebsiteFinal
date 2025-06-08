@@ -17,7 +17,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
   const [title, setTitle] = useState(post?.title || "");
   const [content, setContent] = useState(post?.content || "");
   const [images, setImages] = useState<string[]>(post?.images || []);
-  const [category, setCategory] = useState(post?.category || "article");
+  const [category, setCategory] = useState<"article" | "resource">(post?.category || "article");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { addPost, updatePost } = usePosts();
   const { toast } = useToast();

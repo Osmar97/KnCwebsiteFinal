@@ -11,12 +11,12 @@ interface PostEditorFormProps {
   title: string;
   content: string;
   images: string[];
-  category: string;
+  category: "article" | "resource";
   isEdit: boolean;
   isSubmitting?: boolean;
   onTitleChange: (title: string) => void;
   onContentChange: (content: string) => void;
-  onCategoryChange: (category: string) => void;
+  onCategoryChange: (category: "article" | "resource") => void;
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveImage: (index: number) => void;
   onSubmit: (e: React.FormEvent) => void;

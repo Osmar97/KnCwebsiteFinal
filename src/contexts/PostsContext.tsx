@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -16,8 +15,8 @@ export interface Post {
 interface PostsContextType {
   posts: Post[];
   loading: boolean;
-  addPost: (title: string, content: string, images: string[], category: string) => Promise<boolean>;
-  updatePost: (id: string, title: string, content: string, images: string[], category: string) => Promise<boolean>;
+  addPost: (title: string, content: string, images: string[], category: "article" | "resource") => Promise<boolean>;
+  updatePost: (id: string, title: string, content: string, images: string[], category: "article" | "resource") => Promise<boolean>;
   deletePost: (id: string) => Promise<boolean>;
   getPostById: (id: string) => Post | undefined;
   getPostsByCategory: (category: "article" | "resource") => Post[];
@@ -56,7 +55,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     fetchPosts();
   }, []);
 
-  const addPost = async (title: string, content: string, images: string[], category: string): Promise<boolean> => {
+  const addPost = async (title: string, content: string, images: string[], category: "article" | "resource"): Promise<boolean> => {
     try {
       const { data, error } = await supabase
         .from("posts")
@@ -76,7 +75,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updatePost = async (id: string, title: string, content: string, images: string[], category: string): Promise<boolean> => {
+  const updatePost = async (id: string, title: string, content: string, images: string[], category: "article" | "resource"): Promise<boolean> => {
     try {
       const { data, error } = await supabase
         .from("posts")
