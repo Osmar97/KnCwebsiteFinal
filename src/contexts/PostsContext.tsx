@@ -10,11 +10,13 @@ type PostUpdate = Database['public']['Tables']['posts']['Update'];
 
 interface PostsContextType {
   posts: Post[];
-  addPost: (content: string, images: string[]) => Promise<boolean>;
-  updatePost: (id: string, content: string, images: string[]) => Promise<boolean>;
+  addPost: (content: string, images: string[], category: string) => Promise<boolean>;
+  updatePost: (id: string, content: string, images: string[], category: string) => Promise<boolean>;
   deletePost: (id: string) => Promise<boolean>;
   loading: boolean;
   refreshPosts: () => Promise<void>;
+  getPostsByCategory: (category: string) => Post[];
+  getPostById: (id: string) => Post | undefined;
 }
 
 const PostsContext = createContext<PostsContextType | undefined>(undefined);
@@ -74,7 +76,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const addPost = async (content: string, images: string[]): Promise<boolean> => {
+  const addPost = async (content: string, images: string[], category: string): Promise<boolean> => {
     try {
       if (!content.trim()) return false;
       if (!validateImages(images)) return false;
@@ -84,6 +86,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       const postData: PostInsert = {
         content: sanitizedContent,
         images: images.slice(0, 10),
+        category: category,
       };
       
       const { error } = await supabase
@@ -103,7 +106,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updatePost = async (id: string, content: string, images: string[]): Promise<boolean> => {
+  const updatePost = async (id: string, content: string, images: string[], category: string): Promise<boolean> => {
     try {
       if (!content.trim()) return false;
       if (!validateImages(images)) return false;
@@ -113,6 +116,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       const updateData: PostUpdate = {
         content: sanitizedContent,
         images: images.slice(0, 10),
+        category: category,
         updated_at: new Date().toISOString(),
       };
       
@@ -154,6 +158,14 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const getPostsByCategory = (category: string): Post[] => {
+    return posts.filter(post => post.category === category);
+  };
+
+  const getPostById = (id: string): Post | undefined => {
+    return posts.find(post => post.id === id);
+  };
+
   const refreshPosts = async () => {
     await fetchPosts();
   };
@@ -165,7 +177,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       updatePost, 
       deletePost, 
       loading, 
-      refreshPosts 
+      refreshPosts,
+      getPostsByCategory,
+      getPostById
     }}>
       {children}
     </PostsContext.Provider>

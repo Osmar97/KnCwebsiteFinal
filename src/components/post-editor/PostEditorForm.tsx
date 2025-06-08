@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "./ImageUpload";
 import { ImagePreview } from "./ImagePreview";
 import { useToast } from "@/hooks/use-toast";
@@ -8,9 +9,11 @@ import { useToast } from "@/hooks/use-toast";
 interface PostEditorFormProps {
   content: string;
   images: string[];
+  category: string;
   isEdit: boolean;
   isSubmitting?: boolean;
   onContentChange: (content: string) => void;
+  onCategoryChange: (category: string) => void;
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveImage: (index: number) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -20,9 +23,11 @@ interface PostEditorFormProps {
 export const PostEditorForm = ({
   content,
   images,
+  category,
   isEdit,
   isSubmitting = false,
   onContentChange,
+  onCategoryChange,
   onFileUpload,
   onRemoveImage,
   onSubmit,
@@ -48,8 +53,23 @@ export const PostEditorForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
+        <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-2">
+          Category
+        </label>
+        <Select value={category} onValueChange={onCategoryChange}>
+          <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="bg-gray-800 border-gray-600">
+            <SelectItem value="article" className="text-white hover:bg-gray-700">Article</SelectItem>
+            <SelectItem value="resource" className="text-white hover:bg-gray-700">Resource</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
         <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">
-          Post Content
+          Content
         </label>
         <Textarea
           id="content"

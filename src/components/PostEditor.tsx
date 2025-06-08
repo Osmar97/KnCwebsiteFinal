@@ -17,6 +17,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState(post?.content || "");
   const [images, setImages] = useState<string[]>(post?.images || []);
+  const [category, setCategory] = useState(post?.category || "article");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { addPost, updatePost } = usePosts();
   const { toast } = useToast();
@@ -25,6 +26,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     if (!isOpen) {
       setContent(post?.content || "");
       setImages(post?.images || []);
+      setCategory(post?.category || "article");
     }
   }, [isOpen, post]);
 
@@ -50,7 +52,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       let success = false;
       
       if (isEdit && post) {
-        success = await updatePost(post.id, content, images);
+        success = await updatePost(post.id, content, images, category);
         if (success) {
           toast({
             title: "Success",
@@ -58,7 +60,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           });
         }
       } else {
-        success = await addPost(content, images);
+        success = await addPost(content, images, category);
         if (success) {
           toast({
             title: "Success",
@@ -78,6 +80,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
 
       setContent("");
       setImages([]);
+      setCategory("article");
       setIsOpen(false);
       onClose?.();
     } catch (error) {
@@ -175,9 +178,11 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
         <PostEditorForm
           content={content}
           images={images}
+          category={category}
           isEdit={isEdit}
           isSubmitting={isSubmitting}
           onContentChange={setContent}
+          onCategoryChange={setCategory}
           onFileUpload={handleFileUpload}
           onRemoveImage={removeImage}
           onSubmit={handleSubmit}
