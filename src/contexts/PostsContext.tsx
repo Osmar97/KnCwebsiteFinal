@@ -1,22 +1,26 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/integrations/supabase/types';
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-// Use the auto-generated type from Supabase
-type Post = Database['public']['Tables']['posts']['Row'];
-type PostInsert = Database['public']['Tables']['posts']['Insert'];
-type PostUpdate = Database['public']['Tables']['posts']['Update'];
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  images: string[];
+  category: "article" | "resource";
+  created_at: string;
+  updated_at: string;
+}
 
 interface PostsContextType {
   posts: Post[];
-  addPost: (content: string, images: string[], category: string) => Promise<boolean>;
-  updatePost: (id: string, content: string, images: string[], category: string) => Promise<boolean>;
-  deletePost: (id: string) => Promise<boolean>;
   loading: boolean;
-  refreshPosts: () => Promise<void>;
-  getPostsByCategory: (category: string) => Post[];
+  addPost: (title: string, content: string, images: string[], category: string) => Promise<boolean>;
+  updatePost: (id: string, title: string, content: string, images: string[], category: string) => Promise<boolean>;
+  deletePost: (id: string) => Promise<boolean>;
   getPostById: (id: string) => Post | undefined;
+  getPostsByCategory: (category: "article" | "resource") => Post[];
 }
 
 const PostsContext = createContext<PostsContextType | undefined>(undefined);
@@ -24,23 +28,25 @@ const PostsContext = createContext<PostsContextType | undefined>(undefined);
 export const PostsProvider = ({ children }: { children: ReactNode }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   const fetchPosts = async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error('Error fetching posts:', error);
-        return;
-      }
-
+      if (error) throw error;
       setPosts(data || []);
     } catch (error) {
-      console.error('Failed to fetch posts:', error);
+      console.error("Error fetching posts:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load posts",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -50,90 +56,43 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     fetchPosts();
   }, []);
 
-  const sanitizeContent = (content: string): string => {
-    return content
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;')
-      .trim();
-  };
-
-  const validateImages = (images: string[]): boolean => {
-    if (images.length > 10) return false;
-    
-    return images.every(image => {
-      if (image.startsWith('data:image/')) {
-        const sizeInBytes = (image.length * 3) / 4;
-        return sizeInBytes < 5 * 1024 * 1024;
-      }
-      try {
-        new URL(image);
-        return true;
-      } catch {
-        return false;
-      }
-    });
-  };
-
-  const addPost = async (content: string, images: string[], category: string): Promise<boolean> => {
+  const addPost = async (title: string, content: string, images: string[], category: string): Promise<boolean> => {
     try {
-      if (!content.trim()) return false;
-      if (!validateImages(images)) return false;
+      const { data, error } = await supabase
+        .from("posts")
+        .insert([{ title, content, images, category }])
+        .select();
 
-      const sanitizedContent = sanitizeContent(content);
-      
-      const postData: PostInsert = {
-        content: sanitizedContent,
-        images: images.slice(0, 10),
-        category: category,
-      };
-      
-      const { error } = await supabase
-        .from('posts')
-        .insert([postData]);
+      if (error) throw error;
 
-      if (error) {
-        console.error('Error adding post:', error);
-        return false;
+      if (data && data[0]) {
+        setPosts(prev => [data[0], ...prev]);
+        return true;
       }
-
-      await fetchPosts();
-      return true;
+      return false;
     } catch (error) {
-      console.error('Failed to add post:', error);
+      console.error("Error adding post:", error);
       return false;
     }
   };
 
-  const updatePost = async (id: string, content: string, images: string[], category: string): Promise<boolean> => {
+  const updatePost = async (id: string, title: string, content: string, images: string[], category: string): Promise<boolean> => {
     try {
-      if (!content.trim()) return false;
-      if (!validateImages(images)) return false;
+      const { data, error } = await supabase
+        .from("posts")
+        .update({ title, content, images, category, updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .select();
 
-      const sanitizedContent = sanitizeContent(content);
-      
-      const updateData: PostUpdate = {
-        content: sanitizedContent,
-        images: images.slice(0, 10),
-        category: category,
-        updated_at: new Date().toISOString(),
-      };
-      
-      const { error } = await supabase
-        .from('posts')
-        .update(updateData)
-        .eq('id', id);
+      if (error) throw error;
 
-      if (error) {
-        console.error('Error updating post:', error);
-        return false;
+      if (data && data[0]) {
+        setPosts(prev => prev.map(post => post.id === id ? data[0] : post));
+        return true;
       }
-
-      await fetchPosts();
-      return true;
+      return false;
     } catch (error) {
-      console.error('Failed to update post:', error);
+      console.error("Error updating post:", error);
       return false;
     }
   };
@@ -141,45 +100,37 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
   const deletePost = async (id: string): Promise<boolean> => {
     try {
       const { error } = await supabase
-        .from('posts')
+        .from("posts")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
-      if (error) {
-        console.error('Error deleting post:', error);
-        return false;
-      }
+      if (error) throw error;
 
-      await fetchPosts();
+      setPosts(prev => prev.filter(post => post.id !== id));
       return true;
     } catch (error) {
-      console.error('Failed to delete post:', error);
+      console.error("Error deleting post:", error);
       return false;
     }
   };
 
-  const getPostsByCategory = (category: string): Post[] => {
-    return posts.filter(post => post.category === category);
-  };
-
-  const getPostById = (id: string): Post | undefined => {
+  const getPostById = (id: string) => {
     return posts.find(post => post.id === id);
   };
 
-  const refreshPosts = async () => {
-    await fetchPosts();
+  const getPostsByCategory = (category: "article" | "resource") => {
+    return posts.filter(post => post.category === category);
   };
 
   return (
-    <PostsContext.Provider value={{ 
-      posts, 
-      addPost, 
-      updatePost, 
-      deletePost, 
-      loading, 
-      refreshPosts,
-      getPostsByCategory,
-      getPostById
+    <PostsContext.Provider value={{
+      posts,
+      loading,
+      addPost,
+      updatePost,
+      deletePost,
+      getPostById,
+      getPostsByCategory
     }}>
       {children}
     </PostsContext.Provider>
@@ -189,10 +140,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 export const usePosts = () => {
   const context = useContext(PostsContext);
   if (context === undefined) {
-    throw new Error('usePosts must be used within a PostsProvider');
+    throw new Error("usePosts must be used within a PostsProvider");
   }
   return context;
 };
-
-// Export the Post type for other components to use
-export type { Post };

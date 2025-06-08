@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "./ImageUpload";
@@ -7,11 +8,13 @@ import { ImagePreview } from "./ImagePreview";
 import { useToast } from "@/hooks/use-toast";
 
 interface PostEditorFormProps {
+  title: string;
   content: string;
   images: string[];
   category: string;
   isEdit: boolean;
   isSubmitting?: boolean;
+  onTitleChange: (title: string) => void;
   onContentChange: (content: string) => void;
   onCategoryChange: (category: string) => void;
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,11 +24,13 @@ interface PostEditorFormProps {
 }
 
 export const PostEditorForm = ({
+  title,
   content,
   images,
   category,
   isEdit,
   isSubmitting = false,
+  onTitleChange,
   onContentChange,
   onCategoryChange,
   onFileUpload,
@@ -38,6 +43,15 @@ export const PostEditorForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!title.trim()) {
+      toast({
+        title: "Error",
+        description: "Post title cannot be empty.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!content.trim()) {
       toast({
         title: "Error",
@@ -65,6 +79,21 @@ export const PostEditorForm = ({
             <SelectItem value="resource" className="text-white hover:bg-gray-700">Resource</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">
+          Title
+        </label>
+        <Input
+          id="title"
+          value={title}
+          onChange={(e) => onTitleChange(e.target.value)}
+          placeholder="Enter post title..."
+          className="bg-gray-800 border-gray-600 text-white placeholder-gray-400"
+          required
+          disabled={isSubmitting}
+        />
       </div>
 
       <div>

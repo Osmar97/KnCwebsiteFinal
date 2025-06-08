@@ -7,14 +7,17 @@ import { usePosts, type Post } from "@/contexts/PostsContext";
 import { useNavigate } from "react-router-dom";
 
 interface ResourcesGridProps {
-  category: "article" | "resource";
+  category: "all" | "article" | "resource";
   title: string;
 }
 
 export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
-  const { getPostsByCategory } = usePosts();
+  const { posts, getPostsByCategory } = usePosts();
   const navigate = useNavigate();
-  const posts = getPostsByCategory(category);
+  
+  const displayPosts = category === "all" 
+    ? posts 
+    : getPostsByCategory(category as "article" | "resource");
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -30,8 +33,8 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
     return content.substring(0, maxLength).trim() + "...";
   };
 
-  const handlePostClick = (postId: string) => {
-    navigate(`/resources/${category}/${postId}`);
+  const handlePostClick = (post: Post) => {
+    navigate(`/resources/${post.category}/${post.id}`);
   };
 
   return (
@@ -41,17 +44,17 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
         <div className="w-16 h-0.5 bg-gold mx-auto"></div>
       </div>
 
-      {posts.length === 0 ? (
+      {displayPosts.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-400">No {category}s available yet.</p>
+          <p className="text-gray-400">No posts available yet.</p>
         </div>
       ) : (
         <div className="space-y-6">
-          {posts.map((post) => (
+          {displayPosts.map((post) => (
             <Card 
               key={post.id} 
               className="bg-gray-900/50 border-gray-800 hover:bg-gray-900/70 transition-all cursor-pointer group"
-              onClick={() => handlePostClick(post.id)}
+              onClick={() => handlePostClick(post)}
             >
               <CardContent className="p-8">
                 <div className="flex justify-between items-start gap-8">
@@ -59,12 +62,12 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
                   <div className="flex-1 space-y-4">
                     {/* Category Label */}
                     <div className="text-xs font-medium text-purple-400 uppercase tracking-wider">
-                      {category}s
+                      {post.category}s
                     </div>
 
                     {/* Main Headline */}
                     <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight group-hover:text-gold transition-colors">
-                      {getExcerpt(post.content, 80)}
+                      {post.title}
                     </h3>
 
                     {/* Body Excerpt */}
@@ -78,7 +81,7 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
                       className="text-purple-400 hover:text-white p-0 h-auto font-medium group/btn"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handlePostClick(post.id);
+                        handlePostClick(post);
                       }}
                     >
                       Read More

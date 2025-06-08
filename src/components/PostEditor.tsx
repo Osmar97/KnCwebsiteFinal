@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ interface PostEditorProps {
 
 export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [title, setTitle] = useState(post?.title || "");
   const [content, setContent] = useState(post?.content || "");
   const [images, setImages] = useState<string[]>(post?.images || []);
   const [category, setCategory] = useState(post?.category || "article");
@@ -24,24 +24,27 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
 
   useEffect(() => {
     if (!isOpen) {
+      setTitle(post?.title || "");
       setContent(post?.content || "");
       setImages(post?.images || []);
       setCategory(post?.category || "article");
     }
   }, [isOpen, post]);
 
-  const validateContent = (content: string): boolean => {
+  const validateContent = (title: string, content: string): boolean => {
+    const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
-    return trimmedContent.length > 0 && trimmedContent.length <= 5000;
+    return trimmedTitle.length > 0 && trimmedTitle.length <= 200 && 
+           trimmedContent.length > 0 && trimmedContent.length <= 5000;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateContent(content)) {
+    if (!validateContent(title, content)) {
       toast({
         title: "Invalid Content",
-        description: "Post content must be between 1 and 5000 characters.",
+        description: "Title must be between 1-200 characters and content between 1-5000 characters.",
         variant: "destructive",
       });
       return;
@@ -52,7 +55,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       let success = false;
       
       if (isEdit && post) {
-        success = await updatePost(post.id, content, images, category);
+        success = await updatePost(post.id, title, content, images, category);
         if (success) {
           toast({
             title: "Success",
@@ -60,7 +63,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           });
         }
       } else {
-        success = await addPost(content, images, category);
+        success = await addPost(title, content, images, category);
         if (success) {
           toast({
             title: "Success",
@@ -78,6 +81,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
         return;
       }
 
+      setTitle("");
       setContent("");
       setImages([]);
       setCategory("article");
@@ -176,11 +180,13 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
         </DialogHeader>
         
         <PostEditorForm
+          title={title}
           content={content}
           images={images}
           category={category}
           isEdit={isEdit}
           isSubmitting={isSubmitting}
+          onTitleChange={setTitle}
           onContentChange={setContent}
           onCategoryChange={setCategory}
           onFileUpload={handleFileUpload}

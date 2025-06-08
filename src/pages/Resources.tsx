@@ -9,7 +9,7 @@ import { ResourcesGrid } from "@/components/resources/ResourcesGrid";
 
 const ResourcesPage = () => {
   const { isAdminLoggedIn } = useAdmin();
-  const [activeTab, setActiveTab] = useState<"articles" | "resources">("articles");
+  const [activeTab, setActiveTab] = useState<"all" | "articles" | "resources">("all");
   
   if (isAdminLoggedIn) {
     return (
@@ -45,6 +45,17 @@ const ResourcesPage = () => {
           <div className="flex justify-center mb-12">
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-2 border border-gray-700">
               <Button
+                variant={activeTab === "all" ? "default" : "ghost"}
+                onClick={() => setActiveTab("all")}
+                className={`px-8 py-3 rounded-md transition-all ${
+                  activeTab === "all"
+                    ? "bg-gold text-black hover:bg-gold/90"
+                    : "text-gray-300 hover:text-white hover:bg-gray-700"
+                }`}
+              >
+                All
+              </Button>
+              <Button
                 variant={activeTab === "articles" ? "default" : "ghost"}
                 onClick={() => setActiveTab("articles")}
                 className={`px-8 py-3 rounded-md transition-all ${
@@ -71,7 +82,9 @@ const ResourcesPage = () => {
 
           {/* Content */}
           <div className="min-h-[400px]">
-            {activeTab === "articles" ? (
+            {activeTab === "all" ? (
+              <ResourcesGrid category="all" title="All Posts" />
+            ) : activeTab === "articles" ? (
               <ResourcesGrid category="article" title="Latest Articles" />
             ) : (
               <ResourcesGrid category="resource" title="Essential Resources" />
