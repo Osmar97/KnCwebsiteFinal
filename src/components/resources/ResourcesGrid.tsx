@@ -1,7 +1,8 @@
 
-import { ArrowRight, Calendar, User } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { usePosts, type Post } from "@/contexts/PostsContext";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +25,7 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
     }).format(date);
   };
 
-  const getExcerpt = (content: string, maxLength: number = 150) => {
+  const getExcerpt = (content: string, maxLength: number = 200) => {
     if (content.length <= maxLength) return content;
     return content.substring(0, maxLength).trim() + "...";
   };
@@ -45,50 +46,83 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
           <p className="text-gray-400">No {category}s available yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-6">
           {posts.map((post) => (
-            <Card key={post.id} className="bg-white hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handlePostClick(post.id)}>
-              <CardContent className="p-0">
-                {post.images && post.images.length > 0 && (
-                  <div className="w-full h-48 overflow-hidden rounded-t-lg">
-                    <img
-                      src={post.images[0]}
-                      alt="Post featured image"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                
-                <div className="p-6 space-y-4">
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      <span>Ismael Gomes Queta</span>
+            <Card 
+              key={post.id} 
+              className="bg-gray-900/50 border-gray-800 hover:bg-gray-900/70 transition-all cursor-pointer group"
+              onClick={() => handlePostClick(post.id)}
+            >
+              <CardContent className="p-8">
+                <div className="flex justify-between items-start gap-8">
+                  {/* Left Content Area */}
+                  <div className="flex-1 space-y-4">
+                    {/* Category Label */}
+                    <div className="text-xs font-medium text-purple-400 uppercase tracking-wider">
+                      {category}s
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      <span>{formatDate(post.created_at)}</span>
-                    </div>
-                  </div>
 
-                  <div className="space-y-3">
-                    <p className="text-gray-700 leading-relaxed">
-                      {getExcerpt(post.content)}
+                    {/* Main Headline */}
+                    <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight group-hover:text-gold transition-colors">
+                      {getExcerpt(post.content, 80)}
+                    </h3>
+
+                    {/* Body Excerpt */}
+                    <p className="text-gray-400 text-lg leading-relaxed max-w-3xl">
+                      {getExcerpt(post.content, 200)}
                     </p>
-                    
+
+                    {/* CTA Element */}
                     <Button 
-                      variant="outline" 
-                      className="w-full group"
+                      variant="ghost" 
+                      className="text-purple-400 hover:text-white p-0 h-auto font-medium group/btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         handlePostClick(post.id);
                       }}
                     >
                       Read More
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                     </Button>
                   </div>
+
+                  {/* Right Meta Section */}
+                  <div className="flex flex-col items-end space-y-4 min-w-[200px]">
+                    {/* Date Stamp */}
+                    <div className="text-gray-400 text-sm">
+                      {formatDate(post.created_at)}
+                    </div>
+
+                    {/* Author Section */}
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <div className="text-white font-medium text-sm">
+                          by Ismael Gomes Queta
+                        </div>
+                        <div className="text-gray-400 text-xs">
+                          CEO, King's 'n Company
+                        </div>
+                      </div>
+                      <Avatar className="w-12 h-12">
+                        <AvatarImage src="/lovable-uploads/ismaPerfil.JPG" alt="Ismael Gomes Queta" />
+                        <AvatarFallback className="bg-gold text-black font-medium">
+                          IG
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Featured Image (if available) */}
+                {post.images && post.images.length > 0 && (
+                  <div className="mt-6 rounded-lg overflow-hidden">
+                    <img
+                      src={post.images[0]}
+                      alt="Article featured image"
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
