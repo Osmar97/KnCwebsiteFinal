@@ -7,6 +7,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+interface CalendarEvent {
+  start: { dateTime: string };
+  end: { dateTime: string };
+}
+
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -31,7 +36,7 @@ const handler = async (req: Request): Promise<Response> => {
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error in booking function:', error);
+    console.error('Error in google-calendar function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -40,33 +45,50 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 async function getAvailability(startDate: string, endDate: string) {
-  try {
-    // Fetch existing bookings from our database
-    const { data: bookings, error } = await supabase
-      .from('bookings')
-      .select('selected_datetime')
-      .gte('selected_datetime', startDate)
-      .lte('selected_datetime', endDate)
-      .eq('status', 'confirmed');
+  const accessToken = Deno.env.get('GOOGLE_CALENDAR_ACCESS_TOKEN');
+  const calendarId = Deno.env.get('GOOGLE_CALENDAR_ID') || 'primary';
 
-    if (error) {
-      throw new Error(`Database error: ${error.message}`);
-    }
-
-    // Generate available time slots (9 AM to 6 PM, Monday to Friday)
-    const availableSlots = generateAvailableSlots(startDate, endDate, bookings || []);
-
-    return new Response(
-      JSON.stringify({ availableSlots }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    console.error('Error getting availability:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+  if (!accessToken) {
+    throw new Error('Google Calendar access token not configured');
   }
+
+  // Fetch events from Google Calendar
+  const calendarResponse = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?timeMin=${startDate}&timeMax=${endDate}&singleEvents=true&orderBy=startTime`,
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  if (!calendarResponse.ok) {
+    throw new Error(`Google Calendar API error: ${calendarResponse.statusText}`);
+  }
+
+  const calendarData = await calendarResponse.json();
+  const busySlots = calendarData.items || [];
+
+  // Fetch existing bookings from our database
+  const { data: bookings, error } = await supabase
+    .from('bookings')
+    .select('selected_datetime')
+    .gte('selected_datetime', startDate)
+    .lte('selected_datetime', endDate)
+    .eq('status', 'confirmed');
+
+  if (error) {
+    throw new Error(`Database error: ${error.message}`);
+  }
+
+  // Generate available time slots (9 AM to 6 PM, Monday to Friday)
+  const availableSlots = generateAvailableSlots(startDate, endDate, busySlots, bookings || []);
+
+  return new Response(
+    JSON.stringify({ availableSlots }),
+    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+  );
 }
 
 async function createBooking(bookingData: any) {
@@ -86,7 +108,7 @@ async function createBooking(bookingData: any) {
   );
 }
 
-function generateAvailableSlots(startDate: string, endDate: string, bookings: any[]) {
+function generateAvailableSlots(startDate: string, endDate: string, busySlots: CalendarEvent[], bookings: any[]) {
   const slots = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -106,6 +128,13 @@ function generateAvailableSlots(startDate: string, endDate: string, bookings: an
         const slotEnd = new Date(slotStart);
         slotEnd.setHours(hour + 1, 0, 0, 0);
         
+        // Check if slot conflicts with Google Calendar events
+        const isGoogleBusy = busySlots.some(event => {
+          const eventStart = new Date(event.start.dateTime);
+          const eventEnd = new Date(event.end.dateTime);
+          return slotStart < eventEnd && slotEnd > eventStart;
+        });
+        
         // Check if slot conflicts with existing bookings
         const isBookingBusy = bookings.some(booking => {
           const bookingTime = new Date(booking.selected_datetime);
@@ -113,7 +142,7 @@ function generateAvailableSlots(startDate: string, endDate: string, bookings: an
           return slotStart < bookingEnd && slotEnd > bookingTime;
         });
         
-        if (!isBookingBusy) {
+        if (!isGoogleBusy && !isBookingBusy) {
           slots.push({
             start: slotStart.toISOString(),
             end: slotEnd.toISOString(),
