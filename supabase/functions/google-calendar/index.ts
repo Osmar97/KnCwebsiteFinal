@@ -7,11 +7,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface CalendarEvent {
-  start: { dateTime: string };
-  end: { dateTime: string };
-}
-
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -36,7 +31,7 @@ const handler = async (req: Request): Promise<Response> => {
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error in google-calendar function:', error);
+    console.error('Error in booking function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -44,68 +39,8 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
-async function getGoogleAccessToken() {
-  const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
-  const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET');
-  
-  if (!clientId || !clientSecret) {
-    throw new Error('Google OAuth credentials not configured');
-  }
-
-  // For server-to-server authentication, we'll use service account or stored refresh token
-  // For now, we'll use a simplified approach - in production you'd want to implement full OAuth flow
-  const refreshToken = Deno.env.get('GOOGLE_REFRESH_TOKEN');
-  
-  if (!refreshToken) {
-    throw new Error('Google refresh token not configured. Please implement OAuth flow.');
-  }
-
-  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      client_id: clientId,
-      client_secret: clientSecret,
-      refresh_token: refreshToken,
-      grant_type: 'refresh_token',
-    }),
-  });
-
-  if (!tokenResponse.ok) {
-    throw new Error(`Token refresh failed: ${tokenResponse.statusText}`);
-  }
-
-  const tokenData = await tokenResponse.json();
-  return tokenData.access_token;
-}
-
 async function getAvailability(startDate: string, endDate: string) {
-  const calendarId = Deno.env.get('GOOGLE_CALENDAR_ID') || 'primary';
-
   try {
-    const accessToken = await getGoogleAccessToken();
-
-    // Fetch events from Google Calendar
-    const calendarResponse = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${startDate}&timeMax=${endDate}&singleEvents=true&orderBy=startTime`,
-      {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (!calendarResponse.ok) {
-      const errorText = await calendarResponse.text();
-      throw new Error(`Google Calendar API error: ${calendarResponse.statusText} - ${errorText}`);
-    }
-
-    const calendarData = await calendarResponse.json();
-    const busySlots = calendarData.items || [];
-
     // Fetch existing bookings from our database
     const { data: bookings, error } = await supabase
       .from('bookings')
@@ -119,7 +54,7 @@ async function getAvailability(startDate: string, endDate: string) {
     }
 
     // Generate available time slots (9 AM to 6 PM, Monday to Friday)
-    const availableSlots = generateAvailableSlots(startDate, endDate, busySlots, bookings || []);
+    const availableSlots = generateAvailableSlots(startDate, endDate, bookings || []);
 
     return new Response(
       JSON.stringify({ availableSlots }),
@@ -127,29 +62,9 @@ async function getAvailability(startDate: string, endDate: string) {
     );
   } catch (error) {
     console.error('Error getting availability:', error);
-    
-    // Fallback: generate slots without Google Calendar integration
-    console.log('Falling back to local availability calculation');
-    
-    const { data: bookings, error: dbError } = await supabase
-      .from('bookings')
-      .select('selected_datetime')
-      .gte('selected_datetime', startDate)
-      .lte('selected_datetime', endDate)
-      .eq('status', 'confirmed');
-
-    if (dbError) {
-      throw new Error(`Database error: ${dbError.message}`);
-    }
-
-    const availableSlots = generateAvailableSlots(startDate, endDate, [], bookings || []);
-
     return new Response(
-      JSON.stringify({ 
-        availableSlots,
-        warning: 'Google Calendar integration temporarily unavailable. Showing local availability only.' 
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 }
@@ -171,7 +86,7 @@ async function createBooking(bookingData: any) {
   );
 }
 
-function generateAvailableSlots(startDate: string, endDate: string, busySlots: CalendarEvent[], bookings: any[]) {
+function generateAvailableSlots(startDate: string, endDate: string, bookings: any[]) {
   const slots = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -191,13 +106,6 @@ function generateAvailableSlots(startDate: string, endDate: string, busySlots: C
         const slotEnd = new Date(slotStart);
         slotEnd.setHours(hour + 1, 0, 0, 0);
         
-        // Check if slot conflicts with Google Calendar events
-        const isGoogleBusy = busySlots.some(event => {
-          const eventStart = new Date(event.start.dateTime);
-          const eventEnd = new Date(event.end.dateTime);
-          return slotStart < eventEnd && slotEnd > eventStart;
-        });
-        
         // Check if slot conflicts with existing bookings
         const isBookingBusy = bookings.some(booking => {
           const bookingTime = new Date(booking.selected_datetime);
@@ -205,7 +113,7 @@ function generateAvailableSlots(startDate: string, endDate: string, busySlots: C
           return slotStart < bookingEnd && slotEnd > bookingTime;
         });
         
-        if (!isGoogleBusy && !isBookingBusy) {
+        if (!isBookingBusy) {
           slots.push({
             start: slotStart.toISOString(),
             end: slotEnd.toISOString(),
