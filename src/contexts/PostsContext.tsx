@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -38,7 +39,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setPosts(data || []);
+      setPosts((data || []) as Post[]);
     } catch (error) {
       console.error("Error fetching posts:", error);
       toast({
@@ -65,7 +66,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
 
       if (data && data[0]) {
-        setPosts(prev => [data[0], ...prev]);
+        setPosts(prev => [data[0] as Post, ...prev]);
         return true;
       }
       return false;
@@ -86,7 +87,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
 
       if (data && data[0]) {
-        setPosts(prev => prev.map(post => post.id === id ? data[0] : post));
+        setPosts(prev => prev.map(post => post.id === id ? data[0] as Post : post));
         return true;
       }
       return false;
