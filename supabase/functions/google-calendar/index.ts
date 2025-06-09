@@ -44,51 +44,114 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
+async function getGoogleAccessToken() {
+  const clientId = Deno.env.get('GOOGLE_CLIENT_ID');
+  const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET');
+  
+  if (!clientId || !clientSecret) {
+    throw new Error('Google OAuth credentials not configured');
+  }
+
+  // For server-to-server authentication, we'll use service account or stored refresh token
+  // For now, we'll use a simplified approach - in production you'd want to implement full OAuth flow
+  const refreshToken = Deno.env.get('GOOGLE_REFRESH_TOKEN');
+  
+  if (!refreshToken) {
+    throw new Error('Google refresh token not configured. Please implement OAuth flow.');
+  }
+
+  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+    }),
+  });
+
+  if (!tokenResponse.ok) {
+    throw new Error(`Token refresh failed: ${tokenResponse.statusText}`);
+  }
+
+  const tokenData = await tokenResponse.json();
+  return tokenData.access_token;
+}
+
 async function getAvailability(startDate: string, endDate: string) {
-  const accessToken = Deno.env.get('GOOGLE_CALENDAR_ACCESS_TOKEN');
   const calendarId = Deno.env.get('GOOGLE_CALENDAR_ID') || 'primary';
 
-  if (!accessToken) {
-    throw new Error('Google Calendar access token not configured');
-  }
+  try {
+    const accessToken = await getGoogleAccessToken();
 
-  // Fetch events from Google Calendar
-  const calendarResponse = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?timeMin=${startDate}&timeMax=${endDate}&singleEvents=true&orderBy=startTime`,
-    {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
+    // Fetch events from Google Calendar
+    const calendarResponse = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${startDate}&timeMax=${endDate}&singleEvents=true&orderBy=startTime`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!calendarResponse.ok) {
+      const errorText = await calendarResponse.text();
+      throw new Error(`Google Calendar API error: ${calendarResponse.statusText} - ${errorText}`);
     }
-  );
 
-  if (!calendarResponse.ok) {
-    throw new Error(`Google Calendar API error: ${calendarResponse.statusText}`);
+    const calendarData = await calendarResponse.json();
+    const busySlots = calendarData.items || [];
+
+    // Fetch existing bookings from our database
+    const { data: bookings, error } = await supabase
+      .from('bookings')
+      .select('selected_datetime')
+      .gte('selected_datetime', startDate)
+      .lte('selected_datetime', endDate)
+      .eq('status', 'confirmed');
+
+    if (error) {
+      throw new Error(`Database error: ${error.message}`);
+    }
+
+    // Generate available time slots (9 AM to 6 PM, Monday to Friday)
+    const availableSlots = generateAvailableSlots(startDate, endDate, busySlots, bookings || []);
+
+    return new Response(
+      JSON.stringify({ availableSlots }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Error getting availability:', error);
+    
+    // Fallback: generate slots without Google Calendar integration
+    console.log('Falling back to local availability calculation');
+    
+    const { data: bookings, error: dbError } = await supabase
+      .from('bookings')
+      .select('selected_datetime')
+      .gte('selected_datetime', startDate)
+      .lte('selected_datetime', endDate)
+      .eq('status', 'confirmed');
+
+    if (dbError) {
+      throw new Error(`Database error: ${dbError.message}`);
+    }
+
+    const availableSlots = generateAvailableSlots(startDate, endDate, [], bookings || []);
+
+    return new Response(
+      JSON.stringify({ 
+        availableSlots,
+        warning: 'Google Calendar integration temporarily unavailable. Showing local availability only.' 
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
-
-  const calendarData = await calendarResponse.json();
-  const busySlots = calendarData.items || [];
-
-  // Fetch existing bookings from our database
-  const { data: bookings, error } = await supabase
-    .from('bookings')
-    .select('selected_datetime')
-    .gte('selected_datetime', startDate)
-    .lte('selected_datetime', endDate)
-    .eq('status', 'confirmed');
-
-  if (error) {
-    throw new Error(`Database error: ${error.message}`);
-  }
-
-  // Generate available time slots (9 AM to 6 PM, Monday to Friday)
-  const availableSlots = generateAvailableSlots(startDate, endDate, busySlots, bookings || []);
-
-  return new Response(
-    JSON.stringify({ availableSlots }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  );
 }
 
 async function createBooking(bookingData: any) {
