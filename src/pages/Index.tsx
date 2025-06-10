@@ -5,6 +5,7 @@ import { SectionsCarousel } from "@/components/SectionsCarousel";
 import { Testimonials } from "@/components/Testimonials";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 import { Footer } from "@/components/Footer";
+import { B2BScalingHero } from "@/components/B2BScalingHero";
 
 const Index = () => {
   return (
@@ -12,6 +13,8 @@ const Index = () => {
       <Navigation />
       <Hero />
       
+      {/* B2B Scaling Hero Section */}
+      <B2BScalingHero />
       
       {/* Sections Carousel */}
       <div className="bg-black">
