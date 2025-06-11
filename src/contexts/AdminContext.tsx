@@ -1,15 +1,19 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 interface AdminUser {
+  id: string;
+  email: string;
   name: string;
   title: string;
-  email: string;
 }
 
 interface AdminContextType {
   isAdminLoggedIn: boolean;
   adminUser: AdminUser | null;
+  supabaseUser: User | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   loginAttempts: number;
@@ -18,159 +22,154 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-// Move credentials to environment variables (this should be handled by Supabase in production)
-const ADMIN_EMAIL = 'ismael@kingsncompany.com';
-const ADMIN_PASSWORD_HASH = 'Myqdeq-zejka7-sirjyf'; // In production, this should be properly hashed
-const MAX_LOGIN_ATTEMPTS = 5;
+const ADMIN_CREDENTIALS = {
+  email: "admin@quintagomes.com",
+  password: "admin123",
+  name: "Ismael Gomes Queta",
+  title: "Founder & CEO"
+};
+
+const MAX_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
 
 export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<User | null>(null);
   const [loginAttempts, setLoginAttempts] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
-  const [lockoutEnd, setLockoutEnd] = useState<number | null>(null);
+  const [lockoutTime, setLockoutTime] = useState<number | null>(null);
 
+  // Check for existing Supabase session and admin status
   useEffect(() => {
-    // Check for existing session
-    const savedSession = localStorage.getItem('adminSession');
-    const sessionTimestamp = localStorage.getItem('sessionTimestamp');
-    
-    if (savedSession && sessionTimestamp) {
-      const sessionAge = Date.now() - parseInt(sessionTimestamp);
-      const maxSessionAge = 24 * 60 * 60 * 1000; // 24 hours
-      
-      if (sessionAge < maxSessionAge) {
-        setIsAdminLoggedIn(true);
-        setAdminUser({
-          name: 'Ismael Gomes Queta',
-          title: 'Founder',
-          email: ADMIN_EMAIL
-        });
-      } else {
-        // Session expired
-        localStorage.removeItem('adminSession');
-        localStorage.removeItem('sessionTimestamp');
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setSupabaseUser(session.user);
+        // Check if this user is the admin
+        if (session.user.email === ADMIN_CREDENTIALS.email) {
+          setIsAdminLoggedIn(true);
+          setAdminUser({
+            id: session.user.id,
+            email: session.user.email,
+            name: ADMIN_CREDENTIALS.name,
+            title: ADMIN_CREDENTIALS.title
+          });
+        }
       }
-    }
+    };
 
-    // Check lockout status
-    const savedLockout = localStorage.getItem('lockoutEnd');
-    if (savedLockout) {
-      const lockoutEndTime = parseInt(savedLockout);
-      if (Date.now() < lockoutEndTime) {
-        setIsLocked(true);
-        setLockoutEnd(lockoutEndTime);
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setSupabaseUser(session.user);
+        if (session.user.email === ADMIN_CREDENTIALS.email) {
+          setIsAdminLoggedIn(true);
+          setAdminUser({
+            id: session.user.id,
+            email: session.user.email,
+            name: ADMIN_CREDENTIALS.name,
+            title: ADMIN_CREDENTIALS.title
+          });
+        }
       } else {
-        localStorage.removeItem('lockoutEnd');
-        localStorage.removeItem('loginAttempts');
+        setSupabaseUser(null);
+        setIsAdminLoggedIn(false);
+        setAdminUser(null);
       }
-    }
+    });
 
-    // Load login attempts
-    const savedAttempts = localStorage.getItem('loginAttempts');
-    if (savedAttempts) {
-      setLoginAttempts(parseInt(savedAttempts));
-    }
+    return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    // Auto-unlock after lockout period
-    if (isLocked && lockoutEnd) {
-      const timeout = setTimeout(() => {
-        if (Date.now() >= lockoutEnd) {
-          setIsLocked(false);
-          setLockoutEnd(null);
-          setLoginAttempts(0);
-          localStorage.removeItem('lockoutEnd');
-          localStorage.removeItem('loginAttempts');
-        }
-      }, lockoutEnd - Date.now());
-
-      return () => clearTimeout(timeout);
-    }
-  }, [isLocked, lockoutEnd]);
-
-  const sanitizeInput = (input: string): string => {
-    return input.trim().toLowerCase();
-  };
-
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const isLocked = lockoutTime ? Date.now() < lockoutTime : false;
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Check if account is locked
-    if (isLocked) {
-      return false;
-    }
-
-    // Sanitize inputs
-    const sanitizedEmail = sanitizeInput(email);
-    const sanitizedPassword = password.trim();
-
-    // Validate inputs
-    if (!validateEmail(sanitizedEmail) || sanitizedPassword.length === 0) {
-      return false;
-    }
-
-    // Simulate network delay to prevent timing attacks
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+    if (isLocked) return false;
 
     // Check credentials
-    if (sanitizedEmail === ADMIN_EMAIL.toLowerCase() && sanitizedPassword === ADMIN_PASSWORD_HASH) {
-      // Successful login
-      setIsAdminLoggedIn(true);
-      setAdminUser({
-        name: 'Ismael Gomes Queta',
-        title: 'Founder',
-        email: ADMIN_EMAIL
-      });
-      
-      // Create secure session
-      const sessionToken = btoa(Date.now().toString() + Math.random().toString());
-      localStorage.setItem('adminSession', sessionToken);
-      localStorage.setItem('sessionTimestamp', Date.now().toString());
-      
-      // Reset login attempts
-      setLoginAttempts(0);
-      localStorage.removeItem('loginAttempts');
-      
-      return true;
-    } else {
-      // Failed login
-      const newAttempts = loginAttempts + 1;
-      setLoginAttempts(newAttempts);
-      localStorage.setItem('loginAttempts', newAttempts.toString());
-      
-      // Lock account after max attempts
-      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        const lockoutEndTime = Date.now() + LOCKOUT_DURATION;
-        setIsLocked(true);
-        setLockoutEnd(lockoutEndTime);
-        localStorage.setItem('lockoutEnd', lockoutEndTime.toString());
+    if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+      try {
+        // Try to sign in with Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          // If sign in fails, try to sign up (in case the user doesn't exist)
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: `${window.location.origin}/`
+            }
+          });
+
+          if (signUpError) {
+            console.error("Auth error:", signUpError);
+            setLoginAttempts(prev => prev + 1);
+            if (loginAttempts + 1 >= MAX_ATTEMPTS) {
+              setLockoutTime(Date.now() + LOCKOUT_DURATION);
+            }
+            return false;
+          }
+
+          if (signUpData.user) {
+            setSupabaseUser(signUpData.user);
+            setIsAdminLoggedIn(true);
+            setAdminUser({
+              id: signUpData.user.id,
+              email: signUpData.user.email!,
+              name: ADMIN_CREDENTIALS.name,
+              title: ADMIN_CREDENTIALS.title
+            });
+            setLoginAttempts(0);
+            return true;
+          }
+        } else if (data.user) {
+          setSupabaseUser(data.user);
+          setIsAdminLoggedIn(true);
+          setAdminUser({
+            id: data.user.id,
+            email: data.user.email!,
+            name: ADMIN_CREDENTIALS.name,
+            title: ADMIN_CREDENTIALS.title
+          });
+          setLoginAttempts(0);
+          return true;
+        }
+      } catch (error) {
+        console.error("Login error:", error);
       }
-      
-      return false;
     }
+
+    setLoginAttempts(prev => prev + 1);
+    if (loginAttempts + 1 >= MAX_ATTEMPTS) {
+      setLockoutTime(Date.now() + LOCKOUT_DURATION);
+    }
+    return false;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setIsAdminLoggedIn(false);
     setAdminUser(null);
-    localStorage.removeItem('adminSession');
-    localStorage.removeItem('sessionTimestamp');
+    setSupabaseUser(null);
+    setLoginAttempts(0);
+    setLockoutTime(null);
   };
 
   return (
-    <AdminContext.Provider value={{ 
-      isAdminLoggedIn, 
-      adminUser, 
-      login, 
-      logout, 
+    <AdminContext.Provider value={{
+      isAdminLoggedIn,
+      adminUser,
+      supabaseUser,
+      login,
+      logout,
       loginAttempts,
-      isLocked 
+      isLocked
     }}>
       {children}
     </AdminContext.Provider>
@@ -180,7 +179,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 export const useAdmin = () => {
   const context = useContext(AdminContext);
   if (context === undefined) {
-    throw new Error('useAdmin must be used within an AdminProvider');
+    throw new Error("useAdmin must be used within an AdminProvider");
   }
   return context;
 };

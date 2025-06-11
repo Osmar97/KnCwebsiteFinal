@@ -11,7 +11,7 @@ export const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { isAdminLoggedIn, adminUser, login, logout, loginAttempts, isLocked } = useAdmin();
+  const { isAdminLoggedIn, adminUser, supabaseUser, login, logout, loginAttempts, isLocked } = useAdmin();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,7 +43,7 @@ export const AdminLogin = () => {
       if (success) {
         toast({
           title: "Login Successful",
-          description: `Welcome back, ${adminUser?.name || 'Admin'}!`,
+          description: `Welcome back, ${adminUser?.name || 'Admin'}! You now have full Supabase access.`,
         });
         setEmail("");
         setPassword("");
@@ -77,12 +77,13 @@ export const AdminLogin = () => {
     });
   };
 
-  if (isAdminLoggedIn && adminUser) {
+  if (isAdminLoggedIn && adminUser && supabaseUser) {
     return (
       <div className="flex items-center gap-3">
         <div className="text-right">
           <p className="text-sm font-medium text-gold">{adminUser.name}</p>
           <p className="text-xs text-gray-400">{adminUser.title}</p>
+          <p className="text-xs text-green-400">✓ Authenticated</p>
         </div>
         <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gold">
           <img 
