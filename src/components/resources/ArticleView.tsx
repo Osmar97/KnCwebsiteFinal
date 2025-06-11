@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, User, Share2 } from "lucide-react";
@@ -9,6 +8,7 @@ import { ImageGallery } from "./ImageGallery";
 import { VideoDisplay } from "./VideoDisplay";
 import { PdfDisplay } from "./PdfDisplay";
 import { RelatedPosts } from "./RelatedPosts";
+import { AuthorInfo } from "./AuthorInfo";
 
 export const ArticleView = () => {
   const {
@@ -124,6 +124,9 @@ export const ArticleView = () => {
             {post.content}
           </div>
         </div>
+
+        {/* Author Information */}
+        <AuthorInfo />
 
         {/* Related Articles */}
         <RelatedPosts posts={relatedPosts} category={post.category} />
