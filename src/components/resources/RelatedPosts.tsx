@@ -36,42 +36,32 @@ export const RelatedPosts = ({ posts, category }: RelatedPostsProps) => {
         {posts.map((relatedPost) => (
           <Card 
             key={relatedPost.id} 
-            className="bg-gray-900/50 border-gray-800 hover:bg-gray-900/70 transition-all cursor-pointer group"
+            className="bg-gray-900/50 border-gray-800 hover:bg-gray-900/70 transition-all cursor-pointer group border-l-4 border-l-gold"
             onClick={() => navigate(`/resources/${relatedPost.category}/${relatedPost.id}`)}
           >
             <CardContent className="p-6">
-              <div className="flex justify-between items-start gap-6">
-                {/* Left Content */}
-                <div className="flex-1 space-y-3">
-                  {/* Category Label */}
-                  <div className="text-xs font-medium text-gold uppercase tracking-wider">
-                    {relatedPost.category}s
-                  </div>
+              <div className="space-y-4">
+                {/* Category Label */}
+                <div className="text-xs font-medium text-gold uppercase tracking-wider">
+                  {relatedPost.category}s
+                </div>
 
-                  {/* Title */}
-                  <h4 className="text-xl font-bold text-white leading-tight group-hover:text-gold transition-colors">
-                    {relatedPost.title || "Untitled Post"}
-                  </h4>
+                {/* Title */}
+                <h4 className="text-xl font-bold text-white leading-tight group-hover:text-gold transition-colors">
+                  {relatedPost.title || "Untitled Post"}
+                </h4>
 
-                  {/* Excerpt */}
-                  <p className="text-gray-400 leading-relaxed">
-                    {relatedPost.content.substring(0, 150)}...
-                  </p>
+                {/* Excerpt */}
+                <p className="text-gray-400 leading-relaxed">
+                  {relatedPost.content.substring(0, 150)}...
+                </p>
 
-                  {/* Read More Link */}
+                {/* Read More and Author Section */}
+                <div className="flex justify-between items-center pt-2">
                   <div className="text-gold font-medium text-sm group-hover:text-white transition-colors">
                     Read More →
                   </div>
-                </div>
 
-                {/* Right Meta Section */}
-                <div className="flex flex-col items-end space-y-3 min-w-[200px]">
-                  {/* Date */}
-                  <div className="text-gray-400 text-sm">
-                    {formatDate(relatedPost.created_at)}
-                  </div>
-
-                  {/* Author Info */}
                   <div className="flex items-center gap-3">
                     <div className="text-right">
                       <div className="text-white font-medium text-sm">
