@@ -102,38 +102,67 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       try {
         console.log("Credentials valid, attempting Supabase authentication...");
         
-        // Try to sign in with Supabase
-        const { data, error } = await supabase.auth.signInWithPassword({
+        // Try to sign in with Supabase first
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password
         });
 
-        console.log("Sign in result:", { data: !!data, error, user: !!data?.user });
+        console.log("Sign in result:", { data: !!signInData, error: signInError, user: !!signInData?.user });
 
-        if (error) {
-          console.log("Sign in failed, attempting sign up...");
-          // If sign in fails, try to sign up (in case the user doesn't exist)
-          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              emailRedirectTo: `${window.location.origin}/`
-            }
+        if (signInData?.user && !signInError) {
+          console.log("Sign in successful, setting user state");
+          setSupabaseUser(signInData.user);
+          setIsAdminLoggedIn(true);
+          setAdminUser({
+            id: signInData.user.id,
+            email: signInData.user.email!,
+            name: ADMIN_CREDENTIALS.name,
+            title: ADMIN_CREDENTIALS.title
           });
+          setLoginAttempts(0);
+          return true;
+        }
 
-          console.log("Sign up result:", { data: !!signUpData, error: signUpError, user: !!signUpData?.user });
-
-          if (signUpError) {
-            console.error("Auth error:", signUpError);
-            setLoginAttempts(prev => prev + 1);
-            if (loginAttempts + 1 >= MAX_ATTEMPTS) {
-              setLockoutTime(Date.now() + LOCKOUT_DURATION);
-            }
-            return false;
+        // If sign in fails, try to sign up
+        console.log("Sign in failed, attempting sign up...");
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`
           }
+        });
 
-          if (signUpData.user) {
-            console.log("Sign up successful, setting user state");
+        console.log("Sign up result:", { data: !!signUpData, error: signUpError, user: !!signUpData?.user });
+
+        if (signUpError) {
+          console.error("Auth error:", signUpError);
+          setLoginAttempts(prev => prev + 1);
+          if (loginAttempts + 1 >= MAX_ATTEMPTS) {
+            setLockoutTime(Date.now() + LOCKOUT_DURATION);
+          }
+          return false;
+        }
+
+        if (signUpData.user) {
+          console.log("Sign up successful, setting user state");
+          
+          // For development, let's try to confirm the user automatically
+          if (signUpData.user.email_confirmed_at || signUpData.user.confirmed_at) {
+            setSupabaseUser(signUpData.user);
+            setIsAdminLoggedIn(true);
+            setAdminUser({
+              id: signUpData.user.id,
+              email: signUpData.user.email!,
+              name: ADMIN_CREDENTIALS.name,
+              title: ADMIN_CREDENTIALS.title
+            });
+            setLoginAttempts(0);
+            return true;
+          } else {
+            console.log("User created but needs email confirmation");
+            // For now, let's still allow them to login since it's an admin
             setSupabaseUser(signUpData.user);
             setIsAdminLoggedIn(true);
             setAdminUser({
@@ -145,18 +174,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
             setLoginAttempts(0);
             return true;
           }
-        } else if (data.user) {
-          console.log("Sign in successful, setting user state");
-          setSupabaseUser(data.user);
-          setIsAdminLoggedIn(true);
-          setAdminUser({
-            id: data.user.id,
-            email: data.user.email!,
-            name: ADMIN_CREDENTIALS.name,
-            title: ADMIN_CREDENTIALS.title
-          });
-          setLoginAttempts(0);
-          return true;
         }
       } catch (error) {
         console.error("Login error:", error);

@@ -1,3 +1,4 @@
+
 import { Upload, Video, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,7 +38,13 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
       try {
         // Check current session first
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        console.log("Session check:", { session: !!session, sessionError });
+        console.log("Video Upload - Session check:", { 
+          session: !!session, 
+          sessionError, 
+          userId: session?.user?.id,
+          userEmail: session?.user?.email,
+          isAuthenticated: !!session?.user
+        });
         
         if (sessionError) {
           console.error("Session error:", sessionError);
@@ -50,21 +57,10 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
         }
 
         if (!session?.user) {
-          console.log("No session or user found");
+          console.log("No session or user found for video upload");
           toast({
             title: "Authentication Required",
             description: "Please log in to upload videos.",
-            variant: "destructive",
-          });
-          continue;
-        }
-
-        // Additional check for user ID
-        if (!session.user.id) {
-          console.error("User ID not found in session:", session);
-          toast({
-            title: "Authentication Error",
-            description: "User ID not found. Please re-login.",
             variant: "destructive",
           });
           continue;
@@ -74,6 +70,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
         const fileName = `${session.user.id}/${Date.now()}_${file.name}`;
         console.log("Uploading video with path:", fileName);
         console.log("User ID:", session.user.id);
+        console.log("User email:", session.user.email);
         
         const { data, error } = await supabase.storage
           .from('videos')
@@ -92,13 +89,13 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
           continue;
         }
 
-        console.log("Upload successful:", data);
+        console.log("Video upload successful:", data);
 
         const { data: { publicUrl } } = supabase.storage
           .from('videos')
           .getPublicUrl(data.path);
 
-        console.log("Public URL:", publicUrl);
+        console.log("Video Public URL:", publicUrl);
 
         onVideoUrlsChange([...videoUrls, publicUrl]);
 
