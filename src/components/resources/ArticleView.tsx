@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, User, Share2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Calendar, User, Share2, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePosts, type Post } from "@/contexts/PostsContext";
@@ -20,6 +20,8 @@ export const ArticleView = () => {
   useEffect(() => {
     if (id) {
       const foundPost = getPostById(id);
+      console.log("Found post:", foundPost);
+      console.log("Post videos:", foundPost?.video_urls);
       if (foundPost) {
         setPost(foundPost);
         // Get related posts from same category, excluding current post
@@ -76,6 +78,8 @@ export const ArticleView = () => {
       setCurrentImageIndex((prev) => (prev - 1 + post.images.length) % post.images.length);
     }
   };
+
+  console.log("Rendering ArticleView with videos:", post.video_urls);
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white">
@@ -161,12 +165,55 @@ export const ArticleView = () => {
           </div>
         )}
 
+        {/* Videos Section */}
+        {post.video_urls && post.video_urls.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              <Play className="w-5 h-5 text-gold" />
+              Videos
+            </h3>
+            <div className="space-y-6">
+              {post.video_urls.map((videoUrl, index) => (
+                <div key={index} className="relative bg-gray-800 rounded-lg overflow-hidden">
+                  <video
+                    src={videoUrl}
+                    className="w-full max-h-96 object-contain"
+                    controls
+                    preload="metadata"
+                    poster=""
+                  >
+                    <p className="text-gray-400 p-4">
+                      Your browser does not support the video tag. 
+                      <a href={videoUrl} className="text-gold hover:underline ml-1">
+                        Download the video instead.
+                      </a>
+                    </p>
+                  </video>
+                  <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                    Video {index + 1} of {post.video_urls.length}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Article Content */}
         <div className="prose prose-invert max-w-none mb-12">
           <div className="text-lg leading-relaxed whitespace-pre-wrap">
             {post.content}
           </div>
         </div>
+
+        {/* Debug info - remove this after testing */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mb-8 p-4 bg-gray-800 rounded text-sm text-gray-300">
+            <p><strong>Debug Info:</strong></p>
+            <p>Post ID: {post.id}</p>
+            <p>Video URLs: {JSON.stringify(post.video_urls)}</p>
+            <p>Video URLs length: {post.video_urls?.length || 0}</p>
+          </div>
+        )}
 
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/20 rounded-lg p-8 mb-12 text-center">
