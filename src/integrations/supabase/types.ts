@@ -16,8 +16,10 @@ export type Database = {
           created_at: string
           id: string
           images: string[] | null
+          pdf_urls: string[] | null
           title: string
           updated_at: string
+          video_urls: string[] | null
         }
         Insert: {
           category?: string
@@ -25,8 +27,10 @@ export type Database = {
           created_at?: string
           id?: string
           images?: string[] | null
+          pdf_urls?: string[] | null
           title?: string
           updated_at?: string
+          video_urls?: string[] | null
         }
         Update: {
           category?: string
@@ -34,8 +38,10 @@ export type Database = {
           created_at?: string
           id?: string
           images?: string[] | null
+          pdf_urls?: string[] | null
           title?: string
           updated_at?: string
+          video_urls?: string[] | null
         }
         Relationships: []
       }

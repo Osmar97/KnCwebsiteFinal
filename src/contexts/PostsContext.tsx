@@ -8,6 +8,8 @@ export interface Post {
   title: string;
   content: string;
   images: string[];
+  pdf_urls: string[];
+  video_urls: string[];
   category: "article" | "resource";
   created_at: string;
   updated_at: string;
@@ -16,8 +18,8 @@ export interface Post {
 interface PostsContextType {
   posts: Post[];
   loading: boolean;
-  addPost: (title: string, content: string, images: string[], category: "article" | "resource") => Promise<boolean>;
-  updatePost: (id: string, title: string, content: string, images: string[], category: "article" | "resource") => Promise<boolean>;
+  addPost: (title: string, content: string, images: string[], pdfUrls: string[], videoUrls: string[], category: "article" | "resource") => Promise<boolean>;
+  updatePost: (id: string, title: string, content: string, images: string[], pdfUrls: string[], videoUrls: string[], category: "article" | "resource") => Promise<boolean>;
   deletePost: (id: string) => Promise<boolean>;
   getPostById: (id: string) => Post | undefined;
   getPostsByCategory: (category: "article" | "resource") => Post[];
@@ -56,11 +58,11 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     fetchPosts();
   }, []);
 
-  const addPost = async (title: string, content: string, images: string[], category: "article" | "resource"): Promise<boolean> => {
+  const addPost = async (title: string, content: string, images: string[], pdfUrls: string[], videoUrls: string[], category: "article" | "resource"): Promise<boolean> => {
     try {
       const { data, error } = await supabase
         .from("posts")
-        .insert([{ title, content, images, category }])
+        .insert([{ title, content, images, pdf_urls: pdfUrls, video_urls: videoUrls, category }])
         .select();
 
       if (error) throw error;
@@ -76,11 +78,11 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updatePost = async (id: string, title: string, content: string, images: string[], category: "article" | "resource"): Promise<boolean> => {
+  const updatePost = async (id: string, title: string, content: string, images: string[], pdfUrls: string[], videoUrls: string[], category: "article" | "resource"): Promise<boolean> => {
     try {
       const { data, error } = await supabase
         .from("posts")
-        .update({ title, content, images, category, updated_at: new Date().toISOString() })
+        .update({ title, content, images, pdf_urls: pdfUrls, video_urls: videoUrls, category, updated_at: new Date().toISOString() })
         .eq("id", id)
         .select();
 

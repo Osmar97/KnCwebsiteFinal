@@ -17,6 +17,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
   const [title, setTitle] = useState(post?.title || "");
   const [content, setContent] = useState(post?.content || "");
   const [images, setImages] = useState<string[]>(post?.images || []);
+  const [pdfUrls, setPdfUrls] = useState<string[]>(post?.pdf_urls || []);
+  const [videoUrls, setVideoUrls] = useState<string[]>(post?.video_urls || []);
   const [category, setCategory] = useState<"article" | "resource">(post?.category || "article");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { addPost, updatePost } = usePosts();
@@ -27,6 +29,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       setTitle(post?.title || "");
       setContent(post?.content || "");
       setImages(post?.images || []);
+      setPdfUrls(post?.pdf_urls || []);
+      setVideoUrls(post?.video_urls || []);
       setCategory(post?.category || "article");
     }
   }, [isOpen, post]);
@@ -55,7 +59,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       let success = false;
       
       if (isEdit && post) {
-        success = await updatePost(post.id, title, content, images, category);
+        success = await updatePost(post.id, title, content, images, pdfUrls, videoUrls, category);
         if (success) {
           toast({
             title: "Success",
@@ -63,7 +67,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           });
         }
       } else {
-        success = await addPost(title, content, images, category);
+        success = await addPost(title, content, images, pdfUrls, videoUrls, category);
         if (success) {
           toast({
             title: "Success",
@@ -84,6 +88,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       setTitle("");
       setContent("");
       setImages([]);
+      setPdfUrls([]);
+      setVideoUrls([]);
       setCategory("article");
       setIsOpen(false);
       onClose?.();
@@ -172,7 +178,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="bg-gray-900 text-white max-w-2xl border-gray-700">
+      <DialogContent className="bg-gray-900 text-white max-w-2xl border-gray-700 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-gold">
             {isEdit ? "Edit Post" : "Create New Post"}
@@ -183,6 +189,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           title={title}
           content={content}
           images={images}
+          pdfUrls={pdfUrls}
+          videoUrls={videoUrls}
           category={category}
           isEdit={isEdit}
           isSubmitting={isSubmitting}
@@ -191,6 +199,8 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
           onCategoryChange={setCategory}
           onFileUpload={handleFileUpload}
           onRemoveImage={removeImage}
+          onPdfUrlsChange={setPdfUrls}
+          onVideoUrlsChange={setVideoUrls}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
         />

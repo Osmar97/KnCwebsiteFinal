@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Edit, Trash2, User } from "lucide-react";
+import { Edit, Trash2, Download, FileText, Play } from "lucide-react";
 import { type Post, usePosts } from "@/contexts/PostsContext";
 import { PostEditor } from "./PostEditor";
 import { ImageModal } from "./ImageModal";
@@ -64,6 +64,22 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
     setImageModalOpen(true);
+  };
+
+  const handlePdfDownload = (pdfUrl: string) => {
+    const fileName = pdfUrl.split('/').pop() || 'document.pdf';
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = fileName;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const getPdfName = (url: string) => {
+    const name = url.split('/').pop() || 'PDF Document';
+    return name.length > 30 ? name.substring(0, 30) + '...' : name;
   };
 
   const showAdminControls = isAdminLoggedIn && !isPublicView;
@@ -149,6 +165,52 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
                     onClick={() => handleImageClick(index)}
                   />
                 ))}
+              </div>
+            )}
+
+            {post.pdf_urls && post.pdf_urls.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-gray-700">Downloadable Resources:</h4>
+                <div className="grid gap-2">
+                  {post.pdf_urls.map((pdfUrl, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                      <FileText className="w-5 h-5 text-red-500" />
+                      <span className="flex-1 text-sm text-gray-700 truncate">
+                        {getPdfName(pdfUrl)}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePdfDownload(pdfUrl)}
+                        className="flex items-center gap-1"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {post.video_urls && post.video_urls.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-gray-700">Videos:</h4>
+                <div className="grid gap-4">
+                  {post.video_urls.map((videoUrl, index) => (
+                    <div key={index} className="relative">
+                      <video
+                        src={videoUrl}
+                        className="w-full rounded-lg"
+                        controls
+                        preload="metadata"
+                        style={{ maxHeight: '400px' }}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

@@ -5,12 +5,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "./ImageUpload";
 import { ImagePreview } from "./ImagePreview";
+import { PdfUpload } from "./PdfUpload";
+import { VideoUpload } from "./VideoUpload";
 import { useToast } from "@/hooks/use-toast";
 
 interface PostEditorFormProps {
   title: string;
   content: string;
   images: string[];
+  pdfUrls: string[];
+  videoUrls: string[];
   category: "article" | "resource";
   isEdit: boolean;
   isSubmitting?: boolean;
@@ -19,6 +23,8 @@ interface PostEditorFormProps {
   onCategoryChange: (category: "article" | "resource") => void;
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveImage: (index: number) => void;
+  onPdfUrlsChange: (urls: string[]) => void;
+  onVideoUrlsChange: (urls: string[]) => void;
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
 }
@@ -27,6 +33,8 @@ export const PostEditorForm = ({
   title,
   content,
   images,
+  pdfUrls,
+  videoUrls,
   category,
   isEdit,
   isSubmitting = false,
@@ -35,6 +43,8 @@ export const PostEditorForm = ({
   onCategoryChange,
   onFileUpload,
   onRemoveImage,
+  onPdfUrlsChange,
+  onVideoUrlsChange,
   onSubmit,
   onCancel
 }: PostEditorFormProps) => {
@@ -113,6 +123,10 @@ export const PostEditorForm = ({
 
       <ImageUpload onFileUpload={onFileUpload} />
       <ImagePreview images={images} onRemoveImage={onRemoveImage} />
+
+      <PdfUpload pdfUrls={pdfUrls} onPdfUrlsChange={onPdfUrlsChange} />
+      
+      <VideoUpload videoUrls={videoUrls} onVideoUrlsChange={onVideoUrlsChange} />
 
       <div className="flex justify-end gap-2">
         <Button
