@@ -36,16 +36,41 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
       }
 
       try {
-        const fileName = `${Date.now()}_${file.name}`;
+        // Get current user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError || !user) {
+          toast({
+            title: "Authentication Error",
+            description: "You must be logged in to upload videos.",
+            variant: "destructive",
+          });
+          continue;
+        }
+
+        // Create a file path that includes the user ID for RLS policy
+        const fileName = `${user.id}/${Date.now()}_${file.name}`;
+        console.log("Uploading video with path:", fileName);
+        
         const { data, error } = await supabase.storage
           .from('videos')
-          .upload(fileName, file);
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
-        if (error) throw error;
+        if (error) {
+          console.error("Storage upload error:", error);
+          throw error;
+        }
+
+        console.log("Upload successful:", data);
 
         const { data: { publicUrl } } = supabase.storage
           .from('videos')
           .getPublicUrl(data.path);
+
+        console.log("Public URL:", publicUrl);
 
         onVideoUrlsChange([...videoUrls, publicUrl]);
 
