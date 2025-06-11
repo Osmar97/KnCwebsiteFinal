@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
@@ -40,11 +41,15 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      console.log("Checking authentication status...");
+      const { data: { session }, error } = await supabase.auth.getSession();
+      console.log("Session check result:", { session: !!session, error, userEmail: session?.user?.email });
+      
       if (session?.user) {
         setSupabaseUser(session.user);
         // Check if this user is the admin
         if (session.user.email === ADMIN_CREDENTIALS.email) {
+          console.log("Admin user detected, setting admin state");
           setIsAdminLoggedIn(true);
           setAdminUser({
             id: session.user.id,
@@ -60,9 +65,12 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change:", { event, session: !!session, userEmail: session?.user?.email });
+      
       if (session?.user) {
         setSupabaseUser(session.user);
         if (session.user.email === ADMIN_CREDENTIALS.email) {
+          console.log("Admin authenticated via auth state change");
           setIsAdminLoggedIn(true);
           setAdminUser({
             id: session.user.id,
@@ -72,6 +80,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
           });
         }
       } else {
+        console.log("No session, clearing admin state");
         setSupabaseUser(null);
         setIsAdminLoggedIn(false);
         setAdminUser(null);
@@ -86,16 +95,23 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     if (isLocked) return false;
 
+    console.log("Attempting login with:", { email });
+
     // Check credentials
     if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
       try {
+        console.log("Credentials valid, attempting Supabase authentication...");
+        
         // Try to sign in with Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password
         });
 
+        console.log("Sign in result:", { data: !!data, error, user: !!data?.user });
+
         if (error) {
+          console.log("Sign in failed, attempting sign up...");
           // If sign in fails, try to sign up (in case the user doesn't exist)
           const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
             email,
@@ -104,6 +120,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
               emailRedirectTo: `${window.location.origin}/`
             }
           });
+
+          console.log("Sign up result:", { data: !!signUpData, error: signUpError, user: !!signUpData?.user });
 
           if (signUpError) {
             console.error("Auth error:", signUpError);
@@ -115,6 +133,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
           }
 
           if (signUpData.user) {
+            console.log("Sign up successful, setting user state");
             setSupabaseUser(signUpData.user);
             setIsAdminLoggedIn(true);
             setAdminUser({
@@ -127,6 +146,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
             return true;
           }
         } else if (data.user) {
+          console.log("Sign in successful, setting user state");
           setSupabaseUser(data.user);
           setIsAdminLoggedIn(true);
           setAdminUser({
@@ -141,6 +161,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         console.error("Login error:", error);
       }
+    } else {
+      console.log("Invalid credentials provided");
     }
 
     setLoginAttempts(prev => prev + 1);
@@ -151,6 +173,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
+    console.log("Logging out...");
     await supabase.auth.signOut();
     setIsAdminLoggedIn(false);
     setAdminUser(null);
