@@ -7,6 +7,7 @@ import { usePosts, type Post } from "@/contexts/PostsContext";
 import { useToast } from "@/hooks/use-toast";
 import { ImageGallery } from "./ImageGallery";
 import { VideoDisplay } from "./VideoDisplay";
+import { PdfDisplay } from "./PdfDisplay";
 import { RelatedPosts } from "./RelatedPosts";
 
 export const ArticleView = () => {
@@ -22,6 +23,7 @@ export const ArticleView = () => {
     if (id) {
       const foundPost = getPostById(id);
       console.log("Found post:", foundPost);
+      console.log("Post PDFs:", foundPost?.pdf_urls);
       console.log("Post videos:", foundPost?.video_urls);
       if (foundPost) {
         setPost(foundPost);
@@ -68,6 +70,7 @@ export const ArticleView = () => {
     }
   };
 
+  console.log("Rendering ArticleView with PDFs:", post.pdf_urls);
   console.log("Rendering ArticleView with videos:", post.video_urls);
 
   return (
@@ -116,6 +119,9 @@ export const ArticleView = () => {
         {/* Videos Section */}
         <VideoDisplay videoUrls={post.video_urls} />
 
+        {/* PDFs Section */}
+        <PdfDisplay pdfUrls={post.pdf_urls} />
+
         {/* Article Content */}
         <div className="prose prose-invert max-w-none mb-12">
           <div className="text-lg leading-relaxed whitespace-pre-wrap">
@@ -128,6 +134,8 @@ export const ArticleView = () => {
           <div className="mb-8 p-4 bg-gray-800 rounded text-sm text-gray-300">
             <p><strong>Debug Info:</strong></p>
             <p>Post ID: {post.id}</p>
+            <p>PDF URLs: {JSON.stringify(post.pdf_urls)}</p>
+            <p>PDF URLs length: {post.pdf_urls?.length || 0}</p>
             <p>Video URLs: {JSON.stringify(post.video_urls)}</p>
             <p>Video URLs length: {post.video_urls?.length || 0}</p>
           </div>
