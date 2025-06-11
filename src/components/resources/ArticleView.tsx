@@ -129,18 +129,6 @@ export const ArticleView = () => {
           </div>
         </div>
 
-        {/* Debug info - remove this after testing */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mb-8 p-4 bg-gray-800 rounded text-sm text-gray-300">
-            <p><strong>Debug Info:</strong></p>
-            <p>Post ID: {post.id}</p>
-            <p>PDF URLs: {JSON.stringify(post.pdf_urls)}</p>
-            <p>PDF URLs length: {post.pdf_urls?.length || 0}</p>
-            <p>Video URLs: {JSON.stringify(post.video_urls)}</p>
-            <p>Video URLs length: {post.video_urls?.length || 0}</p>
-          </div>
-        )}
-
         {/* CTA Section */}
         <div className="bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/20 rounded-lg p-8 mb-12 text-center">
           <h3 className="text-2xl font-light text-white mb-4">
