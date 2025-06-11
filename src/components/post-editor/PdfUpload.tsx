@@ -39,11 +39,11 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
         // Check current session first
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         console.log("PDF Upload - Session check:", { 
-          session: !!session, 
+          hasSession: !!session, 
+          hasUser: !!session?.user,
           sessionError, 
           userId: session?.user?.id,
-          userEmail: session?.user?.email,
-          isAuthenticated: !!session?.user
+          userEmail: session?.user?.email
         });
         
         if (sessionError) {
@@ -57,7 +57,7 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
         }
 
         if (!session?.user) {
-          console.log("No session or user found for PDF upload");
+          console.log("No authenticated user found for PDF upload");
           toast({
             title: "Authentication Required",
             description: "Please log in to upload PDFs.",

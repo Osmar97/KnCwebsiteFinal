@@ -39,11 +39,11 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
         // Check current session first
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         console.log("Video Upload - Session check:", { 
-          session: !!session, 
+          hasSession: !!session, 
+          hasUser: !!session?.user,
           sessionError, 
           userId: session?.user?.id,
-          userEmail: session?.user?.email,
-          isAuthenticated: !!session?.user
+          userEmail: session?.user?.email
         });
         
         if (sessionError) {
@@ -57,7 +57,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
         }
 
         if (!session?.user) {
-          console.log("No session or user found for video upload");
+          console.log("No authenticated user found for video upload");
           toast({
             title: "Authentication Required",
             description: "Please log in to upload videos.",
