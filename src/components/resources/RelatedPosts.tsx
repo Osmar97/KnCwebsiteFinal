@@ -1,6 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { type Post } from "@/contexts/PostsContext";
 
 interface RelatedPostsProps {
@@ -31,31 +32,63 @@ export const RelatedPosts = ({ posts, category }: RelatedPostsProps) => {
         <div className="w-16 h-0.5 bg-gold mx-auto"></div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="space-y-6">
         {posts.map((relatedPost) => (
           <Card 
             key={relatedPost.id} 
-            className="bg-white hover:shadow-lg transition-shadow cursor-pointer"
+            className="bg-gray-900/50 border-gray-800 hover:bg-gray-900/70 transition-all cursor-pointer group"
             onClick={() => navigate(`/resources/${relatedPost.category}/${relatedPost.id}`)}
           >
-            <CardContent className="p-4">
-              {relatedPost.images && relatedPost.images.length > 0 && (
-                <div className="w-full h-32 overflow-hidden rounded mb-4">
-                  <img
-                    src={relatedPost.images[0]}
-                    alt="Related post"
-                    className="w-full h-full object-cover"
-                  />
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start gap-6">
+                {/* Left Content */}
+                <div className="flex-1 space-y-3">
+                  {/* Category Label */}
+                  <div className="text-xs font-medium text-gold uppercase tracking-wider">
+                    {relatedPost.category}s
+                  </div>
+
+                  {/* Title */}
+                  <h4 className="text-xl font-bold text-white leading-tight group-hover:text-gold transition-colors">
+                    {relatedPost.title || "Untitled Post"}
+                  </h4>
+
+                  {/* Excerpt */}
+                  <p className="text-gray-400 leading-relaxed">
+                    {relatedPost.content.substring(0, 150)}...
+                  </p>
+
+                  {/* Read More Link */}
+                  <div className="text-gold font-medium text-sm group-hover:text-white transition-colors">
+                    Read More →
+                  </div>
                 </div>
-              )}
-              
-              <div className="space-y-2">
-                <div className="text-xs text-gray-500">
-                  {formatDate(relatedPost.created_at)}
+
+                {/* Right Meta Section */}
+                <div className="flex flex-col items-end space-y-3 min-w-[200px]">
+                  {/* Date */}
+                  <div className="text-gray-400 text-sm">
+                    {formatDate(relatedPost.created_at)}
+                  </div>
+
+                  {/* Author Info */}
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <div className="text-white font-medium text-sm">
+                        by Ismael Gomes Queta
+                      </div>
+                      <div className="text-gray-400 text-xs">
+                        COO, Kings 'n Company
+                      </div>
+                    </div>
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src="/lovable-uploads/ismaPerfil.JPG" alt="Ismael Gomes Queta" />
+                      <AvatarFallback className="bg-gold text-black font-medium text-xs">
+                        IG
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-700 line-clamp-3">
-                  {relatedPost.content.substring(0, 100)}...
-                </p>
               </div>
             </CardContent>
           </Card>
