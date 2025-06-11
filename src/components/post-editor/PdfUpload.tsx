@@ -36,21 +36,34 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
       }
 
       try {
-        // Get current user
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        // Check current session first
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        console.log("Session check:", { session: !!session, sessionError });
         
-        if (userError || !user) {
+        if (sessionError) {
+          console.error("Session error:", sessionError);
           toast({
-            title: "Authentication Error",
-            description: "You must be logged in to upload PDFs.",
+            title: "Session Error",
+            description: "Please refresh the page and try again.",
+            variant: "destructive",
+          });
+          continue;
+        }
+
+        if (!session?.user) {
+          console.log("No session or user found");
+          toast({
+            title: "Authentication Required",
+            description: "Please log in to upload PDFs.",
             variant: "destructive",
           });
           continue;
         }
 
         // Create a file path that includes the user ID for RLS policy
-        const fileName = `${user.id}/${Date.now()}_${file.name}`;
+        const fileName = `${session.user.id}/${Date.now()}_${file.name}`;
         console.log("Uploading PDF with path:", fileName);
+        console.log("User ID:", session.user.id);
         
         const { data, error } = await supabase.storage
           .from('pdfs')
@@ -61,7 +74,12 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
 
         if (error) {
           console.error("Storage upload error:", error);
-          throw error;
+          toast({
+            title: "Upload Error",
+            description: `Failed to upload PDF: ${error.message}`,
+            variant: "destructive",
+          });
+          continue;
         }
 
         console.log("Upload successful:", data);
