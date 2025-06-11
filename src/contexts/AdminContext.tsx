@@ -24,7 +24,7 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 const ADMIN_CREDENTIALS = {
   email: "admin@quintagomes.com",
-  password: "admin123",
+  password: "Myqdeq-zejka7-sirjyf",
   name: "Ismael Gomes Queta",
   title: "Founder & CEO"
 };
