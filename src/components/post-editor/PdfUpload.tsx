@@ -1,4 +1,3 @@
-
 import { Upload, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,6 +54,17 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
           toast({
             title: "Authentication Required",
             description: "Please log in to upload PDFs.",
+            variant: "destructive",
+          });
+          continue;
+        }
+
+        // Additional check for user ID
+        if (!session.user.id) {
+          console.error("User ID not found in session:", session);
+          toast({
+            title: "Authentication Error",
+            description: "User ID not found. Please re-login.",
             variant: "destructive",
           });
           continue;
