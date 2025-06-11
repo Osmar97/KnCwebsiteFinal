@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
@@ -23,7 +22,7 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 const ADMIN_CREDENTIALS = {
-  email: "admin@quintagomes.com",
+  email: "ismael@kingsncompany.com",
   password: "Myqdeq-zejka7-sirjyf",
   name: "Ismael Gomes Queta",
   title: "Founder & CEO"
@@ -39,7 +38,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [lockoutTime, setLockoutTime] = useState<number | null>(null);
 
-  // Check for existing Supabase session and admin status
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
