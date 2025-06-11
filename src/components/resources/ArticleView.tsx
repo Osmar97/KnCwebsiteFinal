@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, User, Share2 } from "lucide-react";
@@ -9,16 +8,24 @@ import { ImageGallery } from "./ImageGallery";
 import { VideoDisplay } from "./VideoDisplay";
 import { PdfDisplay } from "./PdfDisplay";
 import { RelatedPosts } from "./RelatedPosts";
-
 export const ArticleView = () => {
-  const { category, id } = useParams<{ category: string; id: string }>();
+  const {
+    category,
+    id
+  } = useParams<{
+    category: string;
+    id: string;
+  }>();
   const navigate = useNavigate();
-  const { getPostById, getPostsByCategory } = usePosts();
-  const { toast } = useToast();
-  
+  const {
+    getPostById,
+    getPostsByCategory
+  } = usePosts();
+  const {
+    toast
+  } = useToast();
   const [post, setPost] = useState<Post | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
-
   useEffect(() => {
     if (id) {
       const foundPost = getPostById(id);
@@ -28,22 +35,16 @@ export const ArticleView = () => {
       if (foundPost) {
         setPost(foundPost);
         // Get related posts from same category, excluding current post
-        const related = getPostsByCategory(foundPost.category)
-          .filter(p => p.id !== id)
-          .slice(0, 3);
+        const related = getPostsByCategory(foundPost.category).filter(p => p.id !== id).slice(0, 3);
         setRelatedPosts(related);
       }
     }
   }, [id, getPostById, getPostsByCategory]);
-
   if (!post) {
-    return (
-      <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center">
+    return <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center">
         <p>Article not found</p>
-      </div>
-    );
+      </div>;
   }
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -52,36 +53,28 @@ export const ArticleView = () => {
       day: 'numeric'
     }).format(date);
   };
-
   const handleShare = async () => {
     try {
       await navigator.share({
         title: `Kings 'n Company - ${post.category}`,
         text: post.content.substring(0, 100) + "...",
-        url: window.location.href,
+        url: window.location.href
       });
     } catch (error) {
       // Fallback to copying URL
       navigator.clipboard.writeText(window.location.href);
       toast({
         title: "Link copied!",
-        description: "Article link has been copied to your clipboard.",
+        description: "Article link has been copied to your clipboard."
       });
     }
   };
-
   console.log("Rendering ArticleView with PDFs:", post.pdf_urls);
   console.log("Rendering ArticleView with videos:", post.video_urls);
-
-  return (
-    <div className="min-h-screen bg-neutral-900 text-white">
+  return <div className="min-h-screen bg-neutral-900 text-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back button */}
-        <Button
-          variant="outline"
-          onClick={() => navigate('/resources')}
-          className="mb-8 text-white border-gray-600 hover:bg-gray-800"
-        >
+        <Button variant="outline" onClick={() => navigate('/resources')} className="mb-8 border-gray-600 text-gray-950 bg-[#85754e]">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Resources
         </Button>
@@ -97,12 +90,7 @@ export const ArticleView = () => {
               <Calendar className="w-4 h-4" />
               <span>{formatDate(post.created_at)}</span>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleShare}
-              className="text-white border-gray-600 hover:bg-gray-800"
-            >
+            <Button variant="outline" size="sm" onClick={handleShare} className="border-gray-600 bg-[#85754e] text-neutral-950">
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
@@ -138,17 +126,10 @@ export const ArticleView = () => {
             Whether you're planning to buy, invest, or relocate to Portugal, our expert team is here to guide you every step of the way.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              className="bg-gold hover:bg-gold/90 text-black px-8"
-              onClick={() => navigate('/booking')}
-            >
+            <Button className="bg-gold hover:bg-gold/90 text-black px-8" onClick={() => navigate('/booking')}>
               Book a Discovery Call
             </Button>
-            <Button 
-              variant="outline" 
-              className="border-gold text-gold hover:bg-gold/10"
-              onClick={() => navigate('/contact')}
-            >
+            <Button variant="outline" className="border-gold text-gold hover:bg-gold/10" onClick={() => navigate('/contact')}>
               Get in Touch
             </Button>
           </div>
@@ -157,6 +138,5 @@ export const ArticleView = () => {
         {/* Related Articles */}
         <RelatedPosts posts={relatedPosts} category={post.category} />
       </div>
-    </div>
-  );
+    </div>;
 };
