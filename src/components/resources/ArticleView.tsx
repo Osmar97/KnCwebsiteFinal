@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, User, Share2, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ArrowLeft, Calendar, User, Share2, ChevronLeft, ChevronRight, Play, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePosts, type Post } from "@/contexts/PostsContext";
@@ -16,6 +16,7 @@ export const ArticleView = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [videoErrors, setVideoErrors] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
     if (id) {
@@ -77,6 +78,27 @@ export const ArticleView = () => {
     if (post.images && post.images.length > 1) {
       setCurrentImageIndex((prev) => (prev - 1 + post.images.length) % post.images.length);
     }
+  };
+
+  const handleVideoError = (index: number, error: any) => {
+    console.error(`Video ${index} error:`, error);
+    setVideoErrors(prev => ({
+      ...prev,
+      [index]: `Error loading video: ${error.target?.error?.message || 'Unknown error'}`
+    }));
+  };
+
+  const handleVideoLoadStart = (index: number) => {
+    console.log(`Video ${index} load started`);
+    setVideoErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[index];
+      return newErrors;
+    });
+  };
+
+  const handleVideoCanPlay = (index: number) => {
+    console.log(`Video ${index} can play`);
   };
 
   console.log("Rendering ArticleView with videos:", post.video_urls);
@@ -175,20 +197,40 @@ export const ArticleView = () => {
             <div className="space-y-6">
               {post.video_urls.map((videoUrl, index) => (
                 <div key={index} className="relative bg-gray-800 rounded-lg overflow-hidden">
-                  <video
-                    src={videoUrl}
-                    className="w-full max-h-96 object-contain"
-                    controls
-                    preload="metadata"
-                    poster=""
-                  >
-                    <p className="text-gray-400 p-4">
-                      Your browser does not support the video tag. 
-                      <a href={videoUrl} className="text-gold hover:underline ml-1">
-                        Download the video instead.
-                      </a>
-                    </p>
-                  </video>
+                  {videoErrors[index] ? (
+                    <div className="flex items-center justify-center p-8 text-center">
+                      <div className="text-red-400">
+                        <AlertCircle className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-sm">{videoErrors[index]}</p>
+                        <a 
+                          href={videoUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-gold hover:underline text-xs mt-2 inline-block"
+                        >
+                          Try opening video directly
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <video
+                      src={videoUrl}
+                      className="w-full max-h-96 object-contain bg-black"
+                      controls
+                      preload="metadata"
+                      onError={(e) => handleVideoError(index, e)}
+                      onLoadStart={() => handleVideoLoadStart(index)}
+                      onCanPlay={() => handleVideoCanPlay(index)}
+                      crossOrigin="anonymous"
+                    >
+                      <p className="text-gray-400 p-4">
+                        Your browser does not support the video tag. 
+                        <a href={videoUrl} className="text-gold hover:underline ml-1" target="_blank" rel="noopener noreferrer">
+                          Download the video instead.
+                        </a>
+                      </p>
+                    </video>
+                  )}
                   <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
                     Video {index + 1} of {post.video_urls.length}
                   </div>
@@ -212,6 +254,7 @@ export const ArticleView = () => {
             <p>Post ID: {post.id}</p>
             <p>Video URLs: {JSON.stringify(post.video_urls)}</p>
             <p>Video URLs length: {post.video_urls?.length || 0}</p>
+            <p>Video errors: {JSON.stringify(videoErrors)}</p>
           </div>
         )}
 
