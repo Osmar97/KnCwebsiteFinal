@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
 export const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -69,15 +68,6 @@ export const Hero = () => {
         <p className="text-gray-300 text-lg md:text-xl mb-3 max-w-3xl mx-auto leading-relaxed font-bold">Connecting Visionary Investors to Remarkable Properties</p>
         
         <p className="text-white text-xl mb-12 max-w-3xl mx-auto leading-relaxed md:text-base font-extralight py-[2px]">Welcome to Kings 'n Company</p>
-      </div>
-
-      {/* CTA Button */}
-      <div className="mt-12">
-        <Link to="/booking">
-          <Button className="bg-gold/60 hover:bg-gold/80 text-black font-medium tracking-wider px-12 py-4 text-lg transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border border-gold/30">
-            BOOK NOW
-          </Button>
-        </Link>
       </div>
     </div>
   </section>;
