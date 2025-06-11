@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, User, Share2, ChevronLeft, ChevronRight, Play, AlertCircle } from "lucide-react";
+import { ArrowLeft, Calendar, User, Share2, ChevronLeft, ChevronRight, Play, AlertCircle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePosts, type Post } from "@/contexts/PostsContext";
@@ -82,9 +82,19 @@ export const ArticleView = () => {
 
   const handleVideoError = (index: number, error: any) => {
     console.error(`Video ${index} error:`, error);
+    const videoUrl = post?.video_urls?.[index];
+    const fileExtension = videoUrl?.split('.').pop()?.toLowerCase();
+    
+    let errorMessage = 'Error loading video';
+    if (fileExtension === 'mkv') {
+      errorMessage = 'MKV format is not supported by web browsers. Please convert to MP4, WebM, or download to view.';
+    } else if (fileExtension && !['mp4', 'webm', 'ogg'].includes(fileExtension)) {
+      errorMessage = `${fileExtension.toUpperCase()} format may not be supported. Try MP4 or WebM format.`;
+    }
+    
     setVideoErrors(prev => ({
       ...prev,
-      [index]: `Error loading video: ${error.target?.error?.message || 'Unknown error'}`
+      [index]: errorMessage
     }));
   };
 
@@ -99,6 +109,17 @@ export const ArticleView = () => {
 
   const handleVideoCanPlay = (index: number) => {
     console.log(`Video ${index} can play`);
+  };
+
+  const handleVideoDownload = (videoUrl: string) => {
+    const fileName = videoUrl.split('/').pop() || 'video';
+    const link = document.createElement('a');
+    link.href = videoUrl;
+    link.download = fileName;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   console.log("Rendering ArticleView with videos:", post.video_urls);
@@ -198,18 +219,29 @@ export const ArticleView = () => {
               {post.video_urls.map((videoUrl, index) => (
                 <div key={index} className="relative bg-gray-800 rounded-lg overflow-hidden">
                   {videoErrors[index] ? (
-                    <div className="flex items-center justify-center p-8 text-center">
+                    <div className="flex flex-col items-center justify-center p-8 text-center space-y-4">
                       <div className="text-red-400">
-                        <AlertCircle className="w-8 h-8 mx-auto mb-2" />
-                        <p className="text-sm">{videoErrors[index]}</p>
-                        <a 
-                          href={videoUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-gold hover:underline text-xs mt-2 inline-block"
-                        >
-                          Try opening video directly
-                        </a>
+                        <AlertCircle className="w-12 h-12 mx-auto mb-3" />
+                        <p className="text-base mb-4">{videoErrors[index]}</p>
+                        
+                        <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+                          <Button
+                            onClick={() => handleVideoDownload(videoUrl)}
+                            className="bg-gold hover:bg-gold/90 text-black flex items-center gap-2"
+                          >
+                            <Download className="w-4 h-4" />
+                            Download Video
+                          </Button>
+                          
+                          <a 
+                            href={videoUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-gold hover:underline text-sm"
+                          >
+                            Try opening directly in new tab
+                          </a>
+                        </div>
                       </div>
                     </div>
                   ) : (
@@ -221,7 +253,6 @@ export const ArticleView = () => {
                       onError={(e) => handleVideoError(index, e)}
                       onLoadStart={() => handleVideoLoadStart(index)}
                       onCanPlay={() => handleVideoCanPlay(index)}
-                      crossOrigin="anonymous"
                     >
                       <p className="text-gray-400 p-4">
                         Your browser does not support the video tag. 
