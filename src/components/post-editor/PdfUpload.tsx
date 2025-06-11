@@ -3,6 +3,7 @@ import { Upload, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAdmin } from "@/contexts/AdminContext";
 
 interface PdfUploadProps {
   pdfUrls: string[];
@@ -11,6 +12,7 @@ interface PdfUploadProps {
 
 export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
   const { toast } = useToast();
+  const { supabaseUser, isAdminLoggedIn } = useAdmin();
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -36,41 +38,34 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
       }
 
       try {
-        // Check current session first
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        console.log("PDF Upload - Session check:", { 
-          hasSession: !!session, 
-          hasUser: !!session?.user,
-          sessionError, 
-          userId: session?.user?.id,
-          userEmail: session?.user?.email
+        console.log("PDF Upload - Admin check:", { 
+          isAdminLoggedIn, 
+          hasSupabaseUser: !!supabaseUser,
+          userId: supabaseUser?.id,
+          userEmail: supabaseUser?.email
         });
         
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-          toast({
-            title: "Session Error",
-            description: "Please refresh the page and try again.",
-            variant: "destructive",
-          });
-          continue;
-        }
-
-        if (!session?.user) {
-          console.log("No authenticated user found for PDF upload");
+        if (!isAdminLoggedIn || !supabaseUser) {
+          console.log("No authenticated admin user found for PDF upload");
           toast({
             title: "Authentication Required",
-            description: "Please log in to upload PDFs.",
+            description: "Please log in as admin to upload PDFs.",
             variant: "destructive",
           });
           continue;
         }
 
+        // Sanitize filename to remove special characters and spaces
+        const sanitizedFileName = file.name
+          .replace(/[^a-zA-Z0-9.-]/g, '_') // Replace special chars with underscore
+          .replace(/\s+/g, '_') // Replace spaces with underscore
+          .toLowerCase();
+
         // Create a file path that includes the user ID for RLS policy
-        const fileName = `${session.user.id}/${Date.now()}_${file.name}`;
-        console.log("Uploading PDF with path:", fileName);
-        console.log("User ID:", session.user.id);
-        console.log("User email:", session.user.email);
+        const fileName = `${supabaseUser.id}/${Date.now()}_${sanitizedFileName}`;
+        console.log("Uploading PDF with sanitized path:", fileName);
+        console.log("User ID:", supabaseUser.id);
+        console.log("User email:", supabaseUser.email);
         
         const { data, error } = await supabase.storage
           .from('pdfs')
