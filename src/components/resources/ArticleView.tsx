@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, User, Share2 } from "lucide-react";
@@ -8,6 +9,7 @@ import { ImageGallery } from "./ImageGallery";
 import { VideoDisplay } from "./VideoDisplay";
 import { PdfDisplay } from "./PdfDisplay";
 import { RelatedPosts } from "./RelatedPosts";
+
 export const ArticleView = () => {
   const {
     category,
@@ -26,6 +28,7 @@ export const ArticleView = () => {
   } = useToast();
   const [post, setPost] = useState<Post | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
+
   useEffect(() => {
     if (id) {
       const foundPost = getPostById(id);
@@ -40,11 +43,13 @@ export const ArticleView = () => {
       }
     }
   }, [id, getPostById, getPostsByCategory]);
+
   if (!post) {
     return <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center">
         <p>Article not found</p>
       </div>;
   }
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -53,6 +58,7 @@ export const ArticleView = () => {
       day: 'numeric'
     }).format(date);
   };
+
   const handleShare = async () => {
     try {
       await navigator.share({
@@ -69,8 +75,10 @@ export const ArticleView = () => {
       });
     }
   };
+
   console.log("Rendering ArticleView with PDFs:", post.pdf_urls);
   console.log("Rendering ArticleView with videos:", post.video_urls);
+
   return <div className="min-h-screen bg-neutral-900 text-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back button */}
@@ -114,24 +122,6 @@ export const ArticleView = () => {
         <div className="prose prose-invert max-w-none mb-12">
           <div className="text-lg leading-relaxed whitespace-pre-wrap">
             {post.content}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/20 rounded-lg p-8 mb-12 text-center">
-          <h3 className="text-2xl font-light text-white mb-4">
-            Ready to Start Your Journey?
-          </h3>
-          <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-            Whether you're planning to buy, invest, or relocate to Portugal, our expert team is here to guide you every step of the way.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-gold hover:bg-gold/90 text-black px-8" onClick={() => navigate('/booking')}>
-              Book a Discovery Call
-            </Button>
-            <Button variant="outline" className="border-gold text-gold hover:bg-gold/10" onClick={() => navigate('/contact')}>
-              Get in Touch
-            </Button>
           </div>
         </div>
 
