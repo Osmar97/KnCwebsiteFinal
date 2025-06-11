@@ -95,91 +95,91 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     if (isLocked) return false;
 
-    console.log("Attempting login with:", { email });
+    console.log("Attempting admin login with:", { email });
 
-    // Check credentials
-    if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-      try {
-        console.log("Credentials valid, attempting Supabase authentication...");
+    // Check credentials first
+    if (email !== ADMIN_CREDENTIALS.email || password !== ADMIN_CREDENTIALS.password) {
+      console.log("Invalid admin credentials provided");
+      setLoginAttempts(prev => prev + 1);
+      if (loginAttempts + 1 >= MAX_ATTEMPTS) {
+        setLockoutTime(Date.now() + LOCKOUT_DURATION);
+      }
+      return false;
+    }
+
+    try {
+      console.log("Credentials valid, attempting Supabase authentication...");
+      
+      // First try to sign in
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      console.log("Sign in attempt:", { 
+        success: !!signInData?.user, 
+        error: signInError?.message,
+        user: !!signInData?.user 
+      });
+
+      if (signInData?.user && !signInError) {
+        console.log("Sign in successful");
+        setSupabaseUser(signInData.user);
+        setIsAdminLoggedIn(true);
+        setAdminUser({
+          id: signInData.user.id,
+          email: signInData.user.email!,
+          name: ADMIN_CREDENTIALS.name,
+          title: ADMIN_CREDENTIALS.title
+        });
+        setLoginAttempts(0);
+        return true;
+      }
+
+      // If sign in fails due to user not found or email not confirmed, try sign up
+      if (signInError && (
+        signInError.message.includes('Invalid login credentials') || 
+        signInError.message.includes('Email not confirmed')
+      )) {
+        console.log("Sign in failed, attempting sign up...");
         
-        // Try to sign in with Supabase first
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
-          password
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              confirmed_at: new Date().toISOString() // Try to auto-confirm
+            }
+          }
         });
 
-        console.log("Sign in result:", { data: !!signInData, error: signInError, user: !!signInData?.user });
+        console.log("Sign up attempt:", { 
+          success: !!signUpData?.user, 
+          error: signUpError?.message,
+          needsConfirmation: signUpData?.user && !signUpData?.user?.email_confirmed_at
+        });
 
-        if (signInData?.user && !signInError) {
-          console.log("Sign in successful, setting user state");
-          setSupabaseUser(signInData.user);
+        if (signUpData?.user && !signUpError) {
+          // For admin, we'll allow login even without email confirmation
+          console.log("Sign up successful, logging in admin without email confirmation");
+          setSupabaseUser(signUpData.user);
           setIsAdminLoggedIn(true);
           setAdminUser({
-            id: signInData.user.id,
-            email: signInData.user.email!,
+            id: signUpData.user.id,
+            email: signUpData.user.email!,
             name: ADMIN_CREDENTIALS.name,
             title: ADMIN_CREDENTIALS.title
           });
           setLoginAttempts(0);
           return true;
         }
-
-        // If sign in fails, try to sign up
-        console.log("Sign in failed, attempting sign up...");
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`
-          }
-        });
-
-        console.log("Sign up result:", { data: !!signUpData, error: signUpError, user: !!signUpData?.user });
-
-        if (signUpError) {
-          console.error("Auth error:", signUpError);
-          setLoginAttempts(prev => prev + 1);
-          if (loginAttempts + 1 >= MAX_ATTEMPTS) {
-            setLockoutTime(Date.now() + LOCKOUT_DURATION);
-          }
-          return false;
-        }
-
-        if (signUpData.user) {
-          console.log("Sign up successful, setting user state");
-          
-          // For development, let's try to confirm the user automatically
-          if (signUpData.user.email_confirmed_at || signUpData.user.confirmed_at) {
-            setSupabaseUser(signUpData.user);
-            setIsAdminLoggedIn(true);
-            setAdminUser({
-              id: signUpData.user.id,
-              email: signUpData.user.email!,
-              name: ADMIN_CREDENTIALS.name,
-              title: ADMIN_CREDENTIALS.title
-            });
-            setLoginAttempts(0);
-            return true;
-          } else {
-            console.log("User created but needs email confirmation");
-            // For now, let's still allow them to login since it's an admin
-            setSupabaseUser(signUpData.user);
-            setIsAdminLoggedIn(true);
-            setAdminUser({
-              id: signUpData.user.id,
-              email: signUpData.user.email!,
-              name: ADMIN_CREDENTIALS.name,
-              title: ADMIN_CREDENTIALS.title
-            });
-            setLoginAttempts(0);
-            return true;
-          }
-        }
-      } catch (error) {
-        console.error("Login error:", error);
       }
-    } else {
-      console.log("Invalid credentials provided");
+
+      console.error("Both sign in and sign up failed");
+      
+    } catch (error) {
+      console.error("Login error:", error);
     }
 
     setLoginAttempts(prev => prev + 1);
