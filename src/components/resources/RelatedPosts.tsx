@@ -36,34 +36,50 @@ export const RelatedPosts = ({ posts, category }: RelatedPostsProps) => {
         {posts.map((relatedPost) => (
           <Card 
             key={relatedPost.id} 
-            className="bg-gray-900/50 border-gray-800 hover:bg-gray-900/70 transition-all cursor-pointer group border-l-4 border-l-gold"
+            className="bg-gray-900/50 border-gray-800 hover:bg-gray-900/70 transition-all cursor-pointer group border-l-8 border-l-gold"
             onClick={() => navigate(`/resources/${relatedPost.category}/${relatedPost.id}`)}
           >
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {/* Category Label */}
-                <div className="text-xs font-medium text-gold uppercase tracking-wider">
-                  {relatedPost.category}s
+            <CardContent className="p-8 pr-12">
+              <div className="relative">
+                {/* Date in top-right corner */}
+                <div className="absolute top-0 right-0 text-gray-400 text-sm">
+                  {formatDate(relatedPost.created_at)}
                 </div>
 
-                {/* Title */}
-                <h4 className="text-xl font-bold text-white leading-tight group-hover:text-gold transition-colors">
-                  {relatedPost.title || "Untitled Post"}
-                </h4>
+                {/* Main content area with proper spacing */}
+                <div className="pr-32 space-y-5">
+                  {/* Category Label with more space below */}
+                  <div className="text-xs font-medium text-gold uppercase tracking-wider mb-4">
+                    {relatedPost.category}s
+                  </div>
 
-                {/* Excerpt */}
-                <p className="text-gray-400 leading-relaxed">
-                  {relatedPost.content.substring(0, 150)}...
-                </p>
+                  {/* Title - Much larger, bolder */}
+                  <h4 className="text-3xl font-bold text-white leading-tight group-hover:text-gold transition-colors mb-5">
+                    {relatedPost.title || "Untitled Post"}
+                  </h4>
 
-                {/* Read More and Author Section */}
-                <div className="flex justify-between items-center pt-2">
+                  {/* Excerpt with larger font and more spacing */}
+                  <p className="text-gray-400 leading-relaxed text-base mb-6">
+                    {relatedPost.content.substring(0, 150)}...
+                  </p>
+                </div>
+
+                {/* Footer with Read More and Author positioned separately */}
+                <div className="relative mt-6">
+                  {/* Read More in bottom-left */}
                   <div className="text-gold font-medium text-sm group-hover:text-white transition-colors">
                     Read More →
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
+                  {/* Author info in bottom-right corner */}
+                  <div className="absolute bottom-0 right-0 flex flex-col items-center space-y-3">
+                    <Avatar className="w-12 h-12">
+                      <AvatarImage src="/lovable-uploads/ismaPerfil.JPG" alt="Ismael Gomes Queta" />
+                      <AvatarFallback className="bg-gold text-black font-medium text-xs">
+                        IG
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="text-center">
                       <div className="text-white font-medium text-sm">
                         by Ismael Gomes Queta
                       </div>
@@ -71,12 +87,6 @@ export const RelatedPosts = ({ posts, category }: RelatedPostsProps) => {
                         Founder, Kings 'n Company
                       </div>
                     </div>
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src="/lovable-uploads/ismaPerfil.JPG" alt="Ismael Gomes Queta" />
-                      <AvatarFallback className="bg-gold text-black font-medium text-xs">
-                        IG
-                      </AvatarFallback>
-                    </Avatar>
                   </div>
                 </div>
               </div>
