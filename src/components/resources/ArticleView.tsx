@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, User, Share2 } from "lucide-react";
@@ -118,11 +119,12 @@ export const ArticleView = () => {
         {/* PDFs Section */}
         <PdfDisplay pdfUrls={post.pdf_urls} />
 
-        {/* Article Content */}
+        {/* Article Content with HTML rendering for bold/italic */}
         <div className="prose prose-invert max-w-none mb-12">
-          <div className="text-lg leading-relaxed whitespace-pre-wrap">
-            {post.content}
-          </div>
+          <div 
+            className="text-lg leading-relaxed [&_strong]:font-bold [&_em]:italic [&_p]:mb-4"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
 
         {/* Author Information */}

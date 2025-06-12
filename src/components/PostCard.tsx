@@ -146,7 +146,10 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-gray-900 whitespace-pre-wrap">{post.content}</p>
+            <div 
+              className="text-gray-900 whitespace-pre-wrap [&_strong]:font-bold [&_em]:italic [&_p]:mb-2"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
             
             {post.images && post.images.length > 0 && (
               <div className={`grid gap-2 ${

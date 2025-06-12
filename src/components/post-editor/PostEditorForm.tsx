@@ -1,13 +1,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "./ImageUpload";
 import { ImagePreview } from "./ImagePreview";
 import { PdfUpload } from "./PdfUpload";
 import { VideoUpload } from "./VideoUpload";
 import { useToast } from "@/hooks/use-toast";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 interface PostEditorFormProps {
   title: string;
@@ -75,6 +76,16 @@ export const PostEditorForm = ({
     onSubmit(e);
   };
 
+  // Quill modules configuration for bold and italic only
+  const modules = {
+    toolbar: [
+      ['bold', 'italic']
+    ]
+  };
+
+  // Quill formats configuration
+  const formats = ['bold', 'italic'];
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
@@ -111,14 +122,22 @@ export const PostEditorForm = ({
         <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">
           Content <span className="text-gray-500 text-xs">(optional)</span>
         </label>
-        <Textarea
-          id="content"
-          value={content}
-          onChange={(e) => onContentChange(e.target.value)}
-          placeholder="What's on your mind? (optional if you're adding media)"
-          className="min-h-[120px] bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-          disabled={isSubmitting}
-        />
+        <div className="bg-gray-800 border border-gray-600 rounded-md">
+          <ReactQuill
+            value={content}
+            onChange={onContentChange}
+            placeholder="What's on your mind? (optional if you're adding media)"
+            modules={modules}
+            formats={formats}
+            theme="snow"
+            style={{
+              backgroundColor: '#1f2937',
+              color: 'white',
+              minHeight: '120px'
+            }}
+            className="text-white [&_.ql-editor]:text-white [&_.ql-editor]:bg-gray-800 [&_.ql-toolbar]:border-gray-600 [&_.ql-container]:border-gray-600 [&_.ql-toolbar]:bg-gray-700"
+          />
+        </div>
       </div>
 
       <ImageUpload onFileUpload={onFileUpload} />
