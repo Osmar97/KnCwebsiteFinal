@@ -62,10 +62,11 @@ export const PostEditorForm = ({
       return;
     }
 
-    if (!content.trim()) {
+    // Content is now optional - only validate if there's no other media
+    if (!content.trim() && images.length === 0 && pdfUrls.length === 0 && videoUrls.length === 0) {
       toast({
         title: "Error",
-        description: "Post content cannot be empty.",
+        description: "Post must have either content or media (images, videos, or PDFs).",
         variant: "destructive",
       });
       return;
@@ -108,15 +109,14 @@ export const PostEditorForm = ({
 
       <div>
         <label htmlFor="content" className="block text-sm font-medium text-gray-300 mb-2">
-          Content
+          Content <span className="text-gray-500 text-xs">(optional)</span>
         </label>
         <Textarea
           id="content"
           value={content}
           onChange={(e) => onContentChange(e.target.value)}
-          placeholder="What's on your mind?"
+          placeholder="What's on your mind? (optional if you're adding media)"
           className="min-h-[120px] bg-gray-800 border-gray-600 text-white placeholder-gray-400"
-          required
           disabled={isSubmitting}
         />
       </div>

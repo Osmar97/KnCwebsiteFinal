@@ -35,20 +35,31 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     }
   }, [isOpen, post]);
 
-  const validateContent = (title: string, content: string): boolean => {
+  const validateContent = (title: string, content: string, images: string[], pdfUrls: string[], videoUrls: string[]): boolean => {
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
-    return trimmedTitle.length > 0 && trimmedTitle.length <= 200 && 
-           trimmedContent.length > 0 && trimmedContent.length <= 5000;
+    
+    // Title is required and must be within limits
+    if (trimmedTitle.length === 0 || trimmedTitle.length > 200) {
+      return false;
+    }
+    
+    // Content length check if provided
+    if (trimmedContent.length > 5000) {
+      return false;
+    }
+    
+    // Must have either content or media
+    return trimmedContent.length > 0 || images.length > 0 || pdfUrls.length > 0 || videoUrls.length > 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateContent(title, content)) {
+    if (!validateContent(title, content, images, pdfUrls, videoUrls)) {
       toast({
         title: "Invalid Content",
-        description: "Title must be between 1-200 characters and content between 1-5000 characters.",
+        description: "Title is required (max 200 chars). Content is optional but if provided must be under 5000 chars. Must include either content or media.",
         variant: "destructive",
       });
       return;
