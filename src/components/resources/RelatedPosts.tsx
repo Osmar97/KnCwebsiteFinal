@@ -21,6 +21,17 @@ export const RelatedPosts = ({ posts, category }: RelatedPostsProps) => {
     }).format(date);
   };
 
+  const getPreviewText = (content: string) => {
+    // Replace paragraph tags with spaces and strip all HTML tags
+    const withSpaces = content.replace(/<\/p>/g, ' ').replace(/<p[^>]*>/g, '');
+    const strippedContent = withSpaces.replace(/<[^>]*>/g, '');
+    // Clean up multiple spaces and trim
+    const cleanedContent = strippedContent.replace(/\s+/g, ' ').trim();
+    return cleanedContent.length > 150 
+      ? cleanedContent.substring(0, 150) + "..." 
+      : cleanedContent;
+  };
+
   if (posts.length === 0) {
     return null;
   }
@@ -60,7 +71,7 @@ export const RelatedPosts = ({ posts, category }: RelatedPostsProps) => {
 
                   {/* Excerpt with larger font and more spacing */}
                   <p className="text-gray-400 leading-relaxed text-base mb-6">
-                    {relatedPost.content.substring(0, 150)}...
+                    {getPreviewText(relatedPost.content)}
                   </p>
                 </div>
 
