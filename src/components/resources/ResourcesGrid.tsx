@@ -1,8 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, User, ArrowRight } from "lucide-react";
+import { Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { usePosts, type Post } from "@/contexts/PostsContext";
 
 interface ResourcesGridProps {
@@ -33,13 +35,13 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
   };
 
   const getPreviewText = (content: string) => {
-    // Replace paragraph tags with line breaks, then strip all other HTML tags
-    const withLineBreaks = content.replace(/<\/p>/g, '\n').replace(/<p[^>]*>/g, '');
-    const strippedContent = withLineBreaks.replace(/<[^>]*>/g, '');
-    // Clean up multiple line breaks and trim
-    const cleanedContent = strippedContent.replace(/\n+/g, ' ').trim();
-    return cleanedContent.length > 150 
-      ? cleanedContent.substring(0, 150) + "..." 
+    // Replace paragraph tags with spaces and strip all HTML tags
+    const withSpaces = content.replace(/<\/p>/g, ' ').replace(/<p[^>]*>/g, '');
+    const strippedContent = withSpaces.replace(/<[^>]*>/g, '');
+    // Clean up multiple spaces and trim
+    const cleanedContent = strippedContent.replace(/\s+/g, ' ').trim();
+    return cleanedContent.length > 180 
+      ? cleanedContent.substring(0, 180) + "..." 
       : cleanedContent;
   };
 
@@ -72,55 +74,55 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
         {filteredPosts.map((post) => (
           <Card key={post.id} className="bg-gray-800/50 backdrop-blur-sm border-gray-700 hover:bg-gray-800/70 transition-all duration-300 cursor-pointer group" onClick={() => handlePostClick(post)}>
             <CardContent className="p-8">
-              <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                {/* Featured Image */}
-                {post.images && post.images.length > 0 && (
-                  <div className="lg:w-1/3">
-                    <img
-                      src={post.images[0]}
-                      alt={post.title}
-                      className="w-full h-48 lg:h-32 object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-                
-                {/* Content */}
-                <div className={`${post.images && post.images.length > 0 ? 'lg:w-2/3' : 'w-full'} space-y-4`}>
+              <div className="relative">
+                {/* Date in top-right corner */}
+                <div className="absolute top-0 right-0 flex items-center gap-2 text-gray-400 text-sm">
+                  <Calendar className="w-4 h-4" />
+                  <span>{formatDate(post.created_at)}</span>
+                </div>
+
+                {/* Main content area */}
+                <div className="pr-32 space-y-4">
                   {/* Category Badge */}
-                  <div className="inline-block px-3 py-1 bg-gold text-black text-sm font-medium rounded-full capitalize">
-                    {post.category}
+                  <div className="inline-block px-3 py-1 bg-gold text-black text-sm font-medium rounded-full uppercase tracking-wider">
+                    {post.category === "article" ? "ARTICLES" : "RESOURCES"}
                   </div>
                   
                   {/* Title */}
-                  <h3 className="text-xl font-semibold text-white group-hover:text-gold transition-colors">
+                  <h3 className="text-2xl font-semibold text-white group-hover:text-gold transition-colors leading-tight">
                     {post.title}
                   </h3>
                   
                   {/* Preview Text */}
                   {post.content && (
-                    <p className="text-gray-300 text-sm leading-relaxed">
+                    <p className="text-gray-300 text-base leading-relaxed">
                       {getPreviewText(post.content)}
                     </p>
                   )}
                   
-                  {/* Meta Information */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-gray-400">
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        <span>Ismael Gomes Queta</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        <span>{formatDate(post.created_at)}</span>
-                      </div>
+                  {/* Read More Button */}
+                  <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80 hover:bg-gold/10 p-0 h-auto font-medium">
+                    Read More
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+
+                {/* Author info in bottom-right corner */}
+                <div className="absolute bottom-0 right-0 flex items-center gap-3">
+                  <div className="text-right">
+                    <div className="text-white font-medium text-sm">
+                      by Ismael Gomes Queta
                     </div>
-                    
-                    <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80 hover:bg-gold/10">
-                      Read More
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                    <div className="text-gray-400 text-xs">
+                      COO, Kings 'n Company
+                    </div>
                   </div>
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src="/lovable-uploads/ismaPerfil.JPG" alt="Ismael Gomes Queta" />
+                    <AvatarFallback className="bg-gold text-black font-medium text-xs">
+                      IG
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
               </div>
             </CardContent>
