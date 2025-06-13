@@ -116,9 +116,6 @@ export const ArticleView = () => {
         {/* Videos Section */}
         <VideoDisplay videoUrls={post.video_urls} />
 
-        {/* PDFs Section */}
-        <PdfDisplay pdfUrls={post.pdf_urls} />
-
         {/* Article Content with HTML rendering for bold/italic */}
         <div className="prose prose-invert max-w-none mb-12">
           <div 
@@ -126,6 +123,9 @@ export const ArticleView = () => {
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </div>
+
+        {/* PDFs Section - moved below content */}
+        <PdfDisplay pdfUrls={post.pdf_urls} />
 
         {/* Author Information */}
         <AuthorInfo />
