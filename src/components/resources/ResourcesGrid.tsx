@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, User, ArrowRight } from "lucide-react";
@@ -34,11 +33,14 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
   };
 
   const getPreviewText = (content: string) => {
-    // Strip HTML tags for preview
-    const strippedContent = content.replace(/<[^>]*>/g, '');
-    return strippedContent.length > 150 
-      ? strippedContent.substring(0, 150) + "..." 
-      : strippedContent;
+    // Replace paragraph tags with line breaks, then strip all other HTML tags
+    const withLineBreaks = content.replace(/<\/p>/g, '\n').replace(/<p[^>]*>/g, '');
+    const strippedContent = withLineBreaks.replace(/<[^>]*>/g, '');
+    // Clean up multiple line breaks and trim
+    const cleanedContent = strippedContent.replace(/\n+/g, ' ').trim();
+    return cleanedContent.length > 150 
+      ? cleanedContent.substring(0, 150) + "..." 
+      : cleanedContent;
   };
 
   const handlePostClick = (post: Post) => {
