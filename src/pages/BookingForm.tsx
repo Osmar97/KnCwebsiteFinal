@@ -118,16 +118,6 @@ const BookingForm = () => {
 
               {/* Calendar */}
               <div className="mb-6 flex justify-center">
-                <div className="flex items-center justify-between mb-4">
-                  <button className="p-2 hover:bg-gray-100 rounded">
-                    ←
-                  </button>
-                  <h3 className="font-semibold">June 2025</h3>
-                  <button className="p-2 hover:bg-gray-100 rounded">
-                    →
-                  </button>
-                </div>
-                
                 <CalendarComponent
                   mode="single"
                   selected={selectedDate}
