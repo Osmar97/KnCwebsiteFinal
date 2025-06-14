@@ -1,6 +1,7 @@
 
 import { MapPin, Phone, Mail, Linkedin, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AdminLogin } from "./AdminLogin";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -129,13 +130,16 @@ export const Footer = () => {
             <p className="text-gray-400 text-sm">
               © {currentYear} Kings 'n Company. All rights reserved. | AMI 21908
             </p>
-            <div className="flex space-x-6">
+            <div className="flex items-center space-x-6">
               <Link to="/privacy-policy" className="text-gray-400 hover:text-gold text-sm transition-colors">
                 Privacy Policy
               </Link>
               <a href="#" className="text-gray-400 hover:text-gold text-sm transition-colors">
                 Terms of Service
               </a>
+              <div className="ml-4 pl-4 border-l border-gray-700">
+                <AdminLogin />
+              </div>
             </div>
           </div>
         </div>

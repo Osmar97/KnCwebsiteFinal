@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { AdminLogin } from "./AdminLogin";
 import logo from '../assets/logo.png';
 
 export const Navigation = () => {
@@ -76,7 +75,6 @@ export const Navigation = () => {
                 <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
               </Link>
             ))}
-            <AdminLogin />
           </div>
 
           {/* Mobile menu button */}
@@ -104,9 +102,6 @@ export const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
-              <div className="px-3 py-2">
-                <AdminLogin />
-              </div>
             </div>
           </div>
         )}
