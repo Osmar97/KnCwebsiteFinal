@@ -73,7 +73,7 @@ export const AboutFoundationHeader = ({
 
     const interval = setInterval(() => {
       emblaApi2.scrollNext();
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [emblaApi2]);
