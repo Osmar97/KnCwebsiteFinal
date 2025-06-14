@@ -46,30 +46,36 @@ export const Navigation = () => {
           {/* Logo */}
           <Link 
             to="/"
-            className="flex items-center space-x-3 group cursor-pointer"
+            className="flex items-center space-x-2 sm:space-x-3 group cursor-pointer"
           >
             <img 
               src={logo} 
               alt="Logo" 
-              className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" 
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" 
             />
-            <div>
-              <div className={`${logoTextColor} font-light text-lg tracking-wider group-hover:text-gold-light transition-colors`}>
+            <div className="hidden sm:block">
+              <div className={`${logoTextColor} font-light text-base sm:text-lg tracking-wider group-hover:text-gold-light transition-colors`}>
                 Kings 'n Company
               </div>
               <div className={`text-xs ${subtitleColor} tracking-widest`}>
                 REAL ESTATE NETWORK
               </div>
             </div>
+            {/* Mobile logo text */}
+            <div className="sm:hidden">
+              <div className={`${logoTextColor} font-light text-sm tracking-wider group-hover:text-gold-light transition-colors`}>
+                Kings 'n Company
+              </div>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-sm tracking-wider font-light group`}
+                className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group`}
               >
                 {item.name}
                 <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
@@ -83,7 +89,7 @@ export const Navigation = () => {
               onClick={() => setIsOpen(!isOpen)}
               className={`${textColor} ${hoverColor} transition-colors duration-300 p-2`}
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
@@ -96,7 +102,7 @@ export const Navigation = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`block px-3 py-2 ${mobileTextColor} hover:text-gold hover:bg-gold/5 rounded-md transition-all duration-300 text-sm tracking-wider`}
+                  className={`block px-3 py-3 ${mobileTextColor} hover:text-gold hover:bg-gold/5 rounded-md transition-all duration-300 text-sm tracking-wider border-b border-gray-800 last:border-b-0`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}

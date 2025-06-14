@@ -52,11 +52,11 @@ export const Testimonials = () => {
   };
 
   return (
-    <section ref={sectionRef} className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
+    <section ref={sectionRef} className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
       {/* Background Animation */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute top-1/4 right-0 w-48 h-48 sm:w-96 sm:h-96 bg-gold/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-0 w-48 h-48 sm:w-96 sm:h-96 bg-gold/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -82,12 +82,15 @@ export const Testimonials = () => {
           />
         </div>
 
-        <TestimonialsGrid
-          testimonials={testimonials}
-          currentTestimonial={currentTestimonial}
-          isVisible={isVisible}
-          onSelectTestimonial={goToTestimonial}
-        />
+        {/* Hide testimonials grid on mobile for better performance */}
+        <div className="hidden sm:block">
+          <TestimonialsGrid
+            testimonials={testimonials}
+            currentTestimonial={currentTestimonial}
+            isVisible={isVisible}
+            onSelectTestimonial={goToTestimonial}
+          />
+        </div>
       </div>
     </section>
   );

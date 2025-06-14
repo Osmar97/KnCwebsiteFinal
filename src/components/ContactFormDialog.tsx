@@ -24,17 +24,17 @@ export const ContactFormDialog = ({ children }: ContactFormDialogProps) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="bg-gradient-to-br from-gray-900 to-black border border-gray-700 text-white max-w-md">
+      <DialogContent className="bg-gradient-to-br from-gray-900 to-black border border-gray-700 text-white max-w-[95vw] sm:max-w-md mx-4">
         <DialogHeader>
-          <DialogTitle className="text-gold text-xl font-light tracking-wider flex items-center gap-3">
-            <Mail className="w-5 h-5" />
+          <DialogTitle className="text-gold text-lg sm:text-xl font-light tracking-wider flex items-center gap-3">
+            <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
             Contact Us
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-3 sm:space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">
               Name
             </label>
             <Input
@@ -42,13 +42,13 @@ export const ContactFormDialog = ({ children }: ContactFormDialogProps) => {
               type="text"
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white focus:border-gold"
+              className="bg-gray-800 border-gray-600 text-white focus:border-gold h-10 text-sm"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">
               Email
             </label>
             <Input
@@ -56,13 +56,13 @@ export const ContactFormDialog = ({ children }: ContactFormDialogProps) => {
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white focus:border-gold"
+              className="bg-gray-800 border-gray-600 text-white focus:border-gold h-10 text-sm"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="subject" className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">
               Subject
             </label>
             <Input
@@ -70,30 +70,30 @@ export const ContactFormDialog = ({ children }: ContactFormDialogProps) => {
               type="text"
               value={formData.subject}
               onChange={(e) => handleInputChange("subject", e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white focus:border-gold"
+              className="bg-gray-800 border-gray-600 text-white focus:border-gold h-10 text-sm"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">
               Message
             </label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => handleInputChange("message", e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white focus:border-gold min-h-[100px]"
+              className="bg-gray-800 border-gray-600 text-white focus:border-gold min-h-[80px] sm:min-h-[100px] resize-none text-sm"
               required
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => setIsOpen(false)}
-              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
+              className="w-full sm:flex-1 border-gray-600 text-gray-300 hover:bg-gray-800 h-10 text-sm"
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
@@ -101,7 +101,7 @@ export const ContactFormDialog = ({ children }: ContactFormDialogProps) => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gold hover:bg-gold/90 text-black font-medium"
+              className="w-full sm:flex-1 bg-gold hover:bg-gold/90 text-black font-medium h-10 text-sm"
             >
               <Send className="w-4 h-4 mr-2" />
               {isSubmitting ? "Sending..." : "Send"}
