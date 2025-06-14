@@ -1,5 +1,7 @@
 
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { useEffect } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 
 interface AboutFoundationHeaderProps {
   isVisible: boolean;
@@ -32,6 +34,34 @@ export const AboutFoundationHeader = ({
     }
   ];
 
+  // First slideshow carousel
+  const [emblaRef1, emblaApi1] = useEmblaCarousel({ loop: true });
+  
+  // Second slideshow carousel
+  const [emblaRef2, emblaApi2] = useEmblaCarousel({ loop: true });
+
+  // Auto-play functionality for first slideshow
+  useEffect(() => {
+    if (!emblaApi1) return;
+
+    const interval = setInterval(() => {
+      emblaApi1.scrollNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [emblaApi1]);
+
+  // Auto-play functionality for second slideshow
+  useEffect(() => {
+    if (!emblaApi2) return;
+
+    const interval = setInterval(() => {
+      emblaApi2.scrollNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [emblaApi2]);
+
   return (
     <div className={`mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
       {/* Header */}
@@ -49,10 +79,10 @@ export const AboutFoundationHeader = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
         {/* First Slideshow */}
         <div className="relative">
-          <Carousel className="w-full">
-            <CarouselContent>
+          <div className="overflow-hidden" ref={emblaRef1}>
+            <div className="flex">
               {slideshow1Images.map((image, index) => (
-                <CarouselItem key={index}>
+                <div key={index} className="flex-[0_0_100%] min-w-0">
                   <div className="relative overflow-hidden rounded-lg group">
                     <img 
                       src={image.src}
@@ -64,18 +94,18 @@ export const AboutFoundationHeader = ({
                       <p className="text-white text-lg font-light">{image.caption}</p>
                     </div>
                   </div>
-                </CarouselItem>
+                </div>
               ))}
-            </CarouselContent>
-          </Carousel>
+            </div>
+          </div>
         </div>
         
         {/* Second Slideshow */}
         <div className="relative">
-          <Carousel className="w-full">
-            <CarouselContent>
+          <div className="overflow-hidden" ref={emblaRef2}>
+            <div className="flex">
               {slideshow2Images.map((image, index) => (
-                <CarouselItem key={index}>
+                <div key={index} className="flex-[0_0_100%] min-w-0">
                   <div className="relative overflow-hidden rounded-lg group">
                     <img 
                       src={image.src}
@@ -87,10 +117,10 @@ export const AboutFoundationHeader = ({
                       <p className="text-white text-lg font-light">{image.caption}</p>
                     </div>
                   </div>
-                </CarouselItem>
+                </div>
               ))}
-            </CarouselContent>
-          </Carousel>
+            </div>
+          </div>
         </div>
       </div>
     </div>
