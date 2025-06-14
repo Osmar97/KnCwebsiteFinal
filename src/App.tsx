@@ -11,6 +11,7 @@ import OurApproach from "./pages/OurApproach";
 import Contact from "./pages/Contact";
 import Resources from "./pages/Resources";
 import Booking from "./pages/Booking";
+import BookingForm from "./pages/BookingForm";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/resources" element={<Resources />} />
               <Route path="/resources/:category/:id" element={<ArticleView />} />
               <Route path="/booking" element={<Booking />} />
+              <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="*" element={<NotFound />} />
