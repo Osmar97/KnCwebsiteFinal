@@ -130,9 +130,9 @@ export const Footer = () => {
               © {currentYear} Kings 'n Company. All rights reserved. | AMI 21908
             </p>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-gold text-sm transition-colors">
+              <Link to="/privacy-policy" className="text-gray-400 hover:text-gold text-sm transition-colors">
                 Privacy Policy
-              </a>
+              </Link>
               <a href="#" className="text-gray-400 hover:text-gold text-sm transition-colors">
                 Terms of Service
               </a>
