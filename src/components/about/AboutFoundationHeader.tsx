@@ -13,22 +13,22 @@ export const AboutFoundationHeader = ({
   const slideshow1Images = [
     {
       src: "/lovable-uploads/6878dbbf-107a-49b2-9f83-8b5f80475ec3.png",
-      caption: "Digital innovation and technology-driven solutions"
+      caption: "Building Strategic partnerships across international markets"
     },
     {
       src: "/lovable-uploads/b5d3fba7-8c85-468e-8be4-e95cfa450c3d.png", 
-      caption: "Diverse opportunities and architectural excellence"
+      caption: "Building Strategic partnerships across international markets"
     }
   ];
 
   const slideshow2Images = [
     {
       src: "/lovable-uploads/bfa967c7-41be-465d-b365-f92e8bfe1157.png",
-      caption: "Strategic business partnerships and networking"
+      caption: "Focused on meaningful connections and long-term success"
     },
     {
       src: "/lovable-uploads/8d600b5d-8c96-4531-a554-b94a8fda9ceb.png",
-      caption: "Celebrating success and building relationships"
+      caption: "Focused on meaningful connections and long-term success"
     }
   ];
 
@@ -67,8 +67,6 @@ export const AboutFoundationHeader = ({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
-            <CarouselNext className="right-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
           </Carousel>
         </div>
         
@@ -92,8 +90,6 @@ export const AboutFoundationHeader = ({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
-            <CarouselNext className="right-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
           </Carousel>
         </div>
       </div>
