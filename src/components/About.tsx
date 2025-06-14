@@ -13,7 +13,7 @@ export const About = () => {
   } = useScrollAnimation(0.3);
   
   return (
-    <section ref={sectionRef} id="about" className="py-20 bg-black relative overflow-hidden">
+    <section ref={sectionRef} id="about" className="py-12 sm:py-16 lg:py-20 bg-black relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
