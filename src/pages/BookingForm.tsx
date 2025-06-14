@@ -111,9 +111,7 @@ const BookingForm = () => {
                 <div className="flex items-start gap-3 text-gray-600 text-sm">
                   <List className="w-4 h-4 mt-0.5" />
                   <div>
-                    <p>Nesta reunião introdutória, vamos aprofundar as dores do voss</p>
-                    <p>o departamento comercial e perceber os verdadeiros obstác...</p>
-                    <button className="text-purple-600 text-sm mt-1">Mostrar mais</button>
+                    <p>Nesta reunião introdutória, vamos aprofundar as dores do vosso departamento comercial e perceber os verdadeiros obstáculos ao crescimento. Será uma recolha da informação necessária para podermos materializar a fórmula que irá resolver essas mesmas limitações.</p>
                   </div>
                 </div>
               </div>
