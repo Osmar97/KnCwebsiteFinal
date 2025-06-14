@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -108,13 +107,9 @@ export const AdminLogin = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-gold text-gold hover:bg-gold hover:text-black"
-        >
+        <button className="text-gray-400 hover:text-gold text-sm transition-colors">
           Admin
-        </Button>
+        </button>
       </DialogTrigger>
       <DialogContent className="bg-gradient-to-br from-gray-900 to-black border border-gray-700 text-white max-w-md">
         <DialogHeader>
