@@ -24,10 +24,10 @@ export const AuthorInfo = () => {
           </p>
           
           <div className="flex gap-3">
-            <a href="#" className="w-8 h-8 bg-gray-700 hover:bg-pink-600 rounded-full flex items-center justify-center transition-colors" aria-label="Instagram">
+            <a href="https://www.instagram.com/ismaelgq_/profilecard/?igsh=ZWloM3JwdTE4aWgz" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-gray-700 hover:bg-pink-600 rounded-full flex items-center justify-center transition-colors" aria-label="Instagram">
               <Instagram className="w-4 h-4 text-white" />
             </a>
-            <a href="#" className="w-8 h-8 bg-gray-700 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/in/ismaelgq/?originalSubdomain=pt" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-gray-700 hover:bg-blue-700 rounded-full flex items-center justify-center transition-colors" aria-label="LinkedIn">
               <Linkedin className="w-4 h-4 text-white" />
             </a>
           </div>
