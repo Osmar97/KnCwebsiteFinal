@@ -1,5 +1,5 @@
 
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 interface AboutFoundationHeaderProps {
   isVisible: boolean;
@@ -67,8 +67,6 @@ export const AboutFoundationHeader = ({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
-            <CarouselNext className="right-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
           </Carousel>
         </div>
         
@@ -92,8 +90,6 @@ export const AboutFoundationHeader = ({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
-            <CarouselNext className="right-4 bg-black/50 border-gold text-gold hover:bg-gold hover:text-black" />
           </Carousel>
         </div>
       </div>
