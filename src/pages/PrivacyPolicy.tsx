@@ -1,3 +1,4 @@
+
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
@@ -6,15 +7,15 @@ const PrivacyPolicy = () => {
   useScrollToTop();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black text-white">
       <Navigation />
       
       <main className="pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="prose prose-lg max-w-none text-gray-800">
+          <div className="prose prose-lg max-w-none text-gray-200">
             <h1 className="text-4xl font-light text-[#85754E] mb-8">Privacy Policy</h1>
 
-            <p className="text-lg text-gray-600 mb-8">Effective Date: 01 June 2025</p>
+            <p className="text-lg text-gray-400 mb-8">Effective Date: 01 June 2025</p>
 
             <p className="mb-6">
               Caminhos Obstinados LDA ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website <strong>www.kingsncompany.com</strong>.
