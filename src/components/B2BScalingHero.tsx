@@ -4,10 +4,7 @@ import { Rocket } from "lucide-react";
 
 export const B2BScalingHero = () => {
   return (
-    <section className="relative py-20 bg-gradient-to-b from-black via-gray-900 to-gray-900 overflow-hidden">
-      {/* Gradient overlay for smoother transition */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/80 to-transparent pointer-events-none"></div>
-      
+    <section className="relative py-20 bg-black overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
