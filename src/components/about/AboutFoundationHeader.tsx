@@ -14,22 +14,38 @@ export const AboutFoundationHeader = ({
 }: AboutFoundationHeaderProps) => {
   const slideshow1Images = [
     {
-      src: "/lovable-uploads/6878dbbf-107a-49b2-9f83-8b5f80475ec3.png",
+      src: "/lovable-uploads/Presidente.HEIC",
       caption: "Building Strategic partnerships across international markets"
     },
     {
-      src: "/lovable-uploads/b5d3fba7-8c85-468e-8be4-e95cfa450c3d.png", 
+      src: "/lovable-uploads/nuno_isma.HEIC",
+      caption: "Building Strategic partnerships across international markets"
+    },
+    {
+      src: "/lovable-uploads/Isma_CV.jpg", 
+      caption: "Building Strategic partnerships across international markets"
+    },
+    {
+      src: "/lovable-uploads/group.jpg", 
       caption: "Building Strategic partnerships across international markets"
     }
   ];
 
   const slideshow2Images = [
     {
-      src: "/lovable-uploads/bfa967c7-41be-465d-b365-f92e8bfe1157.png",
+      src: "/lovable-uploads/discurso.jpg",
       caption: "Focused on meaningful connections and long-term success"
     },
     {
-      src: "/lovable-uploads/8d600b5d-8c96-4531-a554-b94a8fda9ceb.png",
+      src: "/lovable-uploads/companyPic.JPG",
+      caption: "Focused on meaningful connections and long-term success"
+    },
+    {
+      src: "/lovable-uploads/isma_people.jpg",
+      caption: "Focused on meaningful connections and long-term success"
+    },
+    {
+      src: "/lovable-uploads/lessons.jpg",
       caption: "Focused on meaningful connections and long-term success"
     }
   ];
