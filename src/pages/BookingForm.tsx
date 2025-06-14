@@ -12,7 +12,7 @@ const BookingForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white">
+    <div className="min-h-screen bg-black text-white">
       <Navigation />
       
       <div className="pt-20 pb-16">
@@ -20,7 +20,7 @@ const BookingForm = () => {
           
           {/* Header Section */}
           <div className="text-center mb-12">
-            <div className="inline-block px-6 py-2 border border-purple-400 rounded-full text-purple-300 text-sm mb-6">
+            <div className="inline-block px-6 py-2 border border-gold rounded-full text-gold text-sm mb-6">
               GET STARTED
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -44,8 +44,8 @@ const BookingForm = () => {
                 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-6 h-6 bg-gold rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
                       You're a <span className="text-white font-semibold">B2B Company</span> making over <span className="text-white font-semibold">500k/Year</span>
@@ -53,8 +53,8 @@ const BookingForm = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-6 h-6 bg-gold rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
                       You rely heavily on <span className="text-white font-semibold">word of mouth</span>
@@ -62,8 +62,8 @@ const BookingForm = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-6 h-6 bg-gold rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
                       You set goals but don't know how to reach them, aka, <span className="text-white font-semibold">lack growth predictability</span>
@@ -71,8 +71,8 @@ const BookingForm = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-6 h-6 bg-gold rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
                       Your <span className="text-white font-semibold">sales department is underperforming</span>
@@ -80,8 +80,8 @@ const BookingForm = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-green-500 rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <CheckCircle className="w-4 h-4 text-white" />
+                    <div className="w-6 h-6 bg-gold rounded flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
                       You <span className="text-white font-semibold">lack standardized processes</span> for your company's growth
@@ -102,7 +102,7 @@ const BookingForm = () => {
                 </div>
                 <div className="flex items-center gap-3 text-gray-600 text-sm mb-2">
                   <Calendar className="w-4 h-4" />
-                  <span>Seg, 16 De Jun De 2025</span>
+                  <span>Mon, 16 Jun 2025</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-600 text-sm mb-2">
                   <Globe className="w-4 h-4" />
@@ -111,7 +111,7 @@ const BookingForm = () => {
                 <div className="flex items-start gap-3 text-gray-600 text-sm">
                   <List className="w-4 h-4 mt-0.5" />
                   <div>
-                    <p>Nesta reunião introdutória, vamos aprofundar as dores do vosso departamento comercial e perceber os verdadeiros obstáculos ao crescimento. Será uma recolha da informação necessária para podermos materializar a fórmula que irá resolver essas mesmas limitações.</p>
+                    <p>In this introductory meeting, we will delve into the pain points of your sales department and understand the real obstacles to growth. This will be a collection of the necessary information so that we can materialize the formula that will solve these same limitations.</p>
                   </div>
                 </div>
               </div>
@@ -122,7 +122,7 @@ const BookingForm = () => {
                   <button className="p-2 hover:bg-gray-100 rounded">
                     ←
                   </button>
-                  <h3 className="font-semibold">Junho 2025</h3>
+                  <h3 className="font-semibold">June 2025</h3>
                   <button className="p-2 hover:bg-gray-100 rounded">
                     →
                   </button>
@@ -137,7 +137,7 @@ const BookingForm = () => {
               </div>
 
               {/* Book Call Button */}
-              <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 text-lg font-semibold">
+              <Button className="w-full bg-gold hover:bg-gold-dark text-black py-3 text-lg font-semibold">
                 Book Your Call
               </Button>
             </div>
