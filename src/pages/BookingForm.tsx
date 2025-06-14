@@ -48,7 +48,7 @@ const BookingForm = () => {
                       <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
-                      You're a <span className="text-white font-semibold">B2B Company</span> making over <span className="text-white font-semibold">500k/Year</span>
+                      You're planning to buy, invest, or relocate to Portugal
                     </p>
                   </div>
 
@@ -57,7 +57,7 @@ const BookingForm = () => {
                       <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
-                      You rely heavily on <span className="text-white font-semibold">word of mouth</span>
+                      You feel overwhelmed by the steps, or don't know where to start
                     </p>
                   </div>
 
@@ -66,7 +66,7 @@ const BookingForm = () => {
                       <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
-                      You set goals but don't know how to reach them, aka, <span className="text-white font-semibold">lack growth predictability</span>
+                      You've been relying on luck, online listings, or word-of-mouth with little progress
                     </p>
                   </div>
 
@@ -75,7 +75,7 @@ const BookingForm = () => {
                       <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
-                      Your <span className="text-white font-semibold">sales department is underperforming</span>
+                      You want expert support to avoid costly mistakes and delays
                     </p>
                   </div>
 
@@ -84,7 +84,7 @@ const BookingForm = () => {
                       <CheckCircle className="w-4 h-4 text-black" />
                     </div>
                     <p className="text-gray-300 leading-relaxed">
-                      You <span className="text-white font-semibold">lack standardized processes</span> for your company's growth
+                      You value clarity, structure, and a trusted team to guide your journey
                     </p>
                   </div>
                 </div>
