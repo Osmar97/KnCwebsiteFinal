@@ -13,6 +13,7 @@ import Resources from "./pages/Resources";
 import Booking from "./pages/Booking";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 import { ArticleView } from "./components/resources/ArticleView";
 import { AdminProvider } from "./contexts/AdminContext";
 import { PostsProvider } from "./contexts/PostsContext";
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/resources/:category/:id" element={<ArticleView />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
