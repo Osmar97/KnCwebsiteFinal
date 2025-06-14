@@ -118,12 +118,14 @@ const BookingForm = () => {
 
               {/* Calendar */}
               <div className="mb-6 flex justify-center">
-                <CalendarComponent
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  className="w-full"
-                />
+                <div className="flex justify-center">
+                  <CalendarComponent
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    className="w-auto"
+                  />
+                </div>
               </div>
 
               {/* Book Call Button */}
