@@ -48,8 +48,10 @@ export const AdminLogin = () => {
         setEmail("");
         setPassword("");
         setIsOpen(false);
-        // Scroll to top of the page on successful login
-        window.scrollTo(0, 0);
+        // Enhanced scroll to top with delay to ensure it executes properly
+        setTimeout(() => {
+          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        }, 100);
       } else {
         const remainingAttempts = Math.max(0, 5 - loginAttempts - 1);
         toast({
