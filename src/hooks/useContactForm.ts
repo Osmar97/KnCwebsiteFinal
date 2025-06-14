@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useContactForm = () => {
   const [formData, setFormData] = useState({
@@ -17,25 +18,31 @@ export const useContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Create mailto link with form data automatically addressed to services@kingsncompany.com
-      const recipientEmail = "services@kingsncompany.com";
-      const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
-      
-      // Open email client
-      window.location.href = mailtoLink;
-      
+      console.log("Submitting contact form:", formData);
+
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("Email sent successfully:", data);
+
       toast({
-        title: "Email Client Opened",
-        description: "Your email client should now open with the pre-filled message addressed to services@kingsncompany.com.",
+        title: "Message Sent Successfully",
+        description: "Thank you for your message! We'll get back to you within 24 hours.",
       });
 
       // Reset form and call success callback
       setFormData({ name: "", email: "", subject: "", message: "" });
       onSuccess?.();
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error sending email:", error);
       toast({
-        title: "Error",
-        description: "Failed to open email client. Please try again.",
+        title: "Failed to Send Message",
+        description: "There was an error sending your message. Please try again.",
         variant: "destructive",
       });
     } finally {
