@@ -3,13 +3,57 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { CheckCircle, Clock, Calendar, Globe, List } from "lucide-react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { useState } from "react";
+import TimeSlotPicker from "@/components/TimeSlotPicker";
+import BookingFormFields from "@/components/BookingFormFields";
+import { useBooking } from "@/hooks/useBooking";
 
 const BookingForm = () => {
   useScrollToTop();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    phone: ""
+  });
+
+  const { isSubmitting, submitBooking } = useBooking();
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const isFormValid = formData.name && formData.email && formData.company && selectedDate && selectedTime;
+
+  const handleSubmit = async () => {
+    if (!isFormValid) return;
+
+    const success = await submitBooking({
+      ...formData,
+      selectedDate: selectedDate!,
+      selectedTime
+    });
+
+    if (success) {
+      // Reset form
+      setFormData({ name: "", email: "", company: "", phone: "" });
+      setSelectedTime("");
+      setSelectedDate(new Date());
+    }
+  };
+
+  // Filter out weekends and past dates
+  const isDateDisabled = (date: Date) => {
+    const day = date.getDay();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Disable weekends (Sunday = 0, Saturday = 6) and past dates
+    return day === 0 || day === 6 || date < today;
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -91,7 +135,7 @@ const BookingForm = () => {
               </div>
             </div>
 
-            {/* Right Side - Calendar Widget */}
+            {/* Right Side - Booking Widget */}
             <div className="bg-white text-black rounded-2xl p-6 shadow-2xl">
               
               {/* Meeting Details */}
@@ -102,7 +146,7 @@ const BookingForm = () => {
                 </div>
                 <div className="flex items-center gap-3 text-gray-600 text-sm mb-2">
                   <Calendar className="w-4 h-4" />
-                  <span>Mon, 16 Jun 2025</span>
+                  <span>Available Monday - Friday</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-600 text-sm mb-2">
                   <Globe className="w-4 h-4" />
@@ -111,27 +155,42 @@ const BookingForm = () => {
                 <div className="flex items-start gap-3 text-gray-600 text-sm">
                   <List className="w-4 h-4 mt-0.5" />
                   <div>
-                    <p>In this introductory meeting, we will delve into the pain points of your sales department and understand the real obstacles to growth. This will be a collection of the necessary information so that we can materialize the formula that will solve these same limitations.</p>
+                    <p>In this introductory meeting, we will delve into your Portugal investment or relocation goals and understand your specific needs.</p>
                   </div>
                 </div>
               </div>
 
               {/* Calendar */}
-              <div className="mb-6 flex justify-center">
+              <div className="mb-6">
+                <h3 className="font-medium mb-3 text-center">Select a Date</h3>
                 <div className="flex justify-center">
                   <CalendarComponent
                     mode="single"
                     selected={selectedDate}
                     onSelect={setSelectedDate}
+                    disabled={isDateDisabled}
                     className="w-auto"
                   />
                 </div>
               </div>
 
-              {/* Book Call Button */}
-              <Button className="w-full bg-gold hover:bg-gold-dark text-black py-3 text-lg font-semibold">
-                Book Your Call
-              </Button>
+              {/* Time Slots */}
+              <div className="mb-6">
+                <TimeSlotPicker 
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                  onTimeSelect={setSelectedTime}
+                />
+              </div>
+
+              {/* Booking Form */}
+              <BookingFormFields
+                formData={formData}
+                onInputChange={handleInputChange}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+                isFormValid={!!isFormValid}
+              />
             </div>
           </div>
         </div>
