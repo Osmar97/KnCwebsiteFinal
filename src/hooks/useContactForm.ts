@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 export const useContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
     subject: "",
     message: ""
   });
@@ -18,7 +19,7 @@ export const useContactForm = () => {
     try {
       // Create mailto link with form data automatically addressed to services@kingsncompany.com
       const recipientEmail = "services@kingsncompany.com";
-      const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Name: ${formData.name}\n\nMessage:\n${formData.message}`)}`;
+      const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
       
       // Open email client
       window.location.href = mailtoLink;
@@ -29,7 +30,7 @@ export const useContactForm = () => {
       });
 
       // Reset form and call success callback
-      setFormData({ name: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", subject: "", message: "" });
       onSuccess?.();
     } catch (error) {
       toast({

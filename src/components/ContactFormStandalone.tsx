@@ -38,6 +38,20 @@ export const ContactFormStandalone = () => {
         </div>
 
         <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            Email *
+          </label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleInputChange("email", e.target.value)}
+            className="w-full"
+            required
+          />
+        </div>
+
+        <div>
           <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
             Subject *
           </label>

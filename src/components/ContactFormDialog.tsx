@@ -48,6 +48,20 @@ export const ContactFormDialog = ({ children }: ContactFormDialogProps) => {
           </div>
 
           <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              className="bg-gray-800 border-gray-600 text-white focus:border-gold"
+              required
+            />
+          </div>
+
+          <div>
             <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
               Subject
             </label>
