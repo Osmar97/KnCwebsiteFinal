@@ -48,6 +48,8 @@ export const AdminLogin = () => {
         setEmail("");
         setPassword("");
         setIsOpen(false);
+        // Scroll to top of the page on successful login
+        window.scrollTo(0, 0);
       } else {
         const remainingAttempts = Math.max(0, 5 - loginAttempts - 1);
         toast({
