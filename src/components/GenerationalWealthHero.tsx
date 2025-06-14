@@ -1,6 +1,6 @@
 
 export const GenerationalWealthHero = () => {
-  return <section className="relative h-64 sm:h-80 md:h-96 bg-black overflow-hidden">
+  return <section className="relative h-32 sm:h-48 md:h-64 lg:h-80 bg-black overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img src="/lovable-uploads/dcced678-3441-4351-aaa5-a61d24aaef79.png" alt="Generational Wealth" className="w-full h-full object-cover" />

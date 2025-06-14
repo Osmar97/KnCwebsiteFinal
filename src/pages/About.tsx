@@ -11,7 +11,7 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navigation />
-      <div className="pt-16">
+      <div className="pt-12 sm:pt-16">
         <About />
       </div>
       <GenerationalWealthHero />
