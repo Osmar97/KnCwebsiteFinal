@@ -117,7 +117,7 @@ const BookingForm = () => {
               </div>
 
               {/* Calendar */}
-              <div className="mb-6">
+              <div className="mb-6 flex justify-center">
                 <div className="flex items-center justify-between mb-4">
                   <button className="p-2 hover:bg-gray-100 rounded">
                     ←
