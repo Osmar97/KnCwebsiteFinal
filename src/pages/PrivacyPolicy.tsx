@@ -1,8 +1,10 @@
-
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const PrivacyPolicy = () => {
+  useScrollToTop();
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
