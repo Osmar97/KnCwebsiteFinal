@@ -6,8 +6,11 @@ import { AdminPostsFeed } from "@/components/AdminPostsFeed";
 import { Button } from "@/components/ui/button";
 import { useAdmin } from "@/contexts/AdminContext";
 import { ResourcesGrid } from "@/components/resources/ResourcesGrid";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const ResourcesPage = () => {
+  useScrollToTop();
+  
   const { isAdminLoggedIn } = useAdmin();
   const [activeTab, setActiveTab] = useState<"all" | "articles" | "resources">("all");
   

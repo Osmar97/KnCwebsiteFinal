@@ -3,8 +3,11 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ContactForm } from "@/components/ContactForm";
 import { CheckCircle } from "lucide-react";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const Booking = () => {
+  useScrollToTop();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
       <Navigation />

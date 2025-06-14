@@ -6,8 +6,11 @@ import { Testimonials } from "@/components/Testimonials";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
 import { Footer } from "@/components/Footer";
 import { B2BScalingHero } from "@/components/B2BScalingHero";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const Index = () => {
+  useScrollToTop();
+
   return (
     <div className="min-h-screen bg-white text-gray-900 scroll-smooth">
       <Navigation />
