@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,15 +26,16 @@ export const ContactForm = ({ children }: ContactFormProps) => {
     setIsSubmitting(true);
 
     try {
-      // Create mailto link with form data
-      const mailtoLink = `mailto:services@kingsncompany.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Name: ${formData.name}\n\nMessage:\n${formData.message}`)}`;
+      // Create mailto link with form data automatically addressed to services@kingsncompany.com
+      const recipientEmail = "services@kingsncompany.com";
+      const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Name: ${formData.name}\n\nMessage:\n${formData.message}`)}`;
       
       // Open email client
       window.location.href = mailtoLink;
       
       toast({
         title: "Email Client Opened",
-        description: "Your email client should now open with the pre-filled message.",
+        description: "Your email client should now open with the pre-filled message addressed to services@kingsncompany.com.",
       });
 
       // Reset form and close dialog
