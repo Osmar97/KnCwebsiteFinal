@@ -29,7 +29,7 @@ export const B2BScalingHero = () => {
           <div className="relative">
             <div className="rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                src="/lovable-uploads/2ce9246f-9cf8-43b6-a057-365b64937d0f.png" 
+                src="/lovable-uploads/ismaPerfil.JPG" 
                 alt="Business meeting"
                 className="w-full h-auto object-cover"
               />
