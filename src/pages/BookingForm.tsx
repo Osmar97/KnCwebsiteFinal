@@ -118,13 +118,6 @@ const BookingForm = () => {
                 </div>
               </div>
 
-              {/* Availability Dropdown */}
-              <div className="mb-6">
-                <select className="w-full p-3 border border-gray-300 rounded-lg bg-white text-purple-600">
-                  <option>Qualquer um disponível</option>
-                </select>
-              </div>
-
               {/* Calendar */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
