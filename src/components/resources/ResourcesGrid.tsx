@@ -114,7 +114,7 @@ export const ResourcesGrid = ({ category, title }: ResourcesGridProps) => {
                       by Ismael Gomes Queta
                     </div>
                     <div className="text-gray-400 text-xs">
-                      COO, Kings 'n Company
+                      Founder, Kings 'n Company
                     </div>
                   </div>
                   <Avatar className="w-10 h-10">
