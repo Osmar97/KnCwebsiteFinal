@@ -36,9 +36,10 @@ const handler = async (req: Request): Promise<Response> => {
       attendeeName
     });
 
-    // Get access token from environment
+    // Get access token and calendar IDs from environment
     const accessToken = Deno.env.get("GOOGLE_CALENDAR_ACCESS_TOKEN");
-    const calendarId = Deno.env.get("GOOGLE_CALENDAR_ID") || "primary";
+    const primaryCalendarId = Deno.env.get("GOOGLE_CALENDAR_ID") || "primary";
+    const checkCalendarIds = Deno.env.get("GOOGLE_CALENDAR_CHECK_IDS");
 
     if (!accessToken) {
       throw new Error("Google Calendar access token not configured");
@@ -48,6 +49,49 @@ const handler = async (req: Request): Promise<Response> => {
     const startDate = new Date(startDateTime);
     const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Add 1 hour
 
+    // Parse the calendar IDs to check (comma-separated)
+    const calendarsToCheck = checkCalendarIds ? checkCalendarIds.split(',').map(id => id.trim()) : [];
+    
+    console.log("Checking availability across calendars:", calendarsToCheck);
+
+    // Check availability across all specified calendars
+    for (const calendarId of calendarsToCheck) {
+      console.log(`Checking calendar: ${calendarId}`);
+      
+      const freeBusyResponse = await fetch(
+        `https://www.googleapis.com/calendar/v3/freeBusy`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            timeMin: startDate.toISOString(),
+            timeMax: endDate.toISOString(),
+            items: [{ id: calendarId }]
+          })
+        }
+      );
+
+      if (!freeBusyResponse.ok) {
+        const errorText = await freeBusyResponse.text();
+        console.error(`Error checking calendar ${calendarId}:`, freeBusyResponse.status, errorText);
+        throw new Error(`Error checking calendar availability: ${freeBusyResponse.status} - ${errorText}`);
+      }
+
+      const freeBusyData = await freeBusyResponse.json();
+      const busyTimes = freeBusyData.calendars[calendarId]?.busy || [];
+
+      if (busyTimes.length > 0) {
+        console.log(`Calendar ${calendarId} has conflicts:`, busyTimes);
+        throw new Error(`Time slot is not available. There is a conflict in one of your calendars.`);
+      }
+    }
+
+    console.log("All calendars are available for the requested time slot");
+
+    // Create the event on the primary calendar
     const eventData = {
       summary,
       description,
@@ -83,10 +127,10 @@ const handler = async (req: Request): Promise<Response> => {
       }
     };
 
-    console.log("Sending event data to Google Calendar:", eventData);
+    console.log("Creating event on primary calendar:", primaryCalendarId);
 
     const response = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?conferenceDataVersion=1`,
+      `https://www.googleapis.com/calendar/v3/calendars/${primaryCalendarId}/events?conferenceDataVersion=1`,
       {
         method: "POST",
         headers: {
@@ -111,7 +155,8 @@ const handler = async (req: Request): Promise<Response> => {
         success: true,
         eventId: event.id,
         eventLink: event.htmlLink,
-        meetingLink: event.conferenceData?.entryPoints?.[0]?.uri
+        meetingLink: event.conferenceData?.entryPoints?.[0]?.uri,
+        message: "Event created successfully after checking availability across all calendars"
       }),
       {
         status: 200,
