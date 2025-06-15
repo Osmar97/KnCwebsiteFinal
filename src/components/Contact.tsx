@@ -1,7 +1,7 @@
-
 import { Card } from "@/components/ui/card";
 import { Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ContactEmailDialog } from "@/components/ContactEmailDialog";
 
 export const Contact = () => {
   return (
@@ -44,12 +44,11 @@ export const Contact = () => {
             </div>
             <div>
               <div className="font-semibold text-white text-lg">Direct Contact</div>
-              <a
-                href="mailto:services@kingsncompany.com"
-                className="text-gold hover:underline transition text-base"
-              >
-                services@kingsncompany.com
-              </a>
+              <ContactEmailDialog>
+                <span className="text-gold hover:underline transition text-base cursor-pointer">
+                  services@kingsncompany.com
+                </span>
+              </ContactEmailDialog>
               <div className="text-gray-400 text-xs mt-1">
                 Get a response within 24 hours
               </div>
@@ -79,7 +78,6 @@ export const Contact = () => {
           <div className="flex items-start gap-5">
             <div>
               <div className="rounded-full bg-gold/15 h-12 w-12 flex items-center justify-center">
-                {/* Using the Mail icon as a calendar is not allowed; must use allowed Lucide icon */}
                 <Mail className="w-7 h-7 text-gold" /> 
               </div>
             </div>
