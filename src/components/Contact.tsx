@@ -84,7 +84,7 @@ export const Contact = () => {
             <div>
               <div className="font-semibold text-white text-lg">Schedule a Consultation</div>
               <Link
-                to="/booking"
+                to="/booking-form"
                 className="text-gold hover:underline transition text-base"
               >
                 Book your appointment
