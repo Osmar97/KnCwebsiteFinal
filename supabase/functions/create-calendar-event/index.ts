@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Google Calendar access token not configured");
     }
 
-    // Create end time (1 hour after start)
+    // Create start and end times for the booking (1 hour duration)
     const startDate = new Date(startDateTime);
     const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Add 1 hour
 
@@ -56,10 +56,19 @@ const handler = async (req: Request): Promise<Response> => {
     const calendarsToCheck = checkCalendarIds ? checkCalendarIds.split(',').map(id => id.trim()) : [];
     
     console.log("Checking availability across calendars:", calendarsToCheck);
+    console.log("Requested time slot:", {
+      start: startDate.toISOString(),
+      end: endDate.toISOString()
+    });
 
     // Check availability across all specified calendars
     for (const calendarId of calendarsToCheck) {
       console.log(`Checking calendar: ${calendarId}`);
+      
+      // Use a wider time window to check for any overlapping events
+      // Check 30 minutes before and after to catch overlapping appointments
+      const checkStartTime = new Date(startDate.getTime() - 30 * 60 * 1000); // 30 minutes before
+      const checkEndTime = new Date(endDate.getTime() + 30 * 60 * 1000); // 30 minutes after
       
       const freeBusyResponse = await fetch(
         `https://www.googleapis.com/calendar/v3/freeBusy`,
@@ -70,8 +79,8 @@ const handler = async (req: Request): Promise<Response> => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            timeMin: startDate.toISOString(),
-            timeMax: endDate.toISOString(),
+            timeMin: checkStartTime.toISOString(),
+            timeMax: checkEndTime.toISOString(),
             items: [{ id: calendarId }]
           })
         }
@@ -80,15 +89,35 @@ const handler = async (req: Request): Promise<Response> => {
       if (!freeBusyResponse.ok) {
         const errorText = await freeBusyResponse.text();
         console.error(`Error checking calendar ${calendarId}:`, freeBusyResponse.status, errorText);
+        
+        // If it's an authentication error, provide more specific feedback
+        if (freeBusyResponse.status === 401) {
+          throw new Error(`Authentication failed. Please check that the Google Calendar access token is valid and has not expired.`);
+        }
+        
         throw new Error(`Error checking calendar availability: ${freeBusyResponse.status} - ${errorText}`);
       }
 
       const freeBusyData = await freeBusyResponse.json();
       const busyTimes = freeBusyData.calendars[calendarId]?.busy || [];
 
-      if (busyTimes.length > 0) {
-        console.log(`Calendar ${calendarId} has conflicts:`, busyTimes);
-        throw new Error(`Time slot is not available. There is a conflict in one of your calendars.`);
+      console.log(`Calendar ${calendarId} busy times:`, busyTimes);
+
+      // Check if any busy time overlaps with our requested time slot
+      for (const busyTime of busyTimes) {
+        const busyStart = new Date(busyTime.start);
+        const busyEnd = new Date(busyTime.end);
+        
+        // Check for overlap: busy period overlaps with our requested slot
+        const hasOverlap = (busyStart < endDate) && (busyEnd > startDate);
+        
+        if (hasOverlap) {
+          console.log(`Found conflict in calendar ${calendarId}:`, {
+            busyPeriod: { start: busyStart.toISOString(), end: busyEnd.toISOString() },
+            requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() }
+          });
+          throw new Error(`Time slot is not available. There is a conflict with an existing appointment from ${busyStart.toLocaleTimeString()} to ${busyEnd.toLocaleTimeString()}.`);
+        }
       }
     }
 
