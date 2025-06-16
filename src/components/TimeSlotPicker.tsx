@@ -1,5 +1,7 @@
 
 import { Button } from "@/components/ui/button";
+import { useTimeSlotAvailability } from "@/hooks/useTimeSlotAvailability";
+import { Loader2 } from "lucide-react";
 
 interface TimeSlotPickerProps {
   selectedDate: Date | undefined;
@@ -8,6 +10,8 @@ interface TimeSlotPickerProps {
 }
 
 const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPickerProps) => {
+  const { availability, isLoading } = useTimeSlotAvailability(selectedDate);
+
   // Generate time slots from 14:00 to 20:00 (2 PM to 8 PM)
   const generateTimeSlots = () => {
     const slots = [];
@@ -59,19 +63,36 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
   return (
     <div className="space-y-3">
       <h3 className="font-medium text-center">Available Times</h3>
-      <div className="grid grid-cols-2 gap-2">
-        {timeSlots.map((time) => (
-          <Button
-            key={time}
-            variant={selectedTime === time ? "default" : "outline"}
-            size="sm"
-            onClick={() => onTimeSelect(time)}
-            className={selectedTime === time ? "bg-gold hover:bg-gold-dark text-black" : ""}
-          >
-            {time}
-          </Button>
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-4">
+          <Loader2 className="w-6 h-6 animate-spin text-gold" />
+          <span className="ml-2 text-gray-500">Checking availability...</span>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-2">
+          {timeSlots.map((time) => {
+            const isAvailable = availability[time] !== false;
+            const isSelected = selectedTime === time;
+            
+            return (
+              <Button
+                key={time}
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                onClick={() => isAvailable ? onTimeSelect(time) : null}
+                disabled={!isAvailable}
+                className={`
+                  ${isSelected && isAvailable ? "bg-gold hover:bg-gold-dark text-black" : ""}
+                  ${!isAvailable ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50" : ""}
+                  ${isAvailable && !isSelected ? "hover:border-gold" : ""}
+                `}
+              >
+                {time}
+              </Button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

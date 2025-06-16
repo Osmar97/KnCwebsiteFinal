@@ -12,6 +12,7 @@ interface CalendarEventRequest {
   startDateTime: string;
   attendeeEmail: string;
   attendeeName: string;
+  checkOnly?: boolean;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -25,15 +26,17 @@ const handler = async (req: Request): Promise<Response> => {
       description,
       startDateTime,
       attendeeEmail,
-      attendeeName
+      attendeeName,
+      checkOnly = false
     }: CalendarEventRequest = await req.json();
 
-    console.log("Creating calendar event:", {
+    console.log("Processing calendar request:", {
       summary,
       description,
       startDateTime,
       attendeeEmail,
-      attendeeName
+      attendeeName,
+      checkOnly
     });
 
     // Get access token and calendar IDs from environment
@@ -90,6 +93,24 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("All calendars are available for the requested time slot");
+
+    // If this is just an availability check, return success without creating the event
+    if (checkOnly) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          available: true,
+          message: "Time slot is available"
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders
+          }
+        }
+      );
+    }
 
     // Create the event on the primary calendar
     const eventData = {
@@ -168,7 +189,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
-    console.error("Error creating calendar event:", error);
+    console.error("Error processing calendar request:", error);
     return new Response(
       JSON.stringify({
         error: error.message,
