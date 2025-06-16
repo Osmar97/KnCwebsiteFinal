@@ -15,6 +15,80 @@ interface CalendarEventRequest {
   checkOnly?: boolean;
 }
 
+interface TokenResponse {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+}
+
+const refreshGoogleToken = async (): Promise<string> => {
+  const clientId = Deno.env.get("GOOGLE_CLIENT_ID");
+  const clientSecret = Deno.env.get("GOOGLE_CLIENT_SECRET");
+  const refreshToken = Deno.env.get("GOOGLE_REFRESH_TOKEN");
+
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error("Missing Google OAuth credentials. Please configure GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REFRESH_TOKEN in Supabase secrets.");
+  }
+
+  console.log("Refreshing Google access token...");
+
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: "refresh_token",
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Error refreshing token:", response.status, errorText);
+    throw new Error(`Failed to refresh Google access token: ${response.status} - ${errorText}`);
+  }
+
+  const tokenData: TokenResponse = await response.json();
+  console.log("Successfully refreshed Google access token");
+  
+  return tokenData.access_token;
+};
+
+const getValidAccessToken = async (): Promise<string> => {
+  // First try the stored access token
+  let accessToken = Deno.env.get("GOOGLE_CALENDAR_ACCESS_TOKEN");
+  
+  if (!accessToken) {
+    console.log("No stored access token, refreshing...");
+    accessToken = await refreshGoogleToken();
+  } else {
+    // Test if the current token is still valid with a simple request
+    const testResponse = await fetch(
+      "https://www.googleapis.com/calendar/v3/users/me/settings/timezone",
+      {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (testResponse.status === 401) {
+      console.log("Stored access token expired, refreshing...");
+      accessToken = await refreshGoogleToken();
+    } else if (!testResponse.ok) {
+      console.log("Token test failed with status:", testResponse.status);
+      accessToken = await refreshGoogleToken();
+    } else {
+      console.log("Stored access token is still valid");
+    }
+  }
+
+  return accessToken;
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -39,14 +113,11 @@ const handler = async (req: Request): Promise<Response> => {
       checkOnly
     });
 
-    // Get access token and calendar IDs from environment
-    const accessToken = Deno.env.get("GOOGLE_CALENDAR_ACCESS_TOKEN");
+    // Get a valid access token (refresh if needed)
+    const accessToken = await getValidAccessToken();
+    
     const primaryCalendarId = Deno.env.get("GOOGLE_CALENDAR_ID") || "primary";
     const checkCalendarIds = Deno.env.get("GOOGLE_CALENDAR_CHECK_IDS");
-
-    if (!accessToken) {
-      throw new Error("Google Calendar access token not configured");
-    }
 
     // Create start and end times for the booking (1 hour duration)
     const startDate = new Date(startDateTime);
@@ -90,9 +161,9 @@ const handler = async (req: Request): Promise<Response> => {
         const errorText = await freeBusyResponse.text();
         console.error(`Error checking calendar ${calendarId}:`, freeBusyResponse.status, errorText);
         
-        // If it's an authentication error, provide more specific feedback
+        // If it's still an authentication error after refresh, provide specific feedback
         if (freeBusyResponse.status === 401) {
-          throw new Error(`Authentication failed. Please check that the Google Calendar access token is valid and has not expired.`);
+          throw new Error(`Authentication failed even after token refresh. Please check that your Google OAuth credentials and refresh token are valid.`);
         }
         
         throw new Error(`Error checking calendar availability: ${freeBusyResponse.status} - ${errorText}`);
