@@ -50,18 +50,6 @@ const BookingFormFields = ({
       </div>
 
       <div>
-        <Label htmlFor="company" className="text-sm font-medium">Company *</Label>
-        <Input
-          id="company"
-          type="text"
-          value={formData.company}
-          onChange={(e) => onInputChange('company', e.target.value)}
-          className="mt-1"
-          required
-        />
-      </div>
-
-      <div>
         <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
         <Input
           id="phone"
@@ -77,7 +65,7 @@ const BookingFormFields = ({
         disabled={isSubmitting || !isFormValid}
         className="w-full bg-gold hover:bg-gold-dark text-black py-3 text-lg font-semibold"
       >
-        {isSubmitting ? "Booking..." : "Book Your Call"}
+        {isSubmitting ? "Booking..." : "Book Your Discovery Call"}
       </Button>
     </div>
   );

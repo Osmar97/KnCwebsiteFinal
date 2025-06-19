@@ -24,7 +24,8 @@ const BookingWidget = ({}: BookingWidgetProps) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const isFormValid = formData.name && formData.email && formData.company && selectedDate && selectedTime;
+  // Remove company field from validation
+  const isFormValid = formData.name && formData.email && selectedDate && selectedTime;
 
   const handleSubmit = async () => {
     if (!isFormValid) return;

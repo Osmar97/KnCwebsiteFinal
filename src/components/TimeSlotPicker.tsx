@@ -12,12 +12,11 @@ interface TimeSlotPickerProps {
 const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPickerProps) => {
   const { availability, isLoading } = useTimeSlotAvailability(selectedDate);
 
-  // Generate time slots from 14:00 to 20:00 (2 PM to 8 PM)
+  // Generate time slots from 14:00 to 20:00 (2 PM to 8 PM) in 15-minute intervals
   const generateTimeSlots = () => {
     const slots = [];
     for (let hour = 14; hour < 20; hour++) {
       slots.push(`${hour.toString().padStart(2, '0')}:00`);
-      // Also add 15-minute slots for more flexibility
       slots.push(`${hour.toString().padStart(2, '0')}:15`);
       slots.push(`${hour.toString().padStart(2, '0')}:30`);
       slots.push(`${hour.toString().padStart(2, '0')}:45`);
@@ -64,6 +63,9 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
     );
   }
 
+  // Filter to only show available time slots
+  const availableTimeSlots = timeSlots.filter(time => availability[time] === true);
+
   return (
     <div className="space-y-3">
       <h3 className="font-medium text-center">Available Times</h3>
@@ -72,10 +74,13 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
           <Loader2 className="w-6 h-6 animate-spin text-gold" />
           <span className="ml-2 text-gray-500">Checking availability...</span>
         </div>
+      ) : availableTimeSlots.length === 0 ? (
+        <div className="text-center text-gray-500 py-4">
+          No available time slots for this date
+        </div>
       ) : (
         <div className="grid grid-cols-4 gap-2">
-          {timeSlots.map((time) => {
-            const isAvailable = availability[time] !== false;
+          {availableTimeSlots.map((time) => {
             const isSelected = selectedTime === time;
             
             return (
@@ -83,25 +88,16 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
                 key={time}
                 variant={isSelected ? "default" : "outline"}
                 size="sm"
-                onClick={() => isAvailable ? onTimeSelect(time) : null}
-                disabled={!isAvailable}
+                onClick={() => onTimeSelect(time)}
                 className={`
                   text-xs
-                  ${isSelected && isAvailable ? "bg-gold hover:bg-gold-dark text-black" : ""}
-                  ${!isAvailable ? "bg-gray-200 text-gray-400 cursor-not-allowed opacity-60 border-gray-300" : ""}
-                  ${isAvailable && !isSelected ? "hover:border-gold hover:text-gold" : ""}
+                  ${isSelected ? "bg-gold hover:bg-gold-dark text-black" : "hover:border-gold hover:text-gold"}
                 `}
               >
                 {time}
               </Button>
             );
           })}
-        </div>
-      )}
-      {!isLoading && (
-        <div className="text-xs text-gray-500 text-center mt-2">
-          <span className="inline-block w-3 h-3 bg-gray-200 rounded mr-1"></span>
-          Unavailable times are shown in grey
         </div>
       )}
     </div>

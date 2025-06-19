@@ -20,10 +20,13 @@ export const useBooking = () => {
     try {
       console.log("Creating calendar event:", bookingData);
 
+      // Create description without company field
+      const description = `Phone: ${bookingData.phone}\nEmail: ${bookingData.email}`;
+
       const { data, error } = await supabase.functions.invoke('create-calendar-event', {
         body: {
-          summary: `Consultation Call with ${bookingData.name}`,
-          description: `Company: ${bookingData.company}\nPhone: ${bookingData.phone}\nEmail: ${bookingData.email}`,
+          summary: `Discovery Call with ${bookingData.name}`,
+          description,
           startDateTime: new Date(
             bookingData.selectedDate.getFullYear(),
             bookingData.selectedDate.getMonth(),
@@ -55,7 +58,7 @@ export const useBooking = () => {
       await createCalendarEvent(bookingData);
 
       toast({
-        title: "Booking Confirmed!",
+        title: "Discovery Call Booked!",
         description: "Your call has been scheduled and you'll receive a calendar invitation shortly.",
       });
 

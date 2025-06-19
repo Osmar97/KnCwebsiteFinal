@@ -6,9 +6,10 @@ interface MeetingDetailsProps {}
 const MeetingDetails = ({}: MeetingDetailsProps) => {
   return (
     <div className="mb-6">
+      <h2 className="text-xl font-semibold mb-4 text-center">Discovery Call</h2>
       <div className="flex items-center gap-3 text-gray-600 text-sm mb-2">
         <Clock className="w-4 h-4" />
-        <span>60 Minutes</span>
+        <span>20 Minutes</span>
       </div>
       <div className="flex items-center gap-3 text-gray-600 text-sm mb-2">
         <Calendar className="w-4 h-4" />

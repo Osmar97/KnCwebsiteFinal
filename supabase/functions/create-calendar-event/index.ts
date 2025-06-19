@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
@@ -116,9 +117,9 @@ const handler = async (req: Request): Promise<Response> => {
     const primaryCalendarId = Deno.env.get("GOOGLE_CALENDAR_ID") || "primary";
     const checkCalendarIds = Deno.env.get("GOOGLE_CALENDAR_CHECK_IDS");
 
-    // Create start and end times for the booking (1 hour duration)
+    // Create start and end times for the booking (20 minute duration)
     const startDate = new Date(startDateTime);
-    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Add 1 hour
+    const endDate = new Date(startDate.getTime() + 20 * 60 * 1000); // Add 20 minutes
 
     // Parse the calendar IDs to check (comma-separated)
     const calendarsToCheck = checkCalendarIds ? checkCalendarIds.split(',').map(id => id.trim()) : [];
@@ -166,7 +167,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log(`Calendar ${calendarId} busy times:`, busyTimes);
 
-      // Check for significant overlaps (more than 15 minutes)
+      // Check for any overlaps (even 1 minute overlap should block the slot)
       for (const busyTime of busyTimes) {
         const busyStart = new Date(busyTime.start);
         const busyEnd = new Date(busyTime.end);
@@ -177,16 +178,14 @@ const handler = async (req: Request): Promise<Response> => {
         const overlapDuration = Math.max(0, overlapEnd.getTime() - overlapStart.getTime());
         const overlapMinutes = overlapDuration / (1000 * 60);
         
-        // Only consider it a conflict if overlap is more than 15 minutes
-        if (overlapMinutes > 15) {
-          console.log(`Found significant conflict in calendar ${calendarId}:`, {
+        // Any overlap should block the slot
+        if (overlapMinutes > 0) {
+          console.log(`Found conflict in calendar ${calendarId}:`, {
             busyPeriod: { start: busyStart.toISOString(), end: busyEnd.toISOString() },
             requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() },
             overlapMinutes
           });
-          throw new Error(`Time slot is not available. There is a significant conflict (${Math.round(overlapMinutes)} minutes overlap) with an existing appointment.`);
-        } else if (overlapMinutes > 0) {
-          console.log(`Minor overlap detected (${Math.round(overlapMinutes)} minutes) - allowing booking`);
+          throw new Error(`Time slot is not available. There is a conflict with an existing appointment.`);
         }
       }
     }
