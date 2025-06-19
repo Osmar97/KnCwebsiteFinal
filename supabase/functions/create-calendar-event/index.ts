@@ -102,6 +102,12 @@ const handler = async (req: Request): Promise<Response> => {
       checkOnly = false
     }: CalendarEventRequest = await req.json();
 
+    if (checkOnly) {
+      console.log("=== AVAILABILITY CHECK ===");
+    } else {
+      console.log("=== ACTUAL BOOKING REQUEST ===");
+    }
+
     console.log("Processing calendar request:", {
       summary,
       description,
@@ -183,6 +189,7 @@ const handler = async (req: Request): Promise<Response> => {
           
           // If this is just an availability check, return that it's not available
           if (checkOnly) {
+            console.log("Returning unavailable for availability check");
             return new Response(
               JSON.stringify({
                 success: false,
@@ -199,6 +206,8 @@ const handler = async (req: Request): Promise<Response> => {
             );
           }
           
+          // If this is an actual booking attempt, throw an error
+          console.log("Blocking actual booking due to conflict");
           throw new Error(`Time slot is not available. There is a conflict with an existing appointment.`);
         }
       }
@@ -208,6 +217,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // If this is just an availability check, return success
     if (checkOnly) {
+      console.log("Returning available for availability check");
       return new Response(
         JSON.stringify({
           success: true,
@@ -225,6 +235,9 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Create the event on the primary calendar
+    console.log("=== CREATING CALENDAR EVENT ===");
+    console.log("Creating event on primary calendar:", primaryCalendarId);
+
     const eventData = {
       summary,
       description,
@@ -260,7 +273,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
     };
 
-    console.log("Creating event on primary calendar:", primaryCalendarId);
+    console.log("Event data to be created:", eventData);
 
     const response = await fetch(
       `https://www.googleapis.com/calendar/v3/calendars/${primaryCalendarId}/events?conferenceDataVersion=1`,
@@ -281,7 +294,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const event = await response.json();
-    console.log("Calendar event created successfully:", event);
+    console.log("=== CALENDAR EVENT CREATED SUCCESSFULLY ===");
+    console.log("Created event:", event);
 
     return new Response(
       JSON.stringify({
@@ -301,6 +315,7 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
   } catch (error: any) {
+    console.error("=== ERROR IN CALENDAR FUNCTION ===");
     console.error("Error processing calendar request:", error);
     return new Response(
       JSON.stringify({
