@@ -52,10 +52,12 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
               }
             });
 
-            if (error && error.message?.includes("Time slot is not available")) {
-              availabilityMap[timeSlot] = false;
-            } else {
+            // If the response indicates the slot is available, mark it as available
+            // If there's an error or the slot is not available, mark it as unavailable
+            if (data && data.available === true) {
               availabilityMap[timeSlot] = true;
+            } else {
+              availabilityMap[timeSlot] = false;
             }
           } catch (err) {
             // If there's an error checking this slot, assume it's unavailable
@@ -64,10 +66,11 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
           }
         }
 
+        console.log("Final availability map:", availabilityMap);
         setAvailability(availabilityMap);
       } catch (error) {
         console.error("Error checking availability:", error);
-        // If there's an error, assume all slots are available as fallback
+        // If there's an error, assume all slots are unavailable as a safe fallback
         const timeSlots = [];
         for (let hour = 14; hour < 20; hour++) {
           timeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
@@ -77,7 +80,7 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
         }
         const fallbackAvailability: TimeSlotAvailability = {};
         timeSlots.forEach(slot => {
-          fallbackAvailability[slot] = true;
+          fallbackAvailability[slot] = false;
         });
         setAvailability(fallbackAvailability);
       } finally {

@@ -167,24 +167,38 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log(`Calendar ${calendarId} busy times:`, busyTimes);
 
-      // Check for any overlaps (even 1 minute overlap should block the slot)
+      // Check for any overlaps - ANY overlap should block the slot
       for (const busyTime of busyTimes) {
         const busyStart = new Date(busyTime.start);
         const busyEnd = new Date(busyTime.end);
         
-        // Calculate overlap duration
-        const overlapStart = new Date(Math.max(busyStart.getTime(), startDate.getTime()));
-        const overlapEnd = new Date(Math.min(busyEnd.getTime(), endDate.getTime()));
-        const overlapDuration = Math.max(0, overlapEnd.getTime() - overlapStart.getTime());
-        const overlapMinutes = overlapDuration / (1000 * 60);
+        // Check if there's any overlap between the requested slot and the busy time
+        const hasOverlap = startDate < busyEnd && endDate > busyStart;
         
-        // Any overlap should block the slot
-        if (overlapMinutes > 0) {
+        if (hasOverlap) {
           console.log(`Found conflict in calendar ${calendarId}:`, {
             busyPeriod: { start: busyStart.toISOString(), end: busyEnd.toISOString() },
-            requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() },
-            overlapMinutes
+            requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() }
           });
+          
+          // If this is just an availability check, return that it's not available
+          if (checkOnly) {
+            return new Response(
+              JSON.stringify({
+                success: false,
+                available: false,
+                message: "Time slot is not available"
+              }),
+              {
+                status: 200,
+                headers: {
+                  "Content-Type": "application/json",
+                  ...corsHeaders
+                }
+              }
+            );
+          }
+          
           throw new Error(`Time slot is not available. There is a conflict with an existing appointment.`);
         }
       }
@@ -192,7 +206,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("All calendars are available for the requested time slot");
 
-    // If this is just an availability check, return success without creating the event
+    // If this is just an availability check, return success
     if (checkOnly) {
       return new Response(
         JSON.stringify({
