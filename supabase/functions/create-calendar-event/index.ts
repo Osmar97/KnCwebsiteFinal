@@ -19,9 +19,16 @@ interface TokenResponse {
   access_token: string;
   expires_in: number;
   token_type: string;
+  refresh_token?: string;
 }
 
-const refreshGoogleToken = async (): Promise<string> => {
+// Cache for access token with expiration
+let tokenCache: {
+  access_token: string;
+  expires_at: number;
+} | null = null;
+
+const refreshGoogleToken = async (): Promise<{ access_token: string; expires_at: number }> => {
   const clientId = Deno.env.get("GOOGLE_CLIENT_ID");
   const clientSecret = Deno.env.get("GOOGLE_CLIENT_SECRET");
   const refreshToken = Deno.env.get("GOOGLE_REFRESH_TOKEN");
@@ -52,39 +59,32 @@ const refreshGoogleToken = async (): Promise<string> => {
   }
 
   const tokenData: TokenResponse = await response.json();
-  console.log("Successfully refreshed Google access token");
+  console.log("Successfully refreshed Google access token, expires in:", tokenData.expires_in, "seconds");
   
-  return tokenData.access_token;
+  // Calculate expiration time (subtract 5 minutes for safety buffer)
+  const expiresAt = Date.now() + (tokenData.expires_in - 300) * 1000;
+  
+  // Update cache
+  tokenCache = {
+    access_token: tokenData.access_token,
+    expires_at: expiresAt
+  };
+  
+  return tokenCache;
 };
 
 const getValidAccessToken = async (): Promise<string> => {
-  let accessToken = Deno.env.get("GOOGLE_CALENDAR_ACCESS_TOKEN");
+  const now = Date.now();
   
-  if (!accessToken) {
-    console.log("No stored access token, refreshing...");
-    accessToken = await refreshGoogleToken();
-  } else {
-    const testResponse = await fetch(
-      "https://www.googleapis.com/calendar/v3/users/me/settings/timezone",
-      {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    if (testResponse.status === 401) {
-      console.log("Stored access token expired, refreshing...");
-      accessToken = await refreshGoogleToken();
-    } else if (!testResponse.ok) {
-      console.log("Token test failed with status:", testResponse.status);
-      accessToken = await refreshGoogleToken();
-    } else {
-      console.log("Stored access token is still valid");
-    }
+  // Check if we have a valid cached token
+  if (tokenCache && tokenCache.expires_at > now) {
+    console.log("Using cached access token, expires in:", Math.round((tokenCache.expires_at - now) / 1000), "seconds");
+    return tokenCache.access_token;
   }
-
-  return accessToken;
+  
+  console.log("Token expired or not cached, refreshing...");
+  const tokenInfo = await refreshGoogleToken();
+  return tokenInfo.access_token;
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -117,7 +117,7 @@ const handler = async (req: Request): Promise<Response> => {
       checkOnly
     });
 
-    // Get a valid access token (refresh if needed)
+    // Get a valid access token (use cached if available, refresh if needed)
     const accessToken = await getValidAccessToken();
     
     const primaryCalendarId = Deno.env.get("GOOGLE_CALENDAR_ID") || "primary";
@@ -162,7 +162,73 @@ const handler = async (req: Request): Promise<Response> => {
         console.error(`Error checking calendar ${calendarId}:`, freeBusyResponse.status, errorText);
         
         if (freeBusyResponse.status === 401) {
-          throw new Error(`Authentication failed even after token refresh. Please check that your Google OAuth credentials and refresh token are valid.`);
+          // Clear cache and try once more with fresh token
+          console.log("Token seems invalid, clearing cache and retrying...");
+          tokenCache = null;
+          const newAccessToken = await getValidAccessToken();
+          
+          const retryResponse = await fetch(
+            `https://www.googleapis.com/calendar/v3/freeBusy`,
+            {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${newAccessToken}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                timeMin: startDate.toISOString(),
+                timeMax: endDate.toISOString(),
+                items: [{ id: calendarId }]
+              })
+            }
+          );
+          
+          if (!retryResponse.ok) {
+            const retryErrorText = await retryResponse.text();
+            throw new Error(`Authentication failed even after token refresh. Please check that your Google OAuth credentials and refresh token are valid. Error: ${retryResponse.status} - ${retryErrorText}`);
+          }
+          
+          const freeBusyData = await retryResponse.json();
+          const busyTimes = freeBusyData.calendars[calendarId]?.busy || [];
+          console.log(`Calendar ${calendarId} busy times (after retry):`, busyTimes);
+          
+          // Check for overlaps with retry response
+          for (const busyTime of busyTimes) {
+            const busyStart = new Date(busyTime.start);
+            const busyEnd = new Date(busyTime.end);
+            
+            const hasOverlap = startDate < busyEnd && endDate > busyStart;
+            
+            if (hasOverlap) {
+              console.log(`Found conflict in calendar ${calendarId}:`, {
+                busyPeriod: { start: busyStart.toISOString(), end: busyEnd.toISOString() },
+                requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() }
+              });
+              
+              if (checkOnly) {
+                console.log("Returning unavailable for availability check");
+                return new Response(
+                  JSON.stringify({
+                    success: false,
+                    available: false,
+                    message: "Time slot is not available"
+                  }),
+                  {
+                    status: 200,
+                    headers: {
+                      "Content-Type": "application/json",
+                      ...corsHeaders
+                    }
+                  }
+                );
+              }
+              
+              console.log("Blocking actual booking due to conflict");
+              throw new Error(`Time slot is not available. There is a conflict with an existing appointment.`);
+            }
+          }
+          
+          continue; // Continue to next calendar
         }
         
         throw new Error(`Error checking calendar availability: ${freeBusyResponse.status} - ${errorText}`);
@@ -290,6 +356,52 @@ const handler = async (req: Request): Promise<Response> => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Google Calendar API error:", response.status, errorText);
+      
+      // If it's an auth error, try once more with fresh token
+      if (response.status === 401) {
+        console.log("Auth error on event creation, trying with fresh token...");
+        tokenCache = null;
+        const newAccessToken = await getValidAccessToken();
+        
+        const retryResponse = await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/${primaryCalendarId}/events?conferenceDataVersion=1`,
+          {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${newAccessToken}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(eventData)
+          }
+        );
+        
+        if (!retryResponse.ok) {
+          const retryErrorText = await retryResponse.text();
+          throw new Error(`Google Calendar API error after retry: ${retryResponse.status} - ${retryErrorText}`);
+        }
+        
+        const event = await retryResponse.json();
+        console.log("=== CALENDAR EVENT CREATED SUCCESSFULLY (after retry) ===");
+        console.log("Created event:", event);
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            eventId: event.id,
+            eventLink: event.htmlLink,
+            meetingLink: event.conferenceData?.entryPoints?.[0]?.uri,
+            message: "Event created successfully after checking availability across all calendars"
+          }),
+          {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              ...corsHeaders
+            }
+          }
+        );
+      }
+      
       throw new Error(`Google Calendar API error: ${response.status} - ${errorText}`);
     }
 
