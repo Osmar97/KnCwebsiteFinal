@@ -17,6 +17,10 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
     const slots = [];
     for (let hour = 14; hour < 20; hour++) {
       slots.push(`${hour.toString().padStart(2, '0')}:00`);
+      // Also add 15-minute slots for more flexibility
+      slots.push(`${hour.toString().padStart(2, '0')}:15`);
+      slots.push(`${hour.toString().padStart(2, '0')}:30`);
+      slots.push(`${hour.toString().padStart(2, '0')}:45`);
     }
     return slots;
   };
@@ -69,7 +73,7 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
           <span className="ml-2 text-gray-500">Checking availability...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {timeSlots.map((time) => {
             const isAvailable = availability[time] !== false;
             const isSelected = selectedTime === time;
@@ -82,15 +86,22 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
                 onClick={() => isAvailable ? onTimeSelect(time) : null}
                 disabled={!isAvailable}
                 className={`
+                  text-xs
                   ${isSelected && isAvailable ? "bg-gold hover:bg-gold-dark text-black" : ""}
-                  ${!isAvailable ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50" : ""}
-                  ${isAvailable && !isSelected ? "hover:border-gold" : ""}
+                  ${!isAvailable ? "bg-gray-200 text-gray-400 cursor-not-allowed opacity-60 border-gray-300" : ""}
+                  ${isAvailable && !isSelected ? "hover:border-gold hover:text-gold" : ""}
                 `}
               >
                 {time}
               </Button>
             );
           })}
+        </div>
+      )}
+      {!isLoading && (
+        <div className="text-xs text-gray-500 text-center mt-2">
+          <span className="inline-block w-3 h-3 bg-gray-200 rounded mr-1"></span>
+          Unavailable times are shown in grey
         </div>
       )}
     </div>

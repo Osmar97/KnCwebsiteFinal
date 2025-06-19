@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
@@ -58,14 +57,12 @@ const refreshGoogleToken = async (): Promise<string> => {
 };
 
 const getValidAccessToken = async (): Promise<string> => {
-  // First try the stored access token
   let accessToken = Deno.env.get("GOOGLE_CALENDAR_ACCESS_TOKEN");
   
   if (!accessToken) {
     console.log("No stored access token, refreshing...");
     accessToken = await refreshGoogleToken();
   } else {
-    // Test if the current token is still valid with a simple request
     const testResponse = await fetch(
       "https://www.googleapis.com/calendar/v3/users/me/settings/timezone",
       {
@@ -136,11 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
     for (const calendarId of calendarsToCheck) {
       console.log(`Checking calendar: ${calendarId}`);
       
-      // Use a wider time window to check for any overlapping events
-      // Check 30 minutes before and after to catch overlapping appointments
-      const checkStartTime = new Date(startDate.getTime() - 30 * 60 * 1000); // 30 minutes before
-      const checkEndTime = new Date(endDate.getTime() + 30 * 60 * 1000); // 30 minutes after
-      
+      // Check for conflicts in the exact time window
       const freeBusyResponse = await fetch(
         `https://www.googleapis.com/calendar/v3/freeBusy`,
         {
@@ -150,8 +143,8 @@ const handler = async (req: Request): Promise<Response> => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            timeMin: checkStartTime.toISOString(),
-            timeMax: checkEndTime.toISOString(),
+            timeMin: startDate.toISOString(),
+            timeMax: endDate.toISOString(),
             items: [{ id: calendarId }]
           })
         }
@@ -161,7 +154,6 @@ const handler = async (req: Request): Promise<Response> => {
         const errorText = await freeBusyResponse.text();
         console.error(`Error checking calendar ${calendarId}:`, freeBusyResponse.status, errorText);
         
-        // If it's still an authentication error after refresh, provide specific feedback
         if (freeBusyResponse.status === 401) {
           throw new Error(`Authentication failed even after token refresh. Please check that your Google OAuth credentials and refresh token are valid.`);
         }
@@ -174,20 +166,27 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log(`Calendar ${calendarId} busy times:`, busyTimes);
 
-      // Check if any busy time overlaps with our requested time slot
+      // Check for significant overlaps (more than 15 minutes)
       for (const busyTime of busyTimes) {
         const busyStart = new Date(busyTime.start);
         const busyEnd = new Date(busyTime.end);
         
-        // Check for overlap: busy period overlaps with our requested slot
-        const hasOverlap = (busyStart < endDate) && (busyEnd > startDate);
+        // Calculate overlap duration
+        const overlapStart = new Date(Math.max(busyStart.getTime(), startDate.getTime()));
+        const overlapEnd = new Date(Math.min(busyEnd.getTime(), endDate.getTime()));
+        const overlapDuration = Math.max(0, overlapEnd.getTime() - overlapStart.getTime());
+        const overlapMinutes = overlapDuration / (1000 * 60);
         
-        if (hasOverlap) {
-          console.log(`Found conflict in calendar ${calendarId}:`, {
+        // Only consider it a conflict if overlap is more than 15 minutes
+        if (overlapMinutes > 15) {
+          console.log(`Found significant conflict in calendar ${calendarId}:`, {
             busyPeriod: { start: busyStart.toISOString(), end: busyEnd.toISOString() },
-            requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() }
+            requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() },
+            overlapMinutes
           });
-          throw new Error(`Time slot is not available. There is a conflict with an existing appointment from ${busyStart.toLocaleTimeString()} to ${busyEnd.toLocaleTimeString()}.`);
+          throw new Error(`Time slot is not available. There is a significant conflict (${Math.round(overlapMinutes)} minutes overlap) with an existing appointment.`);
+        } else if (overlapMinutes > 0) {
+          console.log(`Minor overlap detected (${Math.round(overlapMinutes)} minutes) - allowing booking`);
         }
       }
     }

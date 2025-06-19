@@ -19,10 +19,13 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
     const checkAvailability = async () => {
       setIsLoading(true);
       try {
-        // Generate time slots from 14:00 to 19:00
+        // Generate time slots including 15-minute intervals
         const timeSlots = [];
         for (let hour = 14; hour < 20; hour++) {
           timeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
+          timeSlots.push(`${hour.toString().padStart(2, '0')}:15`);
+          timeSlots.push(`${hour.toString().padStart(2, '0')}:30`);
+          timeSlots.push(`${hour.toString().padStart(2, '0')}:45`);
         }
 
         const availabilityMap: TimeSlotAvailability = {};
@@ -45,7 +48,7 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
                 startDateTime,
                 attendeeEmail: "check@example.com",
                 attendeeName: "Availability Check",
-                checkOnly: true // Add a flag to only check availability
+                checkOnly: true
               }
             });
 
@@ -56,6 +59,7 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
             }
           } catch (err) {
             // If there's an error checking this slot, assume it's unavailable
+            console.warn(`Error checking slot ${timeSlot}:`, err);
             availabilityMap[timeSlot] = false;
           }
         }
@@ -63,10 +67,13 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
         setAvailability(availabilityMap);
       } catch (error) {
         console.error("Error checking availability:", error);
-        // If there's an error, assume all slots are available
+        // If there's an error, assume all slots are available as fallback
         const timeSlots = [];
         for (let hour = 14; hour < 20; hour++) {
           timeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
+          timeSlots.push(`${hour.toString().padStart(2, '0')}:15`);
+          timeSlots.push(`${hour.toString().padStart(2, '0')}:30`);
+          timeSlots.push(`${hour.toString().padStart(2, '0')}:45`);
         }
         const fallbackAvailability: TimeSlotAvailability = {};
         timeSlots.forEach(slot => {
