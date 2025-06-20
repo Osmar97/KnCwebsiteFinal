@@ -1,5 +1,3 @@
-
-
 import { Button } from "@/components/ui/button";
 import { Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -11,9 +9,16 @@ export const B2BScalingHero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="text-left">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-8 leading-tight">
-              Property Ownership For Those Who Think Beyond Borders
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-4 leading-tight">
+              Property Ownership For Those Who 
+              <span className="text-gold font-medium"> Think Beyond Borders</span>
             </h2>
+            
+            <div className="mb-8">
+              <p className="text-gold-light text-xl md:text-2xl font-light tracking-wide">
+                From Lisbon to Cabo Verde — and beyond.
+              </p>
+            </div>
             
             <div className="relative mb-8">
               <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
@@ -51,4 +56,3 @@ export const B2BScalingHero = () => {
     </section>
   );
 };
-
