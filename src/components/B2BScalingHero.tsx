@@ -15,10 +15,19 @@ export const B2BScalingHero = () => {
               Property Ownership For Those Who Think Beyond Borders
             </h2>
             
-            <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8 max-w-2xl">
-              💡 Whether you're relocating, investing, or expanding your portfolio, we help you cut through confusion and take action with confidence.
-              We combine insider knowledge, hands-on support, and a global network to make your property journey strategic, smooth, and profitable.
-            </p>
+            <div className="relative mb-8">
+              <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-gold to-gold-light rounded-full"></div>
+              <p className="text-gray-200 text-lg md:text-xl leading-relaxed pl-8 font-light">
+                <span className="text-2xl mr-3">💡</span>
+                <span className="text-white font-medium">Whether you're relocating, investing, or expanding your portfolio</span>, we help you cut through confusion and take action with confidence.
+              </p>
+              <p className="text-gray-200 text-lg md:text-xl leading-relaxed pl-8 mt-4 font-light">
+                We combine <span className="text-gold font-medium">insider knowledge</span>, 
+                <span className="text-gold font-medium"> hands-on support</span>, and a 
+                <span className="text-gold font-medium"> global network</span> to make your property journey 
+                <span className="text-white font-medium"> strategic, smooth, and profitable</span>.
+              </p>
+            </div>
 
             <Link to="/booking-form">
               <Button className="bg-gold/60 hover:bg-gold/70 text-white font-medium tracking-wider px-10 py-5 text-xl transition-all duration-300 transform hover:scale-105">
