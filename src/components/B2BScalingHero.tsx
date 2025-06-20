@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -14,7 +15,8 @@ export const B2BScalingHero = () => {
             </h2>
             
             <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8 max-w-2xl">
-              The formula to <Rocket className="inline w-6 h-6 mx-1 text-gold" /> <span className="text-white font-medium">sky-rocket</span> your B2B company to success, by developing the best sales infrastructures and protocols whilst leveraging proven client acquisition systems.
+              💡 Whether you're relocating, investing, or expanding your portfolio, we help you cut through confusion and take action with confidence.
+              We combine insider knowledge, hands-on support, and a global network to make your property journey strategic, smooth, and profitable.
             </p>
 
             <Link to="/booking-form">
