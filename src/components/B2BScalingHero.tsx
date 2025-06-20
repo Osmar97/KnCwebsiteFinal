@@ -15,7 +15,7 @@ export const B2BScalingHero = () => {
             </h2>
             
             <div className="mb-8">
-              <p className="text-gold-light text-xl md:text-2xl font-light tracking-wide">
+              <p className="text-white text-xl md:text-2xl font-light tracking-wide">
                 From Lisbon to Cabo Verde — and beyond.
               </p>
             </div>
