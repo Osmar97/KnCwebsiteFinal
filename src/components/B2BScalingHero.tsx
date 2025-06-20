@@ -1,4 +1,5 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -21,7 +22,7 @@ export const B2BScalingHero = () => {
 
             <Link to="/booking-form">
               <Button className="bg-gold/60 hover:bg-gold/70 text-white font-medium tracking-wider px-10 py-5 text-xl transition-all duration-300 transform hover:scale-105">
-                Book a call →
+                Book your strategic call →
               </Button>
             </Link>
           </div>
@@ -41,3 +42,4 @@ export const B2BScalingHero = () => {
     </section>
   );
 };
+
