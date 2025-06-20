@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -11,8 +10,7 @@ export const B2BScalingHero = () => {
           {/* Left Content */}
           <div className="text-left">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-8 leading-tight">
-              Transforming How<br />
-              Business <span className="text-gold">B2B Scale</span>
+              Property Ownership For Those Who Think Beyond Borders
             </h2>
             
             <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8 max-w-2xl">
