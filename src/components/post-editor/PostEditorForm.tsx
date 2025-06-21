@@ -135,7 +135,7 @@ export const PostEditorForm = ({
               color: 'white',
               minHeight: '120px'
             }}
-            className="text-white [&_.ql-editor]:text-white [&_.ql-editor]:bg-gray-800 [&_.ql-toolbar]:border-gray-600 [&_.ql-container]:border-gray-600 [&_.ql-toolbar]:bg-gray-700"
+            className="text-white [&_.ql-editor]:text-white [&_.ql-editor]:bg-gray-800 [&_.ql-toolbar]:border-gray-600 [&_.ql-container]:border-gray-600 [&_.ql-toolbar]:bg-gray-700 [&_.ql-editor_strong]:text-white [&_.ql-editor_em]:text-white"
           />
         </div>
       </div>
