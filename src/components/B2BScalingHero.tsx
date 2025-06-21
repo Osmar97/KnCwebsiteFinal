@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -43,11 +44,11 @@ export const B2BScalingHero = () => {
 
           {/* Right side - Image */}
           <div className="relative">
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
+            <div className="rounded-2xl overflow-hidden shadow-2xl aspect-square">
               <img 
                 src="/lovable-uploads/vista_troia.jpg" 
                 alt="Business meeting"
-                className="w-full h-auto object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
           </div>
