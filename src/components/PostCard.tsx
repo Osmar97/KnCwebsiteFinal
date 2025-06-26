@@ -6,6 +6,7 @@ import { Edit, Trash2, Download, FileText, Play } from "lucide-react";
 import { type Post, usePosts } from "@/contexts/PostsContext";
 import { PostEditor } from "./PostEditor";
 import { ImageModal } from "./ImageModal";
+import { MondayFormModal } from "./resources/MondayFormModal";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/contexts/AdminContext";
 
@@ -22,6 +23,9 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [selectedPdfUrl, setSelectedPdfUrl] = useState<string>("");
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
 
   const handleDelete = async () => {
     try {
@@ -75,6 +79,20 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDownloadClick = (pdfUrl: string) => {
+    const fileName = getPdfName(pdfUrl);
+    setSelectedPdfUrl(pdfUrl);
+    setSelectedFileName(fileName);
+    setIsFormModalOpen(true);
+  };
+
+  const handleFormSubmitted = () => {
+    // Start the download after form is submitted
+    if (selectedPdfUrl) {
+      handlePdfDownload(selectedPdfUrl);
+    }
   };
 
   const getPdfName = (url: string) => {
@@ -184,7 +202,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handlePdfDownload(pdfUrl)}
+                        onClick={() => handleDownloadClick(pdfUrl)}
                         className="flex items-center gap-1"
                       >
                         <Download className="w-4 h-4" />
@@ -233,6 +251,13 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
         initialIndex={selectedImageIndex}
         isOpen={imageModalOpen}
         onClose={() => setImageModalOpen(false)}
+      />
+
+      <MondayFormModal
+        isOpen={isFormModalOpen}
+        onClose={() => setIsFormModalOpen(false)}
+        onFormSubmitted={handleFormSubmitted}
+        fileName={selectedFileName}
       />
     </>
   );
