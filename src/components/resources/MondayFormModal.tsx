@@ -23,27 +23,44 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: 
   useEffect(() => {
     // Listen for messages from the Monday.com iframe
     const handleMessage = (event: MessageEvent) => {
+      console.log('Received message:', event.data, 'from origin:', event.origin);
+      
       // Check if the message is from Monday.com form
-      if (event.origin.includes('monday.com') || event.data?.type === 'form-submitted') {
+      if (event.origin.includes('monday.com') || 
+          event.data?.type === 'form-submitted' ||
+          event.data?.action === 'submit' ||
+          typeof event.data === 'string' && event.data.includes('submit')) {
         console.log('Form submitted successfully');
         setIsFormSubmitted(true);
         onFormSubmitted();
         setTimeout(() => {
           onClose();
-        }, 1000);
+        }, 2000);
       }
     };
 
-    window.addEventListener('message', handleMessage);
+    if (isOpen) {
+      window.addEventListener('message', handleMessage);
+    }
+    
     return () => window.removeEventListener('message', handleMessage);
-  }, [onFormSubmitted, onClose]);
+  }, [onFormSubmitted, onClose, isOpen]);
+
+  const handleSubmitManually = () => {
+    console.log('Manual form submission triggered');
+    setIsFormSubmitted(true);
+    onFormSubmitted();
+    setTimeout(() => {
+      onClose();
+    }, 2000);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden bg-white">
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="text-gray-900">
-            Complete the form to download: {fileName}
+            Complete the form to access: {fileName}
           </DialogTitle>
           <Button
             variant="ghost"
@@ -63,7 +80,7 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: 
                   ✅ Form Submitted Successfully!
                 </div>
                 <div className="text-gray-600">
-                  Your download will start shortly...
+                  Processing your request...
                 </div>
               </div>
             </div>
@@ -80,6 +97,18 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: 
             }}
             title="Monday.com Form"
           />
+          
+          {/* Debug button for testing */}
+          <div className="mt-4 text-center">
+            <Button
+              onClick={handleSubmitManually}
+              variant="outline"
+              size="sm"
+              className="text-xs"
+            >
+              Test Form Submission
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Edit, Trash2, Download, FileText, Play } from "lucide-react";
+import { Edit, Trash2, Download, FileText, ExternalLink } from "lucide-react";
 import { type Post, usePosts } from "@/contexts/PostsContext";
 import { PostEditor } from "./PostEditor";
 import { ImageModal } from "./ImageModal";
@@ -26,6 +26,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedPdfUrl, setSelectedPdfUrl] = useState<string>("");
   const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [actionType, setActionType] = useState<"view" | "download">("view");
 
   const handleDelete = async () => {
     try {
@@ -70,28 +71,33 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
     setImageModalOpen(true);
   };
 
-  const handlePdfDownload = (pdfUrl: string) => {
-    const fileName = pdfUrl.split('/').pop() || 'document.pdf';
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = fileName;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handlePdfAccess = (pdfUrl: string, action: "view" | "download") => {
+    if (action === "view") {
+      window.open(pdfUrl, '_blank');
+    } else {
+      const fileName = pdfUrl.split('/').pop() || 'document.pdf';
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = fileName;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
-  const handleDownloadClick = (pdfUrl: string) => {
+  const handleActionClick = (pdfUrl: string, action: "view" | "download") => {
     const fileName = getPdfName(pdfUrl);
     setSelectedPdfUrl(pdfUrl);
     setSelectedFileName(fileName);
+    setActionType(action);
     setIsFormModalOpen(true);
   };
 
   const handleFormSubmitted = () => {
-    // Start the download after form is submitted
+    // Execute the action after form is submitted
     if (selectedPdfUrl) {
-      handlePdfDownload(selectedPdfUrl);
+      handlePdfAccess(selectedPdfUrl, actionType);
     }
   };
 
@@ -199,15 +205,26 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
                       <span className="flex-1 text-sm text-gray-700 truncate">
                         {getPdfName(pdfUrl)}
                       </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDownloadClick(pdfUrl)}
-                        className="flex items-center gap-1"
-                      >
-                        <Download className="w-4 h-4" />
-                        Download
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleActionClick(pdfUrl, "view")}
+                          className="flex items-center gap-1"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          View
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleActionClick(pdfUrl, "download")}
+                          className="flex items-center gap-1"
+                        >
+                          <Download className="w-4 h-4" />
+                          Download
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>

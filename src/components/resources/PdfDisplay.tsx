@@ -12,29 +12,35 @@ export const PdfDisplay = ({ pdfUrls }: PdfDisplayProps) => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedPdfUrl, setSelectedPdfUrl] = useState<string>("");
   const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [actionType, setActionType] = useState<"view" | "download">("view");
 
-  const handlePdfDownload = (pdfUrl: string) => {
-    const fileName = pdfUrl.split('/').pop() || 'document.pdf';
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = fileName;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handlePdfAccess = (pdfUrl: string, action: "view" | "download") => {
+    if (action === "view") {
+      window.open(pdfUrl, '_blank');
+    } else {
+      const fileName = pdfUrl.split('/').pop() || 'document.pdf';
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = fileName;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
-  const handleDownloadClick = (pdfUrl: string) => {
+  const handleActionClick = (pdfUrl: string, action: "view" | "download") => {
     const fileName = getPdfName(pdfUrl);
     setSelectedPdfUrl(pdfUrl);
     setSelectedFileName(fileName);
+    setActionType(action);
     setIsFormModalOpen(true);
   };
 
   const handleFormSubmitted = () => {
-    // Start the download after form is submitted
+    // Execute the action after form is submitted
     if (selectedPdfUrl) {
-      handlePdfDownload(selectedPdfUrl);
+      handlePdfAccess(selectedPdfUrl, actionType);
     }
   };
 
@@ -72,7 +78,7 @@ export const PdfDisplay = ({ pdfUrls }: PdfDisplayProps) => {
                 
                 <div className="flex items-center gap-2">
                   <Button 
-                    onClick={() => window.open(pdfUrl, '_blank')} 
+                    onClick={() => handleActionClick(pdfUrl, "view")} 
                     variant="outline" 
                     size="sm" 
                     className="border-gray-600 bg-[#85754e] text-zinc-950"
@@ -81,7 +87,7 @@ export const PdfDisplay = ({ pdfUrls }: PdfDisplayProps) => {
                     View
                   </Button>
                   <Button
-                    onClick={() => handleDownloadClick(pdfUrl)}
+                    onClick={() => handleActionClick(pdfUrl, "download")}
                     className="bg-gold hover:bg-gold/90 text-black"
                     size="sm"
                   >
