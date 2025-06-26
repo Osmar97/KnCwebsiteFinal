@@ -8,47 +8,41 @@ interface MondayFormModalProps {
   onClose: () => void;
   onFormSubmitted: () => void;
   fileName: string;
-  formId: string; // added formId prop
+  formId: string;
 }
 
 export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, formId }: MondayFormModalProps) => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load monday forms script once
   useEffect(() => {
     if (!isOpen) return;
     const existing = document.querySelector('script[src="https://cdn.forms.monday.com/static/js/forms2.min.js"]');
     if (existing) {
-      initForm();
+      loadForm();
       return;
     }
     const script = document.createElement('script');
     script.src = 'https://cdn.forms.monday.com/static/js/forms2.min.js';
     script.async = true;
-    script.onload = initForm;
+    script.onload = loadForm;
     document.body.appendChild(script);
-    return () => {
-      // keep the script for future reopens
-    };
   }, [isOpen]);
 
-  // Initialize monday forms embed
-  const initForm = () => {
+  const loadForm = () => {
     setIsLoading(true);
     // @ts-ignore
     window.MondayForms2?.init({
       selector: '#monday-form-container',
       formId,
+      onLoad: () => {
+        setIsLoading(false);
+      },
       onSubmit: () => {
         setIsFormSubmitted(true);
         onFormSubmitted();
         setTimeout(onClose, 2000);
       },
-    });
-    // Listen for embed-ready event
-    document.addEventListener('mondayFormInit', () => {
-      setIsLoading(false);
     });
   };
 
@@ -94,9 +88,8 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fo
             </div>
           )}
 
-          <div id="monday-form-container" data-form-id={formId} className="min-h-[500px]" />
+          <div id="monday-form-container" className="min-h-[500px]" />
 
-          {/* Fallback button */}
           <div className="mt-4 text-center">
             <Button onClick={openFormInNewTab} className="bg-blue-600 hover:bg-blue-700 text-white">
               <ExternalLink className="w-4 h-4 mr-2" />
