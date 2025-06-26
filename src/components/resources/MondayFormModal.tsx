@@ -14,36 +14,54 @@ interface MondayFormModalProps {
 export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, formId }: MondayFormModalProps) => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  
   useEffect(() => {
     if (!isOpen) return;
     const existing = document.querySelector('script[src="https://cdn.forms.monday.com/static/js/forms2.min.js"]');
     if (existing) {
-      loadForm();
-      return;
+      initEmbed();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.forms.monday.com/static/js/forms2.min.js';
+      script.async = true;
+      script.onload = initEmbed;
+      document.body.appendChild(script);
     }
-    const script = document.createElement('script');
-    script.src = 'https://cdn.forms.monday.com/static/js/forms2.min.js';
-    script.async = true;
-    script.onload = loadForm;
-    document.body.appendChild(script);
   }, [isOpen]);
 
-  const loadForm = () => {
+  const initEmbed = () => {
     setIsLoading(true);
+    const container = document.getElementById('monday-form-container');
+    if (!container) return;
+    // Clear previous contents
+    container.innerHTML = '';
+
+    // Initialize Monday embed
     // @ts-ignore
-    window.MondayForms2?.init({
-      selector: '#monday-form-container',
-      formId,
-      onLoad: () => {
-        setIsLoading(false);
-      },
-      onSubmit: () => {
-        setIsFormSubmitted(true);
-        onFormSubmitted();
-        setTimeout(onClose, 2000);
-      },
+    window.MondayForms2?.init({ selector: '#monday-form-container', formId, onSubmit: () => {
+      setIsFormSubmitted(true);
+      onFormSubmitted();
+      setTimeout(onClose, 2000);
+    }});
+
+    // Observe container for iframe or form elements
+    const observer = new MutationObserver((mutations, obs) => {
+      for (const mut of mutations) {
+        if (mut.addedNodes.length) {
+          setIsLoading(false);
+          obs.disconnect();
+          break;
+        }
+      }
     });
+    observer.observe(container, { childList: true, subtree: true });
+
+    // Fallback: stop loading after 10s
+    const fallback = setTimeout(() => {
+      setIsLoading(false);
+      observer.disconnect();
+    }, 10000);
+    return () => clearTimeout(fallback);
   };
 
   const openFormInNewTab = () => {
