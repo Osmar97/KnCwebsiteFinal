@@ -8,64 +8,25 @@ interface MondayFormModalProps {
   onClose: () => void;
   onFormSubmitted: () => void;
   fileName: string;
-  formId: string;
 }
 
-export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, formId }: MondayFormModalProps) => {
+export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: MondayFormModalProps) => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  useEffect(() => {
-    if (!isOpen) return;
-    const existing = document.querySelector('script[src="https://cdn.forms.monday.com/static/js/forms2.min.js"]');
-    if (existing) {
-      initEmbed();
-    } else {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.forms.monday.com/static/js/forms2.min.js';
-      script.async = true;
-      script.onload = initEmbed;
-      document.body.appendChild(script);
-    }
-  }, [isOpen]);
+  // Use direct iframe approach instead of JavaScript initialization
+  const formUrl = `https://forms.monday.com/forms/embed/b7d6b100e18926fcbfbab7daee8d2811?r=euc1`;
+  
+  const handleIframeLoad = () => {
+    setIsLoading(false);
+  };
 
-  const initEmbed = () => {
-    setIsLoading(true);
-    const container = document.getElementById('monday-form-container');
-    if (!container) return;
-    // Clear previous contents
-    container.innerHTML = '';
-
-    // Initialize Monday embed
-    // @ts-ignore
-    window.MondayForms2?.init({ selector: '#monday-form-container', formId, onSubmit: () => {
-      setIsFormSubmitted(true);
-      onFormSubmitted();
-      setTimeout(onClose, 2000);
-    }});
-
-    // Observe container for iframe or form elements
-    const observer = new MutationObserver((mutations, obs) => {
-      for (const mut of mutations) {
-        if (mut.addedNodes.length) {
-          setIsLoading(false);
-          obs.disconnect();
-          break;
-        }
-      }
-    });
-    observer.observe(container, { childList: true, subtree: true });
-
-    // Fallback: stop loading after 10s
-    const fallback = setTimeout(() => {
-      setIsLoading(false);
-      observer.disconnect();
-    }, 10000);
-    return () => clearTimeout(fallback);
+  const handleIframeError = () => {
+    setIsLoading(false);
   };
 
   const openFormInNewTab = () => {
-    window.open(`https://forms.monday.com/forms/embed/${formId}`, '_blank');
+    window.open(formUrl, '_blank');
     setTimeout(() => {
       setIsFormSubmitted(true);
       onFormSubmitted();
@@ -106,7 +67,16 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fo
             </div>
           )}
 
-          <div id="monday-form-container" className="min-h-[500px]" />
+          <iframe
+            src={formUrl}
+            width="100%"
+            height="500"
+            style={{ border: 0, borderRadius: '8px' }}
+            title="Monday.com Form"
+            onLoad={handleIframeLoad}
+            onError={handleIframeError}
+            className="min-h-[500px]"
+          />
 
           <div className="mt-4 text-center">
             <Button onClick={openFormInNewTab} className="bg-blue-600 hover:bg-blue-700 text-white">
