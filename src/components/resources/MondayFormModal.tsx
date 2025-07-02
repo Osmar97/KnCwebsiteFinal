@@ -13,16 +13,27 @@ interface MondayFormModalProps {
 export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: MondayFormModalProps) => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showContinueButton, setShowContinueButton] = useState(false);
   
   // Use direct iframe approach instead of JavaScript initialization
   const formUrl = `https://forms.monday.com/forms/embed/b7d6b100e18926fcbfbab7daee8d2811?r=euc1`;
   
   const handleIframeLoad = () => {
     setIsLoading(false);
+    // Show continue button after form loads
+    setTimeout(() => {
+      setShowContinueButton(true);
+    }, 3000); // Give user time to see the form
   };
 
   const handleIframeError = () => {
     setIsLoading(false);
+  };
+
+  const handleContinueDownload = () => {
+    setIsFormSubmitted(true);
+    onFormSubmitted();
+    setTimeout(onClose, 1000);
   };
 
   const openFormInNewTab = () => {
@@ -78,13 +89,27 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: 
             className="min-h-[500px]"
           />
 
+          {showContinueButton && !isFormSubmitted && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4 mb-4">
+              <p className="text-blue-800 font-medium mb-3">
+                After submitting the form above, click continue to access your file:
+              </p>
+              <Button 
+                onClick={handleContinueDownload} 
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+              >
+                Continue to Download
+              </Button>
+            </div>
+          )}
+
           <div className="mt-4 text-center">
             <Button onClick={openFormInNewTab} className="bg-blue-600 hover:bg-blue-700 text-white">
               <ExternalLink className="w-4 h-4 mr-2" />
               Open Form in New Tab
             </Button>
             <div className="text-sm text-gray-500 mt-2">
-              If the form doesn’t load above, click to open in a new tab.
+              If the form doesn't load above, click to open in a new tab.
             </div>
           </div>
         </div>
