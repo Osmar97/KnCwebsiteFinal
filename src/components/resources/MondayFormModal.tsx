@@ -1,48 +1,105 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, ExternalLink } from "lucide-react";
+import { X, ExternalLink, Download } from "lucide-react";
 
 interface MondayFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onFormSubmitted: () => void;
   fileName: string;
+  fileUrls: string[]; // Array of all file URLs to download
 }
 
-export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: MondayFormModalProps) => {
+export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fileUrls }: MondayFormModalProps) => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [showContinueButton, setShowContinueButton] = useState(false);
+  const [showDownloadButton, setShowDownloadButton] = useState(false);
+  const [autoDownloadAttempted, setAutoDownloadAttempted] = useState(false);
   
-  // Use direct iframe approach instead of JavaScript initialization
+  // Use direct iframe approach
   const formUrl = `https://forms.monday.com/forms/embed/b7d6b100e18926fcbfbab7daee8d2811?r=euc1`;
   
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset states when modal closes
+      setIsFormSubmitted(false);
+      setShowDownloadButton(false);
+      setAutoDownloadAttempted(false);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    // Listen for messages from the iframe
+    const handleMessage = (event: MessageEvent) => {
+      // Check if message is from Monday.com form
+      if (event.origin.includes('monday.com') || event.data?.type === 'form_submitted') {
+        handleFormSubmission();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('message', handleMessage);
+    }
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [isOpen]);
+
   const handleIframeLoad = () => {
     setIsLoading(false);
-    // Show continue button after form loads
-    setTimeout(() => {
-      setShowContinueButton(true);
-    }, 3000); // Give user time to see the form
   };
 
   const handleIframeError = () => {
     setIsLoading(false);
   };
 
-  const handleContinueDownload = () => {
+  const downloadAllFiles = () => {
+    fileUrls.forEach((url, index) => {
+      setTimeout(() => {
+        const fileName = url.split('/').pop() || `document_${index + 1}.pdf`;
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }, index * 500); // Stagger downloads by 500ms
+    });
+  };
+
+  const handleFormSubmission = () => {
     setIsFormSubmitted(true);
     onFormSubmitted();
-    setTimeout(onClose, 1000);
+    
+    if (!autoDownloadAttempted) {
+      setAutoDownloadAttempted(true);
+      // Attempt automatic download
+      setTimeout(() => {
+        downloadAllFiles();
+        // Show fallback button after 3 seconds if user needs to manually download
+        setTimeout(() => {
+          setShowDownloadButton(true);
+        }, 3000);
+      }, 1000);
+    }
+  };
+
+  // Manual form submission trigger for testing/fallback
+  const handleManualSubmission = () => {
+    handleFormSubmission();
   };
 
   const openFormInNewTab = () => {
     window.open(formUrl, '_blank');
+    // Since we can't detect submission in new tab, show download button after delay
     setTimeout(() => {
       setIsFormSubmitted(true);
       onFormSubmitted();
-      setTimeout(onClose, 2000);
-    }, 1000);
+      setShowDownloadButton(true);
+    }, 2000);
   };
 
   return (
@@ -67,13 +124,33 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: 
             </div>
           )}
 
-          {isFormSubmitted && (
+          {isFormSubmitted && !showDownloadButton && (
             <div className="absolute inset-0 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center z-20">
               <div className="text-center">
                 <div className="text-green-600 text-lg font-semibold mb-2">
                   ✅ Form Submitted Successfully!
                 </div>
-                <div className="text-gray-600">Processing your request...</div>
+                <div className="text-gray-600">Starting download automatically...</div>
+              </div>
+            </div>
+          )}
+
+          {isFormSubmitted && showDownloadButton && (
+            <div className="absolute inset-0 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center z-20">
+              <div className="text-center">
+                <div className="text-green-600 text-lg font-semibold mb-4">
+                  ✅ Form Submitted Successfully!
+                </div>
+                <div className="text-gray-600 mb-4">
+                  If your download didn't start automatically, click below:
+                </div>
+                <Button 
+                  onClick={downloadAllFiles}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Files
+                </Button>
               </div>
             </div>
           )}
@@ -89,28 +166,23 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName }: 
             className="min-h-[500px]"
           />
 
-          {showContinueButton && !isFormSubmitted && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4 mb-4">
-              <p className="text-blue-800 font-medium mb-3">
-                After submitting the form above, click continue to access your file:
-              </p>
-              <Button 
-                onClick={handleContinueDownload} 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
-              >
-                Continue to Download
-              </Button>
-            </div>
-          )}
-
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center space-y-2">
             <Button onClick={openFormInNewTab} className="bg-blue-600 hover:bg-blue-700 text-white">
               <ExternalLink className="w-4 h-4 mr-2" />
               Open Form in New Tab
             </Button>
-            <div className="text-sm text-gray-500 mt-2">
+            <div className="text-sm text-gray-500">
               If the form doesn't load above, click to open in a new tab.
             </div>
+            
+            {/* Test button for development - remove in production */}
+            <Button 
+              onClick={handleManualSubmission}
+              variant="outline"
+              className="ml-2 text-xs"
+            >
+              Test Form Submission
+            </Button>
           </div>
         </div>
       </DialogContent>

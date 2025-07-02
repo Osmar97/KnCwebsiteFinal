@@ -275,6 +275,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
         onClose={() => setIsFormModalOpen(false)}
         onFormSubmitted={handleFormSubmitted}
         fileName={selectedFileName}
+        fileUrls={post.pdf_urls || []}
       />
     </>
   );

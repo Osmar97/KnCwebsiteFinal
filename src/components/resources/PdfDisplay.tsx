@@ -106,6 +106,7 @@ export const PdfDisplay = ({ pdfUrls }: PdfDisplayProps) => {
         onClose={() => setIsFormModalOpen(false)}
         onFormSubmitted={handleFormSubmitted}
         fileName={selectedFileName}
+        fileUrls={pdfUrls}
       />
     </>
   );
