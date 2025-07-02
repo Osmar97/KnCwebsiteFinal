@@ -105,13 +105,10 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fi
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden bg-white p-0">
-        <DialogHeader className="flex flex-row items-center justify-between p-6 pb-0">
+        <DialogHeader className="p-6 pb-0">
           <DialogTitle className="text-gray-900">
             Complete the form to access: {fileName}
           </DialogTitle>
-          <Button variant="ghost" size="sm" onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-4 h-4" />
-          </Button>
         </DialogHeader>
 
         <div className="relative p-6">
