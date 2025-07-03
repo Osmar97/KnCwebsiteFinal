@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Mail, Download, BookOpen, TrendingUp, DollarSign, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { usePosts } from "@/contexts/PostsContext";
 
 const FreeResources = () => {
   const [email, setEmail] = useState("");
@@ -139,58 +140,63 @@ const FreeResources = () => {
           </div>
         </section>
 
-        {/* Free Resources Section */}
+        {/* All Recent Articles Section */}
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-white mb-16">
-              Free Resources & Downloads
+            <h2 className="text-4xl font-bold text-left text-white mb-16">
+              All Recent Articles
             </h2>
             
-            <div className="grid md:grid-cols-3 gap-8">
-              <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300">
-                <CardContent className="p-8">
-                  <Download className="w-12 h-12 text-gold mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">
-                    Investment Calculator
-                  </h3>
-                  <p className="text-gray-300 mb-6">
-                    Calculate potential returns on your property investments with our comprehensive tool.
-                  </p>
-                  <Button variant="outline" className="w-full border-gold text-gold hover:bg-gold hover:text-black">
-                    Download Free
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300">
-                <CardContent className="p-8">
-                  <BookOpen className="w-12 h-12 text-gold mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">
-                    Market Analysis Guide
-                  </h3>
-                  <p className="text-gray-300 mb-6">
-                    Learn how to analyze property markets like a pro with our step-by-step guide.
-                  </p>
-                  <Button variant="outline" className="w-full border-gold text-gold hover:bg-gold hover:text-black">
-                    Download Free
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300">
-                <CardContent className="p-8">
-                  <Trophy className="w-12 h-12 text-gold mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">
-                    Wealth Building Checklist
-                  </h3>
-                  <p className="text-gray-300 mb-6">
-                    A comprehensive checklist to track your journey to financial freedom.
-                  </p>
-                  <Button variant="outline" className="w-full border-gold text-gold hover:bg-gold hover:text-black">
-                    Download Free
-                  </Button>
-                </CardContent>
-              </Card>
+            <div className="grid md:grid-cols-2 gap-8">
+              {(() => {
+                const { getPostsByCategory } = usePosts();
+                const articles = getPostsByCategory("article").slice(0, 4);
+                
+                const gradients = [
+                  "bg-gradient-to-br from-cyan-400 to-blue-500",
+                  "bg-gradient-to-br from-purple-400 to-purple-600", 
+                  "bg-gradient-to-br from-emerald-400 to-teal-500",
+                  "bg-gradient-to-br from-orange-400 to-red-500"
+                ];
+                
+                return articles.map((article, index) => (
+                  <Card key={article.id} className="bg-gray-50 border-0 overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <CardContent className="p-0">
+                      <div className={`${gradients[index % gradients.length]} p-6 text-center relative overflow-hidden`}>
+                        <div className="absolute top-4 right-4 w-16 h-16 border-4 border-white/30 rounded-full"></div>
+                        <div className="absolute bottom-4 left-4 w-24 h-1 bg-white/30 rounded-full"></div>
+                        <h3 className="text-xl font-bold text-white mb-4 max-w-xs mx-auto">
+                          {article.title}
+                        </h3>
+                        <p className="text-white/90 text-sm">Ismael Gomes Queta</p>
+                      </div>
+                      
+                      <div className="p-6">
+                        <h4 className="text-xl font-semibold text-gray-900 mb-3">
+                          {article.title}
+                        </h4>
+                        <p className="text-gray-600 text-sm mb-3">
+                          {new Date(article.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                        <p className="text-gray-700 mb-4 line-clamp-3">
+                          {article.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                        </p>
+                        <Button 
+                          variant="link" 
+                          className="p-0 text-gray-900 font-medium hover:text-gold"
+                          onClick={() => window.location.href = `/resources/article/${article.id}`}
+                        >
+                          Continue Reading <ArrowRight className="w-4 h-4 ml-1" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ));
+              })()}
             </div>
           </div>
         </section>
