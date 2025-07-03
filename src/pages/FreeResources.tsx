@@ -69,9 +69,6 @@ const FreeResources = () => {
                   alt="Free Resources" 
                   className="w-full h-full object-contain opacity-20"
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Mail className="w-24 h-24 text-gold" />
-                </div>
               </div>
             </div>
             
