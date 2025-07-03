@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -87,7 +88,7 @@ const FreeResources = () => {
           </div>
         </section>
 
-        {/* How Can I Help You Section */}
+        {/* Navigation Section */}
         <section className="py-20 px-4 bg-gray-800/50">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl font-bold text-center text-white mb-16">
@@ -95,22 +96,81 @@ const FreeResources = () => {
             </h2>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {resourceCategories.map((category, index) => <Card key={index} className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300 group cursor-pointer">
+              <Link to="/services" className="group">
+                <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300 cursor-pointer">
                   <CardContent className="p-8 text-center">
                     <div className="text-gold mb-4 flex justify-center group-hover:scale-110 transition-transform">
-                      {category.icon}
+                      <TrendingUp className="w-8 h-8" />
                     </div>
                     <h3 className="text-xl font-semibold text-white mb-3">
-                      {category.title}
+                      Services
                     </h3>
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      {category.description}
+                      Explore our comprehensive real estate services
                     </p>
                     <div className="mt-4">
                       <ArrowRight className="w-5 h-5 text-gold mx-auto group-hover:translate-x-1 transition-transform" />
                     </div>
                   </CardContent>
-                </Card>)}
+                </Card>
+              </Link>
+
+              <Link to="/our-approach" className="group">
+                <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300 cursor-pointer">
+                  <CardContent className="p-8 text-center">
+                    <div className="text-gold mb-4 flex justify-center group-hover:scale-110 transition-transform">
+                      <DollarSign className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-3">
+                      Our Approach
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed">
+                      Discover our investment methodology and strategies
+                    </p>
+                    <div className="mt-4">
+                      <ArrowRight className="w-5 h-5 text-gold mx-auto group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/resources" className="group">
+                <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300 cursor-pointer">
+                  <CardContent className="p-8 text-center">
+                    <div className="text-gold mb-4 flex justify-center group-hover:scale-110 transition-transform">
+                      <BookOpen className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-3">
+                      Resources
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed">
+                      Access our library of articles and insights
+                    </p>
+                    <div className="mt-4">
+                      <ArrowRight className="w-5 h-5 text-gold mx-auto group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link to="/contact" className="group">
+                <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300 cursor-pointer">
+                  <CardContent className="p-8 text-center">
+                    <div className="text-gold mb-4 flex justify-center group-hover:scale-110 transition-transform">
+                      <Trophy className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-3">
+                      Contact
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed">
+                      Get in touch with our expert team
+                    </p>
+                    <div className="mt-4">
+                      <ArrowRight className="w-5 h-5 text-gold mx-auto group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </div>
         </section>
