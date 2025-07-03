@@ -147,50 +147,37 @@ const FreeResources = () => {
               All Recent Articles
             </h2>
             
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-6">
               {(() => {
                 const { getPostsByCategory } = usePosts();
                 const articles = getPostsByCategory("article").slice(0, 4);
                 
-                const gradients = [
-                  "bg-gradient-to-br from-gold to-yellow-600",
-                  "bg-gradient-to-br from-gray-800 to-gray-900", 
-                  "bg-gradient-to-br from-gold/80 to-yellow-700",
-                  "bg-gradient-to-br from-gray-700 to-gray-800"
-                ];
-                
                 return articles.map((article, index) => (
-                  <Card key={article.id} className="bg-gray-800 border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-gold/50">
+                  <Card key={article.id} className="bg-gray-800/50 border-gray-700/50 overflow-hidden hover:bg-gray-800 transition-all duration-300 group">
                     <CardContent className="p-0">
-                      <div className={`${gradients[index % gradients.length]} p-6 text-center relative overflow-hidden`}>
-                        <div className="absolute top-4 right-4 w-16 h-16 border-4 border-white/20 rounded-full"></div>
-                        <div className="absolute bottom-4 left-4 w-24 h-1 bg-white/20 rounded-full"></div>
-                        <h3 className="text-xl font-bold text-white mb-4 max-w-xs mx-auto">
+                      <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 border-b border-gray-700/50">
+                        <h3 className="text-lg font-semibold text-white mb-2 leading-tight">
                           {article.title}
                         </h3>
-                        <p className="text-white/90 text-sm">Ismael Gomes Queta</p>
-                      </div>
-                      
-                      <div className="p-6">
-                        <h4 className="text-xl font-semibold text-white mb-3">
-                          {article.title}
-                        </h4>
-                        <p className="text-gray-400 text-sm mb-3">
+                        <p className="text-gray-400 text-sm">
                           {new Date(article.created_at).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric'
                           })}
                         </p>
-                        <p className="text-gray-300 mb-4 line-clamp-3">
-                          {article.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                      </div>
+                      
+                      <div className="p-8">
+                        <p className="text-gray-300 mb-6 leading-relaxed line-clamp-3">
+                          {article.content.replace(/<[^>]*>/g, '').substring(0, 180)}...
                         </p>
                         <Button 
                           variant="link" 
-                          className="p-0 text-gold font-medium hover:text-gold/80"
+                          className="p-0 text-gold font-medium hover:text-gold/80 group-hover:translate-x-1 transition-all duration-200"
                           onClick={() => window.location.href = `/resources/article/${article.id}`}
                         >
-                          Continue Reading <ArrowRight className="w-4 h-4 ml-1" />
+                          Continue Reading <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                       </div>
                     </CardContent>
