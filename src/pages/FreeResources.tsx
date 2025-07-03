@@ -7,56 +7,48 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Mail, Download, BookOpen, TrendingUp, DollarSign, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePosts } from "@/contexts/PostsContext";
-
 const FreeResources = () => {
   const [email, setEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleNewsletterSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubscribing(true);
-    
+
     // Simulate newsletter signup
     setTimeout(() => {
       toast({
         title: "Success!",
-        description: "You've been subscribed to our newsletter.",
+        description: "You've been subscribed to our newsletter."
       });
       setEmail("");
       setIsSubscribing(false);
     }, 1000);
   };
-
-  const resourceCategories = [
-    {
-      title: "Real Estate Investment",
-      icon: <TrendingUp className="w-8 h-8" />,
-      description: "Learn the fundamentals of property investment",
-      href: "/resources"
-    },
-    {
-      title: "Wealth Building",
-      icon: <DollarSign className="w-8 h-8" />,
-      description: "Strategies for building generational wealth",
-      href: "/resources"
-    },
-    {
-      title: "Property Management",
-      icon: <Trophy className="w-8 h-8" />,
-      description: "Master the art of property management",
-      href: "/resources"
-    },
-    {
-      title: "Market Analysis",
-      icon: <BookOpen className="w-8 h-8" />,
-      description: "Understand market trends and opportunities",
-      href: "/resources"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gray-900">
+  const resourceCategories = [{
+    title: "Real Estate Investment",
+    icon: <TrendingUp className="w-8 h-8" />,
+    description: "Learn the fundamentals of property investment",
+    href: "/resources"
+  }, {
+    title: "Wealth Building",
+    icon: <DollarSign className="w-8 h-8" />,
+    description: "Strategies for building generational wealth",
+    href: "/resources"
+  }, {
+    title: "Property Management",
+    icon: <Trophy className="w-8 h-8" />,
+    description: "Master the art of property management",
+    href: "/resources"
+  }, {
+    title: "Market Analysis",
+    icon: <BookOpen className="w-8 h-8" />,
+    description: "Understand market trends and opportunities",
+    href: "/resources"
+  }];
+  return <div className="min-h-screen bg-gray-900">
       <Navigation />
       
       <main className="pt-20">
@@ -65,11 +57,7 @@ const FreeResources = () => {
           <div className="max-w-4xl mx-auto">
             <div className="relative mb-12">
               <div className="w-80 h-80 mx-auto mb-8 relative">
-                <img 
-                  src="/lovable-uploads/logo_horizontal.png" 
-                  alt="Free Resources" 
-                  className="w-full h-full object-contain opacity-20"
-                />
+                <img src="/lovable-uploads/logo_horizontal.png" alt="Free Resources" className="w-full h-full object-contain " />
               </div>
             </div>
             
@@ -85,19 +73,8 @@ const FreeResources = () => {
             </p>
             
             <form onSubmit={handleNewsletterSignup} className="max-w-md mx-auto flex gap-3">
-              <Input
-                type="email"
-                placeholder="Your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="flex-1 bg-white/10 border-gray-600 text-white placeholder:text-gray-400"
-              />
-              <Button 
-                type="submit" 
-                disabled={isSubscribing}
-                className="bg-gold hover:bg-gold/90 text-black font-semibold px-8"
-              >
+              <Input type="email" placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)} required className="flex-1 bg-white/10 border-gray-600 text-white placeholder:text-gray-400" />
+              <Button type="submit" disabled={isSubscribing} className="bg-gold hover:bg-gold/90 text-black font-semibold px-8">
                 {isSubscribing ? "Subscribing..." : "Subscribe"}
               </Button>
             </form>
@@ -118,8 +95,7 @@ const FreeResources = () => {
             </h2>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {resourceCategories.map((category, index) => (
-                <Card key={index} className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300 group cursor-pointer">
+              {resourceCategories.map((category, index) => <Card key={index} className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-300 group cursor-pointer">
                   <CardContent className="p-8 text-center">
                     <div className="text-gold mb-4 flex justify-center group-hover:scale-110 transition-transform">
                       {category.icon}
@@ -134,8 +110,7 @@ const FreeResources = () => {
                       <ArrowRight className="w-5 h-5 text-gold mx-auto group-hover:translate-x-1 transition-transform" />
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
           </div>
         </section>
@@ -149,11 +124,11 @@ const FreeResources = () => {
             
             <div className="grid md:grid-cols-2 gap-6">
               {(() => {
-                const { getPostsByCategory } = usePosts();
-                const articles = getPostsByCategory("article").slice(0, 4);
-                
-                return articles.map((article, index) => (
-                  <Card key={article.id} className="bg-gray-800/50 border-gray-700/50 overflow-hidden hover:bg-gray-800 transition-all duration-300 group">
+              const {
+                getPostsByCategory
+              } = usePosts();
+              const articles = getPostsByCategory("article").slice(0, 4);
+              return articles.map((article, index) => <Card key={article.id} className="bg-gray-800/50 border-gray-700/50 overflow-hidden hover:bg-gray-800 transition-all duration-300 group">
                     <CardContent className="p-0">
                       <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 border-b border-gray-700/50">
                         <h3 className="text-lg font-semibold text-white mb-2 leading-tight">
@@ -161,10 +136,10 @@ const FreeResources = () => {
                         </h3>
                         <p className="text-gray-400 text-sm">
                           {new Date(article.created_at).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
                         </p>
                       </div>
                       
@@ -172,18 +147,13 @@ const FreeResources = () => {
                         <p className="text-gray-300 mb-6 leading-relaxed line-clamp-3">
                           {article.content.replace(/<[^>]*>/g, '').substring(0, 180)}...
                         </p>
-                        <Button 
-                          variant="link" 
-                          className="p-0 text-gold font-medium hover:text-gold/80 group-hover:translate-x-1 transition-all duration-200"
-                          onClick={() => window.location.href = `/resources/article/${article.id}`}
-                        >
+                        <Button variant="link" className="p-0 text-gold font-medium hover:text-gold/80 group-hover:translate-x-1 transition-all duration-200" onClick={() => window.location.href = `/resources/article/${article.id}`}>
                           Continue Reading <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                       </div>
                     </CardContent>
-                  </Card>
-                ));
-              })()}
+                  </Card>);
+            })()}
             </div>
           </div>
         </section>
@@ -205,8 +175,6 @@ const FreeResources = () => {
       </main>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default FreeResources;
