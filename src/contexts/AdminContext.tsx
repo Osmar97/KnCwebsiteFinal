@@ -22,12 +22,20 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-const ADMIN_CREDENTIALS = {
-  email: "ismael@kingsncompany.com",
-  password: "Myqdeq-zejka7-sirjyf",
-  name: "Ismael Gomes Queta",
-  title: "Founder & CEO"
-};
+const ADMIN_CREDENTIALS = [
+  {
+    email: "ismael@kingsncompany.com",
+    password: "Myqdeq-zejka7-sirjyf",
+    name: "Ismael Gomes Queta",
+    title: "Founder & CEO"
+  },
+  {
+    email: "joey@kingsncompany.com",
+    password: "Joey-marketing-2024",
+    name: "Jonathan Ehioghiren",
+    title: "Marketing Assistant"
+  }
+];
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
@@ -47,15 +55,16 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       
       if (session?.user) {
         setSupabaseUser(session.user);
-        // Check if this user is the admin
-        if (session.user.email === ADMIN_CREDENTIALS.email) {
+        // Check if this user is an admin
+        const adminCredentials = ADMIN_CREDENTIALS.find(admin => admin.email === session.user.email);
+        if (adminCredentials) {
           console.log("Admin user detected, setting admin state");
           setIsAdminLoggedIn(true);
           setAdminUser({
             id: session.user.id,
             email: session.user.email,
-            name: ADMIN_CREDENTIALS.name,
-            title: ADMIN_CREDENTIALS.title
+            name: adminCredentials.name,
+            title: adminCredentials.title
           });
         }
       }
@@ -69,14 +78,15 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       
       if (session?.user) {
         setSupabaseUser(session.user);
-        if (session.user.email === ADMIN_CREDENTIALS.email) {
+        const adminCredentials = ADMIN_CREDENTIALS.find(admin => admin.email === session.user.email);
+        if (adminCredentials) {
           console.log("Admin authenticated via auth state change");
           setIsAdminLoggedIn(true);
           setAdminUser({
             id: session.user.id,
             email: session.user.email,
-            name: ADMIN_CREDENTIALS.name,
-            title: ADMIN_CREDENTIALS.title
+            name: adminCredentials.name,
+            title: adminCredentials.title
           });
         }
       } else {
@@ -98,7 +108,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     console.log("Attempting admin login with:", { email });
 
     // Check credentials first
-    if (email !== ADMIN_CREDENTIALS.email || password !== ADMIN_CREDENTIALS.password) {
+    const adminCredentials = ADMIN_CREDENTIALS.find(admin => admin.email === email && admin.password === password);
+    if (!adminCredentials) {
       console.log("Invalid admin credentials provided");
       setLoginAttempts(prev => prev + 1);
       if (loginAttempts + 1 >= MAX_ATTEMPTS) {
@@ -129,8 +140,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
         setAdminUser({
           id: signInData.user.id,
           email: signInData.user.email!,
-          name: ADMIN_CREDENTIALS.name,
-          title: ADMIN_CREDENTIALS.title
+          name: adminCredentials.name,
+          title: adminCredentials.title
         });
         setLoginAttempts(0);
         return true;
@@ -168,8 +179,8 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
           setAdminUser({
             id: signUpData.user.id,
             email: signUpData.user.email!,
-            name: ADMIN_CREDENTIALS.name,
-            title: ADMIN_CREDENTIALS.title
+            name: adminCredentials.name,
+            title: adminCredentials.title
           });
           setLoginAttempts(0);
           return true;
