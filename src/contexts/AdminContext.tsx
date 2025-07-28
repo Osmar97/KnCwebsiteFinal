@@ -31,7 +31,7 @@ const ADMIN_CREDENTIALS = [
   },
   {
     email: "joey@kingsncompany.com",
-    password: "Joey-marketing-2024",
+    password: "Myqdeq-zejka7-sirjyf",
     name: "Jonathan Ehioghiren",
     title: "Marketing Assistant"
   }
