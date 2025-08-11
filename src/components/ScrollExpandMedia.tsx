@@ -165,7 +165,7 @@ const ScrollExpandMedia = ({
               alt="Background"
               className="w-screen h-screen object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-gray-900" />
+            <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-gray-900 opacity-95" />
           </div>
 
           {/* Floating Geometric Elements */}
