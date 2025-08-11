@@ -17,7 +17,7 @@ export const B2BScalingHero = () => {
             
             <div className="mb-8">
               <p className="text-white text-xl md:text-2xl font-light tracking-wide">
-                From Lisbon to Cabo Verde — and beyond.
+                From Lisbon to Cabo Verde and beyond.
               </p>
             </div>
             
@@ -37,7 +37,7 @@ export const B2BScalingHero = () => {
 
             <Link to="/booking-form">
               <Button className="bg-gold/60 hover:bg-gold/70 text-white font-medium tracking-wider px-10 py-5 text-xl transition-all duration-300 transform hover:scale-105">
-                Book your strategic call →
+                Book Strategy Call →
               </Button>
             </Link>
           </div>
