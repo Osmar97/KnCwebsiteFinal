@@ -194,7 +194,7 @@ const ScrollExpandMedia = ({
                   height: `${mediaHeight}px`,
                   maxWidth: '95vw',
                   maxHeight: '85vh',
-                  boxShadow: '0px 0px 10px rgba(160,143,42,0.8)',
+                  boxShadow: '0px 0px 10px rgba(160, 142, 42, 0.35)',
                 }}
               >
                 <div className="relative w-full h-full">
