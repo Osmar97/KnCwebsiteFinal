@@ -230,7 +230,7 @@ const ScrollExpandMedia = ({
               </div>
 
               {/* Logo */}
-              <div className="absolute top-20 flex justify-center z-20">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center z-20">
                 <img 
                   src="/lovable-uploads/1_Simbolo_Dourado.png" 
                   alt="Logo" 
