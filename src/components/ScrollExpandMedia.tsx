@@ -230,7 +230,12 @@ const ScrollExpandMedia = ({
               </div>
 
               {/* Logo and Text Centered */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-20 text-center">
+              <div
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-20 text-center transition-opacity duration-300"
+                style={{
+                  opacity: Math.min(scrollProgress * 2, 1), // Fade in as you scroll down
+                }}
+              >
                 {/* Logo */}
                 <img 
                   src="/lovable-uploads/1_Simbolo_Dourado.png" 
@@ -248,6 +253,7 @@ const ScrollExpandMedia = ({
                   Welcome to Kings 'n Company
                 </p>
               </div>
+
 
               <div
                 className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-none flex-col ${
