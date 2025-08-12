@@ -236,6 +236,15 @@ const ScrollExpandMedia = ({
                   alt="Logo" 
                   className="w-32 h-32 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" 
                 />
+                      <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-8"></div>
+                      
+                      <p className="text-gray-300 text-lg md:text-xl mb-3 max-w-3xl mx-auto leading-relaxed font-bold">
+                        Connecting Visionary Investors to Remarkable Properties
+                      </p>
+                      
+                      <p className="text-white text-xl mb-12 max-w-3xl mx-auto leading-relaxed md:text-base font-extralight py-[2px]">
+                        Welcome to Kings 'n Company
+                      </p>
               </div>
 
               <div
