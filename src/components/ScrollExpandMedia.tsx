@@ -259,7 +259,7 @@ const ScrollExpandMedia = ({
             </div>
 
             <section
-              className="flex flex-col w-full px-8 py-10 md:px-16 lg:py-20 transition-opacity duration-700"
+              className="flex flex-col w-full px-8 py-10 md:px-16 lg:py-20 transition-opacity duration-700 bg-black"
               style={{ opacity: showContent ? 1 : 0 }}
             >
               {children}
