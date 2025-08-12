@@ -231,10 +231,7 @@ const ScrollExpandMedia = ({
 
               {/* Logo and Text Centered */}
               <div
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-20 text-center transition-opacity duration-300"
-                style={{
-                  opacity: Math.min(scrollProgress * 2, 1), // Fade in as you scroll down
-                }}
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center z-20 text-center"
               >
                 {/* Logo */}
                 <img 
@@ -242,19 +239,29 @@ const ScrollExpandMedia = ({
                   alt="Logo" 
                   className="w-32 h-32 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)] mb-6" 
                 />
-                {/* Divider */}
-                <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mb-6"></div>
-                {/* Heading */}
-                <p className="text-gray-300 text-lg md:text-xl max-w-3xl leading-relaxed font-bold mb-3">
-                  Connecting Visionary Investors to Remarkable Properties
-                </p>
-                {/* Subheading */}
-                <p className="text-white text-xl md:text-base font-extralight">
-                  Welcome to Kings 'n Company
-                </p>
+
+                {/* Divider + Text with fade effect */}
+                <div
+                  className="transition-opacity duration-300"
+                  style={{
+                    opacity: Math.min(scrollProgress * 2, 1), // fade in only this part
+                  }}
+                >
+                  {/* Divider */}
+                  <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mb-6"></div>
+
+                  {/* Heading */}
+                  <p className="text-gray-300 text-lg md:text-xl max-w-3xl leading-relaxed font-bold mb-3">
+                    Connecting Visionary Investors to Remarkable Properties
+                  </p>
+
+                  {/* Subheading */}
+                  <p className="text-white text-xl md:text-base font-extralight">
+                    Welcome to Kings 'n Company
+                  </p>
+                </div>
               </div>
-
-
+              
               <div
                 className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-none flex-col ${
                   textBlend ? 'mix-blend-difference' : 'mix-blend-normal'
