@@ -101,7 +101,7 @@ export const SectionsCarousel = () => {
         {/* Carousel Container with swipe handlers */}
         <div className="relative" {...swipeHandlers}>
           {/* Main Carousel */}
-          <div className="relative h-96 overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-black">
+          <div className="relative h-[30rem] sm:h-[32rem] md:h-96 overflow-visible md:overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-black">
             {sections.map((section, index) => {
               const isActive = index === currentSlide;
               const isPrev = index === (currentSlide - 1 + sections.length) % sections.length;
@@ -122,10 +122,10 @@ export const SectionsCarousel = () => {
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${section.gradient}`}></div>
 
-                  <div className="relative h-full flex items-center justify-center p-12">
-                    <div className="text-center max-w-2xl">
+                  <div className="relative h-full flex items-center justify-center p-6 md:p-12">
+                    <div className="text-center max-w-xl md:max-w-2xl">
                       <div className="mb-6">
-                        <section.icon className="w-16 h-16 text-gold mx-auto mb-4" />
+                        <section.icon className="w-12 h-12 md:w-16 md:h-16 text-gold mx-auto mb-4" />
                       </div>
 
                       <h3 className="text-3xl md:text-4xl font-light text-white mb-2 tracking-wider">
