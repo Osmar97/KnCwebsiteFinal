@@ -82,6 +82,17 @@ export const TeamSection = () => {
       linkedin: "https://www.linkedin.com/in/osmar-gra%C3%A7a/",
       flagEmoji: "🇸🇹", // Sao Tome and Principe
     },
+    {
+      id: 6,
+      name: "Jonathan Ehioghiren",
+      role: "Marketing Assistant",
+      experience: "",
+      image: "/lovable-uploads/1_Simbolo_Dourado.png", // placeholder
+      quote:
+        "Amplifying our brand and connecting with the right audiences through thoughtful storytelling and experimentation.",
+      linkedin: "https://www.linkedin.com/in/osmar-gra%C3%A7a/",
+      flagEmoji: "🇺🇸", // USA
+    },
   ];
 
   return (
