@@ -14,7 +14,7 @@ const OurApproachPage = () => {
   useScrollToTop();
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen text-white">
       <Navigation />
       <div className="pt-16">
         <OurApproachHero />
