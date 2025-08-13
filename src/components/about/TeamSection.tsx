@@ -54,7 +54,7 @@ export const TeamSection = () => {
       name: "Danielle",
       role: "CEO Strategic Disruption",
       experience: "",
-      image: "/lovable-uploads/danielle.png", // placeholder
+      image: "/lovable-uploads/1_Simbolo_Dourado.png", // placeholder
       quote:
         "Leading innovative change and creating pathways for sustainable growth in a rapidly evolving world.",
       linkedin: "#",
@@ -65,7 +65,7 @@ export const TeamSection = () => {
       name: "Yvonne",
       role: "Retired Teacher",
       experience: "",
-      image: "/lovable-uploads/yvonne.png", // placeholder
+      image: "/lovable-uploads/1_Simbolo_Dourado.png", // placeholder
       quote:
         "Education is the foundation of progress, and I’m proud to have shaped countless young minds.",
       linkedin: "#",
@@ -76,10 +76,10 @@ export const TeamSection = () => {
       name: "Osmar Graça",
       role: "CTO",
       experience: "",
-      image: "/lovable-uploads/osmar.png", // placeholder
+      image: "/lovable-uploads/osmar.jpg", // placeholder
       quote:
         "Driving technological innovation to connect visionary investors with remarkable opportunities.",
-      linkedin: "#",
+      linkedin: "https://www.linkedin.com/in/osmar-gra%C3%A7a/",
       flagEmoji: "🇸🇹", // Sao Tome and Principe
     },
   ];
