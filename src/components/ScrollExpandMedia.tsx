@@ -248,7 +248,7 @@ const ScrollExpandMedia = ({
                   }}
                 >
                   {/* Divider */}
-                  <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mb-6"></div>
+                  <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mb-6 mx-auto"></div>
 
                   {/* Heading */}
                   <p className="text-gray-300 text-lg md:text-xl max-w-3xl leading-relaxed font-bold mb-3">
