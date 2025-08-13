@@ -99,11 +99,11 @@ export const AboutFoundationHeader = ({
             <div className="flex">
               {slideshow1Images.map((image, index) => (
                 <div key={index} className="flex-[0_0_100%] min-w-0">
-                  <div className="relative overflow-hidden rounded-lg group">
+                  <div className="relative overflow-hidden rounded-lg group bg-black">
                     <img 
                       src={image.src}
                       alt={image.caption}
-                      className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105" 
+                       className="w-full h-80 object-contain transition-transform duration-500 group-hover:scale-105" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     <div className="absolute bottom-6 left-6 right-6">
@@ -122,11 +122,11 @@ export const AboutFoundationHeader = ({
             <div className="flex">
               {slideshow2Images.map((image, index) => (
                 <div key={index} className="flex-[0_0_100%] min-w-0">
-                  <div className="relative overflow-hidden rounded-lg group">
+                  <div className="relative overflow-hidden rounded-lg group bg-black">
                     <img 
                       src={image.src}
                       alt={image.caption}
-                      className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105" 
+                      className="w-full h-80 object-contain transition-transform duration-500 group-hover:scale-105" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     <div className="absolute bottom-6 left-6 right-6">
