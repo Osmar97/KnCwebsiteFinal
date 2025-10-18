@@ -1,103 +1,117 @@
+
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { AdminLogin } from "./AdminLogin";
+import { Link, useLocation } from "react-router-dom";
+import logo from '../assets/logo.png';
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  // Check if we're on a page with white background
+  const isWhiteBackground = location.pathname !== '/';
+
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 50);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
-
-  const navLinks = [
-    { to: "/", label: "Home" },
-    { to: "/about", label: "About" },
-    { to: "/our-approach", label: "Our Approach" },
-    { to: "/services", label: "Services" },
-    { to: "/resources", label: "Resources" },
-    { to: "/contact", label: "Contact" },
+  const navItems = [
+    { name: "ABOUT", href: "/about" },
+    { name: "SERVICES", href: "/services" },
+    { name: "OUR APPROACH", href: "/our-approach" },
+    { name: "RESOURCES", href: "/resources" },
+    { name: "CONTACT", href: "/contact" }
   ];
 
+  // Define text colors based on background
+  const textColor = isWhiteBackground ? 'text-[#85754E]' : 'text-white';
+  const hoverColor = isWhiteBackground ? 'hover:text-gold' : 'hover:text-gold';
+  const logoTextColor = isWhiteBackground ? 'text-[#85754E]' : 'text-gold';
+  const subtitleColor = isWhiteBackground ? 'text-gray-600' : 'text-gray-400';
+  const mobileTextColor = isWhiteBackground ? 'text-[#85754E]' : 'text-white';
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-black/95 backdrop-blur-sm shadow-lg" : "bg-transparent"
-      }`}
-    >
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-transparent backdrop-blur-md shadow-2xl' 
+        : 'bg-transparent backdrop-blur-sm'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-16">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <img
-              src="/lovable-uploads/1_Horizontal_Dourado.png"
-              alt="Kings & Company"
-              className="h-8 sm:h-10 w-auto"
+          <Link 
+            to="/"
+            className="flex items-center space-x-2 sm:space-x-3 group cursor-pointer"
+          >
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)]" 
             />
+            <div className="hidden sm:block">
+              <div className={`${logoTextColor} font-light text-base sm:text-lg tracking-wider group-hover:text-gold-light transition-colors`}>
+                Kings 'n Company
+              </div>
+              <div className={`text-xs ${subtitleColor} tracking-widest`}>
+                REAL ESTATE NETWORK
+              </div>
+            </div>
+            {/* Mobile logo text */}
+            <div className="sm:hidden">
+              <div className={`${logoTextColor} font-light text-sm tracking-wider group-hover:text-gold-light transition-colors`}>
+                Kings 'n Company
+              </div>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {navLinks.map((link) => (
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+            {navItems.map((item) => (
               <Link
-                key={link.to}
-                to={link.to}
-                className={`text-sm font-light tracking-wider transition-colors ${
-                  location.pathname === link.to
-                    ? "text-gold"
-                    : "text-gray-300 hover:text-gold"
-                }`}
+                key={item.name}
+                to={item.href}
+                className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group`}
               >
-                {link.label}
+                {item.name}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
               </Link>
             ))}
-            <AdminLogin />
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden text-white hover:text-gold transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className={`${textColor} ${hoverColor} transition-colors duration-300 p-2`}
+            >
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="lg:hidden bg-black/98 backdrop-blur-sm border-t border-gray-800">
-          <div className="px-4 pt-2 pb-4 space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`block py-2 text-sm font-light tracking-wider transition-colors ${
-                  location.pathname === link.to
-                    ? "text-gold"
-                    : "text-gray-300 hover:text-gold"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-2 border-t border-gray-800">
-              <AdminLogin />
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden transition-all duration-300">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-black/95 backdrop-blur-md rounded-b-lg">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`block px-3 py-3 ${mobileTextColor} hover:text-gold hover:bg-gold/5 rounded-md transition-all duration-300 text-sm tracking-wider border-b border-gray-800 last:border-b-0`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </nav>
   );
 };

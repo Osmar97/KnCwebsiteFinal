@@ -1,4 +1,7 @@
+
+import { Button } from "@/components/ui/button";
 import { useTimeSlotAvailability } from "@/hooks/useTimeSlotAvailability";
+import { Loader2 } from "lucide-react";
 
 interface TimeSlotPickerProps {
   selectedDate: Date | undefined;
@@ -8,11 +11,33 @@ interface TimeSlotPickerProps {
 
 const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPickerProps) => {
   const { availability, isLoading } = useTimeSlotAvailability(selectedDate);
-  
-  // Convert availability object to array of available slots
-  const availableSlots = Object.entries(availability)
-    .filter(([_, isAvailable]) => isAvailable)
-    .map(([time]) => time);
+
+  // Generate time slots from 14:00 to 20:00 (2 PM to 8 PM) in 15-minute intervals
+  const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 14; hour < 20; hour++) {
+      slots.push(`${hour.toString().padStart(2, '0')}:00`);
+      slots.push(`${hour.toString().padStart(2, '0')}:15`);
+      slots.push(`${hour.toString().padStart(2, '0')}:30`);
+      slots.push(`${hour.toString().padStart(2, '0')}:45`);
+    }
+    return slots;
+  };
+
+  const timeSlots = generateTimeSlots();
+
+  // Check if selected date is a weekday (Monday-Friday)
+  const isWeekday = (date: Date) => {
+    const day = date.getDay();
+    return day >= 1 && day <= 5; // 1 = Monday, 5 = Friday
+  };
+
+  // Check if selected date is in the past
+  const isPastDate = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
 
   if (!selectedDate) {
     return (
@@ -22,40 +47,59 @@ const TimeSlotPicker = ({ selectedDate, selectedTime, onTimeSelect }: TimeSlotPi
     );
   }
 
-  if (isLoading) {
+  if (!isWeekday(selectedDate)) {
     return (
       <div className="text-center text-gray-500 py-4">
-        Loading available times...
+        Appointments are only available Monday through Friday
       </div>
     );
   }
 
-  if (availableSlots.length === 0) {
+  if (isPastDate(selectedDate)) {
     return (
       <div className="text-center text-gray-500 py-4">
-        No available time slots for this date
+        Please select a future date
       </div>
     );
   }
+
+  // Filter to only show available time slots
+  const availableTimeSlots = timeSlots.filter(time => availability[time] === true);
 
   return (
-    <div>
-      <h3 className="font-medium mb-3 text-center">Select a Time</h3>
-      <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
-        {availableSlots.map((slot) => (
-          <button
-            key={slot}
-            onClick={() => onTimeSelect(slot)}
-            className={`py-2 px-4 rounded-lg text-sm transition-colors ${
-              selectedTime === slot
-                ? "bg-gold text-black font-medium"
-                : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-            }`}
-          >
-            {slot}
-          </button>
-        ))}
-      </div>
+    <div className="space-y-3">
+      <h3 className="font-medium text-center">Available Times</h3>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-4">
+          <Loader2 className="w-6 h-6 animate-spin text-gold" />
+          <span className="ml-2 text-gray-500">Checking availability...</span>
+        </div>
+      ) : availableTimeSlots.length === 0 ? (
+        <div className="text-center text-gray-500 py-4">
+          No available time slots for this date
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-2">
+          {availableTimeSlots.map((time) => {
+            const isSelected = selectedTime === time;
+            
+            return (
+              <Button
+                key={time}
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                onClick={() => onTimeSelect(time)}
+                className={`
+                  text-xs
+                  ${isSelected ? "bg-gold hover:bg-gold-dark text-black" : "hover:border-gold hover:text-gold"}
+                `}
+              >
+                {time}
+              </Button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
