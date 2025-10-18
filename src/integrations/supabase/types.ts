@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -47,6 +47,120 @@ export type Database = {
           title?: string
           updated_at?: string
           video_urls?: string[] | null
+        }
+        Relationships: []
+      }
+      properties: {
+        Row: {
+          adapted_house: boolean | null
+          air_conditioning: boolean | null
+          balcony_terrace: boolean | null
+          bathrooms: number | null
+          bedrooms: string | null
+          built_in_wardrobes: boolean | null
+          city: string
+          condition: string | null
+          construction_area: number | null
+          created_at: string
+          description: string
+          divisions: Json | null
+          elevator: boolean | null
+          featured: boolean | null
+          floor: number | null
+          floor_plan_url: string | null
+          garden: boolean | null
+          id: string
+          images: string[] | null
+          location: string
+          luxury_house: boolean | null
+          parking: boolean | null
+          pool: boolean | null
+          price: number
+          private_area: number | null
+          property_type: string
+          sea_view: boolean | null
+          status: string | null
+          storage: boolean | null
+          title: string
+          total_floors: number | null
+          transaction_type: string
+          updated_at: string
+          video_url: string | null
+          virtual_tour_url: string | null
+        }
+        Insert: {
+          adapted_house?: boolean | null
+          air_conditioning?: boolean | null
+          balcony_terrace?: boolean | null
+          bathrooms?: number | null
+          bedrooms?: string | null
+          built_in_wardrobes?: boolean | null
+          city: string
+          condition?: string | null
+          construction_area?: number | null
+          created_at?: string
+          description: string
+          divisions?: Json | null
+          elevator?: boolean | null
+          featured?: boolean | null
+          floor?: number | null
+          floor_plan_url?: string | null
+          garden?: boolean | null
+          id?: string
+          images?: string[] | null
+          location: string
+          luxury_house?: boolean | null
+          parking?: boolean | null
+          pool?: boolean | null
+          price: number
+          private_area?: number | null
+          property_type: string
+          sea_view?: boolean | null
+          status?: string | null
+          storage?: boolean | null
+          title: string
+          total_floors?: number | null
+          transaction_type?: string
+          updated_at?: string
+          video_url?: string | null
+          virtual_tour_url?: string | null
+        }
+        Update: {
+          adapted_house?: boolean | null
+          air_conditioning?: boolean | null
+          balcony_terrace?: boolean | null
+          bathrooms?: number | null
+          bedrooms?: string | null
+          built_in_wardrobes?: boolean | null
+          city?: string
+          condition?: string | null
+          construction_area?: number | null
+          created_at?: string
+          description?: string
+          divisions?: Json | null
+          elevator?: boolean | null
+          featured?: boolean | null
+          floor?: number | null
+          floor_plan_url?: string | null
+          garden?: boolean | null
+          id?: string
+          images?: string[] | null
+          location?: string
+          luxury_house?: boolean | null
+          parking?: boolean | null
+          pool?: boolean | null
+          price?: number
+          private_area?: number | null
+          property_type?: string
+          sea_view?: boolean | null
+          status?: string | null
+          storage?: boolean | null
+          title?: string
+          total_floors?: number | null
+          transaction_type?: string
+          updated_at?: string
+          video_url?: string | null
+          virtual_tour_url?: string | null
         }
         Relationships: []
       }
