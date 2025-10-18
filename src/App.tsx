@@ -15,9 +15,6 @@ import BookingForm from "./pages/BookingForm";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
-import Properties from "./pages/Properties";
-import PropertyDetail from "./pages/PropertyDetail";
-import AdminProperties from "./pages/AdminProperties";
 import { ArticleView } from "./components/resources/ArticleView";
 import { AdminProvider } from "./contexts/AdminContext";
 import { PostsProvider } from "./contexts/PostsContext";
@@ -44,13 +41,10 @@ const App = () => (
               <Route path="/free-resources" element={<FreeResources />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/properties" element={<Properties />} />
-          <Route path="/properties/:id" element={<PropertyDetail />} />
-          <Route path="/admin/properties" element={<AdminProperties />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </PostsProvider>

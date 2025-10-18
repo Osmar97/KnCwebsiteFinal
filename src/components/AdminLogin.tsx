@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { User, LogIn, LogOut, Shield } from "lucide-react";
+import { LogIn, LogOut, Shield } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,7 +16,7 @@ export const AdminLogin = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isLocked) {
       toast({
         title: "Account Locked",
@@ -39,26 +39,26 @@ export const AdminLogin = () => {
 
     try {
       const success = await login(email, password);
-      
+
       if (success) {
         toast({
           title: "Login Successful",
-          description: `Welcome back, ${adminUser?.name || 'Admin'}! You now have full Supabase access.`,
+          description: `Welcome back, ${adminUser?.name || "Admin"}! You now have full Supabase access.`,
         });
         setEmail("");
         setPassword("");
         setIsOpen(false);
-        // Enhanced scroll to top with delay to ensure it executes properly
         setTimeout(() => {
-          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+          window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         }, 100);
       } else {
         const remainingAttempts = Math.max(0, 5 - loginAttempts - 1);
         toast({
           title: "Login Failed",
-          description: remainingAttempts > 0 
-            ? `Invalid credentials. ${remainingAttempts} attempts remaining.`
-            : "Account will be locked after this attempt.",
+          description:
+            remainingAttempts > 0
+              ? `Invalid credentials. ${remainingAttempts} attempts remaining.`
+              : "Account will be locked after this attempt.",
           variant: "destructive",
         });
       }
@@ -82,6 +82,15 @@ export const AdminLogin = () => {
   };
 
   if (isAdminLoggedIn && adminUser && supabaseUser) {
+    // Determine which profile image to use based on email
+    const emailLower =
+      (supabaseUser?.email || adminUser?.email || "").toLowerCase().trim();
+    const isIsmael = emailLower === "ismael@kingsncompany.com";
+
+    const profileSrc = isIsmael
+      ? "/lovable-uploads/ismaPerfil.JPG"
+      : "/lovable-uploads/1_Simbolo_Dourado.png";
+
     return (
       <div className="flex items-center gap-3">
         <div className="text-right">
@@ -90,10 +99,14 @@ export const AdminLogin = () => {
           <p className="text-xs text-green-400">✓ Authenticated</p>
         </div>
         <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gold">
-          <img 
-            src="/lovable-uploads/ismaPerfil.JPG" 
-            alt="Admin Profile" 
+          <img
+            src={profileSrc}
+            alt="Admin Profile"
             className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src =
+                "/lovable-uploads/1_Simbolo_Dourado.png";
+            }}
           />
         </div>
         <Button
@@ -122,7 +135,7 @@ export const AdminLogin = () => {
             Secure Admin Login
           </DialogTitle>
         </DialogHeader>
-        
+
         {isLocked ? (
           <div className="text-center py-8">
             <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
