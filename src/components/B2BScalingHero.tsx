@@ -34,12 +34,14 @@ export const B2BScalingHero = () => {
                 <span className="text-white font-medium"> strategic, smooth, and profitable</span>.
               </p>
             </div>
-
-            <Link to="/booking-form">
+            <a
+              href="https://kingsncompany.setmore.com/book?step=additional-products&products=01ed1ced-97ee-4685-99f2-f1058b6f10f1&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false"
+              target="_blank"
+              rel="noopener noreferrer">
               <Button className="bg-gold/60 hover:bg-gold/70 text-white font-medium tracking-wider px-10 py-5 text-xl transition-all duration-300 transform hover:scale-105">
                 Book Strategy Call →
               </Button>
-            </Link>
+            </a>
           </div>
 
           {/* Right side - Image */}

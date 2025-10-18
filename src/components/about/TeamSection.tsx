@@ -39,6 +39,17 @@ export const TeamSection = () => {
     },
     {
       id: 2,
+      name: "Osmar Graça",
+      role: "CTO",
+      experience: "",
+      image: "/lovable-uploads/osmar.jpg", // placeholder
+      quote:
+        "Driving technological innovation to connect visionary investors with remarkable opportunities.",
+      linkedin: "https://www.linkedin.com/in/osmar-gra%C3%A7a/",
+      flagEmoji: "🇸🇹", // Sao Tome and Principe
+    },
+    {
+      id: 3,
       name: "Nuno Andrade",
       role: "Investment Consultant",
       experience: "8 years in the real estate industry",
@@ -50,9 +61,9 @@ export const TeamSection = () => {
       flagEmoji: "🇨🇻", // Cape Verde
     },
     {
-      id: 3,
+      id: 4,
       name: "Danielle",
-      role: "CEO Strategic Disruption",
+      role: "Sales Consultant",
       experience: "",
       image: "/lovable-uploads/1_Simbolo_Dourado.png", // placeholder
       quote:
@@ -61,29 +72,7 @@ export const TeamSection = () => {
       flagEmoji: "🇺🇸", // USA
     },
     {
-      id: 4,
-      name: "Yvonne",
-      role: "Retired Teacher",
-      experience: "",
-      image: "/lovable-uploads/1_Simbolo_Dourado.png", // placeholder
-      quote:
-        "Education is the foundation of progress, and I’m proud to have shaped countless young minds.",
-      linkedin: "#",
-      flagEmoji: "🇺🇸", // USA
-    },
-    {
       id: 5,
-      name: "Osmar Graça",
-      role: "CTO",
-      experience: "",
-      image: "/lovable-uploads/osmar.jpg", // placeholder
-      quote:
-        "Driving technological innovation to connect visionary investors with remarkable opportunities.",
-      linkedin: "https://www.linkedin.com/in/osmar-gra%C3%A7a/",
-      flagEmoji: "🇸🇹", // Sao Tome and Principe
-    },
-    {
-      id: 6,
       name: "Jonathan Ehioghiren",
       role: "Marketing Assistant",
       experience: "",
