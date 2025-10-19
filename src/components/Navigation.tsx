@@ -24,6 +24,7 @@ export const Navigation = () => {
     { name: "ABOUT", href: "/about" },
     { name: "SERVICES", href: "/services" },
     { name: "OUR APPROACH", href: "/our-approach" },
+    { name: "PROPERTIES", href: "/properties" },
     { name: "RESOURCES", href: "/resources" },
     { name: "CONTACT", href: "/contact" }
   ];
