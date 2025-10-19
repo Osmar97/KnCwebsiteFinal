@@ -12,28 +12,28 @@ interface PropertyFiltersProps {
 
 const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
   const propertyTypes = [
-    "Apartamentos",
+    "Apartments",
     "Penthouses",
     "Duplex",
-    "Casas",
-    "Moradias",
+    "Houses",
+    "Villas",
     "Lofts",
-    "Moradias térreas",
-    "Quintas",
+    "Ground floor houses",
+    "Estates",
   ];
 
   const features = [
-    { id: "air_conditioning", label: "Ar condicionado" },
-    { id: "built_in_wardrobes", label: "Armários embutidos" },
-    { id: "elevator", label: "Elevador" },
-    { id: "balcony_terrace", label: "Varanda e terraço" },
-    { id: "parking", label: "Lugar de garagem" },
-    { id: "garden", label: "Jardim" },
-    { id: "pool", label: "Piscina" },
-    { id: "storage", label: "Arrecadação" },
-    { id: "adapted_house", label: "Casa adaptada" },
-    { id: "luxury_house", label: "Casa de luxo" },
-    { id: "sea_view", label: "Vista mar" },
+    { id: "air_conditioning", label: "Air conditioning" },
+    { id: "built_in_wardrobes", label: "Built-in wardrobes" },
+    { id: "elevator", label: "Lift" },
+    { id: "balcony_terrace", label: "Balcony & terrace" },
+    { id: "parking", label: "Parking space" },
+    { id: "garden", label: "Garden" },
+    { id: "pool", label: "Swimming pool" },
+    { id: "storage", label: "Storage room" },
+    { id: "adapted_house", label: "Adapted house" },
+    { id: "luxury_house", label: "Luxury house" },
+    { id: "sea_view", label: "Sea view" },
   ];
 
   const togglePropertyType = (type: string) => {
@@ -57,21 +57,21 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
   return (
     <div className="bg-card border rounded-lg p-6 space-y-6">
       <div>
-        <h3 className="font-semibold mb-4">Tipo de transação</h3>
+        <h3 className="font-semibold mb-4">Transaction type</h3>
         <div className="flex gap-2">
           <Button
             variant={filters.transactionType === "Comprar" ? "default" : "outline"}
             onClick={() => setFilters({ ...filters, transactionType: "Comprar" })}
             className="flex-1"
           >
-            Comprar
+            Buy
           </Button>
           <Button
             variant={filters.transactionType === "Arrendar" ? "default" : "outline"}
             onClick={() => setFilters({ ...filters, transactionType: "Arrendar" })}
             className="flex-1"
           >
-            Arrendar
+            Rent
           </Button>
         </div>
       </div>
@@ -79,10 +79,10 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
       <Separator />
 
       <div>
-        <h3 className="font-semibold mb-4">Preço</h3>
+        <h3 className="font-semibold mb-4">Price</h3>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <Label>Mín</Label>
+            <Label>Min</Label>
             <Input
               type="number"
               placeholder="Min"
@@ -91,7 +91,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
             />
           </div>
           <div>
-            <Label>Máx</Label>
+            <Label>Max</Label>
             <Input
               type="number"
               placeholder="Max"
@@ -105,10 +105,10 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
       <Separator />
 
       <div>
-        <h3 className="font-semibold mb-4">Tamanho (m²)</h3>
+        <h3 className="font-semibold mb-4">Size (m²)</h3>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <Label>Mín</Label>
+            <Label>Min</Label>
             <Input
               type="number"
               placeholder="Min"
@@ -117,7 +117,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
             />
           </div>
           <div>
-            <Label>Máx</Label>
+            <Label>Max</Label>
             <Input
               type="number"
               placeholder="Max"
@@ -131,7 +131,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
       <Separator />
 
       <div>
-        <h3 className="font-semibold mb-4">Tipo de casa</h3>
+        <h3 className="font-semibold mb-4">Property type</h3>
         <div className="space-y-2">
           {propertyTypes.map((type) => (
             <div key={type} className="flex items-center space-x-2">
@@ -151,18 +151,18 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
       <Separator />
 
       <div>
-        <h3 className="font-semibold mb-4">Quartos</h3>
+        <h3 className="font-semibold mb-4">Bedrooms</h3>
         <Select value={filters.bedrooms} onValueChange={(value) => setFilters({ ...filters, bedrooms: value })}>
           <SelectTrigger>
-            <SelectValue placeholder="Selecione" />
+            <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="T0">T0</SelectItem>
-            <SelectItem value="T1">T1</SelectItem>
-            <SelectItem value="T2">T2</SelectItem>
-            <SelectItem value="T3">T3</SelectItem>
-            <SelectItem value="T4">T4</SelectItem>
-            <SelectItem value="T4+">T4+</SelectItem>
+            <SelectItem value="T0">Studio</SelectItem>
+            <SelectItem value="T1">1 bed</SelectItem>
+            <SelectItem value="T2">2 beds</SelectItem>
+            <SelectItem value="T3">3 beds</SelectItem>
+            <SelectItem value="T4">4 beds</SelectItem>
+            <SelectItem value="T4+">4+ beds</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -170,10 +170,10 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
       <Separator />
 
       <div>
-        <h3 className="font-semibold mb-4">Casas de banho</h3>
+        <h3 className="font-semibold mb-4">Bathrooms</h3>
         <Select value={filters.bathrooms} onValueChange={(value) => setFilters({ ...filters, bathrooms: value })}>
           <SelectTrigger>
-            <SelectValue placeholder="Selecione" />
+            <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="1">1</SelectItem>
@@ -188,15 +188,15 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
       <Separator />
 
       <div>
-        <h3 className="font-semibold mb-4">Estado</h3>
+        <h3 className="font-semibold mb-4">Condition</h3>
         <Select value={filters.condition} onValueChange={(value) => setFilters({ ...filters, condition: value })}>
           <SelectTrigger>
-            <SelectValue placeholder="Selecione" />
+            <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Nova construção">Nova construção</SelectItem>
-            <SelectItem value="Bom estado">Bom estado</SelectItem>
-            <SelectItem value="Para recuperar">Para recuperar</SelectItem>
+            <SelectItem value="Nova construção">New construction</SelectItem>
+            <SelectItem value="Bom estado">Good condition</SelectItem>
+            <SelectItem value="Para recuperar">To renovate</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -204,7 +204,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
       <Separator />
 
       <div>
-        <h3 className="font-semibold mb-4">Características</h3>
+        <h3 className="font-semibold mb-4">Features</h3>
         <div className="space-y-2">
           {features.map((feature) => (
             <div key={feature.id} className="flex items-center space-x-2">

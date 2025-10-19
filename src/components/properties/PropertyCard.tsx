@@ -58,7 +58,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             </>
           ) : (
             <div className="w-full h-full bg-muted flex items-center justify-center">
-              <span className="text-muted-foreground">Sem imagem</span>
+              <span className="text-muted-foreground">No image</span>
             </div>
           )}
         </div>
@@ -79,7 +79,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               {property.price.toLocaleString("pt-PT")} €
             </div>
             <div className="text-sm text-muted-foreground">
-              {property.bedrooms} • {property.private_area}m² área bruta • {property.floor}º andar{property.elevator ? " com elevador" : " sem elevador"}
+              {property.bedrooms} • {property.private_area}m² gross area • {property.floor}º floor{property.elevator ? " with lift" : " without lift"}
             </div>
           </div>
 
@@ -88,19 +88,19 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </p>
 
           <div className="flex gap-2 mb-4 flex-wrap">
-            {property.sea_view && <Badge variant="secondary">Vista mar</Badge>}
-            {property.luxury_house && <Badge variant="secondary">Casa de luxo</Badge>}
-            {property.pool && <Badge variant="secondary">Piscina</Badge>}
-            {property.parking && <Badge variant="secondary">Garagem</Badge>}
+            {property.sea_view && <Badge variant="secondary">Sea view</Badge>}
+            {property.luxury_house && <Badge variant="secondary">Luxury house</Badge>}
+            {property.pool && <Badge variant="secondary">Pool</Badge>}
+            {property.parking && <Badge variant="secondary">Parking</Badge>}
           </div>
 
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1">
               <Phone className="w-4 h-4 mr-2" />
-              Contactar
+              Contact
             </Button>
             <Button className="flex-1">
-              Ver telefone
+              View phone
             </Button>
           </div>
         </div>

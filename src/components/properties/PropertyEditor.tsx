@@ -67,7 +67,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
-      toast({ title: "Imóvel guardado com sucesso" });
+      toast({ title: "Property saved successfully" });
       onClose();
     },
   });
@@ -87,7 +87,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         .upload(fileName, file);
 
       if (error) {
-        toast({ title: "Erro ao fazer upload da imagem", variant: "destructive" });
+        toast({ title: "Error uploading image", variant: "destructive" });
       } else {
         const { data: urlData } = supabase.storage
           .from("property-images")
@@ -104,101 +104,101 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     <form onSubmit={handleSubmit((data) => saveMutation.mutate(data))} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
-          <Label>Título *</Label>
+          <Label>Title *</Label>
           <Input {...register("title", { required: true })} />
         </div>
 
         <div className="col-span-2">
-          <Label>Descrição *</Label>
+          <Label>Description *</Label>
           <Textarea {...register("description", { required: true })} rows={4} />
         </div>
 
         <div>
-          <Label>Localização *</Label>
+          <Label>Location *</Label>
           <Input {...register("location", { required: true })} />
         </div>
 
         <div>
-          <Label>Cidade *</Label>
+          <Label>City *</Label>
           <Input {...register("city", { required: true })} />
         </div>
 
         <div>
-          <Label>Preço (€) *</Label>
+          <Label>Price (€) *</Label>
           <Input type="number" {...register("price", { required: true })} />
         </div>
 
         <div>
-          <Label>Tipo de Transação</Label>
+          <Label>Transaction Type</Label>
           <Select {...register("transaction_type")}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Comprar">Comprar</SelectItem>
-              <SelectItem value="Arrendar">Arrendar</SelectItem>
+              <SelectItem value="Comprar">Buy</SelectItem>
+              <SelectItem value="Arrendar">Rent</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
-          <Label>Tipo de Imóvel *</Label>
+          <Label>Property Type *</Label>
           <Input {...register("property_type", { required: true })} />
         </div>
 
         <div>
-          <Label>Quartos</Label>
+          <Label>Bedrooms</Label>
           <Select {...register("bedrooms")}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="T0">T0</SelectItem>
-              <SelectItem value="T1">T1</SelectItem>
-              <SelectItem value="T2">T2</SelectItem>
-              <SelectItem value="T3">T3</SelectItem>
-              <SelectItem value="T4">T4</SelectItem>
-              <SelectItem value="T4+">T4+</SelectItem>
+              <SelectItem value="T0">Studio</SelectItem>
+              <SelectItem value="T1">1 bed</SelectItem>
+              <SelectItem value="T2">2 beds</SelectItem>
+              <SelectItem value="T3">3 beds</SelectItem>
+              <SelectItem value="T4">4 beds</SelectItem>
+              <SelectItem value="T4+">4+ beds</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
-          <Label>Casas de banho</Label>
+          <Label>Bathrooms</Label>
           <Input type="number" {...register("bathrooms")} />
         </div>
 
         <div>
-          <Label>Área Privativa (m²)</Label>
+          <Label>Private Area (m²)</Label>
           <Input type="number" {...register("private_area")} />
         </div>
 
         <div>
-          <Label>Área Construção (m²)</Label>
+          <Label>Construction Area (m²)</Label>
           <Input type="number" {...register("construction_area")} />
         </div>
 
         <div>
-          <Label>Estado</Label>
+          <Label>Condition</Label>
           <Select {...register("condition")}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Nova construção">Nova construção</SelectItem>
-              <SelectItem value="Bom estado">Bom estado</SelectItem>
-              <SelectItem value="Para recuperar">Para recuperar</SelectItem>
+              <SelectItem value="Nova construção">New construction</SelectItem>
+              <SelectItem value="Bom estado">Good condition</SelectItem>
+              <SelectItem value="Para recuperar">To renovate</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
-          <Label>Andar</Label>
+          <Label>Floor</Label>
           <Input type="number" {...register("floor")} />
         </div>
 
         <div className="col-span-2">
-          <Label>Imagens</Label>
+          <Label>Images</Label>
           <Input type="file" multiple accept="image/*" onChange={handleImageUpload} />
           {uploading && <Loader2 className="w-4 h-4 animate-spin mt-2" />}
           <div className="grid grid-cols-4 gap-2 mt-2">
@@ -209,51 +209,51 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         </div>
 
         <div className="col-span-2">
-          <Label className="mb-2 block">Características</Label>
+          <Label className="mb-2 block">Features</Label>
           <div className="grid grid-cols-3 gap-2">
             <div className="flex items-center space-x-2">
               <Checkbox {...register("air_conditioning")} />
-              <label className="text-sm">Ar condicionado</label>
+              <label className="text-sm">Air conditioning</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("built_in_wardrobes")} />
-              <label className="text-sm">Armários embutidos</label>
+              <label className="text-sm">Built-in wardrobes</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("elevator")} />
-              <label className="text-sm">Elevador</label>
+              <label className="text-sm">Lift</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("balcony_terrace")} />
-              <label className="text-sm">Varanda/Terraço</label>
+              <label className="text-sm">Balcony/Terrace</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("parking")} />
-              <label className="text-sm">Garagem</label>
+              <label className="text-sm">Parking</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("garden")} />
-              <label className="text-sm">Jardim</label>
+              <label className="text-sm">Garden</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("pool")} />
-              <label className="text-sm">Piscina</label>
+              <label className="text-sm">Swimming pool</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("storage")} />
-              <label className="text-sm">Arrecadação</label>
+              <label className="text-sm">Storage room</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("adapted_house")} />
-              <label className="text-sm">Casa adaptada</label>
+              <label className="text-sm">Adapted house</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("luxury_house")} />
-              <label className="text-sm">Casa de luxo</label>
+              <label className="text-sm">Luxury house</label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox {...register("sea_view")} />
-              <label className="text-sm">Vista mar</label>
+              <label className="text-sm">Sea view</label>
             </div>
           </div>
         </div>
@@ -261,10 +261,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onClose}>
-          Cancelar
+          Cancel
         </Button>
         <Button type="submit" disabled={saveMutation.isPending}>
-          {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Guardar"}
+          {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
         </Button>
       </div>
     </form>

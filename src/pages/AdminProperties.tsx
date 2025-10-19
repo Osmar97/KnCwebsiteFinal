@@ -54,15 +54,15 @@ const AdminProperties = () => {
       
       <div className="container mx-auto px-4 py-8 mt-20">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Gestão de Imóveis</h1>
+          <h1 className="text-3xl font-bold">Property Management</h1>
           <Button onClick={() => { setEditingProperty(null); setIsEditorOpen(true); }}>
             <Plus className="w-4 h-4 mr-2" />
-            Adicionar Imóvel
+            Add Property
           </Button>
         </div>
 
         {isLoading ? (
-          <div>Carregando...</div>
+          <div>Loading...</div>
         ) : (
           <div className="grid gap-4">
             {properties?.map((property) => (
@@ -80,7 +80,7 @@ const AdminProperties = () => {
                     <p className="text-sm text-muted-foreground">{property.location}</p>
                     <p className="text-primary font-bold mt-2">{property.price.toLocaleString("pt-PT")} €</p>
                     <p className="text-sm text-muted-foreground">
-                      {property.bedrooms} • {property.bathrooms} casas de banho • {property.private_area}m²
+                      {property.bedrooms} • {property.bathrooms} bathrooms • {property.private_area}m²
                     </p>
                   </div>
                 </div>
@@ -105,7 +105,7 @@ const AdminProperties = () => {
       <Dialog open={isEditorOpen} onOpenChange={setIsEditorOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingProperty ? "Editar Imóvel" : "Adicionar Imóvel"}</DialogTitle>
+            <DialogTitle>{editingProperty ? "Edit Property" : "Add Property"}</DialogTitle>
           </DialogHeader>
           <PropertyEditor
             property={editingProperty}

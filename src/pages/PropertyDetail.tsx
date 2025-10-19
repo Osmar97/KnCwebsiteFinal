@@ -29,8 +29,8 @@ const PropertyDetail = () => {
     },
   });
 
-  if (isLoading) return <div>Carregando...</div>;
-  if (!property) return <div>Imóvel não encontrado</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (!property) return <div>Property not found</div>;
 
   const images = property.images || [];
   const divisions = property.divisions as any[] || [];
@@ -43,7 +43,7 @@ const PropertyDetail = () => {
         <Link to="/properties">
           <Button variant="ghost" className="mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar
+            Back
           </Button>
         </Link>
 
@@ -64,10 +64,10 @@ const PropertyDetail = () => {
             <span>{property.bedrooms}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>{property.private_area}m² área bruta</span>
+            <span>{property.private_area}m² gross area</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>{property.floor}º andar {property.elevator ? "com elevador" : "sem elevador"}</span>
+            <span>{property.floor}º floor {property.elevator ? "with lift" : "without lift"}</span>
           </div>
         </div>
 
@@ -79,7 +79,7 @@ const PropertyDetail = () => {
             className="rounded-b-none"
           >
             <ImageIcon className="w-4 h-4 mr-2" />
-            {images.length} Fotos
+            {images.length} Photos
           </Button>
           {property.virtual_tour_url && (
             <Button
@@ -87,7 +87,7 @@ const PropertyDetail = () => {
               onClick={() => setActiveTab("tour")}
               className="rounded-b-none"
             >
-              Vista 3D
+              3D View
             </Button>
           )}
           {property.video_url && (
@@ -97,7 +97,7 @@ const PropertyDetail = () => {
               className="rounded-b-none"
             >
               <Video className="w-4 h-4 mr-2" />
-              Vídeo
+              Video
             </Button>
           )}
           {property.floor_plan_url && (
@@ -106,15 +106,15 @@ const PropertyDetail = () => {
               onClick={() => setActiveTab("plan")}
               className="rounded-b-none"
             >
-              Planta
+              Floor Plan
             </Button>
           )}
           <Button variant="ghost" className="ml-auto rounded-b-none">
             <Heart className="w-4 h-4 mr-2" />
-            Favoritos
+            Favourites
           </Button>
           <Button className="rounded-b-none bg-primary">
-            Contacte-nos
+            Contact us
           </Button>
         </div>
 
@@ -147,7 +147,7 @@ const PropertyDetail = () => {
 
             {/* Description */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Descrição</h2>
+              <h2 className="text-2xl font-bold mb-4">Description</h2>
               <p className="text-muted-foreground whitespace-pre-wrap">{property.description}</p>
             </div>
 
@@ -155,22 +155,22 @@ const PropertyDetail = () => {
 
             {/* Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-6">Informações</h2>
+              <h2 className="text-2xl font-bold mb-6">Information</h2>
               
-              {/* Áreas */}
+              {/* Areas */}
               <div className="mb-6">
-                <h3 className="text-xl font-semibold mb-4">Áreas</h3>
+                <h3 className="text-xl font-semibold mb-4">Areas</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {property.private_area && (
                     <div className="bg-muted p-4 rounded-lg text-center">
                       <div className="text-2xl font-bold">{property.private_area}m²</div>
-                      <div className="text-sm text-muted-foreground">Área Bruta Privativa</div>
+                      <div className="text-sm text-muted-foreground">Gross Private Area</div>
                     </div>
                   )}
                   {property.construction_area && (
                     <div className="bg-muted p-4 rounded-lg text-center">
                       <div className="text-2xl font-bold">{property.construction_area}m²</div>
-                      <div className="text-sm text-muted-foreground">Área Bruta de Construção</div>
+                      <div className="text-sm text-muted-foreground">Gross Construction Area</div>
                     </div>
                   )}
                 </div>
@@ -179,7 +179,7 @@ const PropertyDetail = () => {
               {/* Divisions */}
               {divisions.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-xl font-semibold mb-4">Divisões</h3>
+                  <h3 className="text-xl font-semibold mb-4">Rooms</h3>
                   <div className="grid grid-cols-3 gap-4">
                     {divisions.map((division: any, idx: number) => (
                       <div key={idx} className="flex justify-between items-center border-b py-2">
@@ -191,20 +191,20 @@ const PropertyDetail = () => {
                 </div>
               )}
 
-              {/* Características */}
+              {/* Features */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">Características</h3>
+                <h3 className="text-xl font-semibold mb-4">Features</h3>
                 <div className="grid grid-cols-2 gap-2">
-                  {property.air_conditioning && <div className="text-sm">✓ Ar condicionado</div>}
-                  {property.built_in_wardrobes && <div className="text-sm">✓ Armários embutidos</div>}
-                  {property.elevator && <div className="text-sm">✓ Elevador</div>}
-                  {property.balcony_terrace && <div className="text-sm">✓ Varanda e terraço</div>}
-                  {property.parking && <div className="text-sm">✓ Lugar de garagem</div>}
-                  {property.garden && <div className="text-sm">✓ Jardim</div>}
-                  {property.pool && <div className="text-sm">✓ Piscina</div>}
-                  {property.storage && <div className="text-sm">✓ Arrecadação</div>}
-                  {property.adapted_house && <div className="text-sm">✓ Casa adaptada</div>}
-                  {property.sea_view && <div className="text-sm">✓ Vista mar</div>}
+                  {property.air_conditioning && <div className="text-sm">✓ Air conditioning</div>}
+                  {property.built_in_wardrobes && <div className="text-sm">✓ Built-in wardrobes</div>}
+                  {property.elevator && <div className="text-sm">✓ Lift</div>}
+                  {property.balcony_terrace && <div className="text-sm">✓ Balcony & terrace</div>}
+                  {property.parking && <div className="text-sm">✓ Parking space</div>}
+                  {property.garden && <div className="text-sm">✓ Garden</div>}
+                  {property.pool && <div className="text-sm">✓ Swimming pool</div>}
+                  {property.storage && <div className="text-sm">✓ Storage room</div>}
+                  {property.adapted_house && <div className="text-sm">✓ Adapted house</div>}
+                  {property.sea_view && <div className="text-sm">✓ Sea view</div>}
                 </div>
               </div>
             </div>
@@ -213,18 +213,18 @@ const PropertyDetail = () => {
           {/* Contact Sidebar */}
           <div className="col-span-1">
             <div className="bg-card border rounded-lg p-6 sticky top-24">
-              <h3 className="text-xl font-semibold mb-4">Deseja saber mais?</h3>
+              <h3 className="text-xl font-semibold mb-4">Would you like to know more?</h3>
               
               <form className="space-y-4">
                 <Input type="email" placeholder="Email *" required />
-                <Input type="text" placeholder="Nome *" required />
-                <Input type="tel" placeholder="Telefone *" required />
-                <Textarea placeholder="Mensagem" rows={4} />
-                <Button className="w-full bg-primary">Contacte-nos</Button>
+                <Input type="text" placeholder="Name *" required />
+                <Input type="tel" placeholder="Phone *" required />
+                <Textarea placeholder="Message" rows={4} />
+                <Button className="w-full bg-primary">Contact us</Button>
               </form>
 
               <p className="text-xs text-muted-foreground mt-4">
-                Ao pedir informações está a aceitar nossa Política de Privacidade e Termos de Serviço.
+                By requesting information, you agree to our Privacy Policy and Terms of Service.
               </p>
             </div>
           </div>

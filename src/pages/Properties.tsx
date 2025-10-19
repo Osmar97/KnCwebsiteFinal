@@ -82,7 +82,7 @@ const Properties = () => {
           <main className="flex-1">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold text-foreground">
-                {properties?.length || 0} Imóveis encontrados
+                {properties?.length || 0} Properties found
               </h1>
               
               <div className="flex gap-2">
@@ -90,19 +90,19 @@ const Properties = () => {
                   variant={sortBy === "relevance" ? "default" : "outline"}
                   onClick={() => setSortBy("relevance")}
                 >
-                  Por relevância
+                  By relevance
                 </Button>
                 <Button
                   variant={sortBy === "price_asc" ? "default" : "outline"}
                   onClick={() => setSortBy("price_asc")}
                 >
-                  Baratos
+                  Cheapest
                 </Button>
                 <Button
                   variant={sortBy === "recent" ? "default" : "outline"}
                   onClick={() => setSortBy("recent")}
                 >
-                  Mais recentes
+                  Most recent
                 </Button>
               </div>
             </div>
@@ -119,7 +119,7 @@ const Properties = () => {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">Nenhum imóvel encontrado com os filtros selecionados.</p>
+                <p className="text-muted-foreground">No properties found with the selected filters.</p>
               </div>
             )}
           </main>
