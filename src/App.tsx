@@ -19,6 +19,9 @@ import { ArticleView } from "./components/resources/ArticleView";
 import { AdminProvider } from "./contexts/AdminContext";
 import { PostsProvider } from "./contexts/PostsContext";
 import FreeResources from "./pages/FreeResources";
+import Properties from "./pages/Properties";
+import PropertyDetail from "./pages/PropertyDetail";
+import AdminProperties from "./pages/AdminProperties";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +42,9 @@ const App = () => (
               <Route path="/resources" element={<Resources />} />
               <Route path="/resources/:category/:id" element={<ArticleView />} />
               <Route path="/free-resources" element={<FreeResources />} />
+              <Route path="/properties" element={<Properties />} />
+              <Route path="/properties/:id" element={<PropertyDetail />} />
+              <Route path="/admin/properties" element={<AdminProperties />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
