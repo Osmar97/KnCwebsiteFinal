@@ -3,7 +3,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 
 interface PropertyFiltersProps {
   filters: any;
@@ -55,92 +54,111 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
   };
 
   return (
-    <div className="bg-card border rounded-lg p-6 space-y-6">
-      <div>
-        <h3 className="font-semibold mb-4">Transaction type</h3>
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold text-primary mb-2">Filters</h2>
+        <div className="h-0.5 w-16 bg-gold"></div>
+      </div>
+
+      {/* Transaction Type */}
+      <div className="pb-6 border-b border-gray-200">
+        <h3 className="font-medium text-gray-700 mb-3">Transaction type</h3>
         <div className="flex gap-2">
           <Button
             variant={filters.transactionType === "Comprar" ? "default" : "outline"}
             onClick={() => setFilters({ ...filters, transactionType: "Comprar" })}
-            className="flex-1"
+            className={`flex-1 ${
+              filters.transactionType === "Comprar"
+                ? "bg-gold hover:bg-gold-dark text-white"
+                : "border-gray-300 hover:border-gold hover:text-gold"
+            }`}
           >
             Buy
           </Button>
           <Button
             variant={filters.transactionType === "Arrendar" ? "default" : "outline"}
             onClick={() => setFilters({ ...filters, transactionType: "Arrendar" })}
-            className="flex-1"
+            className={`flex-1 ${
+              filters.transactionType === "Arrendar"
+                ? "bg-gold hover:bg-gold-dark text-white"
+                : "border-gray-300 hover:border-gold hover:text-gold"
+            }`}
           >
             Rent
           </Button>
         </div>
       </div>
 
-      <Separator />
-
-      <div>
-        <h3 className="font-semibold mb-4">Price</h3>
-        <div className="grid grid-cols-2 gap-2">
+      {/* Price */}
+      <div className="pb-6 border-b border-gray-200 pt-6">
+        <h3 className="font-medium text-gray-700 mb-3">Price</h3>
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label>Min</Label>
+            <Label className="text-xs text-gray-600 mb-1 block">Min €</Label>
             <Input
               type="number"
               placeholder="Min"
               value={filters.minPrice}
               onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+              className="border-gray-300 focus:border-gold focus:ring-gold"
             />
           </div>
           <div>
-            <Label>Max</Label>
+            <Label className="text-xs text-gray-600 mb-1 block">Max €</Label>
             <Input
               type="number"
               placeholder="Max"
               value={filters.maxPrice}
               onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+              className="border-gray-300 focus:border-gold focus:ring-gold"
             />
           </div>
         </div>
       </div>
 
-      <Separator />
-
-      <div>
-        <h3 className="font-semibold mb-4">Size (m²)</h3>
-        <div className="grid grid-cols-2 gap-2">
+      {/* Size */}
+      <div className="pb-6 border-b border-gray-200 pt-6">
+        <h3 className="font-medium text-gray-700 mb-3">Size (m²)</h3>
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label>Min</Label>
+            <Label className="text-xs text-gray-600 mb-1 block">Min m²</Label>
             <Input
               type="number"
               placeholder="Min"
               value={filters.minSize}
               onChange={(e) => setFilters({ ...filters, minSize: e.target.value })}
+              className="border-gray-300 focus:border-gold focus:ring-gold"
             />
           </div>
           <div>
-            <Label>Max</Label>
+            <Label className="text-xs text-gray-600 mb-1 block">Max m²</Label>
             <Input
               type="number"
               placeholder="Max"
               value={filters.maxSize}
               onChange={(e) => setFilters({ ...filters, maxSize: e.target.value })}
+              className="border-gray-300 focus:border-gold focus:ring-gold"
             />
           </div>
         </div>
       </div>
 
-      <Separator />
-
-      <div>
-        <h3 className="font-semibold mb-4">Property type</h3>
-        <div className="space-y-2">
+      {/* Property Type */}
+      <div className="pb-6 border-b border-gray-200 pt-6">
+        <h3 className="font-medium text-gray-700 mb-3">Property type</h3>
+        <div className="space-y-2.5">
           {propertyTypes.map((type) => (
             <div key={type} className="flex items-center space-x-2">
               <Checkbox
                 id={type}
                 checked={filters.propertyTypes.includes(type)}
                 onCheckedChange={() => togglePropertyType(type)}
+                className="border-gray-300 data-[state=checked]:bg-gold data-[state=checked]:border-gold"
               />
-              <label htmlFor={type} className="text-sm cursor-pointer">
+              <label
+                htmlFor={type}
+                className="text-sm cursor-pointer text-gray-700 hover:text-gold transition-colors"
+              >
                 {type}
               </label>
             </div>
@@ -148,15 +166,15 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
         </div>
       </div>
 
-      <Separator />
-
-      <div>
-        <h3 className="font-semibold mb-4">Bedrooms</h3>
+      {/* Bedrooms */}
+      <div className="pb-6 border-b border-gray-200 pt-6">
+        <h3 className="font-medium text-gray-700 mb-3">Bedrooms</h3>
         <Select value={filters.bedrooms} onValueChange={(value) => setFilters({ ...filters, bedrooms: value })}>
-          <SelectTrigger>
+          <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
             <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="">Any</SelectItem>
             <SelectItem value="T0">Studio</SelectItem>
             <SelectItem value="T1">1 bed</SelectItem>
             <SelectItem value="T2">2 beds</SelectItem>
@@ -167,15 +185,15 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
         </Select>
       </div>
 
-      <Separator />
-
-      <div>
-        <h3 className="font-semibold mb-4">Bathrooms</h3>
+      {/* Bathrooms */}
+      <div className="pb-6 border-b border-gray-200 pt-6">
+        <h3 className="font-medium text-gray-700 mb-3">Bathrooms</h3>
         <Select value={filters.bathrooms} onValueChange={(value) => setFilters({ ...filters, bathrooms: value })}>
-          <SelectTrigger>
+          <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
             <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="">Any</SelectItem>
             <SelectItem value="1">1</SelectItem>
             <SelectItem value="2">2</SelectItem>
             <SelectItem value="3">3</SelectItem>
@@ -185,15 +203,15 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
         </Select>
       </div>
 
-      <Separator />
-
-      <div>
-        <h3 className="font-semibold mb-4">Condition</h3>
+      {/* Condition */}
+      <div className="pb-6 border-b border-gray-200 pt-6">
+        <h3 className="font-medium text-gray-700 mb-3">Condition</h3>
         <Select value={filters.condition} onValueChange={(value) => setFilters({ ...filters, condition: value })}>
-          <SelectTrigger>
+          <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
             <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="">Any</SelectItem>
             <SelectItem value="Nova construção">New construction</SelectItem>
             <SelectItem value="Bom estado">Good condition</SelectItem>
             <SelectItem value="Para recuperar">To renovate</SelectItem>
@@ -201,19 +219,22 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
         </Select>
       </div>
 
-      <Separator />
-
-      <div>
-        <h3 className="font-semibold mb-4">Features</h3>
-        <div className="space-y-2">
+      {/* Features */}
+      <div className="pt-6">
+        <h3 className="font-medium text-gray-700 mb-3">Features</h3>
+        <div className="space-y-2.5">
           {features.map((feature) => (
             <div key={feature.id} className="flex items-center space-x-2">
               <Checkbox
                 id={feature.id}
                 checked={filters.features.includes(feature.id)}
                 onCheckedChange={() => toggleFeature(feature.id)}
+                className="border-gray-300 data-[state=checked]:bg-gold data-[state=checked]:border-gold"
               />
-              <label htmlFor={feature.id} className="text-sm cursor-pointer">
+              <label
+                htmlFor={feature.id}
+                className="text-sm cursor-pointer text-gray-700 hover:text-gold transition-colors"
+              >
                 {feature.label}
               </label>
             </div>
