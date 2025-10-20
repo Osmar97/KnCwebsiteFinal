@@ -179,7 +179,6 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
             <SelectItem value="T1">1 bed</SelectItem>
             <SelectItem value="T2">2 beds</SelectItem>
             <SelectItem value="T3">3 beds</SelectItem>
-            <SelectItem value="T4">4 beds</SelectItem>
             <SelectItem value="T4+">4+ beds</SelectItem>
           </SelectContent>
         </Select>
@@ -197,7 +196,6 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
             <SelectItem value="1">1</SelectItem>
             <SelectItem value="2">2</SelectItem>
             <SelectItem value="3">3</SelectItem>
-            <SelectItem value="4">4</SelectItem>
             <SelectItem value="4+">4+</SelectItem>
           </SelectContent>
         </Select>
