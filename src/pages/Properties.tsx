@@ -6,9 +6,14 @@ import { Footer } from "@/components/Footer";
 import PropertyFilters from "@/components/properties/PropertyFilters";
 import PropertyCard from "@/components/properties/PropertyCard";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAdmin } from "@/contexts/AdminContext";
 
 const Properties = () => {
+  const navigate = useNavigate();
+  const { isAdminLoggedIn } = useAdmin();
+  
   const [filters, setFilters] = useState({
     transactionType: "Comprar",
     minPrice: "",
@@ -72,6 +77,16 @@ const Properties = () => {
       <Navigation />
       
       <div className="container mx-auto px-4 py-8 mt-20">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-foreground">Properties</h1>
+          {isAdminLoggedIn && (
+            <Button onClick={() => navigate("/admin/properties")}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Property
+            </Button>
+          )}
+        </div>
+
         <div className="flex gap-8">
           {/* Filters Sidebar */}
           <aside className="w-80 flex-shrink-0">
@@ -81,9 +96,9 @@ const Properties = () => {
           {/* Properties Grid */}
           <main className="flex-1">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-foreground">
+              <p className="text-lg text-muted-foreground">
                 {properties?.length || 0} Properties found
-              </h1>
+              </p>
               
               <div className="flex gap-2">
                 <Button
