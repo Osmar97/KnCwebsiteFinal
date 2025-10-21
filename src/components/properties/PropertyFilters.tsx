@@ -114,8 +114,17 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
                 <SelectItem value="300000">300,000</SelectItem>
                 <SelectItem value="400000">400,000</SelectItem>
                 <SelectItem value="500000">500,000</SelectItem>
+                <SelectItem value="custom">Other</SelectItem>
               </SelectContent>
             </Select>
+            {filters.minPrice === "custom" && (
+              <Input
+                type="number"
+                placeholder="Enter amount"
+                onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                className="mt-2 border-gray-300 focus:border-gold focus:ring-gold"
+              />
+            )}
           </div>
           <div>
             <Label className="text-xs text-gray-600 mb-1 block">Max €</Label>
@@ -142,8 +151,17 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
                 <SelectItem value="1000000">1,000,000</SelectItem>
                 <SelectItem value="1500000">1,500,000</SelectItem>
                 <SelectItem value="2000000">2,000,000</SelectItem>
+                <SelectItem value="custom">Other</SelectItem>
               </SelectContent>
             </Select>
+            {filters.maxPrice === "custom" && (
+              <Input
+                type="number"
+                placeholder="Enter amount"
+                onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                className="mt-2 border-gray-300 focus:border-gold focus:ring-gold"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -170,8 +188,17 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
                 <SelectItem value="300">300</SelectItem>
                 <SelectItem value="400">400</SelectItem>
                 <SelectItem value="500">500</SelectItem>
+                <SelectItem value="custom">Other</SelectItem>
               </SelectContent>
             </Select>
+            {filters.minSize === "custom" && (
+              <Input
+                type="number"
+                placeholder="Enter size"
+                onChange={(e) => setFilters({ ...filters, minSize: e.target.value })}
+                className="mt-2 border-gray-300 focus:border-gold focus:ring-gold"
+              />
+            )}
           </div>
           <div>
             <Label className="text-xs text-gray-600 mb-1 block">Max m²</Label>
@@ -193,8 +220,17 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
                 <SelectItem value="500">500</SelectItem>
                 <SelectItem value="750">750</SelectItem>
                 <SelectItem value="1000">1,000</SelectItem>
+                <SelectItem value="custom">Other</SelectItem>
               </SelectContent>
             </Select>
+            {filters.maxSize === "custom" && (
+              <Input
+                type="number"
+                placeholder="Enter size"
+                onChange={(e) => setFilters({ ...filters, maxSize: e.target.value })}
+                className="mt-2 border-gray-300 focus:border-gold focus:ring-gold"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -229,13 +265,12 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
           <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
             <SelectValue placeholder="Select" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white z-50">
             <SelectItem value="any">Any</SelectItem>
             <SelectItem value="T0">Studio</SelectItem>
             <SelectItem value="T1">1 bed</SelectItem>
             <SelectItem value="T2">2 beds</SelectItem>
             <SelectItem value="T3">3 beds</SelectItem>
-            <SelectItem value="T4">4 beds</SelectItem>
             <SelectItem value="T4+">4+ beds</SelectItem>
           </SelectContent>
         </Select>
@@ -248,12 +283,11 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
           <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
             <SelectValue placeholder="Select" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white z-50">
             <SelectItem value="any">Any</SelectItem>
             <SelectItem value="1">1</SelectItem>
             <SelectItem value="2">2</SelectItem>
             <SelectItem value="3">3</SelectItem>
-            <SelectItem value="4">4</SelectItem>
             <SelectItem value="4+">4+</SelectItem>
           </SelectContent>
         </Select>
@@ -266,7 +300,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
           <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
             <SelectValue placeholder="Select" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white z-50">
             <SelectItem value="any">Any</SelectItem>
             <SelectItem value="Nova construção">New construction</SelectItem>
             <SelectItem value="Bom estado">Good condition</SelectItem>
