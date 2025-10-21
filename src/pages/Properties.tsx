@@ -42,8 +42,8 @@ const Properties = () => {
       if (filters.maxPrice) query = query.lte("price", parseFloat(filters.maxPrice));
       if (filters.minSize) query = query.gte("private_area", parseFloat(filters.minSize));
       if (filters.maxSize) query = query.lte("private_area", parseFloat(filters.maxSize));
-      if (filters.bedrooms) query = query.eq("bedrooms", filters.bedrooms);
-      if (filters.bathrooms) {
+      if (filters.bedrooms && filters.bedrooms !== "any") query = query.eq("bedrooms", filters.bedrooms);
+      if (filters.bathrooms && filters.bathrooms !== "any") {
         const bathroomsNum = parseInt(filters.bathrooms.replace("+", ""));
         if (filters.bathrooms.includes("+")) {
           query = query.gte("bathrooms", bathroomsNum);
@@ -51,7 +51,7 @@ const Properties = () => {
           query = query.eq("bathrooms", bathroomsNum);
         }
       }
-      if (filters.condition) query = query.eq("condition", filters.condition);
+      if (filters.condition && filters.condition !== "any") query = query.eq("condition", filters.condition);
       if (filters.propertyTypes.length > 0) {
         query = query.in("property_type", filters.propertyTypes);
       }

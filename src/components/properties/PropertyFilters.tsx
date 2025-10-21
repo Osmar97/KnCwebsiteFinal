@@ -174,7 +174,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
             <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Any</SelectItem>
+            <SelectItem value="any">Any</SelectItem>
             <SelectItem value="T0">Studio</SelectItem>
             <SelectItem value="T1">1 bed</SelectItem>
             <SelectItem value="T2">2 beds</SelectItem>
@@ -193,7 +193,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
             <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Any</SelectItem>
+            <SelectItem value="any">Any</SelectItem>
             <SelectItem value="1">1</SelectItem>
             <SelectItem value="2">2</SelectItem>
             <SelectItem value="3">3</SelectItem>
@@ -211,7 +211,7 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
             <SelectValue placeholder="Select" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Any</SelectItem>
+            <SelectItem value="any">Any</SelectItem>
             <SelectItem value="Nova construção">New construction</SelectItem>
             <SelectItem value="Bom estado">Good condition</SelectItem>
             <SelectItem value="Para recuperar">To renovate</SelectItem>
