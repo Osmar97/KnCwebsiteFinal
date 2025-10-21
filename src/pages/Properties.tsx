@@ -38,10 +38,10 @@ const Properties = () => {
         .eq("status", "active")
         .eq("transaction_type", filters.transactionType) as any;
 
-      if (filters.minPrice) query = query.gte("price", parseFloat(filters.minPrice));
-      if (filters.maxPrice) query = query.lte("price", parseFloat(filters.maxPrice));
-      if (filters.minSize) query = query.gte("private_area", parseFloat(filters.minSize));
-      if (filters.maxSize) query = query.lte("private_area", parseFloat(filters.maxSize));
+      if (filters.minPrice && filters.minPrice !== "no_limit") query = query.gte("price", parseFloat(filters.minPrice));
+      if (filters.maxPrice && filters.maxPrice !== "no_limit") query = query.lte("price", parseFloat(filters.maxPrice));
+      if (filters.minSize && filters.minSize !== "no_limit") query = query.gte("private_area", parseFloat(filters.minSize));
+      if (filters.maxSize && filters.maxSize !== "no_limit") query = query.lte("private_area", parseFloat(filters.maxSize));
       if (filters.bedrooms && filters.bedrooms !== "any") query = query.eq("bedrooms", filters.bedrooms);
       if (filters.bathrooms && filters.bathrooms !== "any") {
         const bathroomsNum = parseInt(filters.bathrooms.replace("+", ""));

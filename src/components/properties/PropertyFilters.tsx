@@ -95,23 +95,55 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label className="text-xs text-gray-600 mb-1 block">Min €</Label>
-            <Input
-              type="number"
-              placeholder="Min"
-              value={filters.minPrice}
-              onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-              className="border-gray-300 focus:border-gold focus:ring-gold"
-            />
+            <Select value={filters.minPrice} onValueChange={(value) => setFilters({ ...filters, minPrice: value })}>
+              <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
+                <SelectValue placeholder="Min" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                <SelectItem value="no_limit">No limit</SelectItem>
+                <SelectItem value="60000">60,000</SelectItem>
+                <SelectItem value="80000">80,000</SelectItem>
+                <SelectItem value="100000">100,000</SelectItem>
+                <SelectItem value="120000">120,000</SelectItem>
+                <SelectItem value="140000">140,000</SelectItem>
+                <SelectItem value="150000">150,000</SelectItem>
+                <SelectItem value="160000">160,000</SelectItem>
+                <SelectItem value="180000">180,000</SelectItem>
+                <SelectItem value="200000">200,000</SelectItem>
+                <SelectItem value="250000">250,000</SelectItem>
+                <SelectItem value="300000">300,000</SelectItem>
+                <SelectItem value="400000">400,000</SelectItem>
+                <SelectItem value="500000">500,000</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label className="text-xs text-gray-600 mb-1 block">Max €</Label>
-            <Input
-              type="number"
-              placeholder="Max"
-              value={filters.maxPrice}
-              onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-              className="border-gray-300 focus:border-gold focus:ring-gold"
-            />
+            <Select value={filters.maxPrice} onValueChange={(value) => setFilters({ ...filters, maxPrice: value })}>
+              <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
+                <SelectValue placeholder="Max" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                <SelectItem value="no_limit">No limit</SelectItem>
+                <SelectItem value="60000">60,000</SelectItem>
+                <SelectItem value="80000">80,000</SelectItem>
+                <SelectItem value="100000">100,000</SelectItem>
+                <SelectItem value="120000">120,000</SelectItem>
+                <SelectItem value="140000">140,000</SelectItem>
+                <SelectItem value="150000">150,000</SelectItem>
+                <SelectItem value="160000">160,000</SelectItem>
+                <SelectItem value="180000">180,000</SelectItem>
+                <SelectItem value="200000">200,000</SelectItem>
+                <SelectItem value="250000">250,000</SelectItem>
+                <SelectItem value="300000">300,000</SelectItem>
+                <SelectItem value="400000">400,000</SelectItem>
+                <SelectItem value="500000">500,000</SelectItem>
+                <SelectItem value="750000">750,000</SelectItem>
+                <SelectItem value="1000000">1,000,000</SelectItem>
+                <SelectItem value="1500000">1,500,000</SelectItem>
+                <SelectItem value="2000000">2,000,000</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
@@ -122,23 +154,47 @@ const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label className="text-xs text-gray-600 mb-1 block">Min m²</Label>
-            <Input
-              type="number"
-              placeholder="Min"
-              value={filters.minSize}
-              onChange={(e) => setFilters({ ...filters, minSize: e.target.value })}
-              className="border-gray-300 focus:border-gold focus:ring-gold"
-            />
+            <Select value={filters.minSize} onValueChange={(value) => setFilters({ ...filters, minSize: value })}>
+              <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
+                <SelectValue placeholder="Min" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                <SelectItem value="no_limit">No limit</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="75">75</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+                <SelectItem value="125">125</SelectItem>
+                <SelectItem value="150">150</SelectItem>
+                <SelectItem value="200">200</SelectItem>
+                <SelectItem value="250">250</SelectItem>
+                <SelectItem value="300">300</SelectItem>
+                <SelectItem value="400">400</SelectItem>
+                <SelectItem value="500">500</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label className="text-xs text-gray-600 mb-1 block">Max m²</Label>
-            <Input
-              type="number"
-              placeholder="Max"
-              value={filters.maxSize}
-              onChange={(e) => setFilters({ ...filters, maxSize: e.target.value })}
-              className="border-gray-300 focus:border-gold focus:ring-gold"
-            />
+            <Select value={filters.maxSize} onValueChange={(value) => setFilters({ ...filters, maxSize: value })}>
+              <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
+                <SelectValue placeholder="Max" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                <SelectItem value="no_limit">No limit</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="75">75</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+                <SelectItem value="125">125</SelectItem>
+                <SelectItem value="150">150</SelectItem>
+                <SelectItem value="200">200</SelectItem>
+                <SelectItem value="250">250</SelectItem>
+                <SelectItem value="300">300</SelectItem>
+                <SelectItem value="400">400</SelectItem>
+                <SelectItem value="500">500</SelectItem>
+                <SelectItem value="750">750</SelectItem>
+                <SelectItem value="1000">1,000</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
