@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PropertyEditor from "@/components/properties/PropertyEditor";
 import { useToast } from "@/hooks/use-toast";
 
@@ -102,20 +101,18 @@ const AdminProperties = () => {
         )}
       </div>
 
-      <Dialog open={isEditorOpen} onOpenChange={setIsEditorOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editingProperty ? "Edit Property" : "Add Property"}</DialogTitle>
-          </DialogHeader>
+      {isEditorOpen && (
+        <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
           <PropertyEditor
             property={editingProperty}
             onClose={() => {
               setIsEditorOpen(false);
               setEditingProperty(null);
+              queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
             }}
           />
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </div>
   );
 };
