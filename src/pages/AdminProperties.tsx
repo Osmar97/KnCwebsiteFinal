@@ -47,6 +47,19 @@ const AdminProperties = () => {
     }
   };
 
+  if (isEditorOpen) {
+    return (
+      <PropertyEditor
+        property={editingProperty}
+        onClose={() => {
+          setIsEditorOpen(false);
+          setEditingProperty(null);
+          queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -100,19 +113,6 @@ const AdminProperties = () => {
           </div>
         )}
       </div>
-
-      {isEditorOpen && (
-        <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
-          <PropertyEditor
-            property={editingProperty}
-            onClose={() => {
-              setIsEditorOpen(false);
-              setEditingProperty(null);
-              queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 };
