@@ -8,7 +8,7 @@ import PropertyEditor from "@/components/properties/PropertyEditor";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminProperties = () => {
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [showList, setShowList] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -38,7 +38,7 @@ const AdminProperties = () => {
 
   const handleEdit = (property: any) => {
     setEditingProperty(property);
-    setIsEditorOpen(true);
+    setShowList(false);
   };
 
   const handleDelete = (id: string) => {
@@ -47,12 +47,12 @@ const AdminProperties = () => {
     }
   };
 
-  if (isEditorOpen) {
+  if (!showList) {
     return (
       <PropertyEditor
         property={editingProperty}
         onClose={() => {
-          setIsEditorOpen(false);
+          setShowList(true);
           setEditingProperty(null);
           queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
         }}
@@ -67,7 +67,7 @@ const AdminProperties = () => {
       <div className="container mx-auto px-4 py-8 mt-20">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Property Management</h1>
-          <Button onClick={() => { setEditingProperty(null); setIsEditorOpen(true); }}>
+          <Button onClick={() => { setEditingProperty(null); setShowList(false); }}>
             <Plus className="w-4 h-4 mr-2" />
             Add Property
           </Button>
