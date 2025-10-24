@@ -236,10 +236,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 placeholder="Esta secção é muito importante. Presta especial atenção aos detalhes que não são visíveis nas fotos."
               />
             </div>
-            <div>
-              <Label className="text-sm font-semibold mb-2 block">Site web</Label>
-              <Input {...register("video_url")} placeholder="http://" className="bg-[#FFFEF0] border-gray-300" />
-            </div>
           </div>
         </div>
 
@@ -299,21 +295,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </div>
 
           {/* Videos */}
-          <div className="mb-6">
+          <div>
             <h3 className="font-semibold mb-3">Vídeos (0)</h3>
             <label className="w-32 h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
               <Plus className="w-8 h-8 text-gray-400 mb-1" />
               <span className="text-sm text-gray-600">Novo</span>
             </label>
-          </div>
-
-          {/* Virtual Tours */}
-          <div>
-            <h3 className="font-semibold mb-3">Virtual Tours 3D/360 (0)</h3>
-            <div>
-              <Label className="text-sm mb-2 block">URL do tour virtual</Label>
-              <Input {...register("virtual_tour_url")} placeholder="https://" className="bg-[#FFFEF0] border-gray-300 max-w-md" />
-            </div>
           </div>
         </div>
 
