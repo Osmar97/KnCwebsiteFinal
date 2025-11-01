@@ -250,14 +250,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   </div>
                 </div>
 
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-semibold mb-3 block">Categoria</Label>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="bank_property" {...register("bank_property")} />
-                    <label htmlFor="bank_property" className="text-sm">Imóvel do banco</label>
-                  </div>
-                </div>
-
                 <div>
                   <Label className="text-sm font-semibold mb-2 block">M² área bruta</Label>
                   <div className="relative">
