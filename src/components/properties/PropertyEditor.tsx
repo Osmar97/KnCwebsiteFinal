@@ -37,6 +37,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     },
   });
 
+  const propertyType = watch("property_type");
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [imageUrls, setImageUrls] = useState<string[]>(property?.images || []);
@@ -147,6 +149,62 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Label className="text-sm font-semibold mb-2 block">Nome da rua / via</Label>
               <Input {...register("location", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
             </div>
+            
+            {propertyType === "Apartamento" && (
+              <>
+                <div className="flex gap-4 items-end">
+                  <div className="flex-1">
+                    <Label className="text-sm font-semibold mb-2 block">Número</Label>
+                    <Input {...register("street_number")} className="bg-[#FFFEF0] border-gray-300" />
+                  </div>
+                  <div className="flex items-center space-x-2 pb-2">
+                    <Checkbox id="no_number" {...register("no_street_number")} />
+                    <label htmlFor="no_number" className="text-sm">Sem número</label>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Andar</Label>
+                  <Select defaultValue={property?.apartment_floor} onValueChange={(value) => setValue("apartment_floor", value)}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Selecionar opção" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="0">Rés-do-chão</SelectItem>
+                      <SelectItem value="1">1º</SelectItem>
+                      <SelectItem value="2">2º</SelectItem>
+                      <SelectItem value="3">3º</SelectItem>
+                      <SelectItem value="4">4º</SelectItem>
+                      <SelectItem value="5">5º</SelectItem>
+                      <SelectItem value="6">6º</SelectItem>
+                      <SelectItem value="7">7º</SelectItem>
+                      <SelectItem value="8">8º+</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="last_floor" {...register("is_last_floor")} />
+                  <label htmlFor="last_floor" className="text-sm">É o último andar do bloco</label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-semibold mb-2 block">Bloco / Lote</Label>
+                    <Input {...register("block")} className="bg-[#FFFEF0] border-gray-300" />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-semibold mb-2 block">Porta</Label>
+                    <Input {...register("door")} className="bg-[#FFFEF0] border-gray-300" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Nome da urbanização</Label>
+                  <Input {...register("urbanization_name")} className="bg-[#FFFEF0] border-gray-300" />
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -172,6 +230,66 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Input type="number" {...register("price", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
             </div>
 
+            {propertyType === "Apartamento" && (
+              <>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-semibold mb-3 block">Característica adicional</Label>
+                  <div className="flex gap-6">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="penthouse" {...register("penthouse")} />
+                      <label htmlFor="penthouse" className="text-sm">Penthouse</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="t0" {...register("t0")} />
+                      <label htmlFor="t0" className="text-sm">T0</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="duplex" {...register("duplex")} />
+                      <label htmlFor="duplex" className="text-sm">Duplex</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-semibold mb-3 block">Categoria</Label>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="bank_property" {...register("bank_property")} />
+                    <label htmlFor="bank_property" className="text-sm">Imóvel do banco</label>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">M² área bruta</Label>
+                  <div className="relative">
+                    <Input type="number" {...register("construction_area")} className="bg-[#FFFEF0] border-gray-300 pr-12" />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">m²</span>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">M² úteis</Label>
+                  <div className="relative">
+                    <Input type="number" {...register("private_area")} className="bg-[#FFFEF0] border-gray-300 pr-12" />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">m²</span>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {propertyType !== "Apartamento" && (
+              <>
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Área privativa (m²)</Label>
+                  <Input type="number" {...register("private_area")} className="bg-[#FFFEF0] border-gray-300" />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Área de construção (m²)</Label>
+                  <Input type="number" {...register("construction_area")} className="bg-[#FFFEF0] border-gray-300" />
+                </div>
+              </>
+            )}
+
             <div>
               <Label className="text-sm font-semibold mb-2 block">Quartos</Label>
               <Select defaultValue={property?.bedrooms} onValueChange={(value) => setValue("bedrooms", value)}>
@@ -193,34 +311,100 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Input type="number" {...register("bathrooms")} className="bg-[#FFFEF0] border-gray-300" />
             </div>
 
-            <div>
-              <Label className="text-sm font-semibold mb-2 block">Área privativa (m²)</Label>
-              <Input type="number" {...register("private_area")} className="bg-[#FFFEF0] border-gray-300" />
-            </div>
+            {propertyType === "Apartamento" && (
+              <>
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
+                  <Select defaultValue={property?.energy_class} onValueChange={(value) => setValue("energy_class", value)}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Seleciona opção" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="A+">A+</SelectItem>
+                      <SelectItem value="A">A</SelectItem>
+                      <SelectItem value="B">B</SelectItem>
+                      <SelectItem value="B-">B-</SelectItem>
+                      <SelectItem value="C">C</SelectItem>
+                      <SelectItem value="D">D</SelectItem>
+                      <SelectItem value="E">E</SelectItem>
+                      <SelectItem value="F">F</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div>
-              <Label className="text-sm font-semibold mb-2 block">Área de construção (m²)</Label>
-              <Input type="number" {...register("construction_area")} className="bg-[#FFFEF0] border-gray-300" />
-            </div>
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Estado de conservação *</Label>
+                  <Select defaultValue={property?.condition} onValueChange={(value) => setValue("condition", value)}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="Nova construção">Nova construção</SelectItem>
+                      <SelectItem value="Bom estado">Bom estado</SelectItem>
+                      <SelectItem value="Para recuperar">Para recuperar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div>
-              <Label className="text-sm font-semibold mb-2 block">Andar</Label>
-              <Input type="number" {...register("floor")} className="bg-[#FFFEF0] border-gray-300" />
-            </div>
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Elevador *</Label>
+                  <Select defaultValue={property?.has_elevator} onValueChange={(value) => setValue("has_elevator", value)}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="sim">Sim</SelectItem>
+                      <SelectItem value="nao">Não</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div>
-              <Label className="text-sm font-semibold mb-2 block">Estado</Label>
-              <Select defaultValue={property?.condition} onValueChange={(value) => setValue("condition", value)}>
-                <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                  <SelectValue placeholder="Selecionar" />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  <SelectItem value="Nova construção">Nova construção</SelectItem>
-                  <SelectItem value="Bom estado">Bom estado</SelectItem>
-                  <SelectItem value="Para recuperar">Para recuperar</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-semibold mb-3 block">Orientação</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="orientation_north" {...register("orientation_north")} />
+                      <label htmlFor="orientation_north" className="text-sm">Norte</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="orientation_south" {...register("orientation_south")} />
+                      <label htmlFor="orientation_south" className="text-sm">Sul</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="orientation_east" {...register("orientation_east")} />
+                      <label htmlFor="orientation_east" className="text-sm">Este</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="orientation_west" {...register("orientation_west")} />
+                      <label htmlFor="orientation_west" className="text-sm">Oeste</label>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {propertyType !== "Apartamento" && (
+              <>
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Andar</Label>
+                  <Input type="number" {...register("floor")} className="bg-[#FFFEF0] border-gray-300" />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Estado</Label>
+                  <Select defaultValue={property?.condition} onValueChange={(value) => setValue("condition", value)}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="Nova construção">Nova construção</SelectItem>
+                      <SelectItem value="Bom estado">Bom estado</SelectItem>
+                      <SelectItem value="Para recuperar">Para recuperar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
