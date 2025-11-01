@@ -11,6 +11,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import PlacesAutocomplete from "./PlacesAutocomplete";
+import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 
 interface PropertyEditorProps {
   property?: any;
@@ -43,6 +45,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const queryClient = useQueryClient();
   const [imageUrls, setImageUrls] = useState<string[]>(property?.images || []);
   const [uploading, setUploading] = useState(false);
+  const [cityValue, setCityValue] = useState(property?.city || "");
+  const [streetValue, setStreetValue] = useState(property?.location || "");
+  const isGoogleMapsLoaded = useGoogleMaps();
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -143,11 +148,37 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="space-y-4 max-w-md">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Localidade</Label>
-              <Input {...register("city", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
+              {isGoogleMapsLoaded ? (
+                <PlacesAutocomplete
+                  value={cityValue}
+                  onChange={(value) => {
+                    setCityValue(value);
+                    setValue("city", value);
+                  }}
+                  placeholder="Digite a localidade..."
+                  className="bg-[#FFFEF0] border-gray-300"
+                  types={["(cities)"]}
+                />
+              ) : (
+                <Input {...register("city", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
+              )}
             </div>
             <div>
               <Label className="text-sm font-semibold mb-2 block">Nome da rua / via</Label>
-              <Input {...register("location", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
+              {isGoogleMapsLoaded ? (
+                <PlacesAutocomplete
+                  value={streetValue}
+                  onChange={(value) => {
+                    setStreetValue(value);
+                    setValue("location", value);
+                  }}
+                  placeholder="Digite o nome da rua..."
+                  className="bg-[#FFFEF0] border-gray-300"
+                  types={["address"]}
+                />
+              ) : (
+                <Input {...register("location", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
+              )}
             </div>
             
             {propertyType === "Apartamento" && (
