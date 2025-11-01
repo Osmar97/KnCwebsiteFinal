@@ -119,12 +119,17 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <SelectValue placeholder="Selecionar opção" />
               </SelectTrigger>
               <SelectContent className="bg-white z-50">
+                <SelectItem value="Casa / Moradia">Casa / Moradia</SelectItem>
                 <SelectItem value="Apartamento">Apartamento</SelectItem>
-                <SelectItem value="Moradia">Moradia</SelectItem>
-                <SelectItem value="Terreno">Terreno</SelectItem>
-                <SelectItem value="Loja">Loja</SelectItem>
-                <SelectItem value="Escritório">Escritório</SelectItem>
+                <SelectItem value="Casa rústica">Casa rústica</SelectItem>
+                <SelectItem value="Quarto">Quarto</SelectItem>
+                <SelectItem value="Espaço comercial ou armazém">Espaço comercial ou armazém</SelectItem>
+                <SelectItem value="Trespasse">Trespasse</SelectItem>
                 <SelectItem value="Garagem">Garagem</SelectItem>
+                <SelectItem value="Escritório">Escritório</SelectItem>
+                <SelectItem value="Terreno">Terreno</SelectItem>
+                <SelectItem value="Arrecadação">Arrecadação</SelectItem>
+                <SelectItem value="Prédio">Prédio</SelectItem>
               </SelectContent>
             </Select>
           </div>
