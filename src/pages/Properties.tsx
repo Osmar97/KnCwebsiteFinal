@@ -36,10 +36,10 @@ const Properties = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black">
+    <div className="min-h-screen bg-black">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-16 mt-20">
+      <div className="container mx-auto px-4 py-16 pt-24">
         <div className="flex justify-between items-center mb-12">
           <div>
             <h1 className="text-5xl font-bold text-white mb-2">Exclusive Properties</h1>
