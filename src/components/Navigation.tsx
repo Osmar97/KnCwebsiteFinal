@@ -10,7 +10,8 @@ export const Navigation = () => {
   const location = useLocation();
 
   // Check if we're on a page with white background
-  const isWhiteBackground = location.pathname !== '/';
+  const darkBackgroundPages = ['/', '/services', '/properties'];
+  const isWhiteBackground = !darkBackgroundPages.includes(location.pathname);
 
   useEffect(() => {
     const handleScroll = () => {
