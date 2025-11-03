@@ -36,13 +36,13 @@ const Properties = () => {
   });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       <div className="container mx-auto px-4 py-16 mt-20">
         <div className="flex justify-between items-center mb-12">
           <div>
-            <h1 className="text-5xl font-bold text-primary mb-2">Exclusive Properties</h1>
+            <h1 className="text-5xl font-bold text-foreground mb-2">Exclusive Properties</h1>
             <div className="h-1 w-24 bg-gold"></div>
           </div>
           {isAdminLoggedIn && (
@@ -60,7 +60,7 @@ const Properties = () => {
           {/* Properties Grid */}
           <main>
             <div className="flex justify-between items-center mb-8">
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-muted-foreground">
                 {properties?.length || 0} Properties found
               </p>
               
@@ -68,21 +68,21 @@ const Properties = () => {
                 <Button
                   variant={sortBy === "relevance" ? "default" : "outline"}
                   onClick={() => setSortBy("relevance")}
-                  className={sortBy === "relevance" ? "bg-gold hover:bg-gold-dark text-white" : "border-gray-300 hover:border-gold"}
+                  className={sortBy === "relevance" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}
                 >
                   By relevance
                 </Button>
                 <Button
                   variant={sortBy === "price_asc" ? "default" : "outline"}
                   onClick={() => setSortBy("price_asc")}
-                  className={sortBy === "price_asc" ? "bg-gold hover:bg-gold-dark text-white" : "border-gray-300 hover:border-gold"}
+                  className={sortBy === "price_asc" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}
                 >
                   Cheapest
                 </Button>
                 <Button
                   variant={sortBy === "recent" ? "default" : "outline"}
                   onClick={() => setSortBy("recent")}
-                  className={sortBy === "recent" ? "bg-gold hover:bg-gold-dark text-white" : "border-gray-300 hover:border-gold"}
+                  className={sortBy === "recent" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}
                 >
                   Most recent
                 </Button>
@@ -100,8 +100,8 @@ const Properties = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-gray-50 rounded-lg">
-                <p className="text-gray-500 text-lg">No properties found with the selected filters.</p>
+              <div className="text-center py-16 bg-muted rounded-lg">
+                <p className="text-muted-foreground text-lg">No properties found with the selected filters.</p>
               </div>
             )}
           </main>
