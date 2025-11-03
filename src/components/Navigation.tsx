@@ -9,8 +9,9 @@ export const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  // Check if we're on a page with white background
-  const isWhiteBackground = location.pathname !== '/';
+  // Check if we're on a page with dark background
+  const darkBackgroundPages = ['/', '/services', '/properties'];
+  const isDarkBackground = darkBackgroundPages.includes(location.pathname);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,17 +31,17 @@ export const Navigation = () => {
   ];
 
   // Define text colors based on background
-  const textColor = isWhiteBackground ? 'text-[#85754E]' : 'text-white';
-  const hoverColor = isWhiteBackground ? 'hover:text-gold' : 'hover:text-gold';
-  const logoTextColor = isWhiteBackground ? 'text-[#85754E]' : 'text-gold';
-  const subtitleColor = isWhiteBackground ? 'text-gray-600' : 'text-gray-400';
-  const mobileTextColor = isWhiteBackground ? 'text-[#85754E]' : 'text-white';
+  const textColor = isDarkBackground ? 'text-white' : 'text-[#85754E]';
+  const hoverColor = 'hover:text-gold';
+  const logoTextColor = isDarkBackground ? 'text-gold' : 'text-[#85754E]';
+  const subtitleColor = isDarkBackground ? 'text-gray-400' : 'text-gray-600';
+  const mobileTextColor = isDarkBackground ? 'text-white' : 'text-[#85754E]';
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      scrolled 
-        ? 'bg-transparent backdrop-blur-md shadow-2xl' 
-        : 'bg-transparent backdrop-blur-sm'
+      isDarkBackground
+        ? (scrolled ? 'bg-black/80 backdrop-blur-md shadow-2xl' : 'bg-black/60 backdrop-blur-sm')
+        : (scrolled ? 'bg-white/80 backdrop-blur-md shadow-2xl' : 'bg-white/60 backdrop-blur-sm')
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
