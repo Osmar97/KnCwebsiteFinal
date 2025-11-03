@@ -36,13 +36,13 @@ const Properties = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black">
       <Navigation />
       
       <div className="container mx-auto px-4 py-16 mt-20">
         <div className="flex justify-between items-center mb-12">
           <div>
-            <h1 className="text-5xl font-bold text-foreground mb-2">Exclusive Properties</h1>
+            <h1 className="text-5xl font-bold text-white mb-2">Exclusive Properties</h1>
             <div className="h-1 w-24 bg-gold"></div>
           </div>
           {isAdminLoggedIn && (
@@ -60,7 +60,7 @@ const Properties = () => {
           {/* Properties Grid */}
           <main>
             <div className="flex justify-between items-center mb-8">
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-gray-300">
                 {properties?.length || 0} Properties found
               </p>
               
@@ -100,8 +100,8 @@ const Properties = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-muted rounded-lg">
-                <p className="text-muted-foreground text-lg">No properties found with the selected filters.</p>
+              <div className="text-center py-16 bg-gray-800/50 rounded-lg">
+                <p className="text-gray-300 text-lg">No properties found with the selected filters.</p>
               </div>
             )}
           </main>
