@@ -40,7 +40,7 @@ export const Navigation = () => {
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
       isDarkBackground
-        ? (scrolled ? 'bg-black/80 backdrop-blur-md shadow-2xl' : 'bg-black/60 backdrop-blur-sm')
+        ? (scrolled ? 'backdrop-blur-md' : 'backdrop-blur-sm')
         : (scrolled ? 'bg-white/80 backdrop-blur-md shadow-2xl' : 'bg-white/60 backdrop-blur-sm')
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
