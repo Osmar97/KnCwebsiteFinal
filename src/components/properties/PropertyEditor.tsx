@@ -703,7 +703,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   {isImproving && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                   Melhorar texto com IA
                 </Button>
-                <Badge className="bg-green-600">Novo</Badge>
               </div>
               
               <Select onValueChange={(lang) => handleAddLanguage(lang)} disabled={isTranslating}>
@@ -767,7 +766,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
               <h3 className="font-semibold">Planimetrias ({pdfUrls.length})</h3>
-              <Badge className="bg-green-600">Novidade!</Badge>
               <span className="text-sm text-gray-600">Já podes carregar plantas em PDF</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
