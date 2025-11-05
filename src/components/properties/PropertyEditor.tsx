@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X, Minus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
+import { useGeocoding } from "@/hooks/useGeocoding";
 
 interface PropertyEditorProps {
   property?: any;
@@ -19,24 +22,15 @@ interface PropertyEditorProps {
 }
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
-  const { register, handleSubmit, watch, setValue } = useForm({
+  const { register, handleSubmit, watch, setValue, formState: { errors, isValid } } = useForm<PropertyFormData>({
+    resolver: zodResolver(propertySchema),
+    mode: "onChange",
     defaultValues: property || {
       title: "",
-      description: "",
-      description_en: "",
       location: "",
       city: "",
-      price: "",
       transaction_type: "Comprar",
       property_type: "",
-      bedrooms: 0,
-      bathrooms: 0,
-      floors: 0,
-      private_area: "",
-      construction_area: "",
-      condition: "",
-      images: [],
-      features: {},
     },
   });
 
@@ -49,27 +43,30 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const [bedroomCount, setBedroomCount] = useState(property?.bedrooms || 0);
   const [floorCount, setFloorCount] = useState(property?.floors || 0);
   const [bathroomCount, setBathroomCount] = useState(property?.bathrooms || 0);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [isImproving, setIsImproving] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { verifyAddress, isVerifying } = useGeocoding();
   const [imageUrls, setImageUrls] = useState<string[]>(property?.images || []);
+  const [pdfUrls, setPdfUrls] = useState<string[]>(property?.pdf_urls || []);
+  const [videoUrls, setVideoUrls] = useState<string[]>(property?.video_urls || []);
   const [uploading, setUploading] = useState(false);
 
   const saveMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: PropertyFormData) => {
       const propertyData = {
         ...data,
         images: imageUrls,
-        price: parseFloat(data.price),
-        bedrooms: bedroomCount,
+        pdf_urls: pdfUrls,
+        video_urls: videoUrls,
+        bedrooms: bedroomCount.toString(),
         bathrooms: bathroomCount,
         floors: floorCount,
+        description: descriptions.pt || descriptions.en,
         description_en: descriptions.en,
         descriptions: descriptions,
-        private_area: data.private_area ? parseFloat(data.private_area) : null,
-        construction_area: data.construction_area ? parseFloat(data.construction_area) : null,
-        floor: data.floor ? parseInt(data.floor) : null,
-        total_floors: data.total_floors ? parseInt(data.total_floors) : null,
       };
 
       if (property) {
@@ -85,8 +82,19 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
-      toast({ title: "Property saved successfully" });
+      toast({ 
+        title: "Imóvel guardado com sucesso",
+        description: "O imóvel foi adicionado à lista"
+      });
       onClose();
+    },
+    onError: (error) => {
+      console.error(error);
+      toast({ 
+        title: "Erro ao guardar imóvel", 
+        description: "Por favor, tente novamente",
+        variant: "destructive" 
+      });
     },
   });
 
@@ -100,12 +108,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     for (const file of Array.from(files)) {
       const fileExt = file.name.split(".").pop();
       const fileName = `${Math.random()}.${fileExt}`;
-      const { error, data } = await supabase.storage
+      const { error } = await supabase.storage
         .from("property-images")
         .upload(fileName, file);
 
       if (error) {
-        toast({ title: "Error uploading image", variant: "destructive" });
+        toast({ title: "Erro ao carregar imagem", variant: "destructive" });
       } else {
         const { data: urlData } = supabase.storage
           .from("property-images")
@@ -116,6 +124,111 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
     setImageUrls([...imageUrls, ...newImageUrls]);
     setUploading(false);
+  };
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    setUploading(true);
+    const newPdfUrls: string[] = [];
+
+    for (const file of Array.from(files)) {
+      const fileName = `${Math.random()}.pdf`;
+      const { error } = await supabase.storage
+        .from("pdfs")
+        .upload(fileName, file);
+
+      if (error) {
+        toast({ title: "Erro ao carregar PDF", variant: "destructive" });
+      } else {
+        const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
+        newPdfUrls.push(urlData.publicUrl);
+      }
+    }
+
+    setPdfUrls([...pdfUrls, ...newPdfUrls]);
+    setUploading(false);
+  };
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    setUploading(true);
+    const newVideoUrls: string[] = [];
+
+    for (const file of Array.from(files)) {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { error } = await supabase.storage
+        .from("videos")
+        .upload(fileName, file);
+
+      if (error) {
+        toast({ title: "Erro ao carregar vídeo", variant: "destructive" });
+      } else {
+        const { data: urlData } = supabase.storage.from("videos").getPublicUrl(fileName);
+        newVideoUrls.push(urlData.publicUrl);
+      }
+    }
+
+    setVideoUrls([...videoUrls, ...newVideoUrls]);
+    setUploading(false);
+  };
+
+  const handleAddLanguage = async (lang: string) => {
+    if (additionalLangs.includes(lang)) return;
+    
+    setIsTranslating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("translate-text", {
+        body: { text: descriptions.en, targetLang: lang },
+      });
+
+      if (error) throw error;
+
+      setDescriptions({ ...descriptions, [lang]: data.translatedText });
+      setAdditionalLangs([...additionalLangs, lang]);
+      setCurrentLang(lang);
+      toast({ title: "Tradução concluída" });
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Erro na tradução", variant: "destructive" });
+      setDescriptions({ ...descriptions, [lang]: descriptions.en });
+      setAdditionalLangs([...additionalLangs, lang]);
+      setCurrentLang(lang);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const handleImproveText = async () => {
+    setIsImproving(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("improve-text", {
+        body: { text: descriptions[currentLang], language: currentLang },
+      });
+
+      if (error) throw error;
+
+      setDescriptions({ ...descriptions, [currentLang]: data.improvedText });
+      toast({ title: "Texto melhorado com sucesso" });
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Erro ao melhorar texto", variant: "destructive" });
+    } finally {
+      setIsImproving(false);
+    }
+  };
+
+  const handleVerifyAddress = async () => {
+    const city = watch("city");
+    const location = watch("location");
+    const streetNumber = watch("street_number");
+    
+    const fullAddress = `${location} ${streetNumber || ""}, ${city}, Portugal`;
+    await verifyAddress(fullAddress);
   };
 
   return (
@@ -130,26 +243,27 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel *</h2>
-          <div className="max-w-md">
-            <Select defaultValue={property?.property_type} onValueChange={(value) => setValue("property_type", value)}>
-              <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                <SelectValue placeholder="Selecionar opção" />
-              </SelectTrigger>
-              <SelectContent className="bg-white z-50">
-                <SelectItem value="Casa / Moradia">Casa / Moradia</SelectItem>
-                <SelectItem value="Apartamento">Apartamento</SelectItem>
-                <SelectItem value="Casa rústica">Casa rústica</SelectItem>
-                <SelectItem value="Quarto">Quarto</SelectItem>
-                <SelectItem value="Espaço comercial ou armazém">Espaço comercial ou armazém</SelectItem>
-                <SelectItem value="Trespasse">Trespasse</SelectItem>
-                <SelectItem value="Garagem">Garagem</SelectItem>
-                <SelectItem value="Escritório">Escritório</SelectItem>
-                <SelectItem value="Terreno">Terreno</SelectItem>
-                <SelectItem value="Arrecadação">Arrecadação</SelectItem>
-                <SelectItem value="Prédio">Prédio</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="max-w-md">
+              <Select defaultValue={property?.property_type} onValueChange={(value) => setValue("property_type", value)}>
+                <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                  <SelectValue placeholder="Selecionar opção" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  <SelectItem value="Casa / Moradia">Casa / Moradia</SelectItem>
+                  <SelectItem value="Apartamento">Apartamento</SelectItem>
+                  <SelectItem value="Casa rústica">Casa rústica</SelectItem>
+                  <SelectItem value="Quarto">Quarto</SelectItem>
+                  <SelectItem value="Espaço comercial ou armazém">Espaço comercial ou armazém</SelectItem>
+                  <SelectItem value="Trespasse">Trespasse</SelectItem>
+                  <SelectItem value="Garagem">Garagem</SelectItem>
+                  <SelectItem value="Escritório">Escritório</SelectItem>
+                  <SelectItem value="Terreno">Terreno</SelectItem>
+                  <SelectItem value="Arrecadação">Arrecadação</SelectItem>
+                  <SelectItem value="Prédio">Prédio</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.property_type && <p className="text-sm text-red-600 mt-1">{errors.property_type.message}</p>}
+            </div>
         </div>
 
         {/* Location Section */}
@@ -157,12 +271,14 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Localização do imóvel</h2>
           <div className="space-y-4 max-w-md">
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Localidade</Label>
-              <Input {...register("city", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
+              <Label className="text-sm font-semibold mb-2 block">Localidade *</Label>
+              <Input {...register("city")} className="bg-[#FFFEF0] border-gray-300" />
+              {errors.city && <p className="text-sm text-red-600 mt-1">{errors.city.message}</p>}
             </div>
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via</Label>
-              <Input {...register("location", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
+              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via *</Label>
+              <Input {...register("location")} className="bg-[#FFFEF0] border-gray-300" />
+              {errors.location && <p className="text-sm text-red-600 mt-1">{errors.location.message}</p>}
             </div>
             
             <div className="flex gap-4 items-end">
@@ -176,7 +292,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               </div>
             </div>
 
-            <Button type="button" className="w-full bg-[#A855F7] hover:bg-[#9333EA] text-white">
+            <Button 
+              type="button" 
+              onClick={handleVerifyAddress}
+              disabled={isVerifying}
+              className="w-full bg-[#A855F7] hover:bg-[#9333EA] text-white"
+            >
+              {isVerifying ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               Verificar morada
             </Button>
 
@@ -554,10 +676,37 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="space-y-4">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Título *</Label>
-              <Input {...register("title", { required: true })} className="bg-[#FFFEF0] border-gray-300" />
+              <Input {...register("title")} className="bg-[#FFFEF0] border-gray-300" />
+              {errors.title && <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>}
             </div>
             <div>
-              <Label className="text-sm font-semibold mb-2 block">{currentLang === "en" ? "English" : "Português"}</Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-sm font-semibold">
+                  Descrição ({currentLang === "en" ? "English" : currentLang === "pt" ? "Português" : currentLang})
+                </Label>
+                <div className="flex gap-2">
+                  {additionalLangs.map((lang) => (
+                    <Button
+                      key={lang}
+                      type="button"
+                      variant={currentLang === lang ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentLang(lang)}
+                    >
+                      {lang === "pt" ? "PT" : lang === "es" ? "ES" : lang.toUpperCase()}
+                    </Button>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentLang("en")}
+                    disabled={currentLang === "en"}
+                  >
+                    EN
+                  </Button>
+                </div>
+              </div>
               <Textarea 
                 value={descriptions[currentLang] || ""} 
                 onChange={(e) => {
@@ -568,35 +717,36 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 className="bg-white border-gray-300"
                 placeholder="Esta secção é muito importante. Presta especial atenção aos detalhes que não são visíveis nas fotos."
               />
-              <div className="flex gap-2 mt-2">
-                <Button type="button" variant="outline" className="text-sm">
+              <div className="flex gap-2 mt-2 items-center">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="text-sm"
+                  onClick={handleImproveText}
+                  disabled={isImproving || !descriptions[currentLang]}
+                >
+                  {isImproving && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                   Melhorar texto com IA
                 </Button>
                 <Badge className="bg-green-600">Novo</Badge>
-                <span className="text-sm">Gere um texto mais completo e atraente</span>
               </div>
-              <button type="button" className="text-blue-600 text-sm mt-2" onClick={() => {
-                if (!additionalLangs.includes("pt")) {
-                  setAdditionalLangs([...additionalLangs, "pt"]);
-                  // Simulate translation
-                  setDescriptions({ ...descriptions, pt: descriptions.en || "" });
-                }
-              }}>
-                Adicionar outro idioma
-              </button>
-              {additionalLangs.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  {additionalLangs.map((lang) => (
-                    <Button
-                      key={lang}
-                      type="button"
-                      variant={currentLang === lang ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentLang(lang)}
-                    >
-                      {lang === "pt" ? "Português" : lang}
-                    </Button>
-                  ))}
+              
+              <Select onValueChange={(lang) => handleAddLanguage(lang)} disabled={isTranslating}>
+                <SelectTrigger className="w-48 mt-2">
+                  <SelectValue placeholder="Adicionar outro idioma" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!additionalLangs.includes("pt") && <SelectItem value="pt">Português</SelectItem>}
+                  {!additionalLangs.includes("es") && <SelectItem value="es">Espanhol</SelectItem>}
+                  {!additionalLangs.includes("fr") && <SelectItem value="fr">Francês</SelectItem>}
+                  {!additionalLangs.includes("de") && <SelectItem value="de">Alemão</SelectItem>}
+                  {!additionalLangs.includes("it") && <SelectItem value="it">Italiano</SelectItem>}
+                </SelectContent>
+              </Select>
+              {isTranslating && (
+                <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  A traduzir...
                 </div>
               )}
             </div>
@@ -648,7 +798,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           {/* Floor Plans */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <h3 className="font-semibold">Planimetrias (0)</h3>
+              <h3 className="font-semibold">Planimetrias ({pdfUrls.length})</h3>
               <Badge className="bg-green-600">Novidade!</Badge>
               <span className="text-sm text-gray-600">Já podes carregar plantas em PDF</span>
             </div>
@@ -657,29 +807,68 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <span className="text-sm">15 pontos</span>
               <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
             </div>
-            <label className="w-32 h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
-              <input 
-                type="file" 
-                accept=".pdf" 
-                className="hidden"
-              />
-              <Plus className="w-8 h-8 text-gray-400 mb-1" />
-              <span className="text-sm text-gray-600">Novo</span>
-            </label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {pdfUrls.map((url, idx) => (
+                <div key={idx} className="relative group">
+                  <div className="w-full h-32 border rounded flex items-center justify-center bg-gray-100">
+                    <span className="text-sm">PDF {idx + 1}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setPdfUrls(pdfUrls.filter((_, i) => i !== idx))}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
+                <input 
+                  type="file" 
+                  multiple
+                  accept=".pdf" 
+                  onChange={handlePdfUpload}
+                  className="hidden"
+                />
+                <Plus className="w-8 h-8 text-gray-400 mb-1" />
+                <span className="text-sm text-gray-600">Novo</span>
+              </label>
+            </div>
           </div>
 
           {/* Videos */}
           <div>
-            <h3 className="font-semibold mb-3">Vídeos (0)</h3>
+            <h3 className="font-semibold mb-3">Vídeos ({videoUrls.length})</h3>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-sm font-semibold">Impacto da qualidade:</span>
               <span className="text-sm">5 pontos</span>
               <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
             </div>
-            <label className="w-32 h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
-              <Plus className="w-8 h-8 text-gray-400 mb-1" />
-              <span className="text-sm text-gray-600">Novo</span>
-            </label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {videoUrls.map((url, idx) => (
+                <div key={idx} className="relative group">
+                  <video src={url} className="w-full h-32 object-cover rounded border" controls />
+                  <button
+                    type="button"
+                    onClick={() => setVideoUrls(videoUrls.filter((_, i) => i !== idx))}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
+                <input 
+                  type="file" 
+                  multiple
+                  accept="video/*"
+                  onChange={handleVideoUpload}
+                  className="hidden"
+                />
+                <Plus className="w-8 h-8 text-gray-400 mb-1" />
+                <span className="text-sm text-gray-600">Novo</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -799,10 +988,25 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <Button type="button" variant="outline" onClick={onClose} className="px-8">
             Cancelar
           </Button>
-          <Button type="submit" disabled={saveMutation.isPending} className="px-8">
-            {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Guardar"}
+          <Button 
+            type="submit" 
+            disabled={saveMutation.isPending || !isValid || !descriptions.en} 
+            className="px-8"
+          >
+            {saveMutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                A guardar...
+              </>
+            ) : "Guardar"}
           </Button>
         </div>
+        
+        {!isValid && (
+          <p className="text-sm text-red-600 text-right mt-2">
+            Por favor, preencha todos os campos obrigatórios
+          </p>
+        )}
       </form>
     </div>
   );
