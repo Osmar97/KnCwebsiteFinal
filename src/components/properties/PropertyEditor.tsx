@@ -292,16 +292,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               </div>
             </div>
 
-            <Button 
-              type="button" 
-              onClick={handleVerifyAddress}
-              disabled={isVerifying}
-              className="w-full bg-[#A855F7] hover:bg-[#9333EA] text-white"
-            >
-              {isVerifying ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              Verificar morada
-            </Button>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label className="text-sm font-semibold mb-2 block">Bloco / Lote</Label>
@@ -322,11 +312,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           {/* Portal Visibility */}
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Visibilidade em portais</h3>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-sm font-semibold">Impacto da qualidade:</span>
-              <span className="text-sm">10 pontos</span>
-              <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
-            </div>
             <RadioGroup defaultValue="exact_address" className="space-y-3">
               <div className="flex items-start space-x-2">
                 <RadioGroupItem value="exact_address" id="exact_address" className="mt-1" />
@@ -503,12 +488,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
               {/* Energy Classification */}
               <div className="mt-6">
-                <h3 className="text-xl font-semibold mb-2">Classificação do consumo de energia</h3>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-sm font-semibold">Impacto da qualidade:</span>
-                  <span className="text-sm">10 pontos</span>
-                  <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
-                </div>
+                <h3 className="text-xl font-semibold mb-4">Classificação do consumo de energia</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
                   <Select defaultValue={property?.energy_class} onValueChange={(value) => setValue("energy_class", value)}>
@@ -668,11 +648,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         {/* Description Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Descrição da propriedade</h2>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-sm font-semibold">Impacto da qualidade:</span>
-            <span className="text-sm">15 pontos</span>
-            <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
-          </div>
           <div className="space-y-4">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Título *</Label>
@@ -759,14 +734,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           
           {/* Photos */}
           <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <h3 className="font-semibold">Fotos ({imageUrls.length})</h3>
-            </div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-sm font-semibold">Impacto da qualidade:</span>
-              <span className="text-sm">30 pontos</span>
-              <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
-            </div>
+            <h3 className="font-semibold mb-3">Fotos ({imageUrls.length})</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {imageUrls.map((url, idx) => (
                 <div key={idx} className="relative group">
@@ -802,11 +770,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Badge className="bg-green-600">Novidade!</Badge>
               <span className="text-sm text-gray-600">Já podes carregar plantas em PDF</span>
             </div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-sm font-semibold">Impacto da qualidade:</span>
-              <span className="text-sm">15 pontos</span>
-              <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
-            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {pdfUrls.map((url, idx) => (
                 <div key={idx} className="relative group">
@@ -839,11 +802,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           {/* Videos */}
           <div>
             <h3 className="font-semibold mb-3">Vídeos ({videoUrls.length})</h3>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-sm font-semibold">Impacto da qualidade:</span>
-              <span className="text-sm">5 pontos</span>
-              <span className="text-blue-600 text-sm cursor-pointer">ⓘ</span>
-            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {videoUrls.map((url, idx) => (
                 <div key={idx} className="relative group">
