@@ -31,6 +31,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       city: "",
       transaction_type: "Comprar",
       property_type: "",
+      price: 0,
     },
   });
 
@@ -960,7 +961,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </Button>
           <Button 
             type="submit" 
-            disabled={saveMutation.isPending || !isValid || !descriptions.en} 
+            disabled={saveMutation.isPending || !isValid} 
             className="px-8"
           >
             {saveMutation.isPending ? (
@@ -972,10 +973,17 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </Button>
         </div>
         
-        {!isValid && (
-          <p className="text-sm text-red-600 text-right mt-2">
-            Por favor, preencha todos os campos obrigatórios
-          </p>
+        {!isValid && Object.keys(errors).length > 0 && (
+          <div className="text-sm text-red-600 text-right mt-2">
+            <p className="font-semibold mb-1">Campos obrigatórios em falta:</p>
+            <ul className="list-disc list-inside">
+              {errors.title && <li>Título</li>}
+              {errors.property_type && <li>Tipo de imóvel</li>}
+              {errors.city && <li>Localidade</li>}
+              {errors.location && <li>Nome da rua</li>}
+              {errors.price && <li>Preço</li>}
+            </ul>
+          </div>
         )}
       </form>
     </div>
