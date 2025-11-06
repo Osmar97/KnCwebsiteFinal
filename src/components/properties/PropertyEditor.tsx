@@ -345,6 +345,20 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             </div>
           </div>
 
+          <div className="max-w-md mb-6">
+            <Label className="text-sm font-semibold mb-2 block">Preço *</Label>
+            <div className="relative">
+              <Input 
+                type="number" 
+                {...register("price", { required: true, valueAsNumber: true })} 
+                className="bg-[#FFFEF0] border-gray-300 pr-12" 
+                placeholder="0"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">€</span>
+            </div>
+            {errors.price && <p className="text-sm text-red-600 mt-1">O preço é obrigatório</p>}
+          </div>
+
           {propertyType === "Casa / Moradia" && (
             <>
               <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia *</h2>
