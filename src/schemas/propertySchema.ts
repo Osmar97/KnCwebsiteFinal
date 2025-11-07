@@ -12,7 +12,7 @@ export const propertySchema = z.object({
   urbanization_name: z.string().optional(),
   operation_sale: z.boolean().optional(),
   operation_rent: z.boolean().optional(),
-  price: z.number().min(0, "Preço deve ser maior que 0"),
+  price: z.number({ required_error: "Preço é obrigatório", invalid_type_error: "Preço deve ser um número" }).positive("Preço deve ser maior que 0"),
   transaction_type: z.string().default("Comprar"),
   condition: z.string().optional(),
   construction_area: z.number().optional(),

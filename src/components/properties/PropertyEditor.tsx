@@ -22,16 +22,17 @@ interface PropertyEditorProps {
 }
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
-  const { register, handleSubmit, watch, setValue, formState: { errors, isValid, dirtyFields } } = useForm<PropertyFormData>({
+  const { register, handleSubmit, watch, setValue, formState: { errors, isValid, dirtyFields, isValidating } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
-    mode: "all",
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: property || {
       title: "",
       location: "",
       city: "",
       transaction_type: "Comprar",
       property_type: "",
-      price: 0,
+      price: undefined,
       operation_sale: false,
       operation_rent: false,
     },
@@ -354,8 +355,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Input 
                 type="number" 
                 {...register("price", { 
-                  required: true, 
-                  setValueAs: (v) => v === "" ? 0 : parseFloat(v) 
+                  valueAsNumber: true,
                 })} 
                 className="bg-[#FFFEF0] border-gray-300 pr-12" 
                 placeholder="0"
