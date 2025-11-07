@@ -256,7 +256,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 name="property_type"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value || undefined} onValueChange={field.onChange}>
+                  <Select value={field.value || ""} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                       <SelectValue placeholder="Selecionar opção" />
                     </SelectTrigger>
@@ -323,25 +323,25 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             </div>
           </div>
 
-          {/* Portal Visibility */}
+          {/* Portal Visibility - Read only UI element */}
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Visibilidade em portais</h3>
-            <RadioGroup defaultValue="exact_address" className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem value="exact_address" id="exact_address" className="mt-1" />
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2 opacity-60">
+                <input type="radio" checked readOnly className="mt-1" />
                 <div>
-                  <label htmlFor="exact_address" className="text-sm font-semibold cursor-pointer">Morada exata</label>
+                  <label className="text-sm font-semibold">Morada exata</label>
                   <p className="text-sm text-gray-600">Recomendado</p>
                 </div>
               </div>
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem value="street_only" id="street_only" className="mt-1" />
+              <div className="flex items-start space-x-2 opacity-60">
+                <input type="radio" readOnly className="mt-1" />
                 <div>
-                  <label htmlFor="street_only" className="text-sm font-semibold cursor-pointer">Mostrar só a rua</label>
+                  <label className="text-sm font-semibold">Mostrar só a rua</label>
                   <p className="text-sm text-gray-600">Mantém a confidencialidade e ajuda o utilizador a localizar o teu imóvel</p>
                 </div>
               </div>
-            </RadioGroup>
+            </div>
           </div>
         </div>
 
@@ -380,24 +380,24 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           {propertyType === "Casa / Moradia" && (
             <>
               <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia *</h2>
-              <RadioGroup defaultValue="moradia_banda" className="space-y-2 mb-6">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="moradia_banda" id="moradia_banda" />
-                  <label htmlFor="moradia_banda" className="text-sm cursor-pointer">Moradia em banda</label>
+              <div className="space-y-2 mb-6">
+                <div className="flex items-center space-x-2 opacity-60">
+                  <input type="radio" checked readOnly />
+                  <label className="text-sm">Moradia em banda</label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="moradia_geminada" id="moradia_geminada" />
-                  <label htmlFor="moradia_geminada" className="text-sm cursor-pointer">Moradia geminada</label>
+                <div className="flex items-center space-x-2 opacity-60">
+                  <input type="radio" readOnly />
+                  <label className="text-sm">Moradia geminada</label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="moradia_independente" id="moradia_independente" />
-                  <label htmlFor="moradia_independente" className="text-sm cursor-pointer">Moradia independente</label>
+                <div className="flex items-center space-x-2 opacity-60">
+                  <input type="radio" readOnly />
+                  <label className="text-sm">Moradia independente</label>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="andar_moradia" id="andar_moradia" />
-                  <label htmlFor="andar_moradia" className="text-sm cursor-pointer">Andar de moradia</label>
+                <div className="flex items-center space-x-2 opacity-60">
+                  <input type="radio" readOnly />
+                  <label className="text-sm">Andar de moradia</label>
                 </div>
-              </RadioGroup>
+              </div>
 
               <h3 className="text-xl font-semibold mb-4">Categoria</h3>
               <div className="flex items-center space-x-2 mb-6">
@@ -527,7 +527,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 name="energy_class"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value || undefined} onValueChange={field.onChange}>
+                  <Select value={field.value || ""} onValueChange={field.onChange}>
                         <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                           <SelectValue placeholder="Seleciona opção" />
                         </SelectTrigger>
@@ -668,7 +668,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 name="heating_type"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value || undefined} onValueChange={field.onChange}>
+                  <Select value={field.value || ""} onValueChange={field.onChange}>
                         <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                           <SelectValue placeholder="Selecionar opção" />
                         </SelectTrigger>
@@ -939,7 +939,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 name="agent_captador"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value || undefined} onValueChange={field.onChange}>
+                  <Select value={field.value || ""} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-white border-gray-300">
                       <SelectValue />
                     </SelectTrigger>
@@ -958,7 +958,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 name="agent_comercializador"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value || undefined} onValueChange={field.onChange}>
+                  <Select value={field.value || ""} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-white border-gray-300">
                       <SelectValue />
                     </SelectTrigger>
@@ -992,7 +992,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 name="notes_visibility"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value || undefined} onValueChange={field.onChange}>
+                  <Select value={field.value || ""} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-white border-gray-300">
                       <SelectValue />
                     </SelectTrigger>
