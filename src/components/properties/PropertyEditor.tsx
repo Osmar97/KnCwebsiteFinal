@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +22,7 @@ interface PropertyEditorProps {
 }
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
-  const { register, handleSubmit, watch, setValue, formState: { errors, isValid, dirtyFields, isValidating } } = useForm<PropertyFormData>({
+  const { register, handleSubmit, watch, setValue, control, formState: { errors, isValid, dirtyFields, isValidating } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     mode: "onChange",
     reValidateMode: "onChange",
@@ -248,24 +248,30 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel *</h2>
             <div className="max-w-md">
-              <Select defaultValue={property?.property_type} onValueChange={(value) => setValue("property_type", value)}>
-                <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                  <SelectValue placeholder="Selecionar opção" />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  <SelectItem value="Casa / Moradia">Casa / Moradia</SelectItem>
-                  <SelectItem value="Apartamento">Apartamento</SelectItem>
-                  <SelectItem value="Casa rústica">Casa rústica</SelectItem>
-                  <SelectItem value="Quarto">Quarto</SelectItem>
-                  <SelectItem value="Espaço comercial ou armazém">Espaço comercial ou armazém</SelectItem>
-                  <SelectItem value="Trespasse">Trespasse</SelectItem>
-                  <SelectItem value="Garagem">Garagem</SelectItem>
-                  <SelectItem value="Escritório">Escritório</SelectItem>
-                  <SelectItem value="Terreno">Terreno</SelectItem>
-                  <SelectItem value="Arrecadação">Arrecadação</SelectItem>
-                  <SelectItem value="Prédio">Prédio</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="property_type"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Selecionar opção" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="Casa / Moradia">Casa / Moradia</SelectItem>
+                      <SelectItem value="Apartamento">Apartamento</SelectItem>
+                      <SelectItem value="Casa rústica">Casa rústica</SelectItem>
+                      <SelectItem value="Quarto">Quarto</SelectItem>
+                      <SelectItem value="Espaço comercial ou armazém">Espaço comercial ou armazém</SelectItem>
+                      <SelectItem value="Trespasse">Trespasse</SelectItem>
+                      <SelectItem value="Garagem">Garagem</SelectItem>
+                      <SelectItem value="Escritório">Escritório</SelectItem>
+                      <SelectItem value="Terreno">Terreno</SelectItem>
+                      <SelectItem value="Arrecadação">Arrecadação</SelectItem>
+                      <SelectItem value="Prédio">Prédio</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               {errors.property_type && <p className="text-sm text-red-600 mt-1">{errors.property_type.message}</p>}
             </div>
         </div>
@@ -513,37 +519,50 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Classificação do consumo de energia</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
-                  <Select defaultValue={property?.energy_class} onValueChange={(value) => setValue("energy_class", value)}>
-                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                      <SelectValue placeholder="Seleciona opção" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white z-50">
-                      <SelectItem value="A+">A+</SelectItem>
-                      <SelectItem value="A">A</SelectItem>
-                      <SelectItem value="B">B</SelectItem>
-                      <SelectItem value="B-">B-</SelectItem>
-                      <SelectItem value="C">C</SelectItem>
-                      <SelectItem value="D">D</SelectItem>
-                      <SelectItem value="E">E</SelectItem>
-                      <SelectItem value="F">F</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    name="energy_class"
+                    control={control}
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                          <SelectValue placeholder="Seleciona opção" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white z-50">
+                          <SelectItem value="A+">A+</SelectItem>
+                          <SelectItem value="A">A</SelectItem>
+                          <SelectItem value="B">B</SelectItem>
+                          <SelectItem value="B-">B-</SelectItem>
+                          <SelectItem value="C">C</SelectItem>
+                          <SelectItem value="D">D</SelectItem>
+                          <SelectItem value="E">E</SelectItem>
+                          <SelectItem value="F">F</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
               </div>
 
               {/* Conservation State */}
               <div className="mt-6">
                 <h3 className="text-xl font-semibold mb-4">Estado de conservação *</h3>
-                <RadioGroup defaultValue={property?.condition || "good"} onValueChange={(value) => setValue("condition", value)} className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="good" id="condition_good" />
-                    <label htmlFor="condition_good" className="text-sm cursor-pointer">Bom estado</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="to_recover" id="condition_recover" />
-                    <label htmlFor="condition_recover" className="text-sm cursor-pointer">Para recuperar</label>
-                  </div>
-                </RadioGroup>
+                <Controller
+                  name="condition"
+                  control={control}
+                  defaultValue="good"
+                  render={({ field }) => (
+                    <RadioGroup value={field.value} onValueChange={field.onChange} className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="good" id="condition_good" />
+                        <label htmlFor="condition_good" className="text-sm cursor-pointer">Bom estado</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="to_recover" id="condition_recover" />
+                        <label htmlFor="condition_recover" className="text-sm cursor-pointer">Para recuperar</label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
                 <p className="text-sm text-gray-600 mt-2">
                   Também administras imóveis de nova construção? Para publicar uma nova construção no idealista{" "}
                   <a href="#" className="text-blue-600">Contacta o teu gestor</a>
@@ -642,16 +661,22 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Aquecimento</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Tipo de aquecimento</Label>
-                  <Select defaultValue={property?.heating_type} onValueChange={(value) => setValue("heating_type", value)}>
-                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                      <SelectValue placeholder="Selecionar opção" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white z-50">
-                      <SelectItem value="central">Aquecimento central</SelectItem>
-                      <SelectItem value="individual">Aquecimento individual</SelectItem>
-                      <SelectItem value="none">Sem aquecimento</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    name="heating_type"
+                    control={control}
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                          <SelectValue placeholder="Selecionar opção" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white z-50">
+                          <SelectItem value="central">Aquecimento central</SelectItem>
+                          <SelectItem value="individual">Aquecimento individual</SelectItem>
+                          <SelectItem value="none">Sem aquecimento</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
               </div>
 
@@ -907,27 +932,41 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="space-y-4 max-w-md">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente angariador</Label>
-              <Select defaultValue="kings_n_company" onValueChange={(value) => setValue("agent_captador", value)}>
-                <SelectTrigger className="bg-white border-gray-300">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="agent_captador"
+                control={control}
+                defaultValue="kings_n_company"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="bg-white border-gray-300">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               <p className="text-sm text-gray-600 mt-1">O agente que capta o imóvel. Registo a nível interno da agência.</p>
             </div>
             
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente comercializador</Label>
-              <Select defaultValue="kings_n_company" onValueChange={(value) => setValue("agent_comercializador", value)}>
-                <SelectTrigger className="bg-white border-gray-300">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="agent_comercializador"
+                control={control}
+                defaultValue="kings_n_company"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="bg-white border-gray-300">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               <p className="text-sm text-gray-600 mt-1">O imóvel é atribuído ao agente comercializador.</p>
             </div>
 
@@ -948,15 +987,22 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
             <div>
               <Label className="text-sm font-semibold mb-2 block">Visibilidade das notas</Label>
-              <Select defaultValue="coordinator" onValueChange={(value) => setValue("notes_visibility", value)}>
-                <SelectTrigger className="bg-white border-gray-300">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  <SelectItem value="coordinator">Visível para ti e para o teu coordenador</SelectItem>
-                  <SelectItem value="all">Visível para todos</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="notes_visibility"
+                control={control}
+                defaultValue="coordinator"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="bg-white border-gray-300">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="coordinator">Visível para ti e para o teu coordenador</SelectItem>
+                      <SelectItem value="all">Visível para todos</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
           </div>
         </div>
