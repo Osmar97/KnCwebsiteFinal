@@ -32,9 +32,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       city: "",
       transaction_type: "Comprar",
       property_type: "",
-      price: undefined,
+      price: 0,
       operation_sale: false,
       operation_rent: false,
+      condition: "good",
+      agent_captador: "kings_n_company",
+      agent_comercializador: "kings_n_company",
+      notes_visibility: "coordinator",
     },
   });
 
@@ -248,11 +252,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel *</h2>
             <div className="max-w-md">
-              <Controller
+                <Controller
                 name="property_type"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                       <SelectValue placeholder="Selecionar opção" />
                     </SelectTrigger>
@@ -519,11 +523,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Classificação do consumo de energia</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
-                  <Controller
-                    name="energy_class"
-                    control={control}
-                    render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
+              <Controller
+                name="energy_class"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                         <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                           <SelectValue placeholder="Seleciona opção" />
                         </SelectTrigger>
@@ -549,9 +553,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <Controller
                   name="condition"
                   control={control}
-                  defaultValue="good"
                   render={({ field }) => (
-                    <RadioGroup value={field.value} onValueChange={field.onChange} className="space-y-2">
+                    <RadioGroup value={field.value || "good"} onValueChange={field.onChange} className="space-y-2">
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="good" id="condition_good" />
                         <label htmlFor="condition_good" className="text-sm cursor-pointer">Bom estado</label>
@@ -661,11 +664,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Aquecimento</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Tipo de aquecimento</Label>
-                  <Controller
-                    name="heating_type"
-                    control={control}
-                    render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
+              <Controller
+                name="heating_type"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                         <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                           <SelectValue placeholder="Selecionar opção" />
                         </SelectTrigger>
@@ -935,9 +938,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Controller
                 name="agent_captador"
                 control={control}
-                defaultValue="kings_n_company"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-white border-gray-300">
                       <SelectValue />
                     </SelectTrigger>
@@ -955,9 +957,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Controller
                 name="agent_comercializador"
                 control={control}
-                defaultValue="kings_n_company"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-white border-gray-300">
                       <SelectValue />
                     </SelectTrigger>
@@ -990,9 +991,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Controller
                 name="notes_visibility"
                 control={control}
-                defaultValue="coordinator"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                     <SelectTrigger className="bg-white border-gray-300">
                       <SelectValue />
                     </SelectTrigger>
