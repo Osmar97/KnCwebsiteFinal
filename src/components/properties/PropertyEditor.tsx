@@ -62,17 +62,25 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
+      // Build property data, handling all optional fields
       const propertyData = {
+        title: data.title || "",
+        property_type: data.property_type || "",
+        city: data.city || "",
+        location: data.location || "",
+        price: data.price || 0,
+        transaction_type: data.transaction_type || "Comprar",
         ...data,
         images: imageUrls,
         pdf_urls: pdfUrls,
         video_urls: videoUrls,
-        bedrooms: bedroomCount.toString(),
-        bathrooms: bathroomCount,
-        floors: floorCount,
-        description: descriptions.pt || descriptions.en,
-        description_en: descriptions.en,
+        bedrooms: bedroomCount > 0 ? bedroomCount.toString() : null,
+        bathrooms: bathroomCount > 0 ? bathroomCount : null,
+        floors: floorCount > 0 ? floorCount : null,
+        description: descriptions.pt || descriptions.en || "",
+        description_en: descriptions.en || "",
         descriptions: descriptions,
+        status: property?.status || "active",
       };
 
       if (property) {
@@ -89,16 +97,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
       toast({ 
-        title: "Imóvel guardado com sucesso",
-        description: "O imóvel foi adicionado à lista"
+        title: "✓ Imóvel guardado com sucesso",
+        description: "O imóvel foi adicionado à lista e está visível"
       });
       onClose();
     },
-    onError: (error) => {
-      console.error(error);
+    onError: (error: any) => {
+      console.error("Save error:", error);
       toast({ 
         title: "Erro ao guardar imóvel", 
-        description: "Por favor, tente novamente",
+        description: error?.message || "Por favor, verifique os dados e tente novamente",
         variant: "destructive" 
       });
     },
@@ -111,25 +119,45 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setUploading(true);
     const newImageUrls: string[] = [];
 
-    for (const file of Array.from(files)) {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const { error } = await supabase.storage
-        .from("property-images")
-        .upload(fileName, file);
-
-      if (error) {
-        toast({ title: "Erro ao carregar imagem", variant: "destructive" });
-      } else {
-        const { data: urlData } = supabase.storage
+    try {
+      for (const file of Array.from(files)) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const { error } = await supabase.storage
           .from("property-images")
-          .getPublicUrl(fileName);
-        newImageUrls.push(urlData.publicUrl);
-      }
-    }
+          .upload(fileName, file);
 
-    setImageUrls([...imageUrls, ...newImageUrls]);
-    setUploading(false);
+        if (error) {
+          toast({ 
+            title: "Erro ao carregar imagem", 
+            description: error.message,
+            variant: "destructive" 
+          });
+        } else {
+          const { data: urlData } = supabase.storage
+            .from("property-images")
+            .getPublicUrl(fileName);
+          newImageUrls.push(urlData.publicUrl);
+        }
+      }
+
+      if (newImageUrls.length > 0) {
+        setImageUrls([...imageUrls, ...newImageUrls]);
+        toast({ 
+          title: "Imagens carregadas", 
+          description: `${newImageUrls.length} imagem(ns) adicionada(s) com sucesso` 
+        });
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({ 
+        title: "Erro ao carregar", 
+        description: "Ocorreu um erro ao fazer upload das imagens",
+        variant: "destructive" 
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,22 +167,42 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setUploading(true);
     const newPdfUrls: string[] = [];
 
-    for (const file of Array.from(files)) {
-      const fileName = `${Math.random()}.pdf`;
-      const { error } = await supabase.storage
-        .from("pdfs")
-        .upload(fileName, file);
+    try {
+      for (const file of Array.from(files)) {
+        const fileName = `${Math.random()}.pdf`;
+        const { error } = await supabase.storage
+          .from("pdfs")
+          .upload(fileName, file);
 
-      if (error) {
-        toast({ title: "Erro ao carregar PDF", variant: "destructive" });
-      } else {
-        const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
-        newPdfUrls.push(urlData.publicUrl);
+        if (error) {
+          toast({ 
+            title: "Erro ao carregar PDF", 
+            description: error.message,
+            variant: "destructive" 
+          });
+        } else {
+          const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
+          newPdfUrls.push(urlData.publicUrl);
+        }
       }
-    }
 
-    setPdfUrls([...pdfUrls, ...newPdfUrls]);
-    setUploading(false);
+      if (newPdfUrls.length > 0) {
+        setPdfUrls([...pdfUrls, ...newPdfUrls]);
+        toast({ 
+          title: "PDFs carregados", 
+          description: `${newPdfUrls.length} ficheiro(s) adicionado(s)` 
+        });
+      }
+    } catch (error) {
+      console.error("PDF upload error:", error);
+      toast({ 
+        title: "Erro ao carregar PDFs", 
+        description: "Ocorreu um erro ao fazer upload",
+        variant: "destructive" 
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,27 +212,56 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setUploading(true);
     const newVideoUrls: string[] = [];
 
-    for (const file of Array.from(files)) {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const { error } = await supabase.storage
-        .from("videos")
-        .upload(fileName, file);
+    try {
+      for (const file of Array.from(files)) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const { error } = await supabase.storage
+          .from("videos")
+          .upload(fileName, file);
 
-      if (error) {
-        toast({ title: "Erro ao carregar vídeo", variant: "destructive" });
-      } else {
-        const { data: urlData } = supabase.storage.from("videos").getPublicUrl(fileName);
-        newVideoUrls.push(urlData.publicUrl);
+        if (error) {
+          toast({ 
+            title: "Erro ao carregar vídeo", 
+            description: error.message,
+            variant: "destructive" 
+          });
+        } else {
+          const { data: urlData } = supabase.storage.from("videos").getPublicUrl(fileName);
+          newVideoUrls.push(urlData.publicUrl);
+        }
       }
-    }
 
-    setVideoUrls([...videoUrls, ...newVideoUrls]);
-    setUploading(false);
+      if (newVideoUrls.length > 0) {
+        setVideoUrls([...videoUrls, ...newVideoUrls]);
+        toast({ 
+          title: "Vídeos carregados", 
+          description: `${newVideoUrls.length} vídeo(s) adicionado(s)` 
+        });
+      }
+    } catch (error) {
+      console.error("Video upload error:", error);
+      toast({ 
+        title: "Erro ao carregar vídeos", 
+        description: "Ocorreu um erro ao fazer upload",
+        variant: "destructive" 
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleAddLanguage = async (lang: string) => {
-    if (additionalLangs.includes(lang)) return;
+    if (additionalLangs.includes(lang) || !lang) return;
+    
+    // If no English description exists, just add the language without translation
+    if (!descriptions.en || descriptions.en.trim() === "") {
+      setDescriptions({ ...descriptions, [lang]: "" });
+      setAdditionalLangs([...additionalLangs, lang]);
+      setCurrentLang(lang);
+      toast({ title: `Idioma ${lang.toUpperCase()} adicionado` });
+      return;
+    }
     
     setIsTranslating(true);
     try {
@@ -197,10 +274,17 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setDescriptions({ ...descriptions, [lang]: data.translatedText });
       setAdditionalLangs([...additionalLangs, lang]);
       setCurrentLang(lang);
-      toast({ title: "Tradução concluída" });
+      toast({ 
+        title: "Tradução concluída", 
+        description: `Descrição traduzida para ${lang.toUpperCase()}` 
+      });
     } catch (error) {
       console.error(error);
-      toast({ title: "Erro na tradução", variant: "destructive" });
+      toast({ 
+        title: "Erro na tradução", 
+        description: "A descrição em inglês foi copiada",
+        variant: "destructive" 
+      });
       setDescriptions({ ...descriptions, [lang]: descriptions.en });
       setAdditionalLangs([...additionalLangs, lang]);
       setCurrentLang(lang);
@@ -248,7 +332,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       <form onSubmit={handleSubmit((data) => saveMutation.mutate(data))} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Tipo de imóvel *</h2>
+          <h2 className="text-xl font-semibold mb-4">Tipo de imóvel</h2>
             <div className="max-w-md">
               <select 
                 {...register("property_type")}
@@ -276,12 +360,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Localização do imóvel</h2>
           <div className="space-y-4 max-w-md">
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Localidade *</Label>
+              <Label className="text-sm font-semibold mb-2 block">Localidade</Label>
               <Input {...register("city")} className="bg-[#FFFEF0] border-gray-300" />
               {errors.city && <p className="text-sm text-red-600 mt-1">{errors.city.message}</p>}
             </div>
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via *</Label>
+              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via</Label>
               <Input {...register("location")} className="bg-[#FFFEF0] border-gray-300" />
               {errors.location && <p className="text-sm text-red-600 mt-1">{errors.location.message}</p>}
             </div>
@@ -338,7 +422,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
         {/* Property Details Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-6">Operação e preço *</h2>
+          <h2 className="text-xl font-semibold mb-6">Operação e preço</h2>
           <div className="space-y-3 mb-6">
             <div className="flex items-center space-x-2">
               <Checkbox id="operation_sale" {...register("operation_sale")} />
@@ -351,7 +435,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </div>
 
           <div className="max-w-md mb-6">
-            <Label className="text-sm font-semibold mb-2 block">Preço *</Label>
+            <Label className="text-sm font-semibold mb-2 block">Preço</Label>
             <div className="relative">
               <Input 
                 type="number" 
@@ -370,7 +454,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
           {propertyType === "Casa / Moradia" && (
             <>
-              <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia *</h2>
+              <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia</h2>
               <div className="space-y-2 mb-6">
                 <div className="flex items-center space-x-2 opacity-60">
                   <input type="radio" checked readOnly />
@@ -533,7 +617,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
               {/* Conservation State */}
               <div className="mt-6">
-                <h3 className="text-xl font-semibold mb-4">Estado de conservação *</h3>
+                <h3 className="text-xl font-semibold mb-4">Estado de conservação</h3>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <input 
@@ -682,7 +766,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Descrição da propriedade</h2>
           <div className="space-y-4">
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Título *</Label>
+              <Label className="text-sm font-semibold mb-2 block">Título</Label>
               <Input {...register("title")} className="bg-[#FFFEF0] border-gray-300" />
               {errors.title && <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>}
             </div>
@@ -770,14 +854,51 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {imageUrls.map((url, idx) => (
                 <div key={idx} className="relative group">
-                  <img src={url} alt="" className="w-full h-32 object-cover rounded border" />
-                  <button
-                    type="button"
-                    onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== idx))}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  <img src={url} alt={`Property ${idx + 1}`} className="w-full h-32 object-cover rounded border" />
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    {idx > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newUrls = [...imageUrls];
+                          [newUrls[idx], newUrls[idx - 1]] = [newUrls[idx - 1], newUrls[idx]];
+                          setImageUrls(newUrls);
+                        }}
+                        className="bg-blue-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Move left"
+                      >
+                        ←
+                      </button>
+                    )}
+                    {idx < imageUrls.length - 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newUrls = [...imageUrls];
+                          [newUrls[idx], newUrls[idx + 1]] = [newUrls[idx + 1], newUrls[idx]];
+                          setImageUrls(newUrls);
+                        }}
+                        className="bg-blue-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Move right"
+                      >
+                        →
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageUrls(imageUrls.filter((_, i) => i !== idx));
+                        toast({ title: "Imagem removida" });
+                      }}
+                      className="bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Remove image"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                    {idx + 1}
+                  </div>
                 </div>
               ))}
               <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
@@ -787,12 +908,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   accept="image/*" 
                   onChange={handleImageUpload} 
                   className="hidden"
+                  disabled={uploading}
                 />
                 <Plus className="w-8 h-8 text-gray-400 mb-1" />
-                <span className="text-sm text-gray-600">Novo</span>
+                <span className="text-sm text-gray-600">{uploading ? "A carregar..." : "Adicionar imagens"}</span>
               </label>
             </div>
-            {uploading && <div className="flex items-center gap-2 mt-2 text-sm text-gray-600"><Loader2 className="w-4 h-4 animate-spin" /> A carregar...</div>}
+            {uploading && <div className="flex items-center gap-2 mt-2 text-sm text-gray-600"><Loader2 className="w-4 h-4 animate-spin" /> A carregar imagens...</div>}
           </div>
 
           {/* Floor Plans */}
@@ -809,7 +931,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setPdfUrls(pdfUrls.filter((_, i) => i !== idx))}
+                    onClick={() => {
+                      setPdfUrls(pdfUrls.filter((_, i) => i !== idx));
+                      toast({ title: "PDF removido" });
+                    }}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="w-4 h-4" />
@@ -839,7 +964,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   <video src={url} className="w-full h-32 object-cover rounded border" controls />
                   <button
                     type="button"
-                    onClick={() => setVideoUrls(videoUrls.filter((_, i) => i !== idx))}
+                    onClick={() => {
+                      setVideoUrls(videoUrls.filter((_, i) => i !== idx));
+                      toast({ title: "Vídeo removido" });
+                    }}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="w-4 h-4" />
@@ -973,7 +1101,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </Button>
           <Button 
             type="submit" 
-            disabled={saveMutation.isPending || !isValid} 
+            disabled={saveMutation.isPending} 
             className="px-8"
           >
             {saveMutation.isPending ? (
@@ -985,16 +1113,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </Button>
         </div>
         
-        {!isValid && Object.keys(errors).length > 0 && (
+        {saveMutation.isError && (
           <div className="text-sm text-red-600 text-right mt-2">
-            <p className="font-semibold mb-1">Campos obrigatórios em falta:</p>
-            <ul className="list-disc list-inside">
-              {errors.title && <li>Título</li>}
-              {errors.property_type && <li>Tipo de imóvel</li>}
-              {errors.city && <li>Localidade</li>}
-              {errors.location && <li>Nome da rua</li>}
-              {errors.price && <li>Preço</li>}
-            </ul>
+            <p className="font-semibold">Erro ao guardar. Por favor, tente novamente.</p>
           </div>
         )}
       </form>
