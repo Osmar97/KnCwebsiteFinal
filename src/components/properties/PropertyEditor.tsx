@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X, Minus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +20,7 @@ interface PropertyEditorProps {
 }
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
-  const { register, handleSubmit, watch, setValue, control, formState: { errors, isValid, dirtyFields, isValidating } } = useForm<PropertyFormData>({
+  const { register, handleSubmit, watch, setValue, formState: { errors, isValid } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     mode: "onChange",
     reValidateMode: "onChange",
@@ -252,30 +250,23 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel *</h2>
             <div className="max-w-md">
-                <Controller
-                name="property_type"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value || ""} onValueChange={field.onChange}>
-                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                      <SelectValue placeholder="Selecionar opção" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white z-50">
-                      <SelectItem value="Casa / Moradia">Casa / Moradia</SelectItem>
-                      <SelectItem value="Apartamento">Apartamento</SelectItem>
-                      <SelectItem value="Casa rústica">Casa rústica</SelectItem>
-                      <SelectItem value="Quarto">Quarto</SelectItem>
-                      <SelectItem value="Espaço comercial ou armazém">Espaço comercial ou armazém</SelectItem>
-                      <SelectItem value="Trespasse">Trespasse</SelectItem>
-                      <SelectItem value="Garagem">Garagem</SelectItem>
-                      <SelectItem value="Escritório">Escritório</SelectItem>
-                      <SelectItem value="Terreno">Terreno</SelectItem>
-                      <SelectItem value="Arrecadação">Arrecadação</SelectItem>
-                      <SelectItem value="Prédio">Prédio</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <select 
+                {...register("property_type")}
+                className="w-full px-3 py-2 bg-[#FFFEF0] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="">Selecionar opção</option>
+                <option value="Casa / Moradia">Casa / Moradia</option>
+                <option value="Apartamento">Apartamento</option>
+                <option value="Casa rústica">Casa rústica</option>
+                <option value="Quarto">Quarto</option>
+                <option value="Espaço comercial ou armazém">Espaço comercial ou armazém</option>
+                <option value="Trespasse">Trespasse</option>
+                <option value="Garagem">Garagem</option>
+                <option value="Escritório">Escritório</option>
+                <option value="Terreno">Terreno</option>
+                <option value="Arrecadação">Arrecadação</option>
+                <option value="Prédio">Prédio</option>
+              </select>
               {errors.property_type && <p className="text-sm text-red-600 mt-1">{errors.property_type.message}</p>}
             </div>
         </div>
@@ -523,49 +514,47 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Classificação do consumo de energia</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
-              <Controller
-                name="energy_class"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value || ""} onValueChange={field.onChange}>
-                        <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                          <SelectValue placeholder="Seleciona opção" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white z-50">
-                          <SelectItem value="A+">A+</SelectItem>
-                          <SelectItem value="A">A</SelectItem>
-                          <SelectItem value="B">B</SelectItem>
-                          <SelectItem value="B-">B-</SelectItem>
-                          <SelectItem value="C">C</SelectItem>
-                          <SelectItem value="D">D</SelectItem>
-                          <SelectItem value="E">E</SelectItem>
-                          <SelectItem value="F">F</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
+                  <select
+                    {...register("energy_class")}
+                    className="w-full px-3 py-2 bg-[#FFFEF0] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="">Seleciona opção</option>
+                    <option value="A+">A+</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="B-">B-</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                  </select>
                 </div>
               </div>
 
               {/* Conservation State */}
               <div className="mt-6">
                 <h3 className="text-xl font-semibold mb-4">Estado de conservação *</h3>
-                <Controller
-                  name="condition"
-                  control={control}
-                  render={({ field }) => (
-                    <RadioGroup value={field.value || "good"} onValueChange={field.onChange} className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="good" id="condition_good" />
-                        <label htmlFor="condition_good" className="text-sm cursor-pointer">Bom estado</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="to_recover" id="condition_recover" />
-                        <label htmlFor="condition_recover" className="text-sm cursor-pointer">Para recuperar</label>
-                      </div>
-                    </RadioGroup>
-                  )}
-                />
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="radio" 
+                      value="good" 
+                      id="condition_good" 
+                      {...register("condition")}
+                      defaultChecked
+                    />
+                    <label htmlFor="condition_good" className="text-sm cursor-pointer">Bom estado</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="radio" 
+                      value="to_recover" 
+                      id="condition_recover" 
+                      {...register("condition")}
+                    />
+                    <label htmlFor="condition_recover" className="text-sm cursor-pointer">Para recuperar</label>
+                  </div>
+                </div>
                 <p className="text-sm text-gray-600 mt-2">
                   Também administras imóveis de nova construção? Para publicar uma nova construção no idealista{" "}
                   <a href="#" className="text-blue-600">Contacta o teu gestor</a>
@@ -664,22 +653,15 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Aquecimento</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Tipo de aquecimento</Label>
-              <Controller
-                name="heating_type"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value || ""} onValueChange={field.onChange}>
-                        <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
-                          <SelectValue placeholder="Selecionar opção" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white z-50">
-                          <SelectItem value="central">Aquecimento central</SelectItem>
-                          <SelectItem value="individual">Aquecimento individual</SelectItem>
-                          <SelectItem value="none">Sem aquecimento</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
+                  <select
+                    {...register("heating_type")}
+                    className="w-full px-3 py-2 bg-[#FFFEF0] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="">Selecionar opção</option>
+                    <option value="central">Aquecimento central</option>
+                    <option value="individual">Aquecimento individual</option>
+                    <option value="none">Sem aquecimento</option>
+                  </select>
                 </div>
               </div>
 
@@ -755,18 +737,19 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 </Button>
               </div>
               
-              <Select onValueChange={(lang) => handleAddLanguage(lang)} disabled={isTranslating}>
-                <SelectTrigger className="w-48 mt-2">
-                  <SelectValue placeholder="Adicionar outro idioma" />
-                </SelectTrigger>
-                <SelectContent>
-                  {!additionalLangs.includes("pt") && <SelectItem value="pt">Português</SelectItem>}
-                  {!additionalLangs.includes("es") && <SelectItem value="es">Espanhol</SelectItem>}
-                  {!additionalLangs.includes("fr") && <SelectItem value="fr">Francês</SelectItem>}
-                  {!additionalLangs.includes("de") && <SelectItem value="de">Alemão</SelectItem>}
-                  {!additionalLangs.includes("it") && <SelectItem value="it">Italiano</SelectItem>}
-                </SelectContent>
-              </Select>
+              <select 
+                onChange={(e) => handleAddLanguage(e.target.value)} 
+                disabled={isTranslating}
+                className="w-48 mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                defaultValue=""
+              >
+                <option value="" disabled>Adicionar outro idioma</option>
+                {!additionalLangs.includes("pt") && <option value="pt">Português</option>}
+                {!additionalLangs.includes("es") && <option value="es">Espanhol</option>}
+                {!additionalLangs.includes("fr") && <option value="fr">Francês</option>}
+                {!additionalLangs.includes("de") && <option value="de">Alemão</option>}
+                {!additionalLangs.includes("it") && <option value="it">Italiano</option>}
+              </select>
               {isTranslating && (
                 <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -935,39 +918,23 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="space-y-4 max-w-md">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente angariador</Label>
-              <Controller
-                name="agent_captador"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value || ""} onValueChange={field.onChange}>
-                    <SelectTrigger className="bg-white border-gray-300">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white z-50">
-                      <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <select
+                {...register("agent_captador")}
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="kings_n_company">Kings 'n Company</option>
+              </select>
               <p className="text-sm text-gray-600 mt-1">O agente que capta o imóvel. Registo a nível interno da agência.</p>
             </div>
             
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente comercializador</Label>
-              <Controller
-                name="agent_comercializador"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value || ""} onValueChange={field.onChange}>
-                    <SelectTrigger className="bg-white border-gray-300">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white z-50">
-                      <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <select
+                {...register("agent_comercializador")}
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="kings_n_company">Kings 'n Company</option>
+              </select>
               <p className="text-sm text-gray-600 mt-1">O imóvel é atribuído ao agente comercializador.</p>
             </div>
 
@@ -988,21 +955,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
             <div>
               <Label className="text-sm font-semibold mb-2 block">Visibilidade das notas</Label>
-              <Controller
-                name="notes_visibility"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value || ""} onValueChange={field.onChange}>
-                    <SelectTrigger className="bg-white border-gray-300">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white z-50">
-                      <SelectItem value="coordinator">Visível para ti e para o teu coordenador</SelectItem>
-                      <SelectItem value="all">Visível para todos</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <select
+                {...register("notes_visibility")}
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="coordinator">Visível para ti e para o teu coordenador</option>
+                <option value="all">Visível para todos</option>
+              </select>
             </div>
           </div>
         </div>
