@@ -1058,7 +1058,63 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             Cancelar
           </Button>
           <Button 
-            type="submit" 
+            type="button"
+            onClick={() => {
+              console.log("Guardar button clicked");
+              const formData = watch();
+              console.log("Current form data:", formData);
+              
+              const propertyData = {
+                title: formData.title || "",
+                property_type: formData.property_type || "",
+                city: formData.city || "",
+                location: formData.location || "",
+                street_number: formData.street_number || "",
+                no_street_number: formData.no_street_number || false,
+                block: formData.block || "",
+                door: formData.door || "",
+                urbanization_name: formData.urbanization_name || "",
+                operation_sale: formData.operation_sale || false,
+                operation_rent: formData.operation_rent || false,
+                price: Number(formData.price) || 0,
+                transaction_type: formData.transaction_type || "Comprar",
+                condition: formData.condition || "",
+                construction_area: Number(formData.construction_area) || 0,
+                private_area: Number(formData.private_area) || 0,
+                lot_area: Number(formData.lot_area) || 0,
+                energy_class: formData.energy_class || "",
+                heating_type: formData.heating_type || "",
+                building_year: Number(formData.building_year) || 0,
+                orientation_north: formData.orientation_north || false,
+                orientation_south: formData.orientation_south || false,
+                orientation_east: formData.orientation_east || false,
+                orientation_west: formData.orientation_west || false,
+                built_in_wardrobes: formData.built_in_wardrobes || false,
+                air_conditioning: formData.air_conditioning || false,
+                terrace: formData.terrace || false,
+                balcony: formData.balcony || false,
+                parking: formData.parking || false,
+                storage: formData.storage || false,
+                pool: formData.pool || false,
+                garden: formData.garden || false,
+                elevator: formData.elevator || false,
+                balcony_terrace: formData.balcony_terrace || false,
+                adapted_house: formData.adapted_house || false,
+                luxury_house: formData.luxury_house || false,
+                sea_view: formData.sea_view || false,
+                adapted_exterior: formData.adapted_exterior || false,
+                adapted_wheelchair: formData.adapted_wheelchair || false,
+                bank_property: formData.bank_property || false,
+                internal_reference: formData.internal_reference || "",
+                private_notes: formData.private_notes || "",
+                notes_visibility: formData.notes_visibility || "",
+                agent_captador: formData.agent_captador || "",
+                agent_comercializador: formData.agent_comercializador || "",
+              };
+              
+              console.log("Submitting property data:", propertyData);
+              saveMutation.mutate(propertyData as PropertyFormData);
+            }}
             disabled={saveMutation.isPending} 
             className="px-8"
           >
