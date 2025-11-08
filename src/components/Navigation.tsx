@@ -54,7 +54,7 @@ export const Navigation = () => {
   const mobileTextColor = isDarkBackground ? 'text-white' : 'text-[#85754E]';
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${hidden ? '-top-20' : 'top-0'}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${hidden ? '-top-20' : 'top-0'} ${scrolled || isOpen ? 'bg-black/95 backdrop-blur-md shadow-lg' : 'bg-black/80 backdrop-blur-sm'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
