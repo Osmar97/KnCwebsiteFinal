@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Phone, ChevronLeft, ChevronRight } from "lucide-react";
+import { Phone, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { formatPrice, CONTACT_PHONE, CONTACT_PHONE_LINK } from "@/lib/formatters";
 import { useToast } from "@/hooks/use-toast";
@@ -78,17 +78,6 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                   </div>
                 </>
               )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-3 right-3 bg-white/90 hover:bg-white rounded-full"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
-                <Heart className="w-5 h-5 text-gray-700" />
-              </Button>
             </>
           ) : (
             <div className="w-full h-full bg-gray-100 flex items-center justify-center">
