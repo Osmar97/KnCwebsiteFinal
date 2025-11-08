@@ -159,9 +159,9 @@ const PropertyDetail = () => {
           <div className="flex items-center gap-2">
             <span>{property.private_area}m² gross area</span>
           </div>
-          {property.property_type !== "Moradia/casa" && property.floor && (
+          {property.property_type === "Apartamento" && property.floor && (
             <div className="flex items-center gap-2">
-              <span>{property.floor}º floor {property.elevator ? "with lift" : "without lift"}</span>
+              <span>Floor {property.floor}{property.elevator ? " with lift" : " without lift"}</span>
             </div>
           )}
         </div>
