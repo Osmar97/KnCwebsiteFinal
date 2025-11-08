@@ -204,11 +204,7 @@ const PropertyDetail = () => {
               Floor Plan
             </Button>
           )}
-          <Button variant="ghost" className="ml-auto rounded-b-none text-gray-400 hover:text-gold hover:bg-gold/10">
-            <Heart className="w-4 h-4 mr-2" />
-            Favourites
-          </Button>
-          <Button className="rounded-b-none bg-gold text-black hover:bg-gold-light">
+          <Button className="ml-auto rounded-b-none bg-gold text-black hover:bg-gold-light">
             Contact us
           </Button>
         </div>
