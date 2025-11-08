@@ -89,6 +89,15 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         bathrooms: bathroomCount || null,
         description: descriptions.pt || descriptions.en || "",
         status: "active",
+        // Apartment-specific fields
+        floor: data.floor || null,
+        is_top_floor: data.is_top_floor || false,
+        penthouse: data.penthouse || false,
+        t0: data.t0 || false,
+        duplex: data.duplex || false,
+        // Agent fields
+        agent_captador: data.agent_captador || null,
+        agent_comercializador: data.agent_comercializador || null,
       };
 
       console.log("Property data to save:", propertyData);

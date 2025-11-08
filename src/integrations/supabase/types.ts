@@ -53,6 +53,8 @@ export type Database = {
       properties: {
         Row: {
           adapted_house: boolean | null
+          agent_captador: string | null
+          agent_comercializador: string | null
           air_conditioning: boolean | null
           balcony_terrace: boolean | null
           bathrooms: number | null
@@ -64,6 +66,7 @@ export type Database = {
           created_at: string
           description: string
           divisions: Json | null
+          duplex: boolean | null
           elevator: boolean | null
           featured: boolean | null
           floor: number | null
@@ -71,9 +74,11 @@ export type Database = {
           garden: boolean | null
           id: string
           images: string[] | null
+          is_top_floor: boolean | null
           location: string
           luxury_house: boolean | null
           parking: boolean | null
+          penthouse: boolean | null
           pool: boolean | null
           price: number
           private_area: number | null
@@ -81,6 +86,7 @@ export type Database = {
           sea_view: boolean | null
           status: string | null
           storage: boolean | null
+          t0: boolean | null
           title: string
           total_floors: number | null
           transaction_type: string
@@ -90,6 +96,8 @@ export type Database = {
         }
         Insert: {
           adapted_house?: boolean | null
+          agent_captador?: string | null
+          agent_comercializador?: string | null
           air_conditioning?: boolean | null
           balcony_terrace?: boolean | null
           bathrooms?: number | null
@@ -101,6 +109,7 @@ export type Database = {
           created_at?: string
           description: string
           divisions?: Json | null
+          duplex?: boolean | null
           elevator?: boolean | null
           featured?: boolean | null
           floor?: number | null
@@ -108,9 +117,11 @@ export type Database = {
           garden?: boolean | null
           id?: string
           images?: string[] | null
+          is_top_floor?: boolean | null
           location: string
           luxury_house?: boolean | null
           parking?: boolean | null
+          penthouse?: boolean | null
           pool?: boolean | null
           price: number
           private_area?: number | null
@@ -118,6 +129,7 @@ export type Database = {
           sea_view?: boolean | null
           status?: string | null
           storage?: boolean | null
+          t0?: boolean | null
           title: string
           total_floors?: number | null
           transaction_type?: string
@@ -127,6 +139,8 @@ export type Database = {
         }
         Update: {
           adapted_house?: boolean | null
+          agent_captador?: string | null
+          agent_comercializador?: string | null
           air_conditioning?: boolean | null
           balcony_terrace?: boolean | null
           bathrooms?: number | null
@@ -138,6 +152,7 @@ export type Database = {
           created_at?: string
           description?: string
           divisions?: Json | null
+          duplex?: boolean | null
           elevator?: boolean | null
           featured?: boolean | null
           floor?: number | null
@@ -145,9 +160,11 @@ export type Database = {
           garden?: boolean | null
           id?: string
           images?: string[] | null
+          is_top_floor?: boolean | null
           location?: string
           luxury_house?: boolean | null
           parking?: boolean | null
+          penthouse?: boolean | null
           pool?: boolean | null
           price?: number
           private_area?: number | null
@@ -155,6 +172,7 @@ export type Database = {
           sea_view?: boolean | null
           status?: string | null
           storage?: boolean | null
+          t0?: boolean | null
           title?: string
           total_floors?: number | null
           transaction_type?: string
