@@ -11,10 +11,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, X, Minus } from "lucide-react";
+import { Loader2, Plus, X, Minus, ArrowLeft, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
+import { useNavigate } from "react-router-dom";
 
 interface PropertyEditorProps {
   property?: any;
@@ -22,7 +23,8 @@ interface PropertyEditorProps {
 }
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
-  const { register, handleSubmit, watch, setValue, formState: { errors, isValid } } = useForm<PropertyFormData>({
+  const navigate = useNavigate();
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     mode: "onChange",
     defaultValues: property || {
@@ -55,7 +57,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const [uploading, setUploading] = useState(false);
 
   const saveMutation = useMutation({
-    mutationFn: async (data: PropertyFormData) => {
+    mutationFn: async (data: PropertyFormData): Promise<string> => {
       const propertyData = {
         ...data,
         images: imageUrls,
@@ -64,8 +66,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         bedrooms: bedroomCount.toString(),
         bathrooms: bathroomCount,
         floors: floorCount,
-        description: descriptions.pt || descriptions.en,
-        description_en: descriptions.en,
+        description: descriptions.pt || descriptions.en || "",
+        description_en: descriptions.en || "",
         descriptions: descriptions,
       };
 
@@ -75,18 +77,32 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           .update(propertyData)
           .eq("id", property.id);
         if (error) throw error;
+        return property.id as string;
       } else {
-        const { error } = await supabase.from("properties" as any).insert([propertyData]);
+        const { data: newProperty, error } = await supabase
+          .from("properties" as any)
+          .insert([propertyData])
+          .select()
+          .single();
         if (error) throw error;
+        return (newProperty as any).id as string;
       }
     },
-    onSuccess: () => {
+    onSuccess: (propertyId) => {
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
       toast({ 
         title: "Imóvel guardado com sucesso",
-        description: "O imóvel foi adicionado à lista"
+        description: property ? "O imóvel foi atualizado" : "O imóvel foi criado e a página está pronta"
       });
-      onClose();
+      
+      // Redirect to the property detail page
+      if (!property) {
+        setTimeout(() => {
+          navigate(`/properties/${propertyId}`);
+        }, 1000);
+      } else {
+        onClose();
+      }
     },
     onError: (error) => {
       console.error(error);
@@ -105,25 +121,53 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setUploading(true);
     const newImageUrls: string[] = [];
 
-    for (const file of Array.from(files)) {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const { error } = await supabase.storage
-        .from("property-images")
-        .upload(fileName, file);
-
-      if (error) {
-        toast({ title: "Erro ao carregar imagem", variant: "destructive" });
-      } else {
-        const { data: urlData } = supabase.storage
+    try {
+      for (const file of Array.from(files)) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const { error } = await supabase.storage
           .from("property-images")
-          .getPublicUrl(fileName);
-        newImageUrls.push(urlData.publicUrl);
-      }
-    }
+          .upload(fileName, file);
 
-    setImageUrls([...imageUrls, ...newImageUrls]);
-    setUploading(false);
+        if (error) {
+          toast({ 
+            title: "Erro ao carregar imagem", 
+            description: error.message,
+            variant: "destructive" 
+          });
+        } else {
+          const { data: urlData } = supabase.storage
+            .from("property-images")
+            .getPublicUrl(fileName);
+          newImageUrls.push(urlData.publicUrl);
+        }
+      }
+
+      if (newImageUrls.length > 0) {
+        setImageUrls([...imageUrls, ...newImageUrls]);
+        toast({ 
+          title: "Imagens carregadas com sucesso",
+          description: `${newImageUrls.length} imagem(ns) adicionada(s)`
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({ 
+        title: "Erro ao carregar imagens", 
+        variant: "destructive" 
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const moveImage = (index: number, direction: "left" | "right") => {
+    const newIndex = direction === "left" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= imageUrls.length) return;
+    
+    const newImageUrls = [...imageUrls];
+    [newImageUrls[index], newImageUrls[newIndex]] = [newImageUrls[newIndex], newImageUrls[index]];
+    setImageUrls(newImageUrls);
   };
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,20 +226,28 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     
     setIsTranslating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("translate-text", {
-        body: { text: descriptions.en, targetLang: lang },
-      });
+      // Only translate if English description exists
+      if (descriptions.en && descriptions.en.trim()) {
+        const { data, error } = await supabase.functions.invoke("translate-text", {
+          body: { text: descriptions.en, targetLang: lang },
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setDescriptions({ ...descriptions, [lang]: data.translatedText });
+        setDescriptions({ ...descriptions, [lang]: data.translatedText });
+        toast({ title: "Tradução concluída" });
+      } else {
+        // Add empty language field if no English description
+        setDescriptions({ ...descriptions, [lang]: "" });
+      }
+      
       setAdditionalLangs([...additionalLangs, lang]);
       setCurrentLang(lang);
-      toast({ title: "Tradução concluída" });
     } catch (error) {
       console.error(error);
       toast({ title: "Erro na tradução", variant: "destructive" });
-      setDescriptions({ ...descriptions, [lang]: descriptions.en });
+      // Add the language anyway with the English description or empty
+      setDescriptions({ ...descriptions, [lang]: descriptions.en || "" });
       setAdditionalLangs([...additionalLangs, lang]);
       setCurrentLang(lang);
     } finally {
@@ -242,7 +294,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       <form onSubmit={handleSubmit((data) => saveMutation.mutate(data))} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Tipo de imóvel *</h2>
+          <h2 className="text-xl font-semibold mb-4">Tipo de imóvel</h2>
             <div className="max-w-md">
               <Select defaultValue={property?.property_type} onValueChange={(value) => setValue("property_type", value)}>
                 <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
@@ -271,14 +323,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Localização do imóvel</h2>
           <div className="space-y-4 max-w-md">
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Localidade *</Label>
+              <Label className="text-sm font-semibold mb-2 block">Localidade</Label>
               <Input {...register("city")} className="bg-[#FFFEF0] border-gray-300" />
-              {errors.city && <p className="text-sm text-red-600 mt-1">{errors.city.message}</p>}
             </div>
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via *</Label>
+              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via</Label>
               <Input {...register("location")} className="bg-[#FFFEF0] border-gray-300" />
-              {errors.location && <p className="text-sm text-red-600 mt-1">{errors.location.message}</p>}
             </div>
             
             <div className="flex gap-4 items-end">
@@ -333,7 +383,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
         {/* Property Details Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-6">Operação e preço *</h2>
+          <h2 className="text-xl font-semibold mb-6">Operação e preço</h2>
           <div className="space-y-3 mb-6">
             <div className="flex items-center space-x-2">
               <Checkbox id="operation_sale" {...register("operation_sale")} />
@@ -346,22 +396,21 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </div>
 
           <div className="max-w-md mb-6">
-            <Label className="text-sm font-semibold mb-2 block">Preço *</Label>
+            <Label className="text-sm font-semibold mb-2 block">Preço</Label>
             <div className="relative">
               <Input 
                 type="number" 
-                {...register("price", { required: true, valueAsNumber: true })} 
+                {...register("price", { valueAsNumber: true })} 
                 className="bg-[#FFFEF0] border-gray-300 pr-12" 
                 placeholder="0"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">€</span>
             </div>
-            {errors.price && <p className="text-sm text-red-600 mt-1">O preço é obrigatório</p>}
           </div>
 
           {propertyType === "Casa / Moradia" && (
             <>
-              <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia *</h2>
+              <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia</h2>
               <RadioGroup defaultValue="moradia_banda" className="space-y-2 mb-6">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="moradia_banda" id="moradia_banda" />
@@ -525,7 +574,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
               {/* Conservation State */}
               <div className="mt-6">
-                <h3 className="text-xl font-semibold mb-4">Estado de conservação *</h3>
+                <h3 className="text-xl font-semibold mb-4">Estado de conservação</h3>
                 <RadioGroup defaultValue={property?.condition || "good"} onValueChange={(value) => setValue("condition", value)} className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="good" id="condition_good" />
@@ -664,9 +713,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Descrição da propriedade</h2>
           <div className="space-y-4">
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Título *</Label>
-              <Input {...register("title")} className="bg-[#FFFEF0] border-gray-300" />
-              {errors.title && <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>}
+              <Label className="text-sm font-semibold mb-2 block">Título</Label>
+              <Input {...register("title")} className="bg-[#FFFEF0] border-gray-300" placeholder="Ex: Apartamento T4 + 3 com vista, Chiado, Lisboa" />
             </div>
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -752,9 +800,34 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               {imageUrls.map((url, idx) => (
                 <div key={idx} className="relative group">
                   <img src={url} alt="" className="w-full h-32 object-cover rounded border" />
+                  <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {idx > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => moveImage(idx, "left")}
+                        className="bg-blue-500 text-white p-1 rounded-full"
+                        title="Mover para a esquerda"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                      </button>
+                    )}
+                    {idx < imageUrls.length - 1 && (
+                      <button
+                        type="button"
+                        onClick={() => moveImage(idx, "right")}
+                        className="bg-blue-500 text-white p-1 rounded-full"
+                        title="Mover para a direita"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                   <button
                     type="button"
-                    onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== idx))}
+                    onClick={() => {
+                      setImageUrls(imageUrls.filter((_, i) => i !== idx));
+                      toast({ title: "Imagem removida" });
+                    }}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="w-4 h-4" />
@@ -960,7 +1033,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </Button>
           <Button 
             type="submit" 
-            disabled={saveMutation.isPending || !isValid || !descriptions.en} 
+            disabled={saveMutation.isPending} 
             className="px-8"
           >
             {saveMutation.isPending ? (
@@ -971,12 +1044,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             ) : "Guardar"}
           </Button>
         </div>
-        
-        {!isValid && (
-          <p className="text-sm text-red-600 text-right mt-2">
-            Por favor, preencha todos os campos obrigatórios
-          </p>
-        )}
       </form>
     </div>
   );
