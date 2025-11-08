@@ -22,6 +22,13 @@ const PropertyDetail = () => {
   const queryClient = useQueryClient();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("photos");
+  const [contactForm, setContactForm] = useState({
+    email: "",
+    name: "",
+    phone: "",
+    message: ""
+  });
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
 
   const { data: property, isLoading } = useQuery({
     queryKey: ["property", id],
@@ -55,6 +62,41 @@ const PropertyDetail = () => {
 
   const handleEdit = () => {
     navigate(`/admin/properties?edit=${id}`);
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingContact(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name: contactForm.name,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          subject: `Property Inquiry: ${property?.title || 'Property'}`,
+          message: `Phone: ${contactForm.phone}\n\nProperty: ${property?.title}\nLocation: ${property?.location}, ${property?.city}\nPrice: ${formatPrice(property?.price || 0)}€\n\n${contactForm.message}`,
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Message Sent Successfully",
+        description: "Thank you for your interest! We'll contact you soon.",
+      });
+
+      setContactForm({ email: "", name: "", phone: "", message: "" });
+    } catch (error: any) {
+      console.error("Error sending contact email:", error);
+      toast({
+        title: "Failed to Send Message",
+        description: "Please try again or call us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingContact(false);
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -268,12 +310,45 @@ const PropertyDetail = () => {
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 sticky top-24">
               <h3 className="text-xl font-semibold mb-4 text-gold">Would you like to know more?</h3>
               
-              <form className="space-y-4">
-                <Input type="email" placeholder="Email *" required className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
-                <Input type="text" placeholder="Name *" required className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
-                <Input type="tel" placeholder="Phone *" required className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
-                <Textarea placeholder="Message" rows={4} className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
-                <Button className="w-full bg-gold text-black hover:bg-gold-light">Contact us</Button>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <Input 
+                  type="email" 
+                  placeholder="Email *" 
+                  required 
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                  className="bg-black border-gray-800 text-white placeholder:text-gray-500" 
+                />
+                <Input 
+                  type="text" 
+                  placeholder="Name *" 
+                  required 
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                  className="bg-black border-gray-800 text-white placeholder:text-gray-500" 
+                />
+                <Input 
+                  type="tel" 
+                  placeholder="Phone *" 
+                  required 
+                  value={contactForm.phone}
+                  onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                  className="bg-black border-gray-800 text-white placeholder:text-gray-500" 
+                />
+                <Textarea 
+                  placeholder="Message" 
+                  rows={4} 
+                  value={contactForm.message}
+                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                  className="bg-black border-gray-800 text-white placeholder:text-gray-500" 
+                />
+                <Button 
+                  type="submit" 
+                  disabled={isSubmittingContact}
+                  className="w-full bg-gold text-black hover:bg-gold-light disabled:opacity-50"
+                >
+                  {isSubmittingContact ? "Sending..." : "Contact us"}
+                </Button>
               </form>
 
               <p className="text-xs text-gray-500 mt-4">
