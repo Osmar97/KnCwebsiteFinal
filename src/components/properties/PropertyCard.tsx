@@ -119,6 +119,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             {property.bedrooms && (
               <div className="flex items-center gap-2">
                 <span className="font-bold text-gold text-base">{property.bedrooms}</span>
+                <span className="text-gray-500">bedrooms</span>
               </div>
             )}
             {property.bathrooms && (
