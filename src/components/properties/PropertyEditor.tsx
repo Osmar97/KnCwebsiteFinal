@@ -1197,24 +1197,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <Label className="text-sm font-semibold mb-2 block">Referência interna</Label>
               <Input {...register("internal_reference")} className="bg-white border-gray-300" />
             </div>
-            
-            <div>
-              <Label className="text-sm font-semibold mb-2 block">Notas privadas</Label>
-              <Textarea {...register("private_notes")} rows={4} className="bg-white border-gray-300" />
-            </div>
-
-            <div>
-              <Label className="text-sm font-semibold mb-2 block">Visibilidade das notas</Label>
-              <Select defaultValue="coordinator" onValueChange={(value) => setValue("notes_visibility", value)}>
-                <SelectTrigger className="bg-white border-gray-300">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  <SelectItem value="coordinator">Visível para ti e para o teu coordenador</SelectItem>
-                  <SelectItem value="all">Visível para todos</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
         </div>
 
