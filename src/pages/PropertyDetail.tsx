@@ -39,7 +39,7 @@ const PropertyDetail = () => {
     <div className="min-h-screen bg-black text-white">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8 mt-20">
+      <div className="container mx-auto px-4 pt-28 pb-8">
         <Link to="/properties">
           <Button variant="ghost" className="mb-4 text-gold hover:text-gold-light hover:bg-gold/10">
             <ArrowLeft className="w-4 h-4 mr-2" />
