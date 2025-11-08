@@ -36,12 +36,12 @@ const PropertyDetail = () => {
   const divisions = property.divisions as any[] || [];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black text-white">
       <Navigation />
       
       <div className="container mx-auto px-4 py-8 mt-20">
         <Link to="/properties">
-          <Button variant="ghost" className="mb-4">
+          <Button variant="ghost" className="mb-4 text-gold hover:text-gold-light hover:bg-gold/10">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
@@ -49,18 +49,18 @@ const PropertyDetail = () => {
 
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h1 className="text-3xl font-bold mb-2">{property.title}</h1>
-            <p className="text-muted-foreground">{property.location}, {property.city}</p>
+            <h1 className="text-3xl font-bold mb-2 text-gold">{property.title}</h1>
+            <p className="text-gray-400">{property.location}, {property.city}</p>
           </div>
           <div className="text-right">
-            <div className="text-4xl font-bold text-primary">{property.price.toLocaleString("pt-PT")}€</div>
+            <div className="text-4xl font-bold text-gold">{property.price.toLocaleString("pt-PT")}€</div>
           </div>
         </div>
 
         {/* Property Stats */}
-        <div className="flex gap-4 mb-6 text-sm">
+        <div className="flex gap-4 mb-6 text-sm text-gray-400">
           <div className="flex items-center gap-2">
-            <Home className="w-4 h-4" />
+            <Home className="w-4 h-4 text-gold" />
             <span>{property.bedrooms}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -72,11 +72,11 @@ const PropertyDetail = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-6 border-b">
+        <div className="flex gap-4 mb-6 border-b border-gray-800">
           <Button
             variant={activeTab === "photos" ? "default" : "ghost"}
             onClick={() => setActiveTab("photos")}
-            className="rounded-b-none"
+            className={`rounded-b-none ${activeTab === "photos" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
           >
             <ImageIcon className="w-4 h-4 mr-2" />
             {images.length} Photos
@@ -85,7 +85,7 @@ const PropertyDetail = () => {
             <Button
               variant={activeTab === "tour" ? "default" : "ghost"}
               onClick={() => setActiveTab("tour")}
-              className="rounded-b-none"
+              className={`rounded-b-none ${activeTab === "tour" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
             >
               3D View
             </Button>
@@ -94,7 +94,7 @@ const PropertyDetail = () => {
             <Button
               variant={activeTab === "video" ? "default" : "ghost"}
               onClick={() => setActiveTab("video")}
-              className="rounded-b-none"
+              className={`rounded-b-none ${activeTab === "video" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
             >
               <Video className="w-4 h-4 mr-2" />
               Video
@@ -104,16 +104,16 @@ const PropertyDetail = () => {
             <Button
               variant={activeTab === "plan" ? "default" : "ghost"}
               onClick={() => setActiveTab("plan")}
-              className="rounded-b-none"
+              className={`rounded-b-none ${activeTab === "plan" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
             >
               Floor Plan
             </Button>
           )}
-          <Button variant="ghost" className="ml-auto rounded-b-none">
+          <Button variant="ghost" className="ml-auto rounded-b-none text-gray-400 hover:text-gold hover:bg-gold/10">
             <Heart className="w-4 h-4 mr-2" />
             Favourites
           </Button>
-          <Button className="rounded-b-none bg-primary">
+          <Button className="rounded-b-none bg-gold text-black hover:bg-gold-light">
             Contact us
           </Button>
         </div>
@@ -147,30 +147,30 @@ const PropertyDetail = () => {
 
             {/* Description */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Description</h2>
-              <p className="text-muted-foreground whitespace-pre-wrap">{property.description}</p>
+              <h2 className="text-2xl font-bold mb-4 text-gold">Description</h2>
+              <p className="text-gray-300 whitespace-pre-wrap">{property.description}</p>
             </div>
 
-            <Separator className="my-8" />
+            <Separator className="my-8 bg-gray-800" />
 
             {/* Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-6">Information</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gold">Information</h2>
               
               {/* Areas */}
               <div className="mb-6">
-                <h3 className="text-xl font-semibold mb-4">Areas</h3>
+                <h3 className="text-xl font-semibold mb-4 text-white">Areas</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {property.private_area && (
-                    <div className="bg-muted p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold">{property.private_area}m²</div>
-                      <div className="text-sm text-muted-foreground">Gross Private Area</div>
+                    <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-gold">{property.private_area}m²</div>
+                      <div className="text-sm text-gray-400">Gross Private Area</div>
                     </div>
                   )}
                   {property.construction_area && (
-                    <div className="bg-muted p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold">{property.construction_area}m²</div>
-                      <div className="text-sm text-muted-foreground">Gross Construction Area</div>
+                    <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-gold">{property.construction_area}m²</div>
+                      <div className="text-sm text-gray-400">Gross Construction Area</div>
                     </div>
                   )}
                 </div>
@@ -179,12 +179,12 @@ const PropertyDetail = () => {
               {/* Divisions */}
               {divisions.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-xl font-semibold mb-4">Rooms</h3>
+                  <h3 className="text-xl font-semibold mb-4 text-white">Rooms</h3>
                   <div className="grid grid-cols-3 gap-4">
                     {divisions.map((division: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center border-b py-2">
-                        <span className="text-sm">{division.name}</span>
-                        <span className="text-sm text-muted-foreground">{division.area}m²</span>
+                      <div key={idx} className="flex justify-between items-center border-b border-gray-800 py-2">
+                        <span className="text-sm text-gray-300">{division.name}</span>
+                        <span className="text-sm text-gray-400">{division.area}m²</span>
                       </div>
                     ))}
                   </div>
@@ -193,8 +193,8 @@ const PropertyDetail = () => {
 
               {/* Features */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">Features</h3>
-                <div className="grid grid-cols-2 gap-2">
+                <h3 className="text-xl font-semibold mb-4 text-white">Features</h3>
+                <div className="grid grid-cols-2 gap-2 text-gray-300">
                   {property.air_conditioning && <div className="text-sm">✓ Air conditioning</div>}
                   {property.built_in_wardrobes && <div className="text-sm">✓ Built-in wardrobes</div>}
                   {property.elevator && <div className="text-sm">✓ Lift</div>}
@@ -212,18 +212,18 @@ const PropertyDetail = () => {
 
           {/* Contact Sidebar */}
           <div className="col-span-1">
-            <div className="bg-card border rounded-lg p-6 sticky top-24">
-              <h3 className="text-xl font-semibold mb-4">Would you like to know more?</h3>
+            <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 sticky top-24">
+              <h3 className="text-xl font-semibold mb-4 text-gold">Would you like to know more?</h3>
               
               <form className="space-y-4">
-                <Input type="email" placeholder="Email *" required />
-                <Input type="text" placeholder="Name *" required />
-                <Input type="tel" placeholder="Phone *" required />
-                <Textarea placeholder="Message" rows={4} />
-                <Button className="w-full bg-primary">Contact us</Button>
+                <Input type="email" placeholder="Email *" required className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
+                <Input type="text" placeholder="Name *" required className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
+                <Input type="tel" placeholder="Phone *" required className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
+                <Textarea placeholder="Message" rows={4} className="bg-black border-gray-800 text-white placeholder:text-gray-500" />
+                <Button className="w-full bg-gold text-black hover:bg-gold-light">Contact us</Button>
               </form>
 
-              <p className="text-xs text-muted-foreground mt-4">
+              <p className="text-xs text-gray-500 mt-4">
                 By requesting information, you agree to our Privacy Policy and Terms of Service.
               </p>
             </div>
