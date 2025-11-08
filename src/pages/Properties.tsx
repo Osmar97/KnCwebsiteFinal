@@ -39,16 +39,16 @@ const Properties = () => {
     <div className="min-h-screen bg-black">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-16 pt-24">
-        <div className="flex justify-between items-center mb-12">
-          <div>
-            <h1 className="text-5xl font-bold text-white mb-2">Exclusive Properties</h1>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 pt-20 sm:pt-24">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sm:mb-12">
+          <div className="w-full sm:w-auto">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Exclusive Properties</h1>
             <div className="h-1 w-24 bg-gold"></div>
           </div>
           {isAdminLoggedIn && (
             <Button 
               onClick={() => navigate("/admin/properties")}
-              className="bg-gold hover:bg-gold-dark text-white"
+              className="bg-gold hover:bg-gold-dark text-white w-full sm:w-auto min-h-[44px]"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Property
@@ -59,30 +59,30 @@ const Properties = () => {
         <div>
           {/* Properties Grid */}
           <main>
-            <div className="flex justify-between items-center mb-8">
-              <p className="text-lg text-gray-300">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+              <p className="text-base sm:text-lg text-gray-300">
                 {properties?.length || 0} Properties found
               </p>
               
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                 <Button
                   variant={sortBy === "relevance" ? "default" : "outline"}
                   onClick={() => setSortBy("relevance")}
-                  className={sortBy === "relevance" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}
+                  className={`min-h-[44px] ${sortBy === "relevance" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}`}
                 >
                   By relevance
                 </Button>
                 <Button
                   variant={sortBy === "price_asc" ? "default" : "outline"}
                   onClick={() => setSortBy("price_asc")}
-                  className={sortBy === "price_asc" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}
+                  className={`min-h-[44px] ${sortBy === "price_asc" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}`}
                 >
                   Cheapest
                 </Button>
                 <Button
                   variant={sortBy === "recent" ? "default" : "outline"}
                   onClick={() => setSortBy("recent")}
-                  className={sortBy === "recent" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}
+                  className={`min-h-[44px] ${sortBy === "recent" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}`}
                 >
                   Most recent
                 </Button>
@@ -94,14 +94,14 @@ const Properties = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-gold" />
               </div>
             ) : properties && properties.length > 0 ? (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {properties.map((property) => (
                   <PropertyCard key={property.id} property={property} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-gray-800/50 rounded-lg">
-                <p className="text-gray-300 text-lg">No properties found with the selected filters.</p>
+              <div className="text-center py-12 sm:py-16 bg-gray-800/50 rounded-lg">
+                <p className="text-gray-300 text-base sm:text-lg px-4">No properties found with the selected filters.</p>
               </div>
             )}
           </main>

@@ -79,49 +79,73 @@ const AdminProperties = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8 mt-20">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Property Management</h1>
-          <Button onClick={() => { setEditingProperty(null); setShowList(false); }}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 mt-16 sm:mt-20">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold">Property Management</h1>
+          <Button 
+            onClick={() => { setEditingProperty(null); setShowList(false); }}
+            className="w-full sm:w-auto min-h-[44px]"
+          >
             <Plus className="w-4 h-4 mr-2" />
             Add Property
           </Button>
         </div>
 
         {isLoading ? (
-          <div>Loading...</div>
+          <div className="text-center py-8">Loading...</div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-4 sm:gap-6">
             {properties?.map((property) => (
-              <div key={property.id} className="bg-card border rounded-lg p-6 flex justify-between items-start">
-                <div className="flex gap-4 flex-1">
-                  {property.images?.[0] && (
-                    <img
-                      src={property.images[0]}
-                      alt={property.title}
-                      className="w-32 h-24 object-cover rounded"
-                    />
-                  )}
-                  <div>
-                    <h3 className="font-semibold text-lg">{property.title}</h3>
-                    <p className="text-sm text-muted-foreground">{property.location}</p>
-                    <p className="text-primary font-bold mt-2">{property.price.toLocaleString("pt-PT")} €</p>
-                    <p className="text-sm text-muted-foreground">
-                      {property.bedrooms} • {property.bathrooms} bathrooms • {property.private_area}m²
-                    </p>
+              <div key={property.id} className="bg-card border rounded-lg p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {/* Property Image */}
+                  <div className="w-full sm:w-40 md:w-48 h-48 sm:h-32 flex-shrink-0">
+                    {property.images?.[0] ? (
+                      <img
+                        src={property.images[0]}
+                        alt={property.title}
+                        className="w-full h-full object-cover rounded"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted rounded flex items-center justify-center text-muted-foreground">
+                        No image
+                      </div>
+                    )}
                   </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="icon" onClick={() => handleEdit(property)}>
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => handleDelete(property.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  
+                  {/* Property Info */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-lg sm:text-xl mb-2 break-words">{property.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-2 break-words">{property.location}</p>
+                    <p className="text-primary font-bold text-xl mb-3">
+                      {property.price.toLocaleString("pt-PT")} €
+                    </p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm text-muted-foreground">
+                      <span>{property.bedrooms}</span>
+                      {property.bathrooms && <span>• {property.bathrooms} bathrooms</span>}
+                      {property.private_area && <span>• {property.private_area}m²</span>}
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex sm:flex-col gap-2 mt-2 sm:mt-0">
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={() => handleEdit(property)}
+                      className="min-h-[44px] min-w-[44px] flex-1 sm:flex-initial"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleDelete(property.id)}
+                      className="min-h-[44px] min-w-[44px] flex-1 sm:flex-initial"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
