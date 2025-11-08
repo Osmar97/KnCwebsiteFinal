@@ -1078,12 +1078,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="space-y-4 max-w-md">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente angariador</Label>
-              <Select defaultValue="kings_n_company" onValueChange={(value) => setValue("agent_captador", value)}>
+              <Select defaultValue={property?.agent_captador} onValueChange={(value) => setValue("agent_captador", value)}>
                 <SelectTrigger className="bg-white border-gray-300">
-                  <SelectValue />
+                  <SelectValue placeholder="Selecionar agente" />
                 </SelectTrigger>
                 <SelectContent className="bg-white z-50">
-                  <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
+                  <SelectItem value="ismael@kingsncompany.com">Ismael</SelectItem>
+                  <SelectItem value="joey@kingsncompany.com">Joey</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-sm text-gray-600 mt-1">O agente que capta o imóvel. Registo a nível interno da agência.</p>
@@ -1091,12 +1092,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente comercializador</Label>
-              <Select defaultValue="kings_n_company" onValueChange={(value) => setValue("agent_comercializador", value)}>
+              <Select defaultValue={property?.agent_comercializador} onValueChange={(value) => setValue("agent_comercializador", value)}>
                 <SelectTrigger className="bg-white border-gray-300">
-                  <SelectValue />
+                  <SelectValue placeholder="Selecionar agente" />
                 </SelectTrigger>
                 <SelectContent className="bg-white z-50">
-                  <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
+                  <SelectItem value="ismael@kingsncompany.com">Ismael</SelectItem>
+                  <SelectItem value="joey@kingsncompany.com">Joey</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-sm text-gray-600 mt-1">O imóvel é atribuído ao agente comercializador.</p>
