@@ -154,7 +154,7 @@ const PropertyDetail = () => {
         <div className="flex gap-4 mb-6 text-sm text-gray-400">
           <div className="flex items-center gap-2">
             <Home className="w-4 h-4 text-gold" />
-            <span>{property.bedrooms}</span>
+            <span>{property.bedrooms} bedrooms</span>
           </div>
           <div className="flex items-center gap-2">
             <span>{property.private_area}m² gross area</span>
