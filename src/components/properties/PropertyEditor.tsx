@@ -142,7 +142,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         description: descriptions.pt || descriptions.en || "",
         status: "active",
         // Apartment-specific fields
-        floor: data.floor || null,
+        floor: data.floor ? parseInt(data.floor) : null,
         is_top_floor: data.is_top_floor || false,
         penthouse: data.penthouse || false,
         t0: data.t0 || false,
@@ -1253,6 +1253,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 notes_visibility: formData.notes_visibility || "",
                 agent_captador: formData.agent_captador || "",
                 agent_comercializador: formData.agent_comercializador || "",
+                // Apartment-specific fields
+                floor: formData.floor || null,
+                is_top_floor: formData.is_top_floor || false,
+                penthouse: formData.penthouse || false,
+                t0: formData.t0 || false,
+                duplex: formData.duplex || false,
               };
               
               console.log("Submitting property data:", propertyData);
