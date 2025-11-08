@@ -399,26 +399,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             </div>
           </div>
 
-          {/* Portal Visibility */}
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-2">Visibilidade em portais</h3>
-            <RadioGroup defaultValue="exact_address" className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem value="exact_address" id="exact_address" className="mt-1" />
-                <div>
-                  <label htmlFor="exact_address" className="text-sm font-semibold cursor-pointer">Morada exata</label>
-                  <p className="text-sm text-gray-600">Recomendado</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-2">
-                <RadioGroupItem value="street_only" id="street_only" className="mt-1" />
-                <div>
-                  <label htmlFor="street_only" className="text-sm font-semibold cursor-pointer">Mostrar só a rua</label>
-                  <p className="text-sm text-gray-600">Mantém a confidencialidade e ajuda o utilizador a localizar o teu imóvel</p>
-                </div>
-              </div>
-            </RadioGroup>
-          </div>
         </div>
 
         {/* Property Details Section */}
