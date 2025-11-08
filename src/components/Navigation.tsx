@@ -7,6 +7,8 @@ import logo from '../assets/logo.png';
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
 
   // Check if we're on a page with dark background
@@ -15,11 +17,25 @@ export const Navigation = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      
+      // Show navbar when scrolling up or at top
+      if (currentScrollY < lastScrollY || currentScrollY < 100) {
+        setHidden(false);
+      } 
+      // Hide navbar when scrolling down
+      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setHidden(true);
+        setIsOpen(false); // Close mobile menu when hiding
+      }
+      
+      setScrolled(currentScrollY > 50);
+      setLastScrollY(currentScrollY);
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   const navItems = [
     { name: "ABOUT", href: "/about" },
@@ -38,7 +54,7 @@ export const Navigation = () => {
   const mobileTextColor = isDarkBackground ? 'text-white' : 'text-[#85754E]';
 
   return (
-    <nav className="fixed top-0 w-full z-50 transition-all duration-300">
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${hidden ? '-top-20' : 'top-0'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
