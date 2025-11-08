@@ -27,12 +27,14 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     mode: "onChange",
+    reValidateMode: "onSubmit",
     defaultValues: property || {
       title: "",
       location: "",
       city: "",
       transaction_type: "Comprar",
       property_type: "",
+      price: 0,
     },
   });
 
@@ -313,14 +315,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
       <form onSubmit={handleSubmit((data) => {
         console.log("Form submitted with data:", data);
+        console.log("Form errors:", errors);
         saveMutation.mutate(data);
-      }, (errors) => {
-        console.log("Form validation errors:", errors);
-        toast({
-          title: "Erro de validação",
-          description: "Por favor, verifique os campos do formulário",
-          variant: "destructive"
-        });
       })} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">

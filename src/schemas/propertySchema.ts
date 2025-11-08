@@ -12,15 +12,15 @@ export const propertySchema = z.object({
   urbanization_name: z.string().optional().default(""),
   operation_sale: z.boolean().optional().default(false),
   operation_rent: z.boolean().optional().default(false),
-  price: z.number().optional().default(0),
+  price: z.coerce.number().optional().default(0),
   transaction_type: z.string().optional().default("Comprar"),
   condition: z.string().optional().default(""),
-  construction_area: z.number().optional().default(0),
-  private_area: z.number().optional().default(0),
-  lot_area: z.number().optional().default(0),
+  construction_area: z.coerce.number().optional().default(0),
+  private_area: z.coerce.number().optional().default(0),
+  lot_area: z.coerce.number().optional().default(0),
   energy_class: z.string().optional().default(""),
   heating_type: z.string().optional().default(""),
-  building_year: z.number().optional().default(0),
+  building_year: z.coerce.number().optional().default(0),
   orientation_north: z.boolean().optional().default(false),
   orientation_south: z.boolean().optional().default(false),
   orientation_east: z.boolean().optional().default(false),
@@ -46,6 +46,6 @@ export const propertySchema = z.object({
   notes_visibility: z.string().optional().default(""),
   agent_captador: z.string().optional().default(""),
   agent_comercializador: z.string().optional().default(""),
-});
+}).passthrough();
 
 export type PropertyFormData = z.infer<typeof propertySchema>;
