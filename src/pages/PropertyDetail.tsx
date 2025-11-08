@@ -1,18 +1,24 @@
-import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Heart, Video, Image as ImageIcon, Home } from "lucide-react";
+import { ArrowLeft, Heart, Video, Image as ImageIcon, Home, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { useAdmin } from "@/contexts/AdminContext";
+import { useToast } from "@/hooks/use-toast";
 
 const PropertyDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAdminLoggedIn } = useAdmin();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("photos");
 
@@ -29,6 +35,27 @@ const PropertyDetail = () => {
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: async (propertyId: string) => {
+      const { error } = await supabase.from("properties" as any).delete().eq("id", propertyId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: "Property deleted successfully" });
+      navigate("/properties");
+    },
+  });
+
+  const handleDelete = () => {
+    if (confirm("Are you sure you want to delete this property?")) {
+      deleteMutation.mutate(id!);
+    }
+  };
+
+  const handleEdit = () => {
+    navigate(`/admin/properties?edit=${id}`);
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (!property) return <div>Property not found</div>;
 
@@ -40,12 +67,35 @@ const PropertyDetail = () => {
       <Navigation />
       
       <div className="container mx-auto px-4 pt-28 pb-8">
-        <Link to="/properties">
-          <Button variant="ghost" className="mb-4 text-gold hover:text-gold-light hover:bg-gold/10">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </Link>
+        <div className="flex justify-between items-center mb-4">
+          <Link to="/properties">
+            <Button variant="ghost" className="text-gold hover:text-gold-light hover:bg-gold/10">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+          </Link>
+          
+          {isAdminLoggedIn && (
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handleEdit}
+                className="border-gold text-gold hover:bg-gold/10"
+              >
+                <Pencil className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleDelete}
+                className="border-red-500 text-red-500 hover:bg-red-500/10"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+            </div>
+          )}
+        </div>
 
         <div className="flex justify-between items-start mb-6">
           <div>

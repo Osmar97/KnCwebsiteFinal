@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import PropertyEditor from "@/components/properties/PropertyEditor";
 import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 const AdminProperties = () => {
-  const [showList, setShowList] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [showList, setShowList] = useState(true);
   const [editingProperty, setEditingProperty] = useState(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -24,6 +26,18 @@ const AdminProperties = () => {
       return data as any[];
     },
   });
+
+  // Handle edit query parameter
+  useEffect(() => {
+    const editId = searchParams.get('edit');
+    if (editId && properties) {
+      const propertyToEdit = properties.find(p => p.id === editId);
+      if (propertyToEdit) {
+        setEditingProperty(propertyToEdit);
+        setShowList(false);
+      }
+    }
+  }, [searchParams, properties]);
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -54,6 +68,7 @@ const AdminProperties = () => {
         onClose={() => {
           setShowList(true);
           setEditingProperty(null);
+          setSearchParams({});
           queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
         }}
       />
