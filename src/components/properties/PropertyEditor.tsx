@@ -448,6 +448,37 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             </div>
           </div>
 
+          {/* Apartment-specific floor selection */}
+          {propertyType === "Apartamento" && (
+            <div className="mt-8 space-y-4">
+              <div className="max-w-md">
+                <Label className="text-sm font-semibold mb-2 block">Andar</Label>
+                <Select defaultValue={property?.floor} onValueChange={(value) => setValue("floor", value)}>
+                  <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                    <SelectValue placeholder="Selecionar opção" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white z-50">
+                    <SelectItem value="ground">Rés-do-chão</SelectItem>
+                    <SelectItem value="1">1º Andar</SelectItem>
+                    <SelectItem value="2">2º Andar</SelectItem>
+                    <SelectItem value="3">3º Andar</SelectItem>
+                    <SelectItem value="4">4º Andar</SelectItem>
+                    <SelectItem value="5">5º Andar</SelectItem>
+                    <SelectItem value="6">6º Andar</SelectItem>
+                    <SelectItem value="7">7º Andar</SelectItem>
+                    <SelectItem value="8">8º Andar</SelectItem>
+                    <SelectItem value="9+">9º Andar ou superior</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox id="is_top_floor" {...register("is_top_floor")} />
+                <label htmlFor="is_top_floor" className="text-sm">É o último andar do bloco</label>
+              </div>
+            </div>
+          )}
+
           {propertyType === "Casa / Moradia" && (
             <>
               <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia</h2>
@@ -469,12 +500,43 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   <label htmlFor="andar_moradia" className="text-sm cursor-pointer">Andar de moradia</label>
                 </div>
               </RadioGroup>
+            </>
+          )}
 
+          {/* Additional characteristics for Apartments */}
+          {propertyType === "Apartamento" && (
+            <>
+              <h3 className="text-xl font-semibold mb-4 mt-6">Característica adicional</h3>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="penthouse" {...register("penthouse")} />
+                  <label htmlFor="penthouse" className="text-sm">Penthouse</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="t0" {...register("t0")} />
+                  <label htmlFor="t0" className="text-sm">T0</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="duplex" {...register("duplex")} />
+                  <label htmlFor="duplex" className="text-sm">Duplex</label>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Category section - show for both types */}
+          {(propertyType === "Casa / Moradia" || propertyType === "Apartamento") && (
+            <>
               <h3 className="text-xl font-semibold mb-4">Categoria</h3>
               <div className="flex items-center space-x-2 mb-6">
                 <Checkbox id="bank_property" {...register("bank_property")} />
                 <label htmlFor="bank_property" className="text-sm">Imóvel do banco</label>
               </div>
+            </>
+          )}
+
+          {(propertyType === "Casa / Moradia" || propertyType === "Apartamento") && (
+            <>
 
               <h3 className="text-xl font-semibold mb-4">Tamanho</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -488,19 +550,22 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <div>
                   <Label className="text-sm font-semibold mb-2 block">M² úteis</Label>
                   <div className="relative">
-                    <Input type="number" {...register("private_area")} className="bg-[#FFFEF0] border-gray-300 pr-12" />
+                    <Input type="number" {...register("private_area")} className="bg-white border-gray-300 pr-12" />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">m²</span>
                   </div>
                 </div>
               </div>
 
-              <div className="mb-6">
-                <Label className="text-sm font-semibold mb-2 block">M² lote</Label>
-                <div className="relative max-w-sm">
-                  <Input type="number" {...register("lot_area")} className="bg-[#FFFEF0] border-gray-300 pr-12" />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">m²</span>
+              {/* Lot area only for houses */}
+              {propertyType === "Casa / Moradia" && (
+                <div className="mb-6">
+                  <Label className="text-sm font-semibold mb-2 block">M² lote</Label>
+                  <div className="relative max-w-sm">
+                    <Input type="number" {...register("lot_area")} className="bg-[#FFFEF0] border-gray-300 pr-12" />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">m²</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Counters */}
               <div className="space-y-6">
@@ -532,33 +597,36 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   </div>
                 </div>
 
-                <div>
-                  <Label className="text-sm font-semibold mb-2 block">Andares da moradia</Label>
-                  <div className="flex items-center gap-4 max-w-sm">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="icon" 
-                      onClick={() => setFloorCount(Math.max(0, floorCount - 1))}
-                    >
-                      <Minus className="w-4 h-4" />
-                    </Button>
-                    <Input 
-                      type="number" 
-                      value={floorCount} 
-                      onChange={(e) => setFloorCount(parseInt(e.target.value) || 0)}
-                      className="text-center bg-white border-gray-300"
-                    />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="icon" 
-                      onClick={() => setFloorCount(floorCount + 1)}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
+                {/* Villa floors - only for houses */}
+                {propertyType === "Casa / Moradia" && (
+                  <div>
+                    <Label className="text-sm font-semibold mb-2 block">Andares da moradia</Label>
+                    <div className="flex items-center gap-4 max-w-sm">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="icon" 
+                        onClick={() => setFloorCount(Math.max(0, floorCount - 1))}
+                      >
+                        <Minus className="w-4 h-4" />
+                      </Button>
+                      <Input 
+                        type="number" 
+                        value={floorCount} 
+                        onChange={(e) => setFloorCount(parseInt(e.target.value) || 0)}
+                        className="text-center bg-white border-gray-300"
+                      />
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="icon" 
+                        onClick={() => setFloorCount(floorCount + 1)}
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div>
                   <Label className="text-sm font-semibold mb-2 block">Número de casas de banho</Label>
@@ -735,6 +803,24 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   </Select>
                 </div>
               </div>
+
+              {/* Building Year */}
+              {/* Elevator - for Apartments */}
+              {propertyType === "Apartamento" && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-semibold mb-4">Elevador<span className="text-red-600">*</span></h3>
+                  <RadioGroup defaultValue={property?.elevator ? "yes" : "no"} onValueChange={(value) => setValue("elevator", value === "yes")} className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="elevator_yes" />
+                      <label htmlFor="elevator_yes" className="text-sm cursor-pointer">Sim</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="elevator_no" />
+                      <label htmlFor="elevator_no" className="text-sm cursor-pointer">Não</label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              )}
 
               {/* Building Year */}
               <div className="mt-6">
