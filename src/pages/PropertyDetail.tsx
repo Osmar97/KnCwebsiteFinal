@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
+import { formatPrice } from "@/lib/formatters";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -103,7 +104,7 @@ const PropertyDetail = () => {
             <p className="text-gray-400">{property.location}, {property.city}</p>
           </div>
           <div className="text-right">
-            <div className="text-4xl font-bold text-gold">{property.price.toLocaleString("pt-PT")}€</div>
+            <div className="text-4xl font-bold text-gold">{formatPrice(property.price)}€</div>
           </div>
         </div>
 

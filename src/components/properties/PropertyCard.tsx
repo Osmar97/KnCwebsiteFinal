@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart, Phone, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { formatPrice, CONTACT_PHONE, CONTACT_PHONE_LINK } from "@/lib/formatters";
+import { useToast } from "@/hooks/use-toast";
 
 interface PropertyCardProps {
   property: any;
@@ -9,8 +11,26 @@ interface PropertyCardProps {
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showPhone, setShowPhone] = useState(false);
   const images = property.images || [];
+
+  const handleViewPhone = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowPhone(true);
+    toast({
+      title: "Contact Number",
+      description: CONTACT_PHONE,
+    });
+  };
+
+  const handleContact = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = CONTACT_PHONE_LINK;
+  };
 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -85,7 +105,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             </h3>
             <div className="text-right">
               <div className="text-2xl font-bold text-gold whitespace-nowrap">
-                {property.price.toLocaleString("en-UK")} €
+                {formatPrice(property.price)} €
               </div>
             </div>
           </div>
@@ -156,10 +176,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           <div className="flex gap-3 mt-auto">
             <Button
               className="flex-1 bg-gold hover:bg-gold-dark text-white"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
+              onClick={handleContact}
             >
               <Phone className="w-4 h-4 mr-2" />
               Contact
@@ -167,12 +184,9 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             <Button
               variant="outline"
               className="flex-1 border-gold text-gold hover:bg-gold hover:text-white"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
+              onClick={handleViewPhone}
             >
-              View phone
+              {showPhone ? CONTACT_PHONE : "View phone"}
             </Button>
           </div>
         </div>
