@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X, Minus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -23,20 +25,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const { register, handleSubmit, watch, setValue, formState: { errors, isValid } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     mode: "onChange",
-    reValidateMode: "onChange",
     defaultValues: property || {
       title: "",
       location: "",
       city: "",
       transaction_type: "Comprar",
       property_type: "",
-      price: 0,
-      operation_sale: false,
-      operation_rent: false,
-      condition: "good",
-      agent_captador: "kings_n_company",
-      agent_comercializador: "kings_n_company",
-      notes_visibility: "coordinator",
     },
   });
 
@@ -62,25 +56,17 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData) => {
-      // Build property data, handling all optional fields
       const propertyData = {
-        title: data.title || "",
-        property_type: data.property_type || "",
-        city: data.city || "",
-        location: data.location || "",
-        price: data.price || 0,
-        transaction_type: data.transaction_type || "Comprar",
         ...data,
         images: imageUrls,
         pdf_urls: pdfUrls,
         video_urls: videoUrls,
-        bedrooms: bedroomCount > 0 ? bedroomCount.toString() : null,
-        bathrooms: bathroomCount > 0 ? bathroomCount : null,
-        floors: floorCount > 0 ? floorCount : null,
-        description: descriptions.pt || descriptions.en || "",
-        description_en: descriptions.en || "",
+        bedrooms: bedroomCount.toString(),
+        bathrooms: bathroomCount,
+        floors: floorCount,
+        description: descriptions.pt || descriptions.en,
+        description_en: descriptions.en,
         descriptions: descriptions,
-        status: property?.status || "active",
       };
 
       if (property) {
@@ -97,16 +83,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
       toast({ 
-        title: "✓ Imóvel guardado com sucesso",
-        description: "O imóvel foi adicionado à lista e está visível"
+        title: "Imóvel guardado com sucesso",
+        description: "O imóvel foi adicionado à lista"
       });
       onClose();
     },
-    onError: (error: any) => {
-      console.error("Save error:", error);
+    onError: (error) => {
+      console.error(error);
       toast({ 
         title: "Erro ao guardar imóvel", 
-        description: error?.message || "Por favor, verifique os dados e tente novamente",
+        description: "Por favor, tente novamente",
         variant: "destructive" 
       });
     },
@@ -119,45 +105,25 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setUploading(true);
     const newImageUrls: string[] = [];
 
-    try {
-      for (const file of Array.from(files)) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const { error } = await supabase.storage
+    for (const file of Array.from(files)) {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { error } = await supabase.storage
+        .from("property-images")
+        .upload(fileName, file);
+
+      if (error) {
+        toast({ title: "Erro ao carregar imagem", variant: "destructive" });
+      } else {
+        const { data: urlData } = supabase.storage
           .from("property-images")
-          .upload(fileName, file);
-
-        if (error) {
-          toast({ 
-            title: "Erro ao carregar imagem", 
-            description: error.message,
-            variant: "destructive" 
-          });
-        } else {
-          const { data: urlData } = supabase.storage
-            .from("property-images")
-            .getPublicUrl(fileName);
-          newImageUrls.push(urlData.publicUrl);
-        }
+          .getPublicUrl(fileName);
+        newImageUrls.push(urlData.publicUrl);
       }
-
-      if (newImageUrls.length > 0) {
-        setImageUrls([...imageUrls, ...newImageUrls]);
-        toast({ 
-          title: "Imagens carregadas", 
-          description: `${newImageUrls.length} imagem(ns) adicionada(s) com sucesso` 
-        });
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
-      toast({ 
-        title: "Erro ao carregar", 
-        description: "Ocorreu um erro ao fazer upload das imagens",
-        variant: "destructive" 
-      });
-    } finally {
-      setUploading(false);
     }
+
+    setImageUrls([...imageUrls, ...newImageUrls]);
+    setUploading(false);
   };
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,42 +133,22 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setUploading(true);
     const newPdfUrls: string[] = [];
 
-    try {
-      for (const file of Array.from(files)) {
-        const fileName = `${Math.random()}.pdf`;
-        const { error } = await supabase.storage
-          .from("pdfs")
-          .upload(fileName, file);
+    for (const file of Array.from(files)) {
+      const fileName = `${Math.random()}.pdf`;
+      const { error } = await supabase.storage
+        .from("pdfs")
+        .upload(fileName, file);
 
-        if (error) {
-          toast({ 
-            title: "Erro ao carregar PDF", 
-            description: error.message,
-            variant: "destructive" 
-          });
-        } else {
-          const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
-          newPdfUrls.push(urlData.publicUrl);
-        }
+      if (error) {
+        toast({ title: "Erro ao carregar PDF", variant: "destructive" });
+      } else {
+        const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
+        newPdfUrls.push(urlData.publicUrl);
       }
-
-      if (newPdfUrls.length > 0) {
-        setPdfUrls([...pdfUrls, ...newPdfUrls]);
-        toast({ 
-          title: "PDFs carregados", 
-          description: `${newPdfUrls.length} ficheiro(s) adicionado(s)` 
-        });
-      }
-    } catch (error) {
-      console.error("PDF upload error:", error);
-      toast({ 
-        title: "Erro ao carregar PDFs", 
-        description: "Ocorreu um erro ao fazer upload",
-        variant: "destructive" 
-      });
-    } finally {
-      setUploading(false);
     }
+
+    setPdfUrls([...pdfUrls, ...newPdfUrls]);
+    setUploading(false);
   };
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -212,56 +158,27 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setUploading(true);
     const newVideoUrls: string[] = [];
 
-    try {
-      for (const file of Array.from(files)) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const { error } = await supabase.storage
-          .from("videos")
-          .upload(fileName, file);
+    for (const file of Array.from(files)) {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { error } = await supabase.storage
+        .from("videos")
+        .upload(fileName, file);
 
-        if (error) {
-          toast({ 
-            title: "Erro ao carregar vídeo", 
-            description: error.message,
-            variant: "destructive" 
-          });
-        } else {
-          const { data: urlData } = supabase.storage.from("videos").getPublicUrl(fileName);
-          newVideoUrls.push(urlData.publicUrl);
-        }
+      if (error) {
+        toast({ title: "Erro ao carregar vídeo", variant: "destructive" });
+      } else {
+        const { data: urlData } = supabase.storage.from("videos").getPublicUrl(fileName);
+        newVideoUrls.push(urlData.publicUrl);
       }
-
-      if (newVideoUrls.length > 0) {
-        setVideoUrls([...videoUrls, ...newVideoUrls]);
-        toast({ 
-          title: "Vídeos carregados", 
-          description: `${newVideoUrls.length} vídeo(s) adicionado(s)` 
-        });
-      }
-    } catch (error) {
-      console.error("Video upload error:", error);
-      toast({ 
-        title: "Erro ao carregar vídeos", 
-        description: "Ocorreu um erro ao fazer upload",
-        variant: "destructive" 
-      });
-    } finally {
-      setUploading(false);
     }
+
+    setVideoUrls([...videoUrls, ...newVideoUrls]);
+    setUploading(false);
   };
 
   const handleAddLanguage = async (lang: string) => {
-    if (additionalLangs.includes(lang) || !lang) return;
-    
-    // If no English description exists, just add the language without translation
-    if (!descriptions.en || descriptions.en.trim() === "") {
-      setDescriptions({ ...descriptions, [lang]: "" });
-      setAdditionalLangs([...additionalLangs, lang]);
-      setCurrentLang(lang);
-      toast({ title: `Idioma ${lang.toUpperCase()} adicionado` });
-      return;
-    }
+    if (additionalLangs.includes(lang)) return;
     
     setIsTranslating(true);
     try {
@@ -274,17 +191,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setDescriptions({ ...descriptions, [lang]: data.translatedText });
       setAdditionalLangs([...additionalLangs, lang]);
       setCurrentLang(lang);
-      toast({ 
-        title: "Tradução concluída", 
-        description: `Descrição traduzida para ${lang.toUpperCase()}` 
-      });
+      toast({ title: "Tradução concluída" });
     } catch (error) {
       console.error(error);
-      toast({ 
-        title: "Erro na tradução", 
-        description: "A descrição em inglês foi copiada",
-        variant: "destructive" 
-      });
+      toast({ title: "Erro na tradução", variant: "destructive" });
       setDescriptions({ ...descriptions, [lang]: descriptions.en });
       setAdditionalLangs([...additionalLangs, lang]);
       setCurrentLang(lang);
@@ -332,25 +242,26 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       <form onSubmit={handleSubmit((data) => saveMutation.mutate(data))} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Tipo de imóvel</h2>
+          <h2 className="text-xl font-semibold mb-4">Tipo de imóvel *</h2>
             <div className="max-w-md">
-              <select 
-                {...register("property_type")}
-                className="w-full px-3 py-2 bg-[#FFFEF0] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="">Selecionar opção</option>
-                <option value="Casa / Moradia">Casa / Moradia</option>
-                <option value="Apartamento">Apartamento</option>
-                <option value="Casa rústica">Casa rústica</option>
-                <option value="Quarto">Quarto</option>
-                <option value="Espaço comercial ou armazém">Espaço comercial ou armazém</option>
-                <option value="Trespasse">Trespasse</option>
-                <option value="Garagem">Garagem</option>
-                <option value="Escritório">Escritório</option>
-                <option value="Terreno">Terreno</option>
-                <option value="Arrecadação">Arrecadação</option>
-                <option value="Prédio">Prédio</option>
-              </select>
+              <Select defaultValue={property?.property_type} onValueChange={(value) => setValue("property_type", value)}>
+                <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                  <SelectValue placeholder="Selecionar opção" />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  <SelectItem value="Casa / Moradia">Casa / Moradia</SelectItem>
+                  <SelectItem value="Apartamento">Apartamento</SelectItem>
+                  <SelectItem value="Casa rústica">Casa rústica</SelectItem>
+                  <SelectItem value="Quarto">Quarto</SelectItem>
+                  <SelectItem value="Espaço comercial ou armazém">Espaço comercial ou armazém</SelectItem>
+                  <SelectItem value="Trespasse">Trespasse</SelectItem>
+                  <SelectItem value="Garagem">Garagem</SelectItem>
+                  <SelectItem value="Escritório">Escritório</SelectItem>
+                  <SelectItem value="Terreno">Terreno</SelectItem>
+                  <SelectItem value="Arrecadação">Arrecadação</SelectItem>
+                  <SelectItem value="Prédio">Prédio</SelectItem>
+                </SelectContent>
+              </Select>
               {errors.property_type && <p className="text-sm text-red-600 mt-1">{errors.property_type.message}</p>}
             </div>
         </div>
@@ -360,12 +271,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Localização do imóvel</h2>
           <div className="space-y-4 max-w-md">
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Localidade</Label>
+              <Label className="text-sm font-semibold mb-2 block">Localidade *</Label>
               <Input {...register("city")} className="bg-[#FFFEF0] border-gray-300" />
               {errors.city && <p className="text-sm text-red-600 mt-1">{errors.city.message}</p>}
             </div>
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via</Label>
+              <Label className="text-sm font-semibold mb-2 block">Nome da rua / via *</Label>
               <Input {...register("location")} className="bg-[#FFFEF0] border-gray-300" />
               {errors.location && <p className="text-sm text-red-600 mt-1">{errors.location.message}</p>}
             </div>
@@ -398,31 +309,31 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             </div>
           </div>
 
-          {/* Portal Visibility - Read only UI element */}
+          {/* Portal Visibility */}
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">Visibilidade em portais</h3>
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2 opacity-60">
-                <input type="radio" checked readOnly className="mt-1" />
+            <RadioGroup defaultValue="exact_address" className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <RadioGroupItem value="exact_address" id="exact_address" className="mt-1" />
                 <div>
-                  <label className="text-sm font-semibold">Morada exata</label>
+                  <label htmlFor="exact_address" className="text-sm font-semibold cursor-pointer">Morada exata</label>
                   <p className="text-sm text-gray-600">Recomendado</p>
                 </div>
               </div>
-              <div className="flex items-start space-x-2 opacity-60">
-                <input type="radio" readOnly className="mt-1" />
+              <div className="flex items-start space-x-2">
+                <RadioGroupItem value="street_only" id="street_only" className="mt-1" />
                 <div>
-                  <label className="text-sm font-semibold">Mostrar só a rua</label>
+                  <label htmlFor="street_only" className="text-sm font-semibold cursor-pointer">Mostrar só a rua</label>
                   <p className="text-sm text-gray-600">Mantém a confidencialidade e ajuda o utilizador a localizar o teu imóvel</p>
                 </div>
               </div>
-            </div>
+            </RadioGroup>
           </div>
         </div>
 
         {/* Property Details Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-6">Operação e preço</h2>
+          <h2 className="text-xl font-semibold mb-6">Operação e preço *</h2>
           <div className="space-y-3 mb-6">
             <div className="flex items-center space-x-2">
               <Checkbox id="operation_sale" {...register("operation_sale")} />
@@ -435,17 +346,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </div>
 
           <div className="max-w-md mb-6">
-            <Label className="text-sm font-semibold mb-2 block">Preço</Label>
+            <Label className="text-sm font-semibold mb-2 block">Preço *</Label>
             <div className="relative">
               <Input 
                 type="number" 
-                {...register("price", { 
-                  valueAsNumber: true,
-                })} 
+                {...register("price", { required: true, valueAsNumber: true })} 
                 className="bg-[#FFFEF0] border-gray-300 pr-12" 
                 placeholder="0"
-                min="0"
-                step="0.01"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">€</span>
             </div>
@@ -454,25 +361,25 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
           {propertyType === "Casa / Moradia" && (
             <>
-              <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia</h2>
-              <div className="space-y-2 mb-6">
-                <div className="flex items-center space-x-2 opacity-60">
-                  <input type="radio" checked readOnly />
-                  <label className="text-sm">Moradia em banda</label>
+              <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia *</h2>
+              <RadioGroup defaultValue="moradia_banda" className="space-y-2 mb-6">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="moradia_banda" id="moradia_banda" />
+                  <label htmlFor="moradia_banda" className="text-sm cursor-pointer">Moradia em banda</label>
                 </div>
-                <div className="flex items-center space-x-2 opacity-60">
-                  <input type="radio" readOnly />
-                  <label className="text-sm">Moradia geminada</label>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="moradia_geminada" id="moradia_geminada" />
+                  <label htmlFor="moradia_geminada" className="text-sm cursor-pointer">Moradia geminada</label>
                 </div>
-                <div className="flex items-center space-x-2 opacity-60">
-                  <input type="radio" readOnly />
-                  <label className="text-sm">Moradia independente</label>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="moradia_independente" id="moradia_independente" />
+                  <label htmlFor="moradia_independente" className="text-sm cursor-pointer">Moradia independente</label>
                 </div>
-                <div className="flex items-center space-x-2 opacity-60">
-                  <input type="radio" readOnly />
-                  <label className="text-sm">Andar de moradia</label>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="andar_moradia" id="andar_moradia" />
+                  <label htmlFor="andar_moradia" className="text-sm cursor-pointer">Andar de moradia</label>
                 </div>
-              </div>
+              </RadioGroup>
 
               <h3 className="text-xl font-semibold mb-4">Categoria</h3>
               <div className="flex items-center space-x-2 mb-6">
@@ -598,47 +505,37 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Classificação do consumo de energia</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
-                  <select
-                    {...register("energy_class")}
-                    className="w-full px-3 py-2 bg-[#FFFEF0] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="">Seleciona opção</option>
-                    <option value="A+">A+</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="B-">B-</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                  </select>
+                  <Select defaultValue={property?.energy_class} onValueChange={(value) => setValue("energy_class", value)}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Seleciona opção" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="A+">A+</SelectItem>
+                      <SelectItem value="A">A</SelectItem>
+                      <SelectItem value="B">B</SelectItem>
+                      <SelectItem value="B-">B-</SelectItem>
+                      <SelectItem value="C">C</SelectItem>
+                      <SelectItem value="D">D</SelectItem>
+                      <SelectItem value="E">E</SelectItem>
+                      <SelectItem value="F">F</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
               {/* Conservation State */}
               <div className="mt-6">
-                <h3 className="text-xl font-semibold mb-4">Estado de conservação</h3>
-                <div className="space-y-2">
+                <h3 className="text-xl font-semibold mb-4">Estado de conservação *</h3>
+                <RadioGroup defaultValue={property?.condition || "good"} onValueChange={(value) => setValue("condition", value)} className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <input 
-                      type="radio" 
-                      value="good" 
-                      id="condition_good" 
-                      {...register("condition")}
-                      defaultChecked
-                    />
+                    <RadioGroupItem value="good" id="condition_good" />
                     <label htmlFor="condition_good" className="text-sm cursor-pointer">Bom estado</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <input 
-                      type="radio" 
-                      value="to_recover" 
-                      id="condition_recover" 
-                      {...register("condition")}
-                    />
+                    <RadioGroupItem value="to_recover" id="condition_recover" />
                     <label htmlFor="condition_recover" className="text-sm cursor-pointer">Para recuperar</label>
                   </div>
-                </div>
+                </RadioGroup>
                 <p className="text-sm text-gray-600 mt-2">
                   Também administras imóveis de nova construção? Para publicar uma nova construção no idealista{" "}
                   <a href="#" className="text-blue-600">Contacta o teu gestor</a>
@@ -737,15 +634,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Aquecimento</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Tipo de aquecimento</Label>
-                  <select
-                    {...register("heating_type")}
-                    className="w-full px-3 py-2 bg-[#FFFEF0] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="">Selecionar opção</option>
-                    <option value="central">Aquecimento central</option>
-                    <option value="individual">Aquecimento individual</option>
-                    <option value="none">Sem aquecimento</option>
-                  </select>
+                  <Select defaultValue={property?.heating_type} onValueChange={(value) => setValue("heating_type", value)}>
+                    <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
+                      <SelectValue placeholder="Selecionar opção" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      <SelectItem value="central">Aquecimento central</SelectItem>
+                      <SelectItem value="individual">Aquecimento individual</SelectItem>
+                      <SelectItem value="none">Sem aquecimento</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -766,7 +664,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Descrição da propriedade</h2>
           <div className="space-y-4">
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Título</Label>
+              <Label className="text-sm font-semibold mb-2 block">Título *</Label>
               <Input {...register("title")} className="bg-[#FFFEF0] border-gray-300" />
               {errors.title && <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>}
             </div>
@@ -821,19 +719,18 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 </Button>
               </div>
               
-              <select 
-                onChange={(e) => handleAddLanguage(e.target.value)} 
-                disabled={isTranslating}
-                className="w-48 mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                defaultValue=""
-              >
-                <option value="" disabled>Adicionar outro idioma</option>
-                {!additionalLangs.includes("pt") && <option value="pt">Português</option>}
-                {!additionalLangs.includes("es") && <option value="es">Espanhol</option>}
-                {!additionalLangs.includes("fr") && <option value="fr">Francês</option>}
-                {!additionalLangs.includes("de") && <option value="de">Alemão</option>}
-                {!additionalLangs.includes("it") && <option value="it">Italiano</option>}
-              </select>
+              <Select onValueChange={(lang) => handleAddLanguage(lang)} disabled={isTranslating}>
+                <SelectTrigger className="w-48 mt-2">
+                  <SelectValue placeholder="Adicionar outro idioma" />
+                </SelectTrigger>
+                <SelectContent>
+                  {!additionalLangs.includes("pt") && <SelectItem value="pt">Português</SelectItem>}
+                  {!additionalLangs.includes("es") && <SelectItem value="es">Espanhol</SelectItem>}
+                  {!additionalLangs.includes("fr") && <SelectItem value="fr">Francês</SelectItem>}
+                  {!additionalLangs.includes("de") && <SelectItem value="de">Alemão</SelectItem>}
+                  {!additionalLangs.includes("it") && <SelectItem value="it">Italiano</SelectItem>}
+                </SelectContent>
+              </Select>
               {isTranslating && (
                 <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -854,51 +751,14 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {imageUrls.map((url, idx) => (
                 <div key={idx} className="relative group">
-                  <img src={url} alt={`Property ${idx + 1}`} className="w-full h-32 object-cover rounded border" />
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    {idx > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newUrls = [...imageUrls];
-                          [newUrls[idx], newUrls[idx - 1]] = [newUrls[idx - 1], newUrls[idx]];
-                          setImageUrls(newUrls);
-                        }}
-                        className="bg-blue-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        title="Move left"
-                      >
-                        ←
-                      </button>
-                    )}
-                    {idx < imageUrls.length - 1 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newUrls = [...imageUrls];
-                          [newUrls[idx], newUrls[idx + 1]] = [newUrls[idx + 1], newUrls[idx]];
-                          setImageUrls(newUrls);
-                        }}
-                        className="bg-blue-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        title="Move right"
-                      >
-                        →
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImageUrls(imageUrls.filter((_, i) => i !== idx));
-                        toast({ title: "Imagem removida" });
-                      }}
-                      className="bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Remove image"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
-                    {idx + 1}
-                  </div>
+                  <img src={url} alt="" className="w-full h-32 object-cover rounded border" />
+                  <button
+                    type="button"
+                    onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== idx))}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
               ))}
               <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
@@ -908,13 +768,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   accept="image/*" 
                   onChange={handleImageUpload} 
                   className="hidden"
-                  disabled={uploading}
                 />
                 <Plus className="w-8 h-8 text-gray-400 mb-1" />
-                <span className="text-sm text-gray-600">{uploading ? "A carregar..." : "Adicionar imagens"}</span>
+                <span className="text-sm text-gray-600">Novo</span>
               </label>
             </div>
-            {uploading && <div className="flex items-center gap-2 mt-2 text-sm text-gray-600"><Loader2 className="w-4 h-4 animate-spin" /> A carregar imagens...</div>}
+            {uploading && <div className="flex items-center gap-2 mt-2 text-sm text-gray-600"><Loader2 className="w-4 h-4 animate-spin" /> A carregar...</div>}
           </div>
 
           {/* Floor Plans */}
@@ -931,10 +790,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      setPdfUrls(pdfUrls.filter((_, i) => i !== idx));
-                      toast({ title: "PDF removido" });
-                    }}
+                    onClick={() => setPdfUrls(pdfUrls.filter((_, i) => i !== idx))}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="w-4 h-4" />
@@ -964,10 +820,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   <video src={url} className="w-full h-32 object-cover rounded border" controls />
                   <button
                     type="button"
-                    onClick={() => {
-                      setVideoUrls(videoUrls.filter((_, i) => i !== idx));
-                      toast({ title: "Vídeo removido" });
-                    }}
+                    onClick={() => setVideoUrls(videoUrls.filter((_, i) => i !== idx))}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="w-4 h-4" />
@@ -1046,23 +899,27 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="space-y-4 max-w-md">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente angariador</Label>
-              <select
-                {...register("agent_captador")}
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="kings_n_company">Kings 'n Company</option>
-              </select>
+              <Select defaultValue="kings_n_company" onValueChange={(value) => setValue("agent_captador", value)}>
+                <SelectTrigger className="bg-white border-gray-300">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
+                </SelectContent>
+              </Select>
               <p className="text-sm text-gray-600 mt-1">O agente que capta o imóvel. Registo a nível interno da agência.</p>
             </div>
             
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente comercializador</Label>
-              <select
-                {...register("agent_comercializador")}
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="kings_n_company">Kings 'n Company</option>
-              </select>
+              <Select defaultValue="kings_n_company" onValueChange={(value) => setValue("agent_comercializador", value)}>
+                <SelectTrigger className="bg-white border-gray-300">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  <SelectItem value="kings_n_company">Kings 'n Company</SelectItem>
+                </SelectContent>
+              </Select>
               <p className="text-sm text-gray-600 mt-1">O imóvel é atribuído ao agente comercializador.</p>
             </div>
 
@@ -1083,13 +940,15 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
             <div>
               <Label className="text-sm font-semibold mb-2 block">Visibilidade das notas</Label>
-              <select
-                {...register("notes_visibility")}
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="coordinator">Visível para ti e para o teu coordenador</option>
-                <option value="all">Visível para todos</option>
-              </select>
+              <Select defaultValue="coordinator" onValueChange={(value) => setValue("notes_visibility", value)}>
+                <SelectTrigger className="bg-white border-gray-300">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  <SelectItem value="coordinator">Visível para ti e para o teu coordenador</SelectItem>
+                  <SelectItem value="all">Visível para todos</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -1101,7 +960,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </Button>
           <Button 
             type="submit" 
-            disabled={saveMutation.isPending} 
+            disabled={saveMutation.isPending || !isValid || !descriptions.en} 
             className="px-8"
           >
             {saveMutation.isPending ? (
@@ -1113,10 +972,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           </Button>
         </div>
         
-        {saveMutation.isError && (
-          <div className="text-sm text-red-600 text-right mt-2">
-            <p className="font-semibold">Erro ao guardar. Por favor, tente novamente.</p>
-          </div>
+        {!isValid && (
+          <p className="text-sm text-red-600 text-right mt-2">
+            Por favor, preencha todos os campos obrigatórios
+          </p>
         )}
       </form>
     </div>

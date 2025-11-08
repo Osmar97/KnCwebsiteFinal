@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const propertySchema = z.object({
-  title: z.string().optional().default(""),
-  property_type: z.string().optional().default(""),
-  city: z.string().optional().default(""),
-  location: z.string().optional().default(""),
+  title: z.string().min(1, "Título é obrigatório"),
+  property_type: z.string().min(1, "Tipo de imóvel é obrigatório"),
+  city: z.string().min(1, "Localidade é obrigatória"),
+  location: z.string().min(1, "Nome da rua é obrigatório"),
   street_number: z.string().optional(),
   no_street_number: z.boolean().optional(),
   block: z.string().optional(),
@@ -12,7 +12,7 @@ export const propertySchema = z.object({
   urbanization_name: z.string().optional(),
   operation_sale: z.boolean().optional(),
   operation_rent: z.boolean().optional(),
-  price: z.number().optional().default(0),
+  price: z.number().min(0, "Preço deve ser maior que 0").optional(),
   transaction_type: z.string().default("Comprar"),
   condition: z.string().optional(),
   construction_area: z.number().optional(),
