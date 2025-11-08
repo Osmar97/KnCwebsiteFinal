@@ -58,6 +58,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData): Promise<string> => {
+      console.log("Starting save mutation with data:", data);
+      console.log("Images:", imageUrls);
+      console.log("Descriptions:", descriptions);
+      
       const propertyData = {
         ...data,
         images: imageUrls,
@@ -71,44 +75,60 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         descriptions: descriptions,
       };
 
+      console.log("Property data to save:", propertyData);
+
       if (property) {
+        console.log("Updating existing property:", property.id);
         const { error } = await supabase
           .from("properties" as any)
           .update(propertyData)
           .eq("id", property.id);
-        if (error) throw error;
+        if (error) {
+          console.error("Update error:", error);
+          throw error;
+        }
+        console.log("Property updated successfully");
         return property.id as string;
       } else {
+        console.log("Creating new property");
         const { data: newProperty, error } = await supabase
           .from("properties" as any)
           .insert([propertyData])
           .select()
           .single();
-        if (error) throw error;
+        
+        if (error) {
+          console.error("Insert error:", error);
+          throw error;
+        }
+        
+        console.log("New property created:", newProperty);
         return (newProperty as any).id as string;
       }
     },
     onSuccess: (propertyId) => {
+      console.log("Save successful, property ID:", propertyId);
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
       toast({ 
         title: "Imóvel guardado com sucesso",
-        description: property ? "O imóvel foi atualizado" : "O imóvel foi criado e a página está pronta"
+        description: property ? "O imóvel foi atualizado" : "Redirecionando para a página do imóvel..."
       });
       
       // Redirect to the property detail page
       if (!property) {
+        console.log("Navigating to property page:", `/properties/${propertyId}`);
         setTimeout(() => {
           navigate(`/properties/${propertyId}`);
-        }, 1000);
+        }, 1500);
       } else {
         onClose();
       }
     },
-    onError: (error) => {
-      console.error(error);
+    onError: (error: any) => {
+      console.error("Save mutation error:", error);
       toast({ 
         title: "Erro ao guardar imóvel", 
-        description: "Por favor, tente novamente",
+        description: error?.message || "Por favor, tente novamente",
         variant: "destructive" 
       });
     },
@@ -291,7 +311,17 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit((data) => saveMutation.mutate(data))} className="container mx-auto px-4 space-y-6">
+      <form onSubmit={handleSubmit((data) => {
+        console.log("Form submitted with data:", data);
+        saveMutation.mutate(data);
+      }, (errors) => {
+        console.log("Form validation errors:", errors);
+        toast({
+          title: "Erro de validação",
+          description: "Por favor, verifique os campos do formulário",
+          variant: "destructive"
+        });
+      })} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel</h2>
