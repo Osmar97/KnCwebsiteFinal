@@ -64,17 +64,39 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       console.log("Images:", imageUrls);
       console.log("Descriptions:", descriptions);
       
+      // Only include fields that exist in the database
       const propertyData = {
-        ...data,
+        title: data.title || "",
+        property_type: data.property_type || "",
+        city: data.city || "",
+        location: data.location || "",
+        price: Number(data.price) || 0,
+        transaction_type: data.transaction_type || "Comprar",
+        condition: data.condition || "",
+        construction_area: Number(data.construction_area) || 0,
+        private_area: Number(data.private_area) || 0,
+        lot_area: Number(data.lot_area) || 0,
+        energy_class: data.energy_class || "",
+        heating_type: data.heating_type || "",
+        building_year: Number(data.building_year) || 0,
+        built_in_wardrobes: data.built_in_wardrobes || false,
+        air_conditioning: data.air_conditioning || false,
+        parking: data.parking || false,
+        storage: data.storage || false,
+        pool: data.pool || false,
+        garden: data.garden || false,
+        elevator: data.elevator || false,
+        balcony_terrace: data.balcony_terrace || false,
+        adapted_house: data.adapted_house || false,
+        luxury_house: data.luxury_house || false,
+        sea_view: data.sea_view || false,
+        bank_property: data.bank_property || false,
         images: imageUrls,
-        pdf_urls: pdfUrls,
-        video_urls: videoUrls,
         bedrooms: bedroomCount.toString(),
         bathrooms: bathroomCount,
-        floors: floorCount,
         description: descriptions.pt || descriptions.en || "",
         description_en: descriptions.en || "",
-        descriptions: descriptions,
+        status: "active",
       };
 
       console.log("Property data to save:", propertyData);
