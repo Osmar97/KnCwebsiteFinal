@@ -161,7 +161,14 @@ const PropertyDetail = () => {
           </div>
           {property.property_type === "Apartamento" && property.floor && (
             <div className="flex items-center gap-2">
-              <span>Floor {property.floor}{property.elevator ? " with lift" : " without lift"}</span>
+              <span>
+                {property.floor === "ground" 
+                  ? "Ground floor" 
+                  : property.floor === "9+" 
+                    ? "9th floor or higher"
+                    : `${property.floor}${property.floor === "1" ? "st" : property.floor === "2" ? "nd" : property.floor === "3" ? "rd" : "th"} floor`}
+                {property.elevator ? " • with lift" : " • without lift"}
+              </span>
             </div>
           )}
         </div>

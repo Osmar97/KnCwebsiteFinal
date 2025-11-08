@@ -28,7 +28,58 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     resolver: zodResolver(propertySchema),
     mode: "onChange",
     reValidateMode: "onSubmit",
-    defaultValues: property || {
+    defaultValues: property ? {
+      title: property.title || "",
+      location: property.location || "",
+      city: property.city || "",
+      street_number: property.street_number || "",
+      no_street_number: property.no_street_number || false,
+      block: property.block || "",
+      door: property.door || "",
+      urbanization_name: property.urbanization_name || "",
+      transaction_type: property.transaction_type || "Comprar",
+      property_type: property.property_type || "",
+      price: property.price || 0,
+      operation_sale: property.operation_sale || false,
+      operation_rent: property.operation_rent || false,
+      condition: property.condition || "",
+      construction_area: property.construction_area || 0,
+      private_area: property.private_area || 0,
+      lot_area: property.lot_area || 0,
+      energy_class: property.energy_class || "",
+      heating_type: property.heating_type || "",
+      building_year: property.building_year || 0,
+      orientation_north: property.orientation_north || false,
+      orientation_south: property.orientation_south || false,
+      orientation_east: property.orientation_east || false,
+      orientation_west: property.orientation_west || false,
+      built_in_wardrobes: property.built_in_wardrobes || false,
+      air_conditioning: property.air_conditioning || false,
+      terrace: property.terrace || false,
+      balcony: property.balcony || false,
+      parking: property.parking || false,
+      storage: property.storage || false,
+      pool: property.pool || false,
+      garden: property.garden || false,
+      elevator: property.elevator || false,
+      balcony_terrace: property.balcony_terrace || false,
+      adapted_house: property.adapted_house || false,
+      luxury_house: property.luxury_house || false,
+      sea_view: property.sea_view || false,
+      adapted_exterior: property.adapted_exterior || false,
+      adapted_wheelchair: property.adapted_wheelchair || false,
+      bank_property: property.bank_property || false,
+      floor: property.floor || "",
+      is_top_floor: property.is_top_floor || false,
+      penthouse: property.penthouse || false,
+      t0: property.t0 || false,
+      duplex: property.duplex || false,
+      agent_captador: property.agent_captador || "",
+      agent_comercializador: property.agent_comercializador || "",
+      internal_reference: property.internal_reference || "",
+      private_notes: property.private_notes || "",
+      notes_visibility: property.notes_visibility || "",
+    } : {
       title: "",
       location: "",
       city: "",
@@ -40,11 +91,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   const propertyType = watch("property_type");
   const [descriptions, setDescriptions] = useState<Record<string, string>>({
+    pt: property?.description || "",
     en: property?.description_en || ""
   });
-  const [currentLang, setCurrentLang] = useState("en");
+  const [currentLang, setCurrentLang] = useState("pt");
   const [additionalLangs, setAdditionalLangs] = useState<string[]>([]);
-  const [bedroomCount, setBedroomCount] = useState(property?.bedrooms || 0);
+  const [bedroomCount, setBedroomCount] = useState(property?.bedrooms ? parseInt(property.bedrooms) : 0);
   const [floorCount, setFloorCount] = useState(property?.floors || 0);
   const [bathroomCount, setBathroomCount] = useState(property?.bathrooms || 0);
   const [isTranslating, setIsTranslating] = useState(false);
