@@ -61,10 +61,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData): Promise<string> => {
       console.log("Starting save mutation with data:", data);
-      console.log("Images:", imageUrls);
-      console.log("Descriptions:", descriptions);
       
-      // Only include fields that exist in the database
+      // Only include fields that actually exist in the properties table
       const propertyData = {
         title: data.title || "",
         property_type: data.property_type || "",
@@ -73,12 +71,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         price: Number(data.price) || 0,
         transaction_type: data.transaction_type || "Comprar",
         condition: data.condition || "",
-        construction_area: Number(data.construction_area) || 0,
-        private_area: Number(data.private_area) || 0,
-        lot_area: Number(data.lot_area) || 0,
-        energy_class: data.energy_class || "",
-        heating_type: data.heating_type || "",
-        building_year: Number(data.building_year) || 0,
+        construction_area: Number(data.construction_area) || null,
+        private_area: Number(data.private_area) || null,
         built_in_wardrobes: data.built_in_wardrobes || false,
         air_conditioning: data.air_conditioning || false,
         parking: data.parking || false,
@@ -90,12 +84,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         adapted_house: data.adapted_house || false,
         luxury_house: data.luxury_house || false,
         sea_view: data.sea_view || false,
-        bank_property: data.bank_property || false,
         images: imageUrls,
         bedrooms: bedroomCount.toString(),
-        bathrooms: bathroomCount,
+        bathrooms: bathroomCount || null,
         description: descriptions.pt || descriptions.en || "",
-        description_en: descriptions.en || "",
         status: "active",
       };
 
