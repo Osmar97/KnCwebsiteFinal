@@ -23,8 +23,8 @@ export const Navigation = () => {
   const darkBackgroundPages = ['/', '/services', '/properties'];
   const isDarkBackground = darkBackgroundPages.includes(location.pathname);
   
-  // Keep navbar static on properties page
-  const isPropertiesPage = location.pathname === '/properties';
+  // Keep navbar static on properties page and property detail pages
+  const isPropertiesPage = location.pathname === '/properties' || location.pathname.startsWith('/properties/');
 
   useEffect(() => {
     const handleScroll = () => {
