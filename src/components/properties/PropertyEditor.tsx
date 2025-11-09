@@ -55,14 +55,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       orientation_west: property.orientation_west || false,
       built_in_wardrobes: property.built_in_wardrobes || false,
       air_conditioning: property.air_conditioning || false,
-      terrace: property.terrace || false,
-      balcony: property.balcony || false,
+      balcony_terrace: property.balcony_terrace || false,
       parking: property.parking || false,
       storage: property.storage || false,
       pool: property.pool || false,
       garden: property.garden || false,
       elevator: property.elevator || false,
-      balcony_terrace: property.balcony_terrace || false,
       adapted_house: property.adapted_house || false,
       luxury_house: property.luxury_house || false,
       sea_view: property.sea_view || false,
@@ -139,14 +137,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         orientation_west: data.orientation_west || false,
         built_in_wardrobes: data.built_in_wardrobes || false,
         air_conditioning: data.air_conditioning || false,
-        terrace: data.terrace || false,
-        balcony: data.balcony || false,
+        balcony_terrace: data.balcony_terrace || false,
         parking: data.parking || false,
         storage: data.storage || false,
         pool: data.pool || false,
         garden: data.garden || false,
         elevator: data.elevator || false,
-        balcony_terrace: data.balcony_terrace || false,
         adapted_house: data.adapted_house || false,
         luxury_house: data.luxury_house || false,
         sea_view: data.sea_view || false,
@@ -793,12 +789,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                     <label htmlFor="air_conditioning" className="text-sm">Ar condicionado</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="terrace" {...register("terrace")} />
-                    <label htmlFor="terrace" className="text-sm">Terraço</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="balcony" {...register("balcony")} />
-                    <label htmlFor="balcony" className="text-sm">Varanda</label>
+                    <Checkbox id="balcony_terrace" {...register("balcony_terrace")} />
+                    <label htmlFor="balcony_terrace" className="text-sm">Varanda/Terraço</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox id="parking" {...register("parking")} />
@@ -1209,14 +1201,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 orientation_west: formData.orientation_west || false,
                 built_in_wardrobes: formData.built_in_wardrobes || false,
                 air_conditioning: formData.air_conditioning || false,
-                terrace: formData.terrace || false,
-                balcony: formData.balcony || false,
+                balcony_terrace: formData.balcony_terrace || false,
                 parking: formData.parking || false,
                 storage: formData.storage || false,
                 pool: formData.pool || false,
                 garden: formData.garden || false,
                 elevator: formData.elevator || false,
-                balcony_terrace: formData.balcony_terrace || false,
                 adapted_house: formData.adapted_house || false,
                 luxury_house: formData.luxury_house || false,
                 sea_view: formData.sea_view || false,
