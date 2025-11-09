@@ -28,69 +28,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     resolver: zodResolver(propertySchema),
     mode: "onChange",
     reValidateMode: "onSubmit",
-    defaultValues: property ? {
-      title: property.title || "",
-      location: property.location || "",
-      city: property.city || "",
-      street_number: property.street_number || "",
-      no_street_number: property.no_street_number || false,
-      block: property.block || "",
-      door: property.door || "",
-      urbanization_name: property.urbanization_name || "",
-      transaction_type: property.transaction_type || "Comprar",
-      property_type: property.property_type || "",
-      price: property.price || 0,
-      operation_sale: property.operation_sale !== undefined ? property.operation_sale : true,
-      operation_rent: property.operation_rent || false,
-      condition: property.condition || "",
-      construction_area: property.construction_area || 0,
-      private_area: property.private_area || 0,
-      lot_area: property.lot_area || 0,
-      building_year: property.building_year || 0,
-      heating_type: property.heating_type || "",
-      energy_class: property.energy_class || "",
-      orientation_north: property.orientation_north || false,
-      orientation_south: property.orientation_south || false,
-      orientation_east: property.orientation_east || false,
-      orientation_west: property.orientation_west || false,
-      built_in_wardrobes: property.built_in_wardrobes || false,
-      air_conditioning: property.air_conditioning || false,
-      balcony_terrace: property.balcony_terrace || false,
-      parking: property.parking || false,
-      storage: property.storage || false,
-      pool: property.pool || false,
-      garden: property.garden || false,
-      elevator: property.elevator || false,
-      adapted_house: property.adapted_house || false,
-      luxury_house: property.luxury_house || false,
-      sea_view: property.sea_view || false,
-      floor: property.floor || "",
-      total_floors: property.total_floors || 0,
-      is_top_floor: property.is_top_floor || false,
-      penthouse: property.penthouse || false,
-      t0: property.t0 || false,
-      duplex: property.duplex || false,
-      bathrooms: property.bathrooms || 0,
-      bedrooms: property.bedrooms || "",
-      description: property.description || "",
-      video_url: property.video_url || "",
-      floor_plan_url: property.floor_plan_url || "",
-      virtual_tour_url: property.virtual_tour_url || "",
-      status: property.status || "active",
-      featured: property.featured || false,
-      internal_reference: property.internal_reference || "",
-      private_notes: property.private_notes || "",
-      notes_visibility: property.notes_visibility || "",
-      agent_captador: property.agent_captador || "",
-      agent_comercializador: property.agent_comercializador || "",
-    } : {
-      title: "",
-      location: "",
-      city: "",
-      transaction_type: "Comprar",
-      property_type: "",
-      price: 0,
-    },
   });
 
   const propertyType = watch("property_type");
@@ -109,8 +46,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Reset form when property data changes (e.g., after saving)
+  // Reset form when property data changes or on mount
   useEffect(() => {
+    console.log("PropertyEditor useEffect - property:", property);
     if (property) {
       console.log("Resetting form with property data:", property);
       const formValues = {
@@ -170,6 +108,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         agent_comercializador: property.agent_comercializador || "",
       };
       console.log("Form values for reset:", formValues);
+      
+      // Force reset with new values
       reset(formValues, { keepDefaultValues: false });
       
       // Also update related state
@@ -180,8 +120,70 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setBedroomCount(property.bedrooms ? parseInt(property.bedrooms) : 0);
       setBathroomCount(property.bathrooms || 0);
       setImageUrls(property.images || []);
+    } else {
+      // New property - reset to empty form
+      reset({
+        title: "",
+        location: "",
+        city: "",
+        street_number: "",
+        no_street_number: false,
+        block: "",
+        door: "",
+        urbanization_name: "",
+        transaction_type: "Comprar",
+        property_type: "",
+        price: 0,
+        operation_sale: true,
+        operation_rent: false,
+        condition: "",
+        construction_area: 0,
+        private_area: 0,
+        lot_area: 0,
+        building_year: 0,
+        heating_type: "",
+        energy_class: "",
+        orientation_north: false,
+        orientation_south: false,
+        orientation_east: false,
+        orientation_west: false,
+        built_in_wardrobes: false,
+        air_conditioning: false,
+        balcony_terrace: false,
+        parking: false,
+        storage: false,
+        pool: false,
+        garden: false,
+        elevator: false,
+        adapted_house: false,
+        luxury_house: false,
+        sea_view: false,
+        floor: "",
+        total_floors: 0,
+        is_top_floor: false,
+        penthouse: false,
+        t0: false,
+        duplex: false,
+        bathrooms: 0,
+        bedrooms: "",
+        description: "",
+        video_url: "",
+        floor_plan_url: "",
+        virtual_tour_url: "",
+        status: "active",
+        featured: false,
+        internal_reference: "",
+        private_notes: "",
+        notes_visibility: "",
+        agent_captador: "",
+        agent_comercializador: "",
+      });
+      setDescriptions({ pt: "", en: "" });
+      setBedroomCount(0);
+      setBathroomCount(0);
+      setImageUrls([]);
     }
-  }, [property, reset]);
+  }, [property]);
   const { verifyAddress, isVerifying } = useGeocoding();
   const [imageUrls, setImageUrls] = useState<string[]>(property?.images || []);
   const [pdfUrls, setPdfUrls] = useState<string[]>(property?.pdf_urls || []);
