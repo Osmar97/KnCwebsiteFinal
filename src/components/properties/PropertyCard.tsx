@@ -140,28 +140,31 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             {property.description}
           </p>
 
-          {/* Features Badges */}
+          {/* Features Badges - Show up to 5 most important */}
           <div className="flex flex-wrap gap-2 mb-4 sm:mb-5">
-            {property.sea_view && (
-              <span className="px-2.5 sm:px-3 py-1 bg-gold/10 text-gold text-xs rounded-full font-medium border border-gold/20">
-                Sea view
-              </span>
-            )}
-            {property.luxury_house && (
-              <span className="px-2.5 sm:px-3 py-1 bg-gold/10 text-gold text-xs rounded-full font-medium border border-gold/20">
-                Luxury
-              </span>
-            )}
-            {property.pool && (
-              <span className="px-2.5 sm:px-3 py-1 bg-gold/10 text-gold text-xs rounded-full font-medium border border-gold/20">
-                Pool
-              </span>
-            )}
-            {property.parking && (
-              <span className="px-2.5 sm:px-3 py-1 bg-gold/10 text-gold text-xs rounded-full font-medium border border-gold/20">
-                Parking
-              </span>
-            )}
+            {(() => {
+              const features = [
+                { key: 'sea_view', label: 'Sea view', priority: 1 },
+                { key: 'luxury_house', label: 'Luxury', priority: 2 },
+                { key: 'pool', label: 'Pool', priority: 3 },
+                { key: 'parking', label: 'Parking', priority: 4 },
+                { key: 'balcony_terrace', label: 'Balcony/Terrace', priority: 5 },
+                { key: 'garden', label: 'Garden', priority: 6 },
+                { key: 'air_conditioning', label: 'AC', priority: 7 },
+                { key: 'built_in_wardrobes', label: 'Wardrobes', priority: 8 },
+                { key: 'elevator', label: 'Elevator', priority: 9 },
+                { key: 'storage', label: 'Storage', priority: 10 },
+              ];
+
+              return features
+                .filter(f => property[f.key])
+                .slice(0, 5)
+                .map(f => (
+                  <span key={f.key} className="px-2.5 sm:px-3 py-1 bg-gold/10 text-gold text-xs rounded-full font-medium border border-gold/20">
+                    {f.label}
+                  </span>
+                ));
+            })()}
           </div>
 
           {/* Action Buttons */}
