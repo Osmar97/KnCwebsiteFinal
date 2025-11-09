@@ -55,11 +55,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         title: property.title || "",
         location: property.location || "",
         city: property.city || "",
-        street_number: property.street_number || "",
-        no_street_number: property.no_street_number || false,
-        block: property.block || "",
-        door: property.door || "",
-        urbanization_name: property.urbanization_name || "",
+        street_number: property.street_number ?? "",
+        no_street_number: property.no_street_number ?? false,
+        block: property.block ?? "",
+        door: property.door ?? "",
+        urbanization_name: property.urbanization_name ?? "",
         transaction_type: property.transaction_type || "Comprar",
         property_type: property.property_type || "",
         price: property.price || 0,
@@ -72,27 +72,27 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         building_year: property.building_year || 0,
         heating_type: property.heating_type || "",
         energy_class: property.energy_class || "",
-        orientation_north: property.orientation_north || false,
-        orientation_south: property.orientation_south || false,
-        orientation_east: property.orientation_east || false,
-        orientation_west: property.orientation_west || false,
-        built_in_wardrobes: property.built_in_wardrobes || false,
-        air_conditioning: property.air_conditioning || false,
-        balcony_terrace: property.balcony_terrace || false,
-        parking: property.parking || false,
-        storage: property.storage || false,
-        pool: property.pool || false,
-        garden: property.garden || false,
-        elevator: property.elevator || false,
-        adapted_house: property.adapted_house || false,
-        luxury_house: property.luxury_house || false,
-        sea_view: property.sea_view || false,
+        orientation_north: property.orientation_north ?? false,
+        orientation_south: property.orientation_south ?? false,
+        orientation_east: property.orientation_east ?? false,
+        orientation_west: property.orientation_west ?? false,
+        built_in_wardrobes: property.built_in_wardrobes ?? false,
+        air_conditioning: property.air_conditioning ?? false,
+        balcony_terrace: property.balcony_terrace ?? false,
+        parking: property.parking ?? false,
+        storage: property.storage ?? false,
+        pool: property.pool ?? false,
+        garden: property.garden ?? false,
+        elevator: property.elevator ?? false,
+        adapted_house: property.adapted_house ?? false,
+        luxury_house: property.luxury_house ?? false,
+        sea_view: property.sea_view ?? false,
         floor: property.floor?.toString() || "",
         total_floors: property.total_floors || 0,
-        is_top_floor: property.is_top_floor || false,
-        penthouse: property.penthouse || false,
-        t0: property.t0 || false,
-        duplex: property.duplex || false,
+        is_top_floor: property.is_top_floor ?? false,
+        penthouse: property.penthouse ?? false,
+        t0: property.t0 ?? false,
+        duplex: property.duplex ?? false,
         bathrooms: property.bathrooms || 0,
         bedrooms: property.bedrooms || "",
         description: property.description || "",
@@ -534,7 +534,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <Input {...register("street_number")} className="bg-[#FFFEF0] border-gray-300" />
               </div>
               <div className="flex items-center space-x-2 pb-2">
-                <Checkbox id="no_number" {...register("no_street_number")} />
+                <Checkbox 
+                  id="no_number" 
+                  checked={watch("no_street_number") || false} 
+                  onCheckedChange={(checked) => setValue("no_street_number", checked === true)} 
+                />
                 <label htmlFor="no_number" className="text-sm">Sem número</label>
               </div>
             </div>
@@ -563,11 +567,19 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-6">Operação e preço</h2>
           <div className="space-y-3 mb-6">
             <div className="flex items-center space-x-2">
-              <Checkbox id="operation_sale" {...register("operation_sale")} />
+              <Checkbox 
+                id="operation_sale" 
+                checked={watch("operation_sale") || false} 
+                onCheckedChange={(checked) => setValue("operation_sale", checked === true)} 
+              />
               <label htmlFor="operation_sale" className="text-sm">Venda</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="operation_rent" {...register("operation_rent")} />
+              <Checkbox 
+                id="operation_rent" 
+                checked={watch("operation_rent") || false} 
+                onCheckedChange={(checked) => setValue("operation_rent", checked === true)} 
+              />
               <label htmlFor="operation_rent" className="text-sm">Arrendamento</label>
             </div>
           </div>
@@ -610,7 +622,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               </div>
 
               <div className="flex items-center space-x-2">
-                <Checkbox id="is_top_floor" {...register("is_top_floor")} />
+                <Checkbox 
+                  id="is_top_floor" 
+                  checked={watch("is_top_floor") || false} 
+                  onCheckedChange={(checked) => setValue("is_top_floor", checked === true)} 
+                />
                 <label htmlFor="is_top_floor" className="text-sm">É o último andar do bloco</label>
               </div>
             </div>
@@ -646,28 +662,29 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               <h3 className="text-xl font-semibold mb-4 mt-6">Característica adicional</h3>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="penthouse" {...register("penthouse")} />
+                  <Checkbox 
+                    id="penthouse" 
+                    checked={watch("penthouse") || false} 
+                    onCheckedChange={(checked) => setValue("penthouse", checked === true)} 
+                  />
                   <label htmlFor="penthouse" className="text-sm">Penthouse</label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="t0" {...register("t0")} />
+                  <Checkbox 
+                    id="t0" 
+                    checked={watch("t0") || false} 
+                    onCheckedChange={(checked) => setValue("t0", checked === true)} 
+                  />
                   <label htmlFor="t0" className="text-sm">T0</label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="duplex" {...register("duplex")} />
+                  <Checkbox 
+                    id="duplex" 
+                    checked={watch("duplex") || false} 
+                    onCheckedChange={(checked) => setValue("duplex", checked === true)} 
+                  />
                   <label htmlFor="duplex" className="text-sm">Duplex</label>
                 </div>
-              </div>
-            </>
-          )}
-
-          {/* Category section - show for both types */}
-          {(propertyType === "Casa / Moradia" || propertyType === "Apartamento") && (
-            <>
-              <h3 className="text-xl font-semibold mb-4">Categoria</h3>
-              <div className="flex items-center space-x-2 mb-6">
-                <Checkbox id="bank_property" {...register("bank_property")} />
-                <label htmlFor="bank_property" className="text-sm">Imóvel do banco</label>
               </div>
             </>
           )}
@@ -841,19 +858,35 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Orientação</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="orientation_north" {...register("orientation_north")} />
+                    <Checkbox 
+                      id="orientation_north" 
+                      checked={watch("orientation_north") || false} 
+                      onCheckedChange={(checked) => setValue("orientation_north", checked === true)} 
+                    />
                     <label htmlFor="orientation_north" className="text-sm">Norte</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="orientation_south" {...register("orientation_south")} />
+                    <Checkbox 
+                      id="orientation_south" 
+                      checked={watch("orientation_south") || false} 
+                      onCheckedChange={(checked) => setValue("orientation_south", checked === true)} 
+                    />
                     <label htmlFor="orientation_south" className="text-sm">Sul</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="orientation_east" {...register("orientation_east")} />
+                    <Checkbox 
+                      id="orientation_east" 
+                      checked={watch("orientation_east") || false} 
+                      onCheckedChange={(checked) => setValue("orientation_east", checked === true)} 
+                    />
                     <label htmlFor="orientation_east" className="text-sm">Este</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="orientation_west" {...register("orientation_west")} />
+                    <Checkbox 
+                      id="orientation_west" 
+                      checked={watch("orientation_west") || false} 
+                      onCheckedChange={(checked) => setValue("orientation_west", checked === true)} 
+                    />
                     <label htmlFor="orientation_west" className="text-sm">Oeste</label>
                   </div>
                 </div>
@@ -864,31 +897,59 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Outras características do imóvel</h3>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="built_in_wardrobes" {...register("built_in_wardrobes")} />
+                    <Checkbox 
+                      id="built_in_wardrobes" 
+                      checked={watch("built_in_wardrobes") || false} 
+                      onCheckedChange={(checked) => setValue("built_in_wardrobes", checked === true)} 
+                    />
                     <label htmlFor="built_in_wardrobes" className="text-sm">Armários embutidos</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="air_conditioning" {...register("air_conditioning")} />
+                    <Checkbox 
+                      id="air_conditioning" 
+                      checked={watch("air_conditioning") || false} 
+                      onCheckedChange={(checked) => setValue("air_conditioning", checked === true)} 
+                    />
                     <label htmlFor="air_conditioning" className="text-sm">Ar condicionado</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="balcony_terrace" {...register("balcony_terrace")} />
+                    <Checkbox 
+                      id="balcony_terrace" 
+                      checked={watch("balcony_terrace") || false} 
+                      onCheckedChange={(checked) => setValue("balcony_terrace", checked === true)} 
+                    />
                     <label htmlFor="balcony_terrace" className="text-sm">Varanda/Terraço</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="parking" {...register("parking")} />
+                    <Checkbox 
+                      id="parking" 
+                      checked={watch("parking") || false} 
+                      onCheckedChange={(checked) => setValue("parking", checked === true)} 
+                    />
                     <label htmlFor="parking" className="text-sm">Lugar de garagem</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="storage" {...register("storage")} />
+                    <Checkbox 
+                      id="storage" 
+                      checked={watch("storage") || false} 
+                      onCheckedChange={(checked) => setValue("storage", checked === true)} 
+                    />
                     <label htmlFor="storage" className="text-sm">Arrecadação</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="pool" {...register("pool")} />
+                    <Checkbox 
+                      id="pool" 
+                      checked={watch("pool") || false} 
+                      onCheckedChange={(checked) => setValue("pool", checked === true)} 
+                    />
                     <label htmlFor="pool" className="text-sm">Piscina</label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="garden" {...register("garden")} />
+                    <Checkbox 
+                      id="garden" 
+                      checked={watch("garden") || false} 
+                      onCheckedChange={(checked) => setValue("garden", checked === true)} 
+                    />
                     <label htmlFor="garden" className="text-sm">Jardim</label>
                   </div>
                 </div>
@@ -1155,47 +1216,91 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <h2 className="text-xl font-semibold mb-4">Características</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div className="flex items-center space-x-2">
-              <Checkbox id="air_conditioning" {...register("air_conditioning")} />
+              <Checkbox 
+                id="air_conditioning" 
+                checked={watch("air_conditioning") || false} 
+                onCheckedChange={(checked) => setValue("air_conditioning", checked === true)} 
+              />
               <label htmlFor="air_conditioning" className="text-sm">Ar condicionado</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="built_in_wardrobes" {...register("built_in_wardrobes")} />
+              <Checkbox 
+                id="built_in_wardrobes" 
+                checked={watch("built_in_wardrobes") || false} 
+                onCheckedChange={(checked) => setValue("built_in_wardrobes", checked === true)} 
+              />
               <label htmlFor="built_in_wardrobes" className="text-sm">Roupeiros embutidos</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="elevator" {...register("elevator")} />
+              <Checkbox 
+                id="elevator" 
+                checked={watch("elevator") || false} 
+                onCheckedChange={(checked) => setValue("elevator", checked === true)} 
+              />
               <label htmlFor="elevator" className="text-sm">Elevador</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="balcony_terrace" {...register("balcony_terrace")} />
+              <Checkbox 
+                id="balcony_terrace" 
+                checked={watch("balcony_terrace") || false} 
+                onCheckedChange={(checked) => setValue("balcony_terrace", checked === true)} 
+              />
               <label htmlFor="balcony_terrace" className="text-sm">Varanda/Terraço</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="parking" {...register("parking")} />
+              <Checkbox 
+                id="parking" 
+                checked={watch("parking") || false} 
+                onCheckedChange={(checked) => setValue("parking", checked === true)} 
+              />
               <label htmlFor="parking" className="text-sm">Estacionamento</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="garden" {...register("garden")} />
+              <Checkbox 
+                id="garden" 
+                checked={watch("garden") || false} 
+                onCheckedChange={(checked) => setValue("garden", checked === true)} 
+              />
               <label htmlFor="garden" className="text-sm">Jardim</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="pool" {...register("pool")} />
+              <Checkbox 
+                id="pool" 
+                checked={watch("pool") || false} 
+                onCheckedChange={(checked) => setValue("pool", checked === true)} 
+              />
               <label htmlFor="pool" className="text-sm">Piscina</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="storage" {...register("storage")} />
+              <Checkbox 
+                id="storage" 
+                checked={watch("storage") || false} 
+                onCheckedChange={(checked) => setValue("storage", checked === true)} 
+              />
               <label htmlFor="storage" className="text-sm">Arrecadação</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="adapted_house" {...register("adapted_house")} />
+              <Checkbox 
+                id="adapted_house" 
+                checked={watch("adapted_house") || false} 
+                onCheckedChange={(checked) => setValue("adapted_house", checked === true)} 
+              />
               <label htmlFor="adapted_house" className="text-sm">Casa adaptada</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="luxury_house" {...register("luxury_house")} />
+              <Checkbox 
+                id="luxury_house" 
+                checked={watch("luxury_house") || false} 
+                onCheckedChange={(checked) => setValue("luxury_house", checked === true)} 
+              />
               <label htmlFor="luxury_house" className="text-sm">Casa de luxo</label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="sea_view" {...register("sea_view")} />
+              <Checkbox 
+                id="sea_view" 
+                checked={watch("sea_view") || false} 
+                onCheckedChange={(checked) => setValue("sea_view", checked === true)} 
+              />
               <label htmlFor="sea_view" className="text-sm">Vista mar</label>
             </div>
           </div>
