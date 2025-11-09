@@ -584,7 +584,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             <div className="mt-8 space-y-4">
               <div className="max-w-md">
                 <Label className="text-sm font-semibold mb-2 block">Andar</Label>
-                <Select value={watch("floor") || ""} onValueChange={(value) => setValue("floor", value)}>
+                <Select value={watch("floor") || undefined} onValueChange={(value) => setValue("floor", value)}>
                   <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                     <SelectValue placeholder="Selecionar opção" />
                   </SelectTrigger>
@@ -793,7 +793,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Classificação do consumo de energia</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
-                  <Select value={watch("energy_class") || ""} onValueChange={(value) => setValue("energy_class", value)}>
+                  <Select value={watch("energy_class") || undefined} onValueChange={(value) => setValue("energy_class", value)}>
                     <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                       <SelectValue placeholder="Seleciona opção" />
                     </SelectTrigger>
@@ -894,7 +894,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Aquecimento</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Tipo de aquecimento</Label>
-                  <Select value={watch("heating_type") || ""} onValueChange={(value) => setValue("heating_type", value)}>
+                  <Select value={watch("heating_type") || undefined} onValueChange={(value) => setValue("heating_type", value)}>
                     <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                       <SelectValue placeholder="Selecionar opção" />
                     </SelectTrigger>
