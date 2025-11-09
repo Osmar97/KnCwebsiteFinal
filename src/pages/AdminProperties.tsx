@@ -50,8 +50,15 @@ const AdminProperties = () => {
     },
   });
 
-  const handleEdit = (property: any) => {
-    setEditingProperty(property);
+  const handleEdit = async (property: any) => {
+    // Fetch fresh property data from database
+    const { data } = await supabase
+      .from("properties" as any)
+      .select("*")
+      .eq("id", property.id)
+      .single();
+    
+    setEditingProperty(data || property);
     setShowList(false);
   };
 
