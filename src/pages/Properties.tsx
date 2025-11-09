@@ -6,14 +6,9 @@ import { Footer } from "@/components/Footer";
 
 import PropertyCard from "@/components/properties/PropertyCard";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useAdmin } from "@/contexts/AdminContext";
+import { Loader2 } from "lucide-react";
 
 const Properties = () => {
-  const navigate = useNavigate();
-  const { isAdminLoggedIn } = useAdmin();
-  
   const [sortBy, setSortBy] = useState("relevance");
 
   const { data: properties, isLoading } = useQuery({
@@ -40,20 +35,9 @@ const Properties = () => {
       <Navigation />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 pt-20 sm:pt-24">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sm:mb-12">
-          <div className="w-full sm:w-auto">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Exclusive Properties</h1>
-            <div className="h-1 w-24 bg-gold"></div>
-          </div>
-          {isAdminLoggedIn && (
-            <Button 
-              onClick={() => navigate("/admin/properties")}
-              className="bg-gold hover:bg-gold-dark text-white w-full sm:w-auto min-h-[44px]"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Property
-            </Button>
-          )}
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Exclusive Properties</h1>
+          <div className="h-1 w-24 bg-gold"></div>
         </div>
 
         <div>
