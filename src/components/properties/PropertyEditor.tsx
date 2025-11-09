@@ -66,9 +66,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       adapted_house: property.adapted_house || false,
       luxury_house: property.luxury_house || false,
       sea_view: property.sea_view || false,
-      adapted_exterior: property.adapted_exterior || false,
-      adapted_wheelchair: property.adapted_wheelchair || false,
-      bank_property: property.bank_property || false,
       floor: property.floor || "",
       is_top_floor: property.is_top_floor || false,
       penthouse: property.penthouse || false,
@@ -153,9 +150,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         adapted_house: data.adapted_house || false,
         luxury_house: data.luxury_house || false,
         sea_view: data.sea_view || false,
-        adapted_exterior: data.adapted_exterior || false,
-        adapted_wheelchair: data.adapted_wheelchair || false,
-        bank_property: data.bank_property || false,
         internal_reference: data.internal_reference || "",
         private_notes: data.private_notes || "",
         notes_visibility: data.notes_visibility || "",
@@ -825,30 +819,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 </div>
               </div>
 
-              {/* Accessibility */}
-              <div className="mt-6">
-                <p className="text-sm mb-3">
-                  Acesso adaptado a pessoas com mobilidade reduzida{" "}
-                  <a href="#" className="text-blue-600">Como saber se está adaptado?</a>
-                </p>
-                <div className="space-y-3">
-                  <div className="flex items-start space-x-2">
-                    <Checkbox id="adapted_exterior" {...register("adapted_exterior")} />
-                    <div className="flex-1">
-                      <label htmlFor="adapted_exterior" className="text-sm block">
-                        Acesso exterior à casa adaptado (rampas, elevador de 6 pessoas...)
-                      </label>
-                      <p className="text-xs text-gray-500">Não indicaste se o imóvel tem elevador</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="adapted_wheelchair" {...register("adapted_wheelchair")} />
-                    <label htmlFor="adapted_wheelchair" className="text-sm">
-                      Adaptado para uso de cadeira de rodas (corredores, portas, barras dobráveis...)
-                    </label>
-                  </div>
-                </div>
-              </div>
 
               {/* Heating Type */}
               <div className="mt-6">
@@ -1250,9 +1220,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 adapted_house: formData.adapted_house || false,
                 luxury_house: formData.luxury_house || false,
                 sea_view: formData.sea_view || false,
-                adapted_exterior: formData.adapted_exterior || false,
-                adapted_wheelchair: formData.adapted_wheelchair || false,
-                bank_property: formData.bank_property || false,
                 internal_reference: formData.internal_reference || "",
                 private_notes: formData.private_notes || "",
                 notes_visibility: formData.notes_visibility || "",
