@@ -22,19 +22,27 @@ export const Navigation = () => {
   // Check if we're on a page with dark background
   const darkBackgroundPages = ['/', '/services', '/properties'];
   const isDarkBackground = darkBackgroundPages.includes(location.pathname);
+  
+  // Keep navbar static on properties page
+  const isPropertiesPage = location.pathname === '/properties';
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      // Show navbar when scrolling up or at top
-      if (currentScrollY < lastScrollY || currentScrollY < 100) {
+      // Don't hide navbar on properties page
+      if (isPropertiesPage) {
         setHidden(false);
-      } 
-      // Hide navbar when scrolling down
-      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setHidden(true);
-        setIsOpen(false); // Close mobile menu when hiding
+      } else {
+        // Show navbar when scrolling up or at top
+        if (currentScrollY < lastScrollY || currentScrollY < 100) {
+          setHidden(false);
+        } 
+        // Hide navbar when scrolling down
+        else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          setHidden(true);
+          setIsOpen(false); // Close mobile menu when hiding
+        }
       }
       
       setScrolled(currentScrollY > 50);
@@ -43,7 +51,7 @@ export const Navigation = () => {
     
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, isPropertiesPage]);
 
   const navItems = [
     { name: "ABOUT", href: "/about" },
