@@ -22,6 +22,7 @@ const PropertyDetail = () => {
   const queryClient = useQueryClient();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("photos");
+  const [selectedLang, setSelectedLang] = useState("pt");
   const [contactForm, setContactForm] = useState({
     email: "",
     name: "",
@@ -245,8 +246,29 @@ const PropertyDetail = () => {
 
             {/* Description */}
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gold">Description</h2>
-              <p className="text-sm sm:text-base text-gray-300 whitespace-pre-wrap">{property.description}</p>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-gold">Description</h2>
+                {property.descriptions && typeof property.descriptions === 'object' && Object.keys(property.descriptions).length > 1 && (
+                  <div className="flex gap-2">
+                    {Object.keys(property.descriptions).map((lang) => (
+                      <Button
+                        key={lang}
+                        size="sm"
+                        variant={selectedLang === lang ? "default" : "outline"}
+                        onClick={() => setSelectedLang(lang)}
+                        className="uppercase"
+                      >
+                        {lang}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="text-sm sm:text-base text-gray-300 whitespace-pre-wrap">
+                {property.descriptions && typeof property.descriptions === 'object' 
+                  ? property.descriptions[selectedLang] || property.description
+                  : property.description}
+              </p>
             </div>
 
             <Separator className="my-6 sm:my-8 bg-gray-800" />
