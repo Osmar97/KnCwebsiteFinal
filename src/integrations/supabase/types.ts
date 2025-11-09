@@ -59,6 +59,8 @@ export type Database = {
           balcony_terrace: boolean | null
           bathrooms: number | null
           bedrooms: string | null
+          block: string | null
+          building_year: number | null
           built_in_wardrobes: boolean | null
           city: string
           condition: string | null
@@ -66,31 +68,47 @@ export type Database = {
           created_at: string
           description: string
           divisions: Json | null
+          door: string | null
           duplex: boolean | null
           elevator: boolean | null
+          energy_class: string | null
           featured: boolean | null
           floor: number | null
           floor_plan_url: string | null
           garden: boolean | null
+          heating_type: string | null
           id: string
           images: string[] | null
+          internal_reference: string | null
           is_top_floor: boolean | null
           location: string
+          lot_area: number | null
           luxury_house: boolean | null
+          no_street_number: boolean | null
+          notes_visibility: string | null
+          operation_rent: boolean | null
+          operation_sale: boolean | null
+          orientation_east: boolean | null
+          orientation_north: boolean | null
+          orientation_south: boolean | null
+          orientation_west: boolean | null
           parking: boolean | null
           penthouse: boolean | null
           pool: boolean | null
           price: number
           private_area: number | null
+          private_notes: string | null
           property_type: string
           sea_view: boolean | null
           status: string | null
           storage: boolean | null
+          street_number: string | null
           t0: boolean | null
           title: string
           total_floors: number | null
           transaction_type: string
           updated_at: string
+          urbanization_name: string | null
           video_url: string | null
           virtual_tour_url: string | null
         }
@@ -102,6 +120,8 @@ export type Database = {
           balcony_terrace?: boolean | null
           bathrooms?: number | null
           bedrooms?: string | null
+          block?: string | null
+          building_year?: number | null
           built_in_wardrobes?: boolean | null
           city: string
           condition?: string | null
@@ -109,31 +129,47 @@ export type Database = {
           created_at?: string
           description: string
           divisions?: Json | null
+          door?: string | null
           duplex?: boolean | null
           elevator?: boolean | null
+          energy_class?: string | null
           featured?: boolean | null
           floor?: number | null
           floor_plan_url?: string | null
           garden?: boolean | null
+          heating_type?: string | null
           id?: string
           images?: string[] | null
+          internal_reference?: string | null
           is_top_floor?: boolean | null
           location: string
+          lot_area?: number | null
           luxury_house?: boolean | null
+          no_street_number?: boolean | null
+          notes_visibility?: string | null
+          operation_rent?: boolean | null
+          operation_sale?: boolean | null
+          orientation_east?: boolean | null
+          orientation_north?: boolean | null
+          orientation_south?: boolean | null
+          orientation_west?: boolean | null
           parking?: boolean | null
           penthouse?: boolean | null
           pool?: boolean | null
           price: number
           private_area?: number | null
+          private_notes?: string | null
           property_type: string
           sea_view?: boolean | null
           status?: string | null
           storage?: boolean | null
+          street_number?: string | null
           t0?: boolean | null
           title: string
           total_floors?: number | null
           transaction_type?: string
           updated_at?: string
+          urbanization_name?: string | null
           video_url?: string | null
           virtual_tour_url?: string | null
         }
@@ -145,6 +181,8 @@ export type Database = {
           balcony_terrace?: boolean | null
           bathrooms?: number | null
           bedrooms?: string | null
+          block?: string | null
+          building_year?: number | null
           built_in_wardrobes?: boolean | null
           city?: string
           condition?: string | null
@@ -152,31 +190,47 @@ export type Database = {
           created_at?: string
           description?: string
           divisions?: Json | null
+          door?: string | null
           duplex?: boolean | null
           elevator?: boolean | null
+          energy_class?: string | null
           featured?: boolean | null
           floor?: number | null
           floor_plan_url?: string | null
           garden?: boolean | null
+          heating_type?: string | null
           id?: string
           images?: string[] | null
+          internal_reference?: string | null
           is_top_floor?: boolean | null
           location?: string
+          lot_area?: number | null
           luxury_house?: boolean | null
+          no_street_number?: boolean | null
+          notes_visibility?: string | null
+          operation_rent?: boolean | null
+          operation_sale?: boolean | null
+          orientation_east?: boolean | null
+          orientation_north?: boolean | null
+          orientation_south?: boolean | null
+          orientation_west?: boolean | null
           parking?: boolean | null
           penthouse?: boolean | null
           pool?: boolean | null
           price?: number
           private_area?: number | null
+          private_notes?: string | null
           property_type?: string
           sea_view?: boolean | null
           status?: string | null
           storage?: boolean | null
+          street_number?: string | null
           t0?: boolean | null
           title?: string
           total_floors?: number | null
           transaction_type?: string
           updated_at?: string
+          urbanization_name?: string | null
           video_url?: string | null
           virtual_tour_url?: string | null
         }
