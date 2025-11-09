@@ -104,6 +104,11 @@ export const Navigation = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-background border-border z-50">
                       <DropdownMenuItem asChild>
+                        <Link to="/properties" className="cursor-pointer">
+                          Properties
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
                         <Link to="/admin/properties?add=true" className="cursor-pointer">
                           Add Properties
                         </Link>
