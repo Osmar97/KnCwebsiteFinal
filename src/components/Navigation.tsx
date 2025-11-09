@@ -1,8 +1,15 @@
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from '../assets/logo.png';
+import { useAdmin } from "@/contexts/AdminContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +17,7 @@ export const Navigation = () => {
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
+  const { isAdminLoggedIn } = useAdmin();
 
   // Check if we're on a page with dark background
   const darkBackgroundPages = ['/', '/services', '/properties'];
@@ -85,16 +93,42 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group`}
-              >
-                {item.name}
-                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              // Show dropdown for PROPERTIES when admin is logged in
+              if (item.name === "PROPERTIES" && isAdminLoggedIn) {
+                return (
+                  <DropdownMenu key={item.name}>
+                    <DropdownMenuTrigger className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group flex items-center gap-1`}>
+                      {item.name}
+                      <ChevronDown className="w-3 h-3" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-background border-border z-50">
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/properties?add=true" className="cursor-pointer">
+                          Add Properties
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/properties" className="cursor-pointer">
+                          Manage Properties
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              }
+              
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group`}
+                >
+                  {item.name}
+                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Mobile menu button */}
