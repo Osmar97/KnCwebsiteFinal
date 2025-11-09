@@ -283,100 +283,13 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       console.log("Save successful, property ID:", propertyId);
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
       
-      // If editing existing property, fetch fresh data and stay on the editor
-      if (property) {
-        const { data: updatedProperty } = await supabase
-          .from("properties" as any)
-          .select("*")
-          .eq("id", propertyId)
-          .single();
-        
-        if (updatedProperty) {
-          const freshData = updatedProperty as any;
-          
-          // Reset form with fresh data
-          reset({
-            title: freshData.title || "",
-            location: freshData.location || "",
-            city: freshData.city || "",
-            street_number: freshData.street_number || "",
-            no_street_number: freshData.no_street_number || false,
-            block: freshData.block || "",
-            door: freshData.door || "",
-            urbanization_name: freshData.urbanization_name || "",
-            transaction_type: freshData.transaction_type || "Comprar",
-            property_type: freshData.property_type || "",
-            price: freshData.price || 0,
-            operation_sale: freshData.operation_sale !== undefined ? freshData.operation_sale : true,
-            operation_rent: freshData.operation_rent || false,
-            condition: freshData.condition || "",
-            construction_area: freshData.construction_area || 0,
-            private_area: freshData.private_area || 0,
-            lot_area: freshData.lot_area || 0,
-            building_year: freshData.building_year || 0,
-            heating_type: freshData.heating_type || "",
-            energy_class: freshData.energy_class || "",
-            orientation_north: freshData.orientation_north || false,
-            orientation_south: freshData.orientation_south || false,
-            orientation_east: freshData.orientation_east || false,
-            orientation_west: freshData.orientation_west || false,
-            built_in_wardrobes: freshData.built_in_wardrobes || false,
-            air_conditioning: freshData.air_conditioning || false,
-            balcony_terrace: freshData.balcony_terrace || false,
-            parking: freshData.parking || false,
-            storage: freshData.storage || false,
-            pool: freshData.pool || false,
-            garden: freshData.garden || false,
-            elevator: freshData.elevator || false,
-            adapted_house: freshData.adapted_house || false,
-            luxury_house: freshData.luxury_house || false,
-            sea_view: freshData.sea_view || false,
-            floor: freshData.floor?.toString() || "",
-            total_floors: freshData.total_floors || 0,
-            is_top_floor: freshData.is_top_floor || false,
-            penthouse: freshData.penthouse || false,
-            t0: freshData.t0 || false,
-            duplex: freshData.duplex || false,
-            bathrooms: freshData.bathrooms || 0,
-            bedrooms: freshData.bedrooms || "",
-            description: freshData.description || "",
-            video_url: freshData.video_url || "",
-            floor_plan_url: freshData.floor_plan_url || "",
-            virtual_tour_url: freshData.virtual_tour_url || "",
-            status: freshData.status || "active",
-            featured: freshData.featured || false,
-            internal_reference: freshData.internal_reference || "",
-            private_notes: freshData.private_notes || "",
-            notes_visibility: freshData.notes_visibility || "",
-            agent_captador: freshData.agent_captador || "",
-            agent_comercializador: freshData.agent_comercializador || "",
-          });
-          
-          setDescriptions({
-            pt: freshData.description || "",
-            en: freshData.description_en || ""
-          });
-          setBedroomCount(freshData.bedrooms ? parseInt(freshData.bedrooms) : 0);
-          setBathroomCount(freshData.bathrooms || 0);
-          setImageUrls(freshData.images || []);
-        }
-        
-        toast({ 
-          title: "Imóvel guardado com sucesso",
-          description: "O imóvel foi atualizado"
-        });
-      } else {
-        // For new properties, redirect to detail page
-        toast({ 
-          title: "Imóvel guardado com sucesso",
-          description: "Redirecionando para a página do imóvel..."
-        });
-        
-        console.log("Navigating to property page:", `/properties/${propertyId}`);
-        setTimeout(() => {
-          navigate(`/properties/${propertyId}`);
-        }, 1500);
-      }
+      toast({ 
+        title: "Imóvel guardado com sucesso",
+        description: property ? "O imóvel foi atualizado" : "Novo imóvel criado"
+      });
+      
+      // Always redirect to property management page after save
+      onClose();
     },
     onError: (error: any) => {
       console.error("Save mutation error:", error);
@@ -561,7 +474,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     <div className="min-h-screen bg-gray-50 pb-8">
       <div className="bg-white border-b py-6 mb-6">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold">Novo imóvel</h1>
+          <h1 className="text-3xl font-bold">{property ? property.title : "Novo imóvel"}</h1>
         </div>
       </div>
 
