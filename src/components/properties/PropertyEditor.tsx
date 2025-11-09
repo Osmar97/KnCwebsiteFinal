@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -24,7 +24,7 @@ interface PropertyEditorProps {
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<PropertyFormData>({
+  const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     mode: "onChange",
     reValidateMode: "onSubmit",
@@ -108,6 +108,76 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Reset form when property data changes (e.g., after saving)
+  useEffect(() => {
+    if (property) {
+      reset({
+        title: property.title || "",
+        location: property.location || "",
+        city: property.city || "",
+        street_number: property.street_number || "",
+        no_street_number: property.no_street_number || false,
+        block: property.block || "",
+        door: property.door || "",
+        urbanization_name: property.urbanization_name || "",
+        transaction_type: property.transaction_type || "Comprar",
+        property_type: property.property_type || "",
+        price: property.price || 0,
+        operation_sale: property.operation_sale !== undefined ? property.operation_sale : true,
+        operation_rent: property.operation_rent || false,
+        condition: property.condition || "",
+        construction_area: property.construction_area || 0,
+        private_area: property.private_area || 0,
+        lot_area: property.lot_area || 0,
+        building_year: property.building_year || 0,
+        heating_type: property.heating_type || "",
+        energy_class: property.energy_class || "",
+        orientation_north: property.orientation_north || false,
+        orientation_south: property.orientation_south || false,
+        orientation_east: property.orientation_east || false,
+        orientation_west: property.orientation_west || false,
+        built_in_wardrobes: property.built_in_wardrobes || false,
+        air_conditioning: property.air_conditioning || false,
+        balcony_terrace: property.balcony_terrace || false,
+        parking: property.parking || false,
+        storage: property.storage || false,
+        pool: property.pool || false,
+        garden: property.garden || false,
+        elevator: property.elevator || false,
+        adapted_house: property.adapted_house || false,
+        luxury_house: property.luxury_house || false,
+        sea_view: property.sea_view || false,
+        floor: property.floor?.toString() || "",
+        total_floors: property.total_floors || 0,
+        is_top_floor: property.is_top_floor || false,
+        penthouse: property.penthouse || false,
+        t0: property.t0 || false,
+        duplex: property.duplex || false,
+        bathrooms: property.bathrooms || 0,
+        bedrooms: property.bedrooms || "",
+        description: property.description || "",
+        video_url: property.video_url || "",
+        floor_plan_url: property.floor_plan_url || "",
+        virtual_tour_url: property.virtual_tour_url || "",
+        status: property.status || "active",
+        featured: property.featured || false,
+        internal_reference: property.internal_reference || "",
+        private_notes: property.private_notes || "",
+        notes_visibility: property.notes_visibility || "",
+        agent_captador: property.agent_captador || "",
+        agent_comercializador: property.agent_comercializador || "",
+      });
+      
+      // Also update related state
+      setDescriptions({
+        pt: property.description || "",
+        en: property.description_en || ""
+      });
+      setBedroomCount(property.bedrooms ? parseInt(property.bedrooms) : 0);
+      setBathroomCount(property.bathrooms || 0);
+    }
+  }, [property, reset]);
   const { verifyAddress, isVerifying } = useGeocoding();
   const [imageUrls, setImageUrls] = useState<string[]>(property?.images || []);
   const [pdfUrls, setPdfUrls] = useState<string[]>(property?.pdf_urls || []);
