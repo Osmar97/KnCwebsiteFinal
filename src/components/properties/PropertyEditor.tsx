@@ -427,10 +427,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     
     setIsTranslating(true);
     try {
-      // Only translate if English description exists
-      if (descriptions.en && descriptions.en.trim()) {
+      // Translate from the current language if it has content
+      const sourceText = descriptions[currentLang];
+      if (sourceText && sourceText.trim()) {
         const { data, error } = await supabase.functions.invoke("translate-text", {
-          body: { text: descriptions.en, targetLang: lang },
+          body: { text: sourceText, targetLang: lang },
         });
 
         if (error) throw error;
@@ -438,8 +439,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         setDescriptions({ ...descriptions, [lang]: data.translatedText });
         toast({ title: "Tradução concluída" });
       } else {
-        // Add empty language field if no English description
+        // Add empty language field if no source text
         setDescriptions({ ...descriptions, [lang]: "" });
+        toast({ title: "Idioma adicionado sem tradução", description: "Não há texto para traduzir" });
       }
       
       setAdditionalLangs([...additionalLangs, lang]);
