@@ -584,7 +584,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             <div className="mt-8 space-y-4">
               <div className="max-w-md">
                 <Label className="text-sm font-semibold mb-2 block">Andar</Label>
-                <Select defaultValue={property?.floor} onValueChange={(value) => setValue("floor", value)}>
+                <Select value={watch("floor") || ""} onValueChange={(value) => setValue("floor", value)}>
                   <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                     <SelectValue placeholder="Selecionar opção" />
                   </SelectTrigger>
@@ -793,7 +793,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Classificação do consumo de energia</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Classe energética</Label>
-                  <Select defaultValue={property?.energy_class} onValueChange={(value) => setValue("energy_class", value)}>
+                  <Select value={watch("energy_class") || ""} onValueChange={(value) => setValue("energy_class", value)}>
                     <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                       <SelectValue placeholder="Seleciona opção" />
                     </SelectTrigger>
@@ -814,7 +814,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               {/* Conservation State */}
               <div className="mt-6">
                 <h3 className="text-xl font-semibold mb-4">Estado de conservação</h3>
-                <RadioGroup defaultValue={property?.condition || "good"} onValueChange={(value) => setValue("condition", value)} className="space-y-2">
+                <RadioGroup value={watch("condition") || "good"} onValueChange={(value) => setValue("condition", value)} className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="good" id="condition_good" />
                     <label htmlFor="condition_good" className="text-sm cursor-pointer">Bom estado</label>
@@ -894,7 +894,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <h3 className="text-xl font-semibold mb-4">Aquecimento</h3>
                 <div className="max-w-sm">
                   <Label className="text-sm font-semibold mb-2 block">Tipo de aquecimento</Label>
-                  <Select defaultValue={property?.heating_type} onValueChange={(value) => setValue("heating_type", value)}>
+                  <Select value={watch("heating_type") || ""} onValueChange={(value) => setValue("heating_type", value)}>
                     <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                       <SelectValue placeholder="Selecionar opção" />
                     </SelectTrigger>
@@ -912,7 +912,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
               {propertyType === "Apartamento" && (
                 <div className="mt-6">
                   <h3 className="text-xl font-semibold mb-4">Elevador<span className="text-red-600">*</span></h3>
-                  <RadioGroup defaultValue={property?.elevator ? "yes" : "no"} onValueChange={(value) => setValue("elevator", value === "yes")} className="space-y-2">
+                  <RadioGroup value={watch("elevator") ? "yes" : "no"} onValueChange={(value) => setValue("elevator", value === "yes")} className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="yes" id="elevator_yes" />
                       <label htmlFor="elevator_yes" className="text-sm cursor-pointer">Sim</label>
