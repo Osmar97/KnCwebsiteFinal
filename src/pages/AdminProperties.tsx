@@ -71,6 +71,7 @@ const AdminProperties = () => {
   if (!showList) {
     return (
       <PropertyEditor
+        key={editingProperty?.id || 'new'}
         property={editingProperty}
         onClose={() => {
           setShowList(true);
