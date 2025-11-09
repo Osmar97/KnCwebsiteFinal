@@ -109,11 +109,6 @@ export const Navigation = () => {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/admin/properties?add=true" className="cursor-pointer">
-                          Add Properties
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
                         <Link to="/admin/properties" className="cursor-pointer">
                           Manage Properties
                         </Link>
