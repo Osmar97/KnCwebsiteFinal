@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import PropertyEditor from "@/components/properties/PropertyEditor";
 import { useToast } from "@/hooks/use-toast";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useAdmin } from "@/contexts/AdminContext";
+import { AdminLogin } from "@/components/AdminLogin";
 
 const AdminProperties = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,6 +16,26 @@ const AdminProperties = () => {
   const [editingProperty, setEditingProperty] = useState(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAdminLoggedIn, supabaseUser } = useAdmin();
+  const navigate = useNavigate();
+
+  // Redirect to login if not authenticated
+  if (!isAdminLoggedIn || !supabaseUser) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-3xl font-bold mb-6 text-center">Admin Login Required</h1>
+            <p className="text-center text-muted-foreground mb-8">
+              You must be logged in as an admin to manage properties.
+            </p>
+            <AdminLogin />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const { data: properties, isLoading } = useQuery({
     queryKey: ["admin-properties"],
