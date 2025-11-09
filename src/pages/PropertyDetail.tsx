@@ -256,7 +256,7 @@ const PropertyDetail = () => {
                         size="sm"
                         variant={selectedLang === lang ? "default" : "outline"}
                         onClick={() => setSelectedLang(lang)}
-                        className="uppercase"
+                        className="uppercase text-gold"
                       >
                         {lang}
                       </Button>
