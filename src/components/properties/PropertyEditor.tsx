@@ -112,7 +112,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   // Reset form when property data changes (e.g., after saving)
   useEffect(() => {
     if (property) {
-      reset({
+      console.log("Resetting form with property data:", property);
+      const formValues = {
         title: property.title || "",
         location: property.location || "",
         city: property.city || "",
@@ -167,7 +168,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         notes_visibility: property.notes_visibility || "",
         agent_captador: property.agent_captador || "",
         agent_comercializador: property.agent_comercializador || "",
-      });
+      };
+      console.log("Form values for reset:", formValues);
+      reset(formValues, { keepDefaultValues: false });
       
       // Also update related state
       setDescriptions({
@@ -176,6 +179,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       });
       setBedroomCount(property.bedrooms ? parseInt(property.bedrooms) : 0);
       setBathroomCount(property.bathrooms || 0);
+      setImageUrls(property.images || []);
     }
   }, [property, reset]);
   const { verifyAddress, isVerifying } = useGeocoding();
