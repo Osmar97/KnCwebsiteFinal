@@ -31,9 +31,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   });
 
   const propertyType = watch("property_type");
-  const [descriptions, setDescriptions] = useState<Record<string, string>>({
-    pt: property?.description || "",
-    en: property?.description_en || ""
+  const [descriptions, setDescriptions] = useState<Record<string, string>>(() => {
+    if (property?.descriptions && typeof property.descriptions === 'object') {
+      return property.descriptions;
+    }
+    return { pt: property?.description || "" };
   });
   const [currentLang, setCurrentLang] = useState("pt");
   const [additionalLangs, setAdditionalLangs] = useState<string[]>([]);
@@ -113,10 +115,15 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       reset(formValues, { keepDefaultValues: false });
       
       // Also update related state
-      setDescriptions({
-        pt: property.description || "",
-        en: property.description_en || ""
-      });
+      if (property.descriptions && typeof property.descriptions === 'object') {
+        setDescriptions(property.descriptions);
+        // Set additional languages based on what's in descriptions
+        const langs = Object.keys(property.descriptions).filter(lang => lang !== 'pt');
+        setAdditionalLangs(langs);
+      } else {
+        setDescriptions({ pt: property.description || "" });
+        setAdditionalLangs([]);
+      }
       setBedroomCount(property.bedrooms ? parseInt(property.bedrooms) : 0);
       setBathroomCount(property.bathrooms || 0);
       setImageUrls(property.images || []);
@@ -235,6 +242,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         bathrooms: bathroomCount || null,
         total_floors: data.total_floors ? Number(data.total_floors) : null,
         description: descriptions.pt || descriptions.en || "",
+        descriptions: descriptions,
         video_url: data.video_url || null,
         floor_plan_url: data.floor_plan_url || null,
         virtual_tour_url: data.virtual_tour_url || null,

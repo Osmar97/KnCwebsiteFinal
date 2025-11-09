@@ -67,6 +67,7 @@ export type Database = {
           construction_area: number | null
           created_at: string
           description: string
+          descriptions: Json | null
           divisions: Json | null
           door: string | null
           duplex: boolean | null
@@ -128,6 +129,7 @@ export type Database = {
           construction_area?: number | null
           created_at?: string
           description: string
+          descriptions?: Json | null
           divisions?: Json | null
           door?: string | null
           duplex?: boolean | null
@@ -189,6 +191,7 @@ export type Database = {
           construction_area?: number | null
           created_at?: string
           description?: string
+          descriptions?: Json | null
           divisions?: Json | null
           door?: string | null
           duplex?: boolean | null
