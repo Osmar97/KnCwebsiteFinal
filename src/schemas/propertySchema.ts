@@ -7,7 +7,6 @@ export const propertySchema = z.object({
   location: z.string().optional().default(""),
   street_number: z.string().optional().default(""),
   no_street_number: z.boolean().optional().default(false),
-  block: z.string().optional().default(""),
   door: z.string().optional().default(""),
   urbanization_name: z.string().optional().default(""),
   operation_sale: z.boolean().optional().default(false),
