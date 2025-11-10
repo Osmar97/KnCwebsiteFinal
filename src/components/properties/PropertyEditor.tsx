@@ -46,6 +46,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const [bathroomCount, setBathroomCount] = useState(property?.bathrooms || 0);
   const [isTranslating, setIsTranslating] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [pdfUrls, setPdfUrls] = useState<string[]>([]);
+  const [videoUrls, setVideoUrls] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -129,6 +134,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setBedroomCount(property.bedrooms ? parseInt(property.bedrooms) : 0);
       setBathroomCount(property.bathrooms || 0);
       setImageUrls(property.images || []);
+      setPdfUrls(property.pdf_urls || []);
+      setVideoUrls(property.video_urls || []);
     } else {
       // New property - reset to empty form
       reset({
@@ -191,14 +198,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setBedroomCount(0);
       setBathroomCount(0);
       setImageUrls([]);
+      setPdfUrls([]);
+      setVideoUrls([]);
     }
   }, [property]);
+  
   const { verifyAddress, isVerifying } = useGeocoding();
-  const [imageUrls, setImageUrls] = useState<string[]>(property?.images || []);
-  const [pdfUrls, setPdfUrls] = useState<string[]>(property?.pdf_urls || []);
-  const [videoUrls, setVideoUrls] = useState<string[]>(property?.video_urls || []);
-  const [uploading, setUploading] = useState(false);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData): Promise<string> => {
