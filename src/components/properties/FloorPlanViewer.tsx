@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,20 +18,40 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1.0);
+  const [pageWidth, setPageWidth] = useState<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
     setCurrentPage(1);
   };
 
+  const onPageLoadSuccess = (page: any) => {
+    if (containerRef.current) {
+      const containerWidth = containerRef.current.clientWidth - 32; // padding
+      const containerHeight = containerRef.current.clientHeight - 32;
+      const pageViewport = page.getViewport({ scale: 1 });
+      
+      // Calculate scale to fit both width and height
+      const scaleWidth = containerWidth / pageViewport.width;
+      const scaleHeight = containerHeight / pageViewport.height;
+      const fitScale = Math.min(scaleWidth, scaleHeight, 2); // Max scale of 2
+      
+      setScale(fitScale);
+      setPageWidth(containerWidth);
+    }
+  };
+
   const handlePreviousPdf = () => {
     setCurrentPdfIndex((prev) => (prev - 1 + pdfUrls.length) % pdfUrls.length);
     setCurrentPage(1);
+    setScale(1.0);
   };
 
   const handleNextPdf = () => {
     setCurrentPdfIndex((prev) => (prev + 1) % pdfUrls.length);
     setCurrentPage(1);
+    setScale(1.0);
   };
 
   const handlePreviousPage = () => {
@@ -134,7 +154,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       </div>
 
       {/* PDF Viewer */}
-      <div className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-4">
+      <div ref={containerRef} className="flex-1 overflow-hidden bg-muted/20 flex items-center justify-center p-4">
         <Document
           file={pdfUrls[currentPdfIndex]}
           onLoadSuccess={onDocumentLoadSuccess}
@@ -152,6 +172,8 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
           <Page
             pageNumber={currentPage}
             scale={scale}
+            width={pageWidth || undefined}
+            onLoadSuccess={onPageLoadSuccess}
             renderTextLayer={false}
             renderAnnotationLayer={false}
             className="max-w-full h-auto"
