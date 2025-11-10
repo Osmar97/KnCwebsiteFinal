@@ -54,6 +54,22 @@ const AdminProperties = () => {
     },
   });
 
+  // Show property editor if in edit mode - do this check first
+  if (!showList) {
+    return (
+      <PropertyEditor
+        key={editingProperty?.id || 'new'}
+        property={editingProperty}
+        onClose={() => {
+          setShowList(true);
+          setEditingProperty(null);
+          setSearchParams({});
+          queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
+        }}
+      />
+    );
+  }
+
   // Redirect to login if not authenticated
   if (!isAdminLoggedIn || !supabaseUser) {
     return (
@@ -89,21 +105,6 @@ const AdminProperties = () => {
       deleteMutation.mutate(id);
     }
   };
-
-  if (!showList) {
-    return (
-      <PropertyEditor
-        key={editingProperty?.id || 'new'}
-        property={editingProperty}
-        onClose={() => {
-          setShowList(true);
-          setEditingProperty(null);
-          setSearchParams({});
-          queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
-        }}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-black text-white">
