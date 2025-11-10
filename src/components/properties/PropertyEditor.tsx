@@ -402,10 +402,17 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   };
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("PDF upload triggered");
     const files = e.target.files;
-    if (!files) return;
+    if (!files) {
+      console.log("No files selected");
+      return;
+    }
 
+    console.log("Files selected:", files.length, "User ID:", supabaseUser?.id);
+    
     if (!supabaseUser?.id) {
+      console.error("User not authenticated - supabaseUser:", supabaseUser);
       toast({ title: "Erro: Usuário não autenticado", variant: "destructive" });
       return;
     }
@@ -418,6 +425,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${supabaseUser.id}/${timestamp}_${sanitizedName}`;
       
+      console.log("Uploading PDF to:", fileName);
+      
       const { error } = await supabase.storage
         .from("pdfs")
         .upload(fileName, file);
@@ -426,6 +435,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         console.error("PDF upload error:", error);
         toast({ title: "Erro ao carregar PDF", description: error.message, variant: "destructive" });
       } else {
+        console.log("PDF uploaded successfully");
         const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
         newPdfUrls.push(urlData.publicUrl);
       }
