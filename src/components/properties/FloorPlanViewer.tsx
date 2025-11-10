@@ -41,7 +41,6 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       const fitScale = Math.min(scaleWidth, scaleHeight, 2); // Max scale of 2
       
       setBaseScale(fitScale);
-      setPageWidth(containerWidth);
     }
   };
 
@@ -160,7 +159,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
 
       {/* PDF Viewer */}
       <div ref={containerRef} className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-4">
-        <div className="transition-transform duration-200 ease-out">
+        <div className="transition-all duration-200 ease-out inline-block">
           <Document
             file={pdfUrls[currentPdfIndex]}
             onLoadSuccess={onDocumentLoadSuccess}
@@ -178,11 +177,10 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             <Page
               pageNumber={currentPage}
               scale={scale}
-              width={pageWidth || undefined}
               onLoadSuccess={onPageLoadSuccess}
               renderTextLayer={false}
               renderAnnotationLayer={false}
-              className="max-w-full h-auto shadow-lg"
+              className="shadow-lg"
             />
           </Document>
         </div>
