@@ -55,9 +55,9 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full flex flex-col bg-background">
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 bg-background/95 backdrop-blur p-3 rounded-lg border border-border">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-background border-b border-border">
         <div className="flex items-center gap-2">
           {pdfUrls.length > 1 && (
             <>
@@ -134,17 +134,17 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       </div>
 
       {/* PDF Viewer */}
-      <div className="w-full bg-white rounded-lg border border-border p-4 overflow-auto flex justify-center">
+      <div className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-4">
         <Document
           file={pdfUrls[currentPdfIndex]}
           onLoadSuccess={onDocumentLoadSuccess}
           loading={
-            <div className="flex items-center justify-center h-[600px]">
+            <div className="flex items-center justify-center min-h-[600px]">
               <div className="text-muted-foreground">Loading floor plan...</div>
             </div>
           }
           error={
-            <div className="flex items-center justify-center h-[600px]">
+            <div className="flex items-center justify-center min-h-[600px]">
               <div className="text-destructive">Failed to load floor plan</div>
             </div>
           }
@@ -154,7 +154,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             scale={scale}
             renderTextLayer={false}
             renderAnnotationLayer={false}
-            className="shadow-lg"
+            className="max-w-full h-auto"
           />
         </Document>
       </div>
