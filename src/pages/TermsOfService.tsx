@@ -169,7 +169,7 @@ const TermsOfService = () => {
             <ul className="list-disc pl-6 mb-6 space-y-2">
               <li><strong>By email:</strong> services@kingsncompany.com</li>
               <li><strong>By visiting:</strong> <Link to="/contact" className="text-gold hover:underline">https://kingsncompany.com/contact</Link></li>
-              <li><strong>By phone:</strong> +351 939 953 609</li>
+              <li><strong>By phone:</strong> +351 967 333 803</li>
             </ul>
           </div>
         </div>

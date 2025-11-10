@@ -12,5 +12,5 @@ export const formatPrice = (price: number): string => {
 /**
  * Company contact phone number
  */
-export const CONTACT_PHONE = "+351 939 953 609";
-export const CONTACT_PHONE_LINK = "tel:+351939953609";
+export const CONTACT_PHONE = "+351 967 333 803";
+export const CONTACT_PHONE_LINK = "tel:+351967333803";

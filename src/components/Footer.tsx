@@ -75,10 +75,10 @@ export const Footer = () => {
               <li className="flex items-start space-x-3">
                 <Phone className="w-4 h-4 text-gold mt-1 flex-shrink-0" />
                 <a 
-                  href="tel:+351939953609"
+                  href="tel:+351967333803"
                   className="text-gray-400 text-sm hover:text-gold transition-colors cursor-pointer"
                 >
-                  +351 939 953 609
+                  +351 967 333 803
                 </a>
               </li>
               <li className="flex items-start space-x-3">
@@ -111,7 +111,7 @@ export const Footer = () => {
               </a>
 
               <a 
-                href="https://api.whatsapp.com/send/?phone=351939953609&text=&type=phone_number&app_absent=0" 
+                href="https://api.whatsapp.com/send/?phone=351967333803&text=&type=phone_number&app_absent=0" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center hover:bg-gold hover:text-black transition-all duration-300"

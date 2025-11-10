@@ -64,10 +64,10 @@ export const Contact = () => {
             <div>
               <div className="font-semibold text-white text-lg">Consultation Line</div>
               <a
-                href="tel:+351939953609"
+                href="tel:+351967333803"
                 className="text-gold hover:underline transition text-base"
               >
-                +351 939 953 609
+                +351 967 333 803
               </a>
               <div className="text-gray-400 text-xs mt-1">
                 Available Mon-Fri
