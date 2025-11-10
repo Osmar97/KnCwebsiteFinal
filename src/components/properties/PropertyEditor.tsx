@@ -196,6 +196,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const [pdfUrls, setPdfUrls] = useState<string[]>(property?.pdf_urls || []);
   const [videoUrls, setVideoUrls] = useState<string[]>(property?.video_urls || []);
   const [uploading, setUploading] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData): Promise<string> => {
@@ -369,6 +370,33 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     const newImageUrls = [...imageUrls];
     [newImageUrls[index], newImageUrls[newIndex]] = [newImageUrls[newIndex], newImageUrls[index]];
     setImageUrls(newImageUrls);
+  };
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === dropIndex) return;
+
+    const newImageUrls = [...imageUrls];
+    const draggedItem = newImageUrls[draggedIndex];
+    newImageUrls.splice(draggedIndex, 1);
+    newImageUrls.splice(dropIndex, 0, draggedItem);
+    
+    setImageUrls(newImageUrls);
+    setDraggedIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
   };
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1104,8 +1132,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             <h3 className="font-semibold mb-3">Fotos ({imageUrls.length})</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {imageUrls.map((url, idx) => (
-                <div key={idx} className="relative group">
-                  <img src={url} alt="" className="w-full h-32 object-cover rounded border" />
+                <div 
+                  key={idx} 
+                  className={`relative group cursor-move ${draggedIndex === idx ? 'opacity-50' : ''}`}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, idx)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, idx)}
+                  onDragEnd={handleDragEnd}
+                >
+                  <img src={url} alt="" className="w-full h-32 object-cover rounded border pointer-events-none" />
                   <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     {idx > 0 && (
                       <button
