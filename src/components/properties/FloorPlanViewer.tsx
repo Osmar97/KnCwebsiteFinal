@@ -19,28 +19,29 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [baseScale, setBaseScale] = useState(1.0);
   const [zoomMultiplier, setZoomMultiplier] = useState(1.0);
-  const [pageWidth, setPageWidth] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasCalculatedScale = useRef(false);
 
   const scale = baseScale * zoomMultiplier;
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
     setCurrentPage(1);
+    hasCalculatedScale.current = false;
   };
 
   const onPageLoadSuccess = (page: any) => {
-    if (containerRef.current) {
-      const containerWidth = containerRef.current.clientWidth - 32; // padding
+    if (containerRef.current && !hasCalculatedScale.current) {
+      const containerWidth = containerRef.current.clientWidth - 32;
       const containerHeight = containerRef.current.clientHeight - 32;
       const pageViewport = page.getViewport({ scale: 1 });
       
-      // Calculate scale to fit both width and height
       const scaleWidth = containerWidth / pageViewport.width;
       const scaleHeight = containerHeight / pageViewport.height;
-      const fitScale = Math.min(scaleWidth, scaleHeight, 2); // Max scale of 2
+      const fitScale = Math.min(scaleWidth, scaleHeight, 2);
       
       setBaseScale(fitScale);
+      hasCalculatedScale.current = true;
     }
   };
 
@@ -48,20 +49,24 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setCurrentPdfIndex((prev) => (prev - 1 + pdfUrls.length) % pdfUrls.length);
     setCurrentPage(1);
     setZoomMultiplier(1.0);
+    hasCalculatedScale.current = false;
   };
 
   const handleNextPdf = () => {
     setCurrentPdfIndex((prev) => (prev + 1) % pdfUrls.length);
     setCurrentPage(1);
     setZoomMultiplier(1.0);
+    hasCalculatedScale.current = false;
   };
 
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(1, prev - 1));
+    hasCalculatedScale.current = false;
   };
 
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(numPages, prev + 1));
+    hasCalculatedScale.current = false;
   };
 
   const handleZoomIn = () => {
