@@ -17,9 +17,12 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [currentPdfIndex, setCurrentPdfIndex] = useState(0);
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [scale, setScale] = useState(1.0);
+  const [baseScale, setBaseScale] = useState(1.0);
+  const [zoomMultiplier, setZoomMultiplier] = useState(1.0);
   const [pageWidth, setPageWidth] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const scale = baseScale * zoomMultiplier;
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -37,7 +40,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       const scaleHeight = containerHeight / pageViewport.height;
       const fitScale = Math.min(scaleWidth, scaleHeight, 2); // Max scale of 2
       
-      setScale(fitScale);
+      setBaseScale(fitScale);
       setPageWidth(containerWidth);
     }
   };
@@ -45,13 +48,13 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const handlePreviousPdf = () => {
     setCurrentPdfIndex((prev) => (prev - 1 + pdfUrls.length) % pdfUrls.length);
     setCurrentPage(1);
-    setScale(1.0);
+    setZoomMultiplier(1.0);
   };
 
   const handleNextPdf = () => {
     setCurrentPdfIndex((prev) => (prev + 1) % pdfUrls.length);
     setCurrentPage(1);
-    setScale(1.0);
+    setZoomMultiplier(1.0);
   };
 
   const handlePreviousPage = () => {
@@ -63,11 +66,11 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   };
 
   const handleZoomIn = () => {
-    setScale((prev) => Math.min(3, prev + 0.2));
+    setZoomMultiplier((prev) => Math.min(3, prev + 0.2));
   };
 
   const handleZoomOut = () => {
-    setScale((prev) => Math.max(0.5, prev - 0.2));
+    setZoomMultiplier((prev) => Math.max(0.5, prev - 0.2));
   };
 
   if (!pdfUrls || pdfUrls.length === 0) {
