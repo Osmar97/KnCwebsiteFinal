@@ -43,6 +43,17 @@ const AdminProperties = () => {
     }
   }, [searchParams, properties]);
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("properties" as any).delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
+      toast({ title: "Imóvel eliminado com sucesso" });
+    },
+  });
+
   // Redirect to login if not authenticated
   if (!isAdminLoggedIn || !supabaseUser) {
     return (
@@ -60,17 +71,6 @@ const AdminProperties = () => {
       </div>
     );
   }
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("properties" as any).delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
-      toast({ title: "Imóvel eliminado com sucesso" });
-    },
-  });
 
   const handleEdit = async (property: any) => {
     // Fetch fresh property data from database
