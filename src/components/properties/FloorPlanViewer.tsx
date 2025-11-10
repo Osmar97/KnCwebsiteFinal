@@ -79,29 +79,25 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       {/* Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-background border-b border-border">
         <div className="flex items-center gap-2">
-          {pdfUrls.length > 1 && (
-            <>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handlePreviousPdf}
-                className="h-9 w-9"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <span className="text-sm font-medium min-w-[100px] text-center">
-                Plan {currentPdfIndex + 1} / {pdfUrls.length}
-              </span>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleNextPdf}
-                className="h-9 w-9"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </>
-          )}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleZoomOut}
+            className="h-9 w-9"
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+          <span className="text-sm font-medium min-w-[60px] text-center">
+            {Math.round(scale * 100)}%
+          </span>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleZoomIn}
+            className="h-9 w-9"
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
         </div>
 
         {numPages > 1 && (
@@ -131,25 +127,29 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
         )}
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleZoomOut}
-            className="h-9 w-9"
-          >
-            <ZoomOut className="h-4 w-4" />
-          </Button>
-          <span className="text-sm font-medium min-w-[60px] text-center">
-            {Math.round(scale * 100)}%
-          </span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleZoomIn}
-            className="h-9 w-9"
-          >
-            <ZoomIn className="h-4 w-4" />
-          </Button>
+          {pdfUrls.length > 1 && (
+            <>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handlePreviousPdf}
+                className="h-9 w-9"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-sm font-medium min-w-[100px] text-center">
+                Plan {currentPdfIndex + 1} / {pdfUrls.length}
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleNextPdf}
+                className="h-9 w-9"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
