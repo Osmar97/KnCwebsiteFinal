@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 import { formatPrice } from "@/lib/formatters";
+import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -20,7 +21,6 @@ const PropertyDetail = () => {
   const { isAdminLoggedIn } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("photos");
   const [selectedLang, setSelectedLang] = useState("pt");
   const [contactForm, setContactForm] = useState({
@@ -226,26 +226,7 @@ const PropertyDetail = () => {
           <div className="lg:col-span-2">
             {/* Image Gallery */}
             {activeTab === "photos" && images.length > 0 && (
-              <div className="mb-6 sm:mb-8">
-                <img
-                  src={images[currentImageIndex]}
-                  alt={property.title}
-                  className="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg mb-4"
-                />
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                  {images.map((img: string, idx: number) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`${property.title} ${idx + 1}`}
-                      className={`h-16 sm:h-20 object-cover rounded cursor-pointer ${
-                        idx === currentImageIndex ? "ring-2 ring-primary" : ""
-                      }`}
-                      onClick={() => setCurrentImageIndex(idx)}
-                    />
-                  ))}
-                </div>
-              </div>
+              <PropertyImageCarousel images={images} title={property.title} />
             )}
 
             {/* Description */}
