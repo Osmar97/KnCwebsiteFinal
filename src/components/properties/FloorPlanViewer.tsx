@@ -70,7 +70,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   };
 
   const handleZoomOut = () => {
-    setZoomMultiplier((prev) => Math.max(1.0, prev - 0.2));
+    setZoomMultiplier((prev) => Math.max(0.5, prev - 0.2));
   };
 
   if (!pdfUrls || pdfUrls.length === 0) {
@@ -86,17 +86,19 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             variant="outline"
             size="icon"
             onClick={handleZoomOut}
+            disabled={zoomMultiplier <= 0.5}
             className="h-9 w-9"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
           <span className="text-sm font-medium min-w-[60px] text-center">
-            {Math.round(scale * 100)}%
+            {Math.round(zoomMultiplier * 100)}%
           </span>
           <Button
             variant="outline"
             size="icon"
             onClick={handleZoomIn}
+            disabled={zoomMultiplier >= 3}
             className="h-9 w-9"
           >
             <ZoomIn className="h-4 w-4" />
@@ -157,31 +159,33 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       </div>
 
       {/* PDF Viewer */}
-      <div ref={containerRef} className="flex-1 overflow-hidden bg-muted/20 flex items-center justify-center p-4">
-        <Document
-          file={pdfUrls[currentPdfIndex]}
-          onLoadSuccess={onDocumentLoadSuccess}
-          loading={
-            <div className="flex items-center justify-center min-h-[600px]">
-              <div className="text-muted-foreground">Loading floor plan...</div>
-            </div>
-          }
-          error={
-            <div className="flex items-center justify-center min-h-[600px]">
-              <div className="text-destructive">Failed to load floor plan</div>
-            </div>
-          }
-        >
-          <Page
-            pageNumber={currentPage}
-            scale={scale}
-            width={pageWidth || undefined}
-            onLoadSuccess={onPageLoadSuccess}
-            renderTextLayer={false}
-            renderAnnotationLayer={false}
-            className="max-w-full h-auto"
-          />
-        </Document>
+      <div ref={containerRef} className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-4">
+        <div className="transition-transform duration-200 ease-out">
+          <Document
+            file={pdfUrls[currentPdfIndex]}
+            onLoadSuccess={onDocumentLoadSuccess}
+            loading={
+              <div className="flex items-center justify-center min-h-[600px]">
+                <div className="text-muted-foreground">Loading floor plan...</div>
+              </div>
+            }
+            error={
+              <div className="flex items-center justify-center min-h-[600px]">
+                <div className="text-destructive">Failed to load floor plan</div>
+              </div>
+            }
+          >
+            <Page
+              pageNumber={currentPage}
+              scale={scale}
+              width={pageWidth || undefined}
+              onLoadSuccess={onPageLoadSuccess}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              className="max-w-full h-auto shadow-lg"
+            />
+          </Document>
+        </div>
       </div>
     </div>
   );
