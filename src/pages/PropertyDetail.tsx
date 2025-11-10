@@ -14,6 +14,7 @@ import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 import { formatPrice } from "@/lib/formatters";
 import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
+import PdfViewer from "@/components/properties/PdfViewer";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -235,12 +236,12 @@ const PropertyDetail = () => {
               {activeTab === "plan" && (
                 <div className="animate-in fade-in-50 duration-500">
                   {property.floor_plans && property.floor_plans.length > 0 ? (
-                    <PropertyImageCarousel images={property.floor_plans} title={`${property.title} - Floor Plans`} />
+                    <PdfViewer pdfUrls={property.floor_plans} title={property.title} />
                   ) : property.floor_plan_url ? (
-                    <img 
-                      src={property.floor_plan_url} 
-                      alt="Floor Plan" 
-                      className="w-full h-auto rounded-lg border border-border"
+                    <embed
+                      src={property.floor_plan_url}
+                      type="application/pdf"
+                      className="w-full h-[600px] md:h-[700px] lg:h-[800px] rounded-lg border border-border"
                     />
                   ) : null}
                 </div>
