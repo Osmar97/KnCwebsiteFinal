@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Heart, Video, Image as ImageIcon, Home, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, Video, Image as ImageIcon, Home, Pencil, Trash2, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -178,56 +178,84 @@ const PropertyDetail = () => {
           )}
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 sm:gap-4 mb-6 border-b border-gray-800 overflow-x-auto pb-0 scrollbar-hide">
-          <Button
-            variant={activeTab === "photos" ? "default" : "ghost"}
+        {/* Interactive Media Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
+          <button
             onClick={() => setActiveTab("photos")}
-            className={`rounded-b-none whitespace-nowrap min-h-[44px] flex-shrink-0 ${activeTab === "photos" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
+            className={`flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] ${
+              activeTab === "photos" 
+                ? "border-gold bg-gold/10 text-gold" 
+                : "border-border bg-background hover:border-gold/50 hover:bg-gold/5 text-foreground"
+            }`}
           >
-            <ImageIcon className="w-4 h-4 mr-2" />
-            {images.length} Photos
-          </Button>
-          {property.virtual_tour_url && (
-            <Button
-              variant={activeTab === "tour" ? "default" : "ghost"}
-              onClick={() => setActiveTab("tour")}
-              className={`rounded-b-none whitespace-nowrap min-h-[44px] flex-shrink-0 ${activeTab === "tour" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
-            >
-              3D View
-            </Button>
-          )}
-          {property.video_url && (
-            <Button
-              variant={activeTab === "video" ? "default" : "ghost"}
-              onClick={() => setActiveTab("video")}
-              className={`rounded-b-none whitespace-nowrap min-h-[44px] flex-shrink-0 ${activeTab === "video" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
-            >
-              <Video className="w-4 h-4 mr-2" />
-              Video
-            </Button>
-          )}
+            <ImageIcon className="w-5 h-5 flex-shrink-0" />
+            <span className="font-medium">{images.length} fotos</span>
+          </button>
+
           {property.floor_plan_url && (
-            <Button
-              variant={activeTab === "plan" ? "default" : "ghost"}
+            <button
               onClick={() => setActiveTab("plan")}
-              className={`rounded-b-none whitespace-nowrap min-h-[44px] flex-shrink-0 ${activeTab === "plan" ? "bg-gold text-black hover:bg-gold-light" : "text-gray-400 hover:text-gold hover:bg-gold/10"}`}
+              className={`flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] ${
+                activeTab === "plan" 
+                  ? "border-gold bg-gold/10 text-gold" 
+                  : "border-border bg-background hover:border-gold/50 hover:bg-gold/5 text-foreground"
+              }`}
             >
-              Floor Plan
-            </Button>
+              <FileText className="w-5 h-5 flex-shrink-0" />
+              <span className="font-medium">Plantas</span>
+            </button>
           )}
-          <Button className="ml-auto rounded-b-none bg-gold text-black hover:bg-gold-light whitespace-nowrap min-h-[44px] flex-shrink-0">
-            Contact us
-          </Button>
+
+          {property.video_url && (
+            <button
+              onClick={() => setActiveTab("video")}
+              className={`flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] ${
+                activeTab === "video" 
+                  ? "border-gold bg-gold/10 text-gold" 
+                  : "border-border bg-background hover:border-gold/50 hover:bg-gold/5 text-foreground"
+              }`}
+            >
+              <Video className="w-5 h-5 flex-shrink-0" />
+              <span className="font-medium">Vídeo</span>
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Image Gallery */}
-            {activeTab === "photos" && images.length > 0 && (
-              <PropertyImageCarousel images={images} title={property.title} />
-            )}
+            {/* Media Display Area with Transitions */}
+            <div className="mb-8">
+              {activeTab === "photos" && images.length > 0 && (
+                <div className="animate-in fade-in-50 duration-500">
+                  <PropertyImageCarousel images={images} title={property.title} />
+                </div>
+              )}
+
+              {activeTab === "plan" && property.floor_plan_url && (
+                <div className="animate-in fade-in-50 duration-500">
+                  <img 
+                    src={property.floor_plan_url} 
+                    alt="Floor Plan" 
+                    className="w-full h-auto rounded-lg border border-border"
+                  />
+                </div>
+              )}
+
+              {activeTab === "video" && property.video_url && (
+                <div className="animate-in fade-in-50 duration-500">
+                  <div className="relative w-full pb-[56.25%] bg-black rounded-lg overflow-hidden border border-border">
+                    <video
+                      src={property.video_url}
+                      controls
+                      className="absolute top-0 left-0 w-full h-full"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Description */}
             <div className="mb-6 sm:mb-8">
