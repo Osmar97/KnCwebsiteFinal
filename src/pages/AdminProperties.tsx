@@ -19,24 +19,6 @@ const AdminProperties = () => {
   const { isAdminLoggedIn, supabaseUser } = useAdmin();
   const navigate = useNavigate();
 
-  // Redirect to login if not authenticated
-  if (!isAdminLoggedIn || !supabaseUser) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-md mx-auto">
-            <h1 className="text-3xl font-bold mb-6 text-center">Admin Login Required</h1>
-            <p className="text-center text-muted-foreground mb-8">
-              You must be logged in as an admin to manage properties.
-            </p>
-            <AdminLogin />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const { data: properties, isLoading } = useQuery({
     queryKey: ["admin-properties"],
     queryFn: async () => {
@@ -60,6 +42,24 @@ const AdminProperties = () => {
       }
     }
   }, [searchParams, properties]);
+
+  // Redirect to login if not authenticated
+  if (!isAdminLoggedIn || !supabaseUser) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-3xl font-bold mb-6 text-center">Admin Login Required</h1>
+            <p className="text-center text-muted-foreground mb-8">
+              You must be logged in as an admin to manage properties.
+            </p>
+            <AdminLogin />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
