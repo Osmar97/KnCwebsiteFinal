@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { formatPrice } from "@/lib/formatters";
 import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
 import FloorPlanViewer from "@/components/properties/FloorPlanViewer";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -24,6 +26,7 @@ const PropertyDetail = () => {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("photos");
   const [selectedLang, setSelectedLang] = useState("pt");
+  const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
   const [contactForm, setContactForm] = useState({
     email: "",
     name: "",
@@ -195,12 +198,8 @@ const PropertyDetail = () => {
 
           {((property.floor_plans && property.floor_plans.length > 0) || property.floor_plan_url) && (
             <button
-              onClick={() => setActiveTab("plan")}
-              className={`flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] ${
-                activeTab === "plan" 
-                  ? "border-gold bg-gold/10 text-gold" 
-                  : "border-border bg-background hover:border-gold/50 hover:bg-gold/5 text-foreground"
-              }`}
+              onClick={() => setIsFloorPlanModalOpen(true)}
+              className="flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] border-border bg-background hover:border-gold/50 hover:bg-gold/5 text-foreground"
             >
               <FileText className="w-5 h-5 flex-shrink-0" />
               <span className="font-medium">{property.floor_plans?.length || 1} plantas</span>
@@ -230,16 +229,6 @@ const PropertyDetail = () => {
               {activeTab === "photos" && images.length > 0 && (
                 <div className="animate-in fade-in-50 duration-500">
                   <PropertyImageCarousel images={images} title={property.title} />
-                </div>
-              )}
-
-              {activeTab === "plan" && (
-                <div className="animate-in fade-in-50 duration-500">
-                  {property.floor_plans && property.floor_plans.length > 0 ? (
-                    <FloorPlanViewer pdfUrls={property.floor_plans} title={property.title} />
-                  ) : property.floor_plan_url ? (
-                    <FloorPlanViewer pdfUrls={[property.floor_plan_url]} title={property.title} />
-                  ) : null}
                 </div>
               )}
 
@@ -397,6 +386,26 @@ const PropertyDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Full-Screen Floor Plan Modal */}
+      <Dialog open={isFloorPlanModalOpen} onOpenChange={setIsFloorPlanModalOpen}>
+        <DialogContent className="max-w-none w-screen h-screen p-0 bg-black/95 border-none">
+          <button
+            onClick={() => setIsFloorPlanModalOpen(false)}
+            className="absolute top-4 right-4 z-50 p-2 rounded-full bg-gold/20 hover:bg-gold/30 text-gold transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="w-full h-full">
+            {property.floor_plans && property.floor_plans.length > 0 ? (
+              <FloorPlanViewer pdfUrls={property.floor_plans} title={property.title} />
+            ) : property.floor_plan_url ? (
+              <FloorPlanViewer pdfUrls={[property.floor_plan_url]} title={property.title} />
+            ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
