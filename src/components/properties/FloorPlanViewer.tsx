@@ -70,7 +70,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   };
 
   const handleZoomOut = () => {
-    setZoomMultiplier((prev) => Math.max(0.5, prev - 0.2));
+    setZoomMultiplier((prev) => Math.max(1.0, prev - 0.2));
   };
 
   if (!pdfUrls || pdfUrls.length === 0) {
