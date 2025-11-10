@@ -192,7 +192,7 @@ const PropertyDetail = () => {
             <span className="font-medium">{images.length} fotos</span>
           </button>
 
-          {property.floor_plan_url && (
+          {((property.floor_plans && property.floor_plans.length > 0) || property.floor_plan_url) && (
             <button
               onClick={() => setActiveTab("plan")}
               className={`flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] ${
@@ -202,7 +202,7 @@ const PropertyDetail = () => {
               }`}
             >
               <FileText className="w-5 h-5 flex-shrink-0" />
-              <span className="font-medium">Plantas</span>
+              <span className="font-medium">{property.floor_plans?.length || 1} plantas</span>
             </button>
           )}
 
@@ -232,13 +232,17 @@ const PropertyDetail = () => {
                 </div>
               )}
 
-              {activeTab === "plan" && property.floor_plan_url && (
+              {activeTab === "plan" && (
                 <div className="animate-in fade-in-50 duration-500">
-                  <img 
-                    src={property.floor_plan_url} 
-                    alt="Floor Plan" 
-                    className="w-full h-auto rounded-lg border border-border"
-                  />
+                  {property.floor_plans && property.floor_plans.length > 0 ? (
+                    <PropertyImageCarousel images={property.floor_plans} title={`${property.title} - Floor Plans`} />
+                  ) : property.floor_plan_url ? (
+                    <img 
+                      src={property.floor_plan_url} 
+                      alt="Floor Plan" 
+                      className="w-full h-auto rounded-lg border border-border"
+                    />
+                  ) : null}
                 </div>
               )}
 

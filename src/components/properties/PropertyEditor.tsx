@@ -134,7 +134,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setBedroomCount(property.bedrooms ? parseInt(property.bedrooms) : 0);
       setBathroomCount(property.bathrooms || 0);
       setImageUrls(property.images || []);
-      setPdfUrls(property.pdf_urls || []);
+      setPdfUrls(property.floor_plans || []);
       setVideoUrls(property.video_urls || []);
     } else {
       // New property - reset to empty form
@@ -246,6 +246,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         luxury_house: data.luxury_house || false,
         sea_view: data.sea_view || false,
         images: imageUrls,
+        floor_plans: pdfUrls,
         bedrooms: bedroomCount.toString(),
         bathrooms: bathroomCount || null,
         total_floors: data.total_floors ? Number(data.total_floors) : null,

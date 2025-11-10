@@ -76,6 +76,7 @@ export type Database = {
           featured: boolean | null
           floor: number | null
           floor_plan_url: string | null
+          floor_plans: string[] | null
           garden: boolean | null
           heating_type: string | null
           id: string
@@ -138,6 +139,7 @@ export type Database = {
           featured?: boolean | null
           floor?: number | null
           floor_plan_url?: string | null
+          floor_plans?: string[] | null
           garden?: boolean | null
           heating_type?: string | null
           id?: string
@@ -200,6 +202,7 @@ export type Database = {
           featured?: boolean | null
           floor?: number | null
           floor_plan_url?: string | null
+          floor_plans?: string[] | null
           garden?: boolean | null
           heating_type?: string | null
           id?: string
