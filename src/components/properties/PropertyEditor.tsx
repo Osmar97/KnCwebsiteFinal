@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { useNavigate } from "react-router-dom";
+import { useAdmin } from "@/contexts/AdminContext";
 
 interface PropertyEditorProps {
   property?: any;
@@ -24,6 +25,7 @@ interface PropertyEditorProps {
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const navigate = useNavigate();
+  const { supabaseUser } = useAdmin();
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     mode: "onChange",
@@ -403,17 +405,26 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     const files = e.target.files;
     if (!files) return;
 
+    if (!supabaseUser?.id) {
+      toast({ title: "Erro: Usuário não autenticado", variant: "destructive" });
+      return;
+    }
+
     setUploading(true);
     const newPdfUrls: string[] = [];
 
     for (const file of Array.from(files)) {
-      const fileName = `${Math.random()}.pdf`;
+      const timestamp = Date.now();
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const fileName = `${supabaseUser.id}/${timestamp}_${sanitizedName}`;
+      
       const { error } = await supabase.storage
         .from("pdfs")
         .upload(fileName, file);
 
       if (error) {
-        toast({ title: "Erro ao carregar PDF", variant: "destructive" });
+        console.error("PDF upload error:", error);
+        toast({ title: "Erro ao carregar PDF", description: error.message, variant: "destructive" });
       } else {
         const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
         newPdfUrls.push(urlData.publicUrl);
@@ -428,18 +439,26 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     const files = e.target.files;
     if (!files) return;
 
+    if (!supabaseUser?.id) {
+      toast({ title: "Erro: Usuário não autenticado", variant: "destructive" });
+      return;
+    }
+
     setUploading(true);
     const newVideoUrls: string[] = [];
 
     for (const file of Array.from(files)) {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
+      const timestamp = Date.now();
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const fileName = `${supabaseUser.id}/${timestamp}_${sanitizedName}`;
+      
       const { error } = await supabase.storage
         .from("videos")
         .upload(fileName, file);
 
       if (error) {
-        toast({ title: "Erro ao carregar vídeo", variant: "destructive" });
+        console.error("Video upload error:", error);
+        toast({ title: "Erro ao carregar vídeo", description: error.message, variant: "destructive" });
       } else {
         const { data: urlData } = supabase.storage.from("videos").getPublicUrl(fileName);
         newVideoUrls.push(urlData.publicUrl);
