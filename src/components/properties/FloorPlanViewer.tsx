@@ -74,7 +74,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   };
 
   const handleZoomOut = () => {
-    setZoomMultiplier((prev) => Math.max(0.5, prev - 0.2));
+    setZoomMultiplier((prev) => Math.max(0.2, prev - 0.2));
   };
 
   if (!pdfUrls || pdfUrls.length === 0) {
@@ -84,18 +84,18 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   return (
     <div className="w-full h-full flex flex-col bg-background">
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-background border-b border-border">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 p-2 sm:p-4 bg-background border-b border-border">
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="icon"
             onClick={handleZoomOut}
-            disabled={zoomMultiplier <= 0.5}
-            className="h-9 w-9"
+            disabled={zoomMultiplier <= 0.2}
+            className="h-8 w-8 sm:h-9 sm:w-9"
           >
-            <ZoomOut className="h-4 w-4" />
+            <ZoomOut className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
-          <span className="text-sm font-medium min-w-[60px] text-center">
+          <span className="text-xs sm:text-sm font-medium min-w-[50px] sm:min-w-[60px] text-center">
             {Math.round(zoomMultiplier * 100)}%
           </span>
           <Button
@@ -103,9 +103,9 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             size="icon"
             onClick={handleZoomIn}
             disabled={zoomMultiplier >= 3}
-            className="h-9 w-9"
+            className="h-8 w-8 sm:h-9 sm:w-9"
           >
-            <ZoomIn className="h-4 w-4" />
+            <ZoomIn className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
         </div>
 
@@ -116,11 +116,11 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               size="icon"
               onClick={handlePreviousPage}
               disabled={currentPage <= 1}
-              className="h-9 w-9"
+              className="h-8 w-8 sm:h-9 sm:w-9"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
-            <span className="text-sm font-medium min-w-[80px] text-center">
+            <span className="text-xs sm:text-sm font-medium min-w-[70px] sm:min-w-[80px] text-center">
               Page {currentPage} / {numPages}
             </span>
             <Button
@@ -128,9 +128,9 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               size="icon"
               onClick={handleNextPage}
               disabled={currentPage >= numPages}
-              className="h-9 w-9"
+              className="h-8 w-8 sm:h-9 sm:w-9"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
           </div>
         )}
@@ -142,20 +142,20 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
                 variant="outline"
                 size="icon"
                 onClick={handlePreviousPdf}
-                className="h-9 w-9"
+                className="h-8 w-8 sm:h-9 sm:w-9"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
-              <span className="text-sm font-medium min-w-[100px] text-center">
+              <span className="text-xs sm:text-sm font-medium min-w-[80px] sm:min-w-[100px] text-center">
                 Plan {currentPdfIndex + 1} / {pdfUrls.length}
               </span>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={handleNextPdf}
-                className="h-9 w-9"
+                className="h-8 w-8 sm:h-9 sm:w-9"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </>
           )}
@@ -163,7 +163,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       </div>
 
       {/* PDF Viewer */}
-      <div ref={containerRef} className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-4">
+      <div ref={containerRef} className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-2 sm:p-4">
         <div className="transition-all duration-200 ease-out max-w-full max-h-full">
           <Document
             file={pdfUrls[currentPdfIndex]}
