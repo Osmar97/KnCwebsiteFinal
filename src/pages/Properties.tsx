@@ -43,31 +43,6 @@ const Properties = () => {
         <div>
           {/* Properties Grid */}
           <main>
-            <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4 mb-6 sm:mb-8">
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-                <Button
-                  variant={sortBy === "relevance" ? "default" : "outline"}
-                  onClick={() => setSortBy("relevance")}
-                  className={`min-h-[44px] ${sortBy === "relevance" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}`}
-                >
-                  By relevance
-                </Button>
-                <Button
-                  variant={sortBy === "price_asc" ? "default" : "outline"}
-                  onClick={() => setSortBy("price_asc")}
-                  className={`min-h-[44px] ${sortBy === "price_asc" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}`}
-                >
-                  Cheapest
-                </Button>
-                <Button
-                  variant={sortBy === "recent" ? "default" : "outline"}
-                  onClick={() => setSortBy("recent")}
-                  className={`min-h-[44px] ${sortBy === "recent" ? "bg-gold hover:bg-gold-dark text-white" : "hover:border-gold"}`}
-                >
-                  Most recent
-                </Button>
-              </div>
-            </div>
 
             {isLoading ? (
               <div className="flex justify-center items-center h-64">
