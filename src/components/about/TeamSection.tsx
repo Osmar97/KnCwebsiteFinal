@@ -62,25 +62,16 @@ export const TeamSection = () => {
     },
     {
       id: 4,
-      name: "Danielle",
+      name: "Karen Silva",
       role: "Sales Consultant",
       experience: "",
-      image: "/lovable-uploads/1_Simbolo_Dourado.png", // placeholder
+      image: "/lovable-uploads/Karen.png", // placeholder
       quote:
         "Leading innovative change and creating pathways for sustainable growth in a rapidly evolving world.",
-      linkedin: "#",
-      flagEmoji: "🇺🇸", // USA
-    },
-    {
-      id: 5,
-      name: "Jonathan Ehioghiren",
-      role: "Marketing Assistant",
-      experience: "",
-      image: "/lovable-uploads/1_Simbolo_Dourado.png", // placeholder
-      quote:
-        "Amplifying our brand and connecting with the right audiences through thoughtful storytelling and experimentation.",
-      linkedin: "https://www.linkedin.com/in/osmar-gra%C3%A7a/",
-      flagEmoji: "🇺🇸", // USA
+      linkedin: "https://www.linkedin.com/in/karen-silva-0906a5235/",
+      instagram:
+        "https://www.instagram.com/karenserenaa?igsh=MWM3aDlneW02OHU1dQ==",
+      flagEmoji: "🇦🇴", // Angola
     },
   ];
 
