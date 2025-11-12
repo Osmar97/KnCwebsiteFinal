@@ -43,11 +43,7 @@ const Properties = () => {
         <div>
           {/* Properties Grid */}
           <main>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
-              <p className="text-base sm:text-lg text-gray-300">
-                {properties?.length || 0} Properties found
-              </p>
-              
+            <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4 mb-6 sm:mb-8">
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                 <Button
                   variant={sortBy === "relevance" ? "default" : "outline"}
