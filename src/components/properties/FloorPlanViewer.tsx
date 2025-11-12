@@ -17,7 +17,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [currentPdfIndex, setCurrentPdfIndex] = useState(0);
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [baseScale, setBaseScale] = useState(1.0);
+  const [baseScale, setBaseScale] = useState(0.5);
   const [zoomMultiplier, setZoomMultiplier] = useState(1.0);
   const containerRef = useRef<HTMLDivElement>(null);
   const hasCalculatedScale = useRef(false);
@@ -32,13 +32,13 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
 
   const onPageLoadSuccess = (page: any) => {
     if (containerRef.current && !hasCalculatedScale.current) {
-      const containerWidth = containerRef.current.clientWidth - 32;
-      const containerHeight = containerRef.current.clientHeight - 32;
+      const containerWidth = containerRef.current.clientWidth - 64;
+      const containerHeight = containerRef.current.clientHeight - 64;
       const pageViewport = page.getViewport({ scale: 1 });
       
       const scaleWidth = containerWidth / pageViewport.width;
       const scaleHeight = containerHeight / pageViewport.height;
-      const fitScale = Math.min(scaleWidth, scaleHeight, 2);
+      const fitScale = Math.min(scaleWidth, scaleHeight, 1.5);
       
       setBaseScale(fitScale);
       hasCalculatedScale.current = true;
@@ -164,7 +164,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
 
       {/* PDF Viewer */}
       <div ref={containerRef} className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-4">
-        <div className="transition-all duration-200 ease-out inline-block">
+        <div className="transition-all duration-200 ease-out max-w-full max-h-full">
           <Document
             file={pdfUrls[currentPdfIndex]}
             onLoadSuccess={onDocumentLoadSuccess}
