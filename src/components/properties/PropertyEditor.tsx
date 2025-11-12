@@ -566,7 +566,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel</h2>
             <div className="max-w-md">
-              <Select defaultValue={property?.property_type} onValueChange={(value) => setValue("property_type", value)}>
+              <Select value={watch("property_type")} onValueChange={(value) => setValue("property_type", value)}>
                 <SelectTrigger className="bg-[#FFFEF0] border-gray-300">
                   <SelectValue placeholder="Selecionar opção" />
                 </SelectTrigger>
@@ -1396,7 +1396,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <div className="space-y-4 max-w-md">
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente angariador</Label>
-              <Select defaultValue={property?.agent_captador} onValueChange={(value) => setValue("agent_captador", value)}>
+              <Select value={watch("agent_captador")} onValueChange={(value) => setValue("agent_captador", value)}>
                 <SelectTrigger className="bg-white border-gray-300">
                   <SelectValue placeholder="Selecionar agente" />
                 </SelectTrigger>
@@ -1410,7 +1410,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
             
             <div>
               <Label className="text-sm font-semibold mb-2 block">Agente comercializador</Label>
-              <Select defaultValue={property?.agent_comercializador} onValueChange={(value) => setValue("agent_comercializador", value)}>
+              <Select value={watch("agent_comercializador")} onValueChange={(value) => setValue("agent_comercializador", value)}>
                 <SelectTrigger className="bg-white border-gray-300">
                   <SelectValue placeholder="Selecionar agente" />
                 </SelectTrigger>
