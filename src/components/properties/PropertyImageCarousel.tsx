@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSwipeable } from "react-swipeable";
 
 interface PropertyImageCarouselProps {
   images: string[];
@@ -23,10 +24,19 @@ export const PropertyImageCarousel = ({ images, title }: PropertyImageCarouselPr
     if (e.key === 'ArrowLeft') goToPrevious();
   };
 
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => goToNext(),
+    onSwipedRight: () => goToPrevious(),
+    trackMouse: false,
+    trackTouch: true,
+    preventScrollOnSwipe: true,
+  });
+
   if (images.length === 0) return null;
 
   return (
     <div 
+      {...swipeHandlers}
       className="relative w-full mb-8 group"
       onKeyDown={handleKeyDown}
       tabIndex={0}
