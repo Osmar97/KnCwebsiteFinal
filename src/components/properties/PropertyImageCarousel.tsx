@@ -46,6 +46,7 @@ export const PropertyImageCarousel = ({ images, title }: PropertyImageCarouselPr
         <img
           src={images[currentIndex]}
           alt={`${title} - Image ${currentIndex + 1}`}
+          loading="lazy"
           className="w-full h-full object-cover transition-opacity duration-200"
         />
 
