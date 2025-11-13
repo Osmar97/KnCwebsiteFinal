@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSwipeable } from "react-swipeable";
@@ -10,6 +10,24 @@ interface PropertyImageCarouselProps {
 
 export const PropertyImageCarousel = ({ images, title }: PropertyImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Preload adjacent images for instant navigation
+  useEffect(() => {
+    if (images.length <= 1) return;
+    
+    const preloadImage = (index: number) => {
+      const img = new Image();
+      img.src = images[index];
+    };
+    
+    // Preload next image
+    const nextIndex = (currentIndex + 1) % images.length;
+    preloadImage(nextIndex);
+    
+    // Preload previous image
+    const prevIndex = (currentIndex - 1 + images.length) % images.length;
+    preloadImage(prevIndex);
+  }, [currentIndex, images]);
 
   const goToNext = () => {
     setCurrentIndex((prev) => (prev + 1) % images.length);

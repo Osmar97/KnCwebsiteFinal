@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Phone, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatPrice, CONTACT_PHONE, CONTACT_PHONE_LINK } from "@/lib/formatters";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,6 +15,24 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPhone, setShowPhone] = useState(false);
   const images = property.images || [];
+
+  // Preload adjacent images for instant navigation
+  useEffect(() => {
+    if (images.length <= 1) return;
+    
+    const preloadImage = (index: number) => {
+      const img = new Image();
+      img.src = images[index];
+    };
+    
+    // Preload next image
+    const nextIndex = (currentImageIndex + 1) % images.length;
+    preloadImage(nextIndex);
+    
+    // Preload previous image
+    const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
+    preloadImage(prevIndex);
+  }, [currentImageIndex, images]);
 
   const handleViewPhone = (e: React.MouseEvent) => {
     e.preventDefault();
