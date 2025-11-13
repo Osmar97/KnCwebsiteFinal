@@ -36,7 +36,7 @@ export const PropertyImageCarousel = ({ images, title }: PropertyImageCarouselPr
         <img
           src={images[currentIndex]}
           alt={`${title} - Image ${currentIndex + 1}`}
-          className="w-full h-full object-cover transition-opacity duration-500"
+          className="w-full h-full object-cover transition-opacity duration-200"
         />
 
         {/* Navigation Arrows */}
