@@ -16,20 +16,18 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const [showPhone, setShowPhone] = useState(false);
   const images = property.images || [];
 
-  // Preload adjacent images for instant navigation
+  // Preload adjacent images
   useEffect(() => {
     if (images.length <= 1) return;
-    
+
     const preloadImage = (index: number) => {
       const img = new Image();
       img.src = images[index];
     };
-    
-    // Preload next image
+
     const nextIndex = (currentImageIndex + 1) % images.length;
     preloadImage(nextIndex);
-    
-    // Preload previous image
+
     const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
     preloadImage(prevIndex);
   }, [currentImageIndex, images]);
@@ -68,8 +66,9 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
       onClick={() => navigate(`/properties/${property.id}`)}
     >
       <div className="flex flex-col lg:flex-row">
-        {/* Image Gallery */}
-        <div className="relative w-full lg:w-96 h-64 sm:h-72 lg:h-80 flex-shrink-0 overflow-hidden">
+        
+        {/* IMAGE GALLERY — FIXED (no more white space) */}
+        <div className="relative w-full lg:w-96 aspect-video flex-shrink-0 overflow-hidden">
           {images.length > 0 ? (
             <>
               <img
@@ -78,6 +77,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
+
               {images.length > 1 && (
                 <>
                   <button
@@ -87,6 +87,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
+
                   <button
                     onClick={nextImage}
                     className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 sm:p-2.5 rounded-full shadow-lg transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -94,6 +95,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
+
                   <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 bg-black/80 text-white px-3 py-1.5 rounded-full text-xs font-medium">
                     {currentImageIndex + 1}/{images.length}
                   </div>
@@ -107,7 +109,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           )}
         </div>
 
-        {/* Property Info */}
+        {/* PROPERTY INFO */}
         <div className="flex-1 p-4 sm:p-6 flex flex-col min-w-0">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-3">
             <h3 className="text-xl sm:text-2xl font-semibold text-primary group-hover:text-gold transition-colors line-clamp-2 break-words">
@@ -159,7 +161,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             {property.description}
           </p>
 
-          {/* Features Badges - Show up to 5 most important */}
+          {/* FEATURES BADGES */}
           <div className="flex flex-wrap gap-2 mb-4 sm:mb-5">
             {(() => {
               const features = [
@@ -179,14 +181,17 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                 .filter(f => property[f.key])
                 .slice(0, 5)
                 .map(f => (
-                  <span key={f.key} className="px-2.5 sm:px-3 py-1 bg-gold/10 text-gold text-xs rounded-full font-medium border border-gold/20">
+                  <span
+                    key={f.key}
+                    className="px-2.5 sm:px-3 py-1 bg-gold/10 text-gold text-xs rounded-full font-medium border border-gold/20"
+                  >
                     {f.label}
                   </span>
                 ));
             })()}
           </div>
 
-          {/* Action Buttons */}
+          {/* ACTION BUTTONS */}
           <div className="flex flex-col sm:flex-row gap-3 mt-auto">
             <Button
               className="flex-1 bg-gold hover:bg-gold-dark text-white min-h-[44px]"
@@ -195,6 +200,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               <Phone className="w-4 h-4 mr-2" />
               Contact
             </Button>
+
             <Button
               variant="outline"
               className="flex-1 border-gold text-gold hover:bg-gold hover:text-white min-h-[44px]"
@@ -203,6 +209,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               {showPhone ? CONTACT_PHONE : "View phone"}
             </Button>
           </div>
+
         </div>
       </div>
     </div>
