@@ -287,7 +287,7 @@ const PropertyDetail = () => {
                   {property.private_area && (
                     <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
                       <div className="text-xl sm:text-2xl font-bold text-gold">{property.private_area}m²</div>
-                      <div className="text-xs sm:text-sm text-gray-400">Gross Private Area</div>
+                      <div className="text-xs sm:text-sm text-gray-400">Liveable Area</div>
                     </div>
                   )}
                   {property.construction_area && (
