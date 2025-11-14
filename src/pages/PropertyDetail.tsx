@@ -25,7 +25,7 @@ const PropertyDetail = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("photos");
-  const [selectedLang, setSelectedLang] = useState("pt");
+  const [selectedLang, setSelectedLang] = useState("en");
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
   const [contactForm, setContactForm] = useState({
     email: "",
