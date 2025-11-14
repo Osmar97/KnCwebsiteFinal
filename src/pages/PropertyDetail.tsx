@@ -296,6 +296,12 @@ const PropertyDetail = () => {
                       <div className="text-xs sm:text-sm text-gray-400">Gross Construction Area</div>
                     </div>
                   )}
+                  {property.lot_area && (
+                    <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
+                      <div className="text-xl sm:text-2xl font-bold text-gold">{property.lot_area}m²</div>
+                      <div className="text-xs sm:text-sm text-gray-400">Land Area</div>
+                    </div>
+                  )}
                 </div>
               </div>
 
