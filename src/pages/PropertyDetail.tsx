@@ -17,6 +17,7 @@ import { PropertyImageCarousel } from "@/components/properties/PropertyImageCaro
 import FloorPlanViewer from "@/components/properties/FloorPlanViewer";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
+import { FullscreenGallery } from "@/components/properties/FullscreenGallery";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -27,6 +28,8 @@ const PropertyDetail = () => {
   const [activeTab, setActiveTab] = useState("photos");
   const [selectedLang, setSelectedLang] = useState("en");
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [galleryStartIndex, setGalleryStartIndex] = useState(0);
   const [contactForm, setContactForm] = useState({
     email: "",
     name: "",
@@ -185,15 +188,14 @@ const PropertyDetail = () => {
         {/* Interactive Media Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
           <button
-            onClick={() => setActiveTab("photos")}
-            className={`flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] ${
-              activeTab === "photos" 
-                ? "border-gold bg-gold/10 text-gold" 
-                : "border-border bg-background hover:border-gold/50 hover:bg-gold/5 text-foreground"
-            }`}
+            onClick={() => {
+              setGalleryStartIndex(0);
+              setIsGalleryOpen(true);
+            }}
+            className="flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all duration-300 min-h-[60px] border-border bg-background hover:border-gold/50 hover:bg-gold/5 text-foreground"
           >
             <ImageIcon className="w-5 h-5 flex-shrink-0" />
-            <span className="font-medium">{images.length} fotos</span>
+            <span className="font-medium">{images.length} photos</span>
           </button>
 
           {((property.floor_plans && property.floor_plans.length > 0) || property.floor_plan_url) && (
@@ -226,8 +228,8 @@ const PropertyDetail = () => {
           <div className="lg:col-span-2">
             {/* Media Display Area with Transitions */}
             <div className="mb-8">
-              {activeTab === "photos" && images.length > 0 && (
-                <div className="animate-in fade-in-50 duration-500">
+              {images.length > 0 && (
+                <div className="animate-in fade-in-50 duration-500 cursor-pointer" onClick={() => setIsGalleryOpen(true)}>
                   <PropertyImageCarousel images={images} title={property.title} />
                 </div>
               )}
@@ -392,6 +394,15 @@ const PropertyDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Image Gallery */}
+      <FullscreenGallery
+        images={images}
+        initialIndex={galleryStartIndex}
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        title={property.title}
+      />
 
       {/* Full-Screen Floor Plan Modal */}
       <Dialog open={isFloorPlanModalOpen} onOpenChange={setIsFloorPlanModalOpen}>
