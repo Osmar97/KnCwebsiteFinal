@@ -86,7 +86,11 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   };
 
   if (!pdfUrls || pdfUrls.length === 0) {
-    return null;
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-background">
+        <div className="text-muted-foreground">No floor plans available</div>
+      </div>
+    );
   }
 
   return (
@@ -171,15 +175,15 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       </div>
 
       {/* PDF Viewer */}
-      <div ref={containerRef} className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-2 sm:p-4">
-        <div className="transition-all duration-200 ease-out max-w-full max-h-full">
+      <div ref={containerRef} className="flex-1 overflow-auto bg-background flex items-center justify-center p-2 sm:p-4 min-h-[600px]">
+        <div className="transition-all duration-200 ease-out max-w-full">
           <Document
             file={pdfUrls[currentPdfIndex]}
             onLoadSuccess={onDocumentLoadSuccess}
             onLoadError={onDocumentLoadError}
             loading={
               <div className="flex items-center justify-center min-h-[600px]">
-                <div className="text-muted-foreground">Loading floor plan...</div>
+                <div className="text-foreground text-lg">Loading floor plan...</div>
               </div>
             }
             error={
