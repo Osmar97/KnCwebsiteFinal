@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { formatPrice } from "@/lib/formatters";
 import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
 import FloorPlanViewer from "@/components/properties/FloorPlanViewer";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { FullscreenGallery } from "@/components/properties/FullscreenGallery";
 
@@ -406,7 +406,11 @@ const PropertyDetail = () => {
 
       {/* Full-Screen Floor Plan Modal */}
       <Dialog open={isFloorPlanModalOpen} onOpenChange={setIsFloorPlanModalOpen}>
-        <DialogContent className="max-w-none w-screen h-screen p-0 bg-black/95 border-none">
+        <DialogContent className="max-w-none w-screen h-screen p-0 bg-black/95 border-none" aria-describedby="floor-plan-description">
+          <DialogTitle className="sr-only">Floor Plans - {property.title}</DialogTitle>
+          <DialogDescription id="floor-plan-description" className="sr-only">
+            View and navigate through the floor plans for {property.title}
+          </DialogDescription>
           <button
             onClick={() => setIsFloorPlanModalOpen(false)}
             className="absolute top-4 right-4 z-50 p-2 rounded-full bg-gold/20 hover:bg-gold/30 text-gold transition-colors"
