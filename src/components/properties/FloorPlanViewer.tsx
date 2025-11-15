@@ -23,7 +23,6 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [baseScale, setBaseScale] = useState(0.5);
   const [zoomMultiplier, setZoomMultiplier] = useState(1.0);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const hasCalculatedScale = useRef(false);
 
@@ -33,12 +32,10 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setNumPages(numPages);
     setCurrentPage(1);
     hasCalculatedScale.current = false;
-    setLoadError(null);
   };
 
   const onDocumentLoadError = (error: Error) => {
     console.error("PDF loading error:", error);
-    setLoadError(`Failed to load PDF: ${error.message}`);
   };
 
   const onPageLoadSuccess = (page: any) => {
@@ -61,7 +58,6 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setCurrentPage(1);
     setZoomMultiplier(1.0);
     hasCalculatedScale.current = false;
-    setLoadError(null);
   };
 
   const handleNextPdf = () => {
@@ -69,7 +65,6 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setCurrentPage(1);
     setZoomMultiplier(1.0);
     hasCalculatedScale.current = false;
-    setLoadError(null);
   };
 
   const handlePreviousPage = () => {
@@ -177,38 +172,35 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
 
       {/* PDF Viewer */}
       <div ref={containerRef} className="flex-1 overflow-auto bg-muted/20 flex items-center justify-center p-2 sm:p-4">
-        {loadError ? (
-          <div className="flex flex-col items-center justify-center min-h-[600px] p-8 text-center">
-            <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
-            <div className="text-muted-foreground text-sm max-w-md">{loadError}</div>
-          </div>
-        ) : (
-          <div className="transition-all duration-200 ease-out max-w-full max-h-full">
-            <Document
-              file={pdfUrls[currentPdfIndex]}
-              onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={onDocumentLoadError}
-              options={{
-                cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
-                cMapPacked: true,
-              }}
-              loading={
-                <div className="flex items-center justify-center min-h-[600px]">
-                  <div className="text-muted-foreground">Loading floor plan...</div>
+        <div className="transition-all duration-200 ease-out max-w-full max-h-full">
+          <Document
+            file={pdfUrls[currentPdfIndex]}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            loading={
+              <div className="flex items-center justify-center min-h-[600px]">
+                <div className="text-muted-foreground">Loading floor plan...</div>
+              </div>
+            }
+            error={
+              <div className="flex flex-col items-center justify-center min-h-[600px] p-8 text-center">
+                <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
+                <div className="text-muted-foreground text-sm max-w-md">
+                  Please check your connection and try again.
                 </div>
-              }
-            >
-              <Page
-                pageNumber={currentPage}
-                scale={scale}
-                onLoadSuccess={onPageLoadSuccess}
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
-                className="shadow-lg"
-              />
-            </Document>
-          </div>
-        )}
+              </div>
+            }
+          >
+            <Page
+              pageNumber={currentPage}
+              scale={scale}
+              onLoadSuccess={onPageLoadSuccess}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              className="shadow-lg"
+            />
+          </Document>
+        </div>
       </div>
     </div>
   );
