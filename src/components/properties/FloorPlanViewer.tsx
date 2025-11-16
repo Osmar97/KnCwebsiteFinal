@@ -162,34 +162,37 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
       </div>
 
       {/* PDF Viewer */}
-      <div ref={containerRef} className="flex-1 overflow-auto bg-background flex items-center justify-center p-4">
-        <Document
-          file={pdfUrls[currentPdfIndex]}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
-          loading={
-            <div className="flex items-center justify-center min-h-[600px]">
-              <div className="text-foreground text-lg">Loading floor plan...</div>
-            </div>
-          }
-          error={
-            <div className="flex flex-col items-center justify-center min-h-[600px] p-8 text-center">
-              <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
-              <div className="text-muted-foreground text-sm max-w-md">
-                Please check your connection and try again.
+      <div ref={containerRef} className="flex-1 overflow-auto bg-muted/10 flex items-center justify-center p-4">
+        <div className="w-full h-full flex items-center justify-center">
+          <Document
+            file={pdfUrls[currentPdfIndex]}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            loading={
+              <div className="flex items-center justify-center">
+                <div className="text-foreground text-lg">Loading floor plan...</div>
               </div>
-            </div>
-          }
-        >
-          <Page
-            pageNumber={currentPage}
-            width={containerWidth || undefined}
-            scale={scale}
-            renderTextLayer={false}
-            renderAnnotationLayer={false}
-            className="shadow-lg"
-          />
-        </Document>
+            }
+            error={
+              <div className="flex flex-col items-center justify-center p-8 text-center">
+                <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
+                <div className="text-muted-foreground text-sm max-w-md">
+                  Please check your connection and try again.
+                </div>
+              </div>
+            }
+            className="flex items-center justify-center"
+          >
+            <Page
+              pageNumber={currentPage}
+              width={containerWidth > 0 ? containerWidth : undefined}
+              scale={scale}
+              renderTextLayer={true}
+              renderAnnotationLayer={true}
+              className="shadow-lg"
+            />
+          </Document>
+        </div>
       </div>
     </div>
   );
