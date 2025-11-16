@@ -6,8 +6,8 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 
-// Configure PDF.js worker with CDN fallback
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Configure PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface FloorPlanViewerProps {
   pdfUrls: string[];
@@ -34,14 +34,20 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
+  useEffect(() => {
+    console.log('FloorPlanViewer mounted with PDFs:', pdfUrls);
+    console.log('Current PDF URL:', pdfUrls[currentPdfIndex]);
+  }, [pdfUrls, currentPdfIndex]);
+
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    console.log('PDF loaded successfully, pages:', numPages);
+    console.log('✅ PDF loaded successfully, pages:', numPages);
     setNumPages(numPages);
     setCurrentPage(1);
   };
 
   const onDocumentLoadError = (error: Error) => {
-    console.error("PDF loading error:", error);
+    console.error("❌ PDF loading error:", error);
+    console.error("Failed PDF URL:", pdfUrls[currentPdfIndex]);
   };
 
   const handlePreviousPdf = () => {
@@ -163,36 +169,40 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
 
       {/* PDF Viewer */}
       <div ref={containerRef} className="flex-1 overflow-auto bg-muted/10 flex items-center justify-center p-4">
-        <div className="w-full h-full flex items-center justify-center">
-          <Document
-            file={pdfUrls[currentPdfIndex]}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={onDocumentLoadError}
-            loading={
-              <div className="flex items-center justify-center">
-                <div className="text-foreground text-lg">Loading floor plan...</div>
+        <Document
+          file={pdfUrls[currentPdfIndex]}
+          onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={onDocumentLoadError}
+          options={{
+            cMapUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/cmaps/`,
+            cMapPacked: true,
+            standardFontDataUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/standard_fonts/`,
+          }}
+          loading={
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="text-foreground text-lg">Loading floor plan...</div>
+            </div>
+          }
+          error={
+            <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
+              <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
+              <div className="text-muted-foreground text-sm max-w-md">
+                Please check your connection and try again.
               </div>
-            }
-            error={
-              <div className="flex flex-col items-center justify-center p-8 text-center">
-                <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
-                <div className="text-muted-foreground text-sm max-w-md">
-                  Please check your connection and try again.
-                </div>
-              </div>
-            }
-            className="flex items-center justify-center"
-          >
+            </div>
+          }
+        >
+          {containerWidth > 0 && (
             <Page
               pageNumber={currentPage}
-              width={containerWidth > 0 ? containerWidth : undefined}
+              width={containerWidth}
               scale={scale}
-              renderTextLayer={true}
-              renderAnnotationLayer={true}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
               className="shadow-lg"
             />
-          </Document>
-        </div>
+          )}
+        </Document>
       </div>
     </div>
   );
