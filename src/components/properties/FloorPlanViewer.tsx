@@ -45,15 +45,41 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   }, []);
 
   useEffect(() => {
-    console.log('FloorPlanViewer mounted with PDFs:', pdfUrls);
-    console.log('Current PDF URL:', pdfUrls[currentPdfIndex]);
+    console.log('🔍 FloorPlanViewer - useEffect triggered');
+    console.log('  - pdfUrls:', pdfUrls);
+    console.log('  - pdfUrls type:', typeof pdfUrls);
+    console.log('  - pdfUrls is array:', Array.isArray(pdfUrls));
+    console.log('  - pdfUrls length:', pdfUrls?.length);
+    console.log('  - currentPdfIndex:', currentPdfIndex);
+    console.log('  - Current PDF URL:', pdfUrls[currentPdfIndex]);
+    console.log('  - URL type:', typeof pdfUrls[currentPdfIndex]);
+    
+    // Test if URL is accessible
+    const testUrl = pdfUrls[currentPdfIndex];
+    if (testUrl && typeof testUrl === 'string') {
+      console.log('🌐 Testing PDF URL accessibility...');
+      fetch(testUrl, { method: 'HEAD' })
+        .then(response => {
+          console.log('  ✅ PDF URL accessible, status:', response.status);
+          console.log('  - Content-Type:', response.headers.get('content-type'));
+          console.log('  - Content-Length:', response.headers.get('content-length'));
+        })
+        .catch(err => {
+          console.error('  ❌ PDF URL not accessible:', err);
+        });
+    } else {
+      console.error('  ❌ Invalid URL:', testUrl);
+    }
+    
     setIsLoading(true);
     setError(null);
     setNumPages(0);
   }, [pdfUrls, currentPdfIndex]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    console.log('✅ PDF loaded successfully, pages:', numPages);
+    console.log('✅✅✅ PDF LOADED SUCCESSFULLY! ✅✅✅');
+    console.log('  - Number of pages:', numPages);
+    console.log('  - PDF URL:', pdfUrls[currentPdfIndex]);
     setNumPages(numPages);
     setCurrentPage(1);
     setIsLoading(false);
@@ -61,8 +87,11 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   };
 
   const onDocumentLoadError = (error: Error) => {
-    console.error("❌ PDF loading error:", error);
-    console.error("Failed PDF URL:", pdfUrls[currentPdfIndex]);
+    console.error("❌❌❌ PDF LOADING ERROR! ❌❌❌");
+    console.error("  - Error:", error);
+    console.error("  - Error message:", error.message);
+    console.error("  - Error stack:", error.stack);
+    console.error("  - Failed PDF URL:", pdfUrls[currentPdfIndex]);
     setIsLoading(false);
     setError(`Failed to load PDF: ${error.message}`);
   };
@@ -192,7 +221,11 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             <div className="text-muted-foreground text-sm max-w-md mb-4">
               {error}
             </div>
+            <div className="text-xs text-muted-foreground mb-4 font-mono break-all max-w-2xl">
+              URL: {pdfUrls[currentPdfIndex]}
+            </div>
             <Button onClick={() => {
+              console.log('🔄 Retrying PDF load...');
               setError(null);
               setIsLoading(true);
             }}>
@@ -200,31 +233,44 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             </Button>
           </div>
         ) : (
-          <Document
-            file={pdfUrls[currentPdfIndex]}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={onDocumentLoadError}
-            options={options}
-            loading={
-              <div className="flex items-center justify-center min-h-[400px]">
-                <div className="text-foreground text-lg">Loading floor plan...</div>
-              </div>
-            }
-          >
-            <Page
-              pageNumber={currentPage}
-              width={containerWidth}
-              scale={scale}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-              className="shadow-lg"
+          <>
+            {console.log('📄 Rendering Document component with:', {
+              file: pdfUrls[currentPdfIndex],
+              containerWidth,
+              scale,
+              currentPage
+            })}
+            <Document
+              file={pdfUrls[currentPdfIndex]}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              options={options}
               loading={
                 <div className="flex items-center justify-center min-h-[400px]">
-                  <div className="text-foreground">Rendering page...</div>
+                  <div className="text-foreground text-lg">Loading floor plan...</div>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    Fetching: {pdfUrls[currentPdfIndex]?.substring(0, 50)}...
+                  </div>
                 </div>
               }
-            />
-          </Document>
+            >
+              <Page
+                pageNumber={currentPage}
+                width={containerWidth}
+                scale={scale}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                className="shadow-lg"
+                loading={
+                  <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-foreground">Rendering page {currentPage}...</div>
+                  </div>
+                }
+                onLoadSuccess={() => console.log('✅ Page rendered successfully')}
+                onLoadError={(error) => console.error('❌ Page rendering error:', error)}
+              />
+            </Document>
+          </>
         )}
       </div>
     </div>
