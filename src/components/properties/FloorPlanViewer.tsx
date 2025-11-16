@@ -5,8 +5,9 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-// Configure PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Import PDF.js worker using Vite-friendly URL import:
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 interface FloorPlanViewerProps {
   pdfUrls: string[];
@@ -23,7 +24,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Memoize options to prevent unnecessary reloads
+  // Memoized PDF.js options
   const options = useMemo(() => ({
     cMapUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/cmaps/`,
     cMapPacked: true,
