@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -19,13 +18,24 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1.0);
-  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [containerWidth, setContainerWidth] = useState<number>(800);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Memoize options to prevent unnecessary reloads
+  const options = useMemo(() => ({
+    cMapUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/cmaps/`,
+    cMapPacked: true,
+    standardFontDataUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/standard_fonts/`,
+  }), []);
 
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current) {
-        setContainerWidth(containerRef.current.clientWidth - 32);
+        const width = containerRef.current.clientWidth - 32;
+        console.log('Container width updated:', width);
+        setContainerWidth(width > 0 ? width : 800);
       }
     };
     
@@ -37,17 +47,24 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   useEffect(() => {
     console.log('FloorPlanViewer mounted with PDFs:', pdfUrls);
     console.log('Current PDF URL:', pdfUrls[currentPdfIndex]);
+    setIsLoading(true);
+    setError(null);
+    setNumPages(0);
   }, [pdfUrls, currentPdfIndex]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     console.log('✅ PDF loaded successfully, pages:', numPages);
     setNumPages(numPages);
     setCurrentPage(1);
+    setIsLoading(false);
+    setError(null);
   };
 
   const onDocumentLoadError = (error: Error) => {
     console.error("❌ PDF loading error:", error);
     console.error("Failed PDF URL:", pdfUrls[currentPdfIndex]);
+    setIsLoading(false);
+    setError(`Failed to load PDF: ${error.message}`);
   };
 
   const handlePreviousPdf = () => {
@@ -169,30 +186,31 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
 
       {/* PDF Viewer */}
       <div ref={containerRef} className="flex-1 overflow-auto bg-muted/10 flex items-center justify-center p-4">
-        <Document
-          file={pdfUrls[currentPdfIndex]}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
-          options={{
-            cMapUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/cmaps/`,
-            cMapPacked: true,
-            standardFontDataUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/standard_fonts/`,
-          }}
-          loading={
-            <div className="flex items-center justify-center min-h-[400px]">
-              <div className="text-foreground text-lg">Loading floor plan...</div>
+        {error ? (
+          <div className="flex flex-col items-center justify-center p-8 text-center">
+            <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
+            <div className="text-muted-foreground text-sm max-w-md mb-4">
+              {error}
             </div>
-          }
-          error={
-            <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
-              <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
-              <div className="text-muted-foreground text-sm max-w-md">
-                Please check your connection and try again.
+            <Button onClick={() => {
+              setError(null);
+              setIsLoading(true);
+            }}>
+              Try Again
+            </Button>
+          </div>
+        ) : (
+          <Document
+            file={pdfUrls[currentPdfIndex]}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            options={options}
+            loading={
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-foreground text-lg">Loading floor plan...</div>
               </div>
-            </div>
-          }
-        >
-          {containerWidth > 0 && (
+            }
+          >
             <Page
               pageNumber={currentPage}
               width={containerWidth}
@@ -200,9 +218,14 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               renderTextLayer={false}
               renderAnnotationLayer={false}
               className="shadow-lg"
+              loading={
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <div className="text-foreground">Rendering page...</div>
+                </div>
+              }
             />
-          )}
-        </Document>
+          </Document>
+        )}
       </div>
     </div>
   );
