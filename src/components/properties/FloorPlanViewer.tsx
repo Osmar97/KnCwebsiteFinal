@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import "./FloorPlanViewer.css";
 
 // Configure PDF.js worker from node_modules (Vite-compatible)
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -200,33 +201,31 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             </Button>
           </div>
         ) : (
-          <div className="bg-white p-4 rounded-lg">
-            <Document
-              file={pdfUrls[currentPdfIndex]}
-              onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={onDocumentLoadError}
-              options={options}
+          <Document
+            file={pdfUrls[currentPdfIndex]}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            options={options}
+            loading={
+              <div className="flex flex-col items-center justify-center min-h-[400px] text-foreground">
+                <div className="text-lg mb-2">Loading floor plan...</div>
+              </div>
+            }
+          >
+            <Page
+              pageNumber={currentPage}
+              width={containerWidth}
+              scale={scale}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              className="shadow-lg [&>canvas]:max-w-full [&>canvas]:h-auto"
               loading={
-                <div className="flex flex-col items-center justify-center min-h-[400px] text-foreground">
-                  <div className="text-lg mb-2">Loading floor plan...</div>
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <div className="text-foreground">Rendering page {currentPage}...</div>
                 </div>
               }
-            >
-              <Page
-                pageNumber={currentPage}
-                width={containerWidth}
-                scale={scale}
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
-                className="shadow-lg"
-                loading={
-                  <div className="flex items-center justify-center min-h-[400px]">
-                    <div className="text-foreground">Rendering page {currentPage}...</div>
-                  </div>
-                }
-              />
-            </Document>
-          </div>
+            />
+          </Document>
         )}
       </div>
     </div>
