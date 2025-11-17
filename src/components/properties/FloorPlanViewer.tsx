@@ -60,6 +60,23 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setCurrentPage(1);
     setIsLoading(false);
     setError(null);
+    
+    // Debug canvas after load
+    setTimeout(() => {
+      const canvas = document.querySelector('.react-pdf__Page canvas') as HTMLCanvasElement;
+      if (canvas) {
+        console.log('Canvas found:', {
+          width: canvas.width,
+          height: canvas.height,
+          clientWidth: canvas.clientWidth,
+          clientHeight: canvas.clientHeight,
+          display: canvas.style.display,
+          visibility: canvas.style.visibility
+        });
+      } else {
+        console.error('Canvas not found in DOM');
+      }
+    }, 100);
   };
 
   const onDocumentLoadError = (error: Error) => {
