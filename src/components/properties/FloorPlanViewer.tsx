@@ -48,6 +48,34 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
+  // Force canvas visibility using MutationObserver
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) {
+            const canvas = node.tagName === 'CANVAS' ? node : node.querySelector('canvas');
+            if (canvas instanceof HTMLCanvasElement) {
+              console.log('🎨 Canvas detected, forcing visibility');
+              canvas.style.visibility = 'visible';
+              canvas.style.display = 'block';
+              canvas.style.opacity = '1';
+            }
+          }
+        });
+      });
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current, {
+        childList: true,
+        subtree: true,
+      });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     setIsLoading(true);
     setError(null);
@@ -61,21 +89,17 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setIsLoading(false);
     setError(null);
     
-    // Debug canvas after load
+    // Force all existing canvases to be visible
     setTimeout(() => {
-      const canvas = document.querySelector('.react-pdf__Page canvas') as HTMLCanvasElement;
-      if (canvas) {
-        console.log('Canvas found:', {
-          width: canvas.width,
-          height: canvas.height,
-          clientWidth: canvas.clientWidth,
-          clientHeight: canvas.clientHeight,
-          display: canvas.style.display,
-          visibility: canvas.style.visibility
-        });
-      } else {
-        console.error('Canvas not found in DOM');
-      }
+      const canvases = document.querySelectorAll('.react-pdf__Page canvas');
+      canvases.forEach((canvas) => {
+        if (canvas instanceof HTMLCanvasElement) {
+          console.log('🎨 Forcing canvas visibility on load');
+          canvas.style.visibility = 'visible';
+          canvas.style.display = 'block';
+          canvas.style.opacity = '1';
+        }
+      });
     }, 100);
   };
 
