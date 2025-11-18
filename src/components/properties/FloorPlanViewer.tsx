@@ -48,38 +48,11 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // Force canvas visibility using MutationObserver
-  useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement) {
-            const canvas = node.tagName === 'CANVAS' ? node : node.querySelector('canvas');
-            if (canvas instanceof HTMLCanvasElement) {
-              console.log('🎨 Canvas detected, forcing visibility');
-              canvas.style.visibility = 'visible';
-              canvas.style.display = 'block';
-              canvas.style.opacity = '1';
-            }
-          }
-        });
-      });
-    });
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current, {
-        childList: true,
-        subtree: true,
-      });
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   useEffect(() => {
     setIsLoading(true);
     setError(null);
     setNumPages(0);
+    setCurrentPage(1);
   }, [pdfUrls, currentPdfIndex]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -88,19 +61,6 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setCurrentPage(1);
     setIsLoading(false);
     setError(null);
-    
-    // Force all existing canvases to be visible
-    setTimeout(() => {
-      const canvases = document.querySelectorAll('.react-pdf__Page canvas');
-      canvases.forEach((canvas) => {
-        if (canvas instanceof HTMLCanvasElement) {
-          console.log('🎨 Forcing canvas visibility on load');
-          canvas.style.visibility = 'visible';
-          canvas.style.display = 'block';
-          canvas.style.opacity = '1';
-        }
-      });
-    }, 100);
   };
 
   const onDocumentLoadError = (error: Error) => {
@@ -254,36 +214,26 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             }
           >
             <Page
+              key={`page_${currentPage}`}
               pageNumber={currentPage}
               width={containerWidth}
               scale={scale}
               renderTextLayer={false}
               renderAnnotationLayer={false}
               onRenderSuccess={() => {
-                console.log('🎨 Page render success, forcing canvas visibility');
-                // Force visibility immediately after render
-                requestAnimationFrame(() => {
-                  const canvases = document.querySelectorAll('.react-pdf__Page canvas');
-                  canvases.forEach((canvas) => {
-                    if (canvas instanceof HTMLCanvasElement) {
-                      canvas.style.setProperty('visibility', 'visible', 'important');
-                      canvas.style.setProperty('display', 'block', 'important');
-                      canvas.style.setProperty('opacity', '1', 'important');
-                      console.log('✅ Canvas visibility forced:', {
-                        visibility: canvas.style.visibility,
-                        display: canvas.style.display,
-                        computed: window.getComputedStyle(canvas).visibility
-                      });
-                    }
+                console.log('🎨 Page rendered successfully');
+                const canvas = containerRef.current?.querySelector('canvas');
+                if (canvas instanceof HTMLCanvasElement) {
+                  console.log('Canvas state:', {
+                    visibility: canvas.style.visibility,
+                    display: canvas.style.display,
+                    computedVisibility: window.getComputedStyle(canvas).visibility,
+                    width: canvas.width,
+                    height: canvas.height
                   });
-                });
+                }
               }}
               className="shadow-lg"
-              loading={
-                <div className="flex items-center justify-center min-h-[400px]">
-                  <div className="text-foreground">Rendering page {currentPage}...</div>
-                </div>
-              }
             />
           </Document>
         )}
