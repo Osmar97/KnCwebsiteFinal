@@ -259,13 +259,26 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               scale={scale}
               renderTextLayer={false}
               renderAnnotationLayer={false}
-              className="shadow-lg [&>canvas]:max-w-full [&>canvas]:h-auto [&>canvas]:!visible"
-              canvasRef={(canvas) => {
-                if (canvas) {
-                  canvas.style.visibility = 'visible';
-                  canvas.style.display = 'block';
-                }
+              onRenderSuccess={() => {
+                console.log('🎨 Page render success, forcing canvas visibility');
+                // Force visibility immediately after render
+                requestAnimationFrame(() => {
+                  const canvases = document.querySelectorAll('.react-pdf__Page canvas');
+                  canvases.forEach((canvas) => {
+                    if (canvas instanceof HTMLCanvasElement) {
+                      canvas.style.setProperty('visibility', 'visible', 'important');
+                      canvas.style.setProperty('display', 'block', 'important');
+                      canvas.style.setProperty('opacity', '1', 'important');
+                      console.log('✅ Canvas visibility forced:', {
+                        visibility: canvas.style.visibility,
+                        display: canvas.style.display,
+                        computed: window.getComputedStyle(canvas).visibility
+                      });
+                    }
+                  });
+                });
               }}
+              className="shadow-lg"
               loading={
                 <div className="flex items-center justify-center min-h-[400px]">
                   <div className="text-foreground">Rendering page {currentPage}...</div>
