@@ -235,7 +235,13 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               scale={scale}
               renderTextLayer={false}
               renderAnnotationLayer={false}
-              className="shadow-lg [&>canvas]:max-w-full [&>canvas]:h-auto"
+              className="shadow-lg [&>canvas]:max-w-full [&>canvas]:h-auto [&>canvas]:!visible"
+              canvasRef={(canvas) => {
+                if (canvas) {
+                  canvas.style.visibility = 'visible';
+                  canvas.style.display = 'block';
+                }
+              }}
               loading={
                 <div className="flex items-center justify-center min-h-[400px]">
                   <div className="text-foreground">Rendering page {currentPage}...</div>

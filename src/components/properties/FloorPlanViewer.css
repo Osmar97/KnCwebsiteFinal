@@ -23,9 +23,15 @@
   background: white !important;
 }
 
-/* Force canvas to be visible */
-canvas {
+/* Force canvas to be visible with highest specificity */
+.react-pdf__Page canvas,
+canvas.react-pdf__Page__canvas {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* Additional override for any inline styles */
+.react-pdf__Page > canvas[style*="visibility"] {
+  visibility: visible !important;
 }
