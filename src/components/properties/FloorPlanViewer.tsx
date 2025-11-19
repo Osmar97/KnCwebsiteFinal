@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import "./FloorPlanViewer.css";
 
 // Configure PDF.js worker from node_modules (Vite-compatible)
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -27,18 +26,10 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Memoize options to prevent unnecessary reloads
-  const options = useMemo(() => ({
-    cMapUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/cmaps/`,
-    cMapPacked: true,
-    standardFontDataUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/standard_fonts/`,
-  }), []);
-
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current) {
         const width = containerRef.current.clientWidth - 32;
-        console.log('Container width updated:', width);
         setContainerWidth(width > 0 ? width : 800);
       }
     };
@@ -56,7 +47,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   }, [pdfUrls, currentPdfIndex]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    console.log('PDF loaded successfully, pages:', numPages);
+    console.log('✅ PDF loaded successfully, pages:', numPages);
     setNumPages(numPages);
     setCurrentPage(1);
     setIsLoading(false);
@@ -64,7 +55,7 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
   };
 
   const onDocumentLoadError = (error: Error) => {
-    console.error("PDF loading error:", error.message);
+    console.error("❌ PDF loading error:", error);
     setIsLoading(false);
     setError(`Failed to load PDF: ${error.message}`);
   };
@@ -99,16 +90,16 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
 
   if (!pdfUrls || pdfUrls.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-background">
+      <div className="w-full h-full flex items-center justify-center">
         <div className="text-muted-foreground">No floor plans available</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full flex flex-col bg-background">
+    <div className="w-full h-full flex flex-col">
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 p-2 sm:p-4 bg-background border-b border-border">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 p-2 sm:p-4 border-b">
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -117,11 +108,8 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             disabled={scale <= 0.5}
             className="h-8 w-8 sm:h-9 sm:w-9"
           >
-            <ZoomOut className="h-3 w-3 sm:h-4 sm:w-4" />
+            <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-xs sm:text-sm font-medium min-w-[50px] sm:min-w-[60px] text-center">
-            {Math.round(scale * 100)}%
-          </span>
           <Button
             variant="outline"
             size="icon"
@@ -129,8 +117,11 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             disabled={scale >= 3}
             className="h-8 w-8 sm:h-9 sm:w-9"
           >
-            <ZoomIn className="h-3 w-3 sm:h-4 sm:w-4" />
+            <ZoomIn className="h-4 w-4" />
           </Button>
+          <span className="text-sm text-muted-foreground">
+            {Math.round(scale * 100)}%
+          </span>
         </div>
 
         {numPages > 1 && (
@@ -142,10 +133,10 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               disabled={currentPage <= 1}
               className="h-8 w-8 sm:h-9 sm:w-9"
             >
-              <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="text-xs sm:text-sm font-medium min-w-[70px] sm:min-w-[80px] text-center">
-              Page {currentPage} / {numPages}
+            <span className="text-sm text-muted-foreground">
+              {currentPage} / {numPages}
             </span>
             <Button
               variant="outline"
@@ -154,44 +145,47 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               disabled={currentPage >= numPages}
               className="h-8 w-8 sm:h-9 sm:w-9"
             >
-              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+              <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         )}
 
-        <div className="flex items-center gap-2">
-          {pdfUrls.length > 1 && (
-            <>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handlePreviousPdf}
-                className="h-8 w-8 sm:h-9 sm:w-9"
-              >
-                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-              <span className="text-xs sm:text-sm font-medium min-w-[80px] sm:min-w-[100px] text-center">
-                Plan {currentPdfIndex + 1} / {pdfUrls.length}
-              </span>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleNextPdf}
-                className="h-8 w-8 sm:h-9 sm:w-9"
-              >
-                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            </>
-          )}
-        </div>
+        {pdfUrls.length > 1 && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handlePreviousPdf}
+              disabled={currentPdfIndex <= 0}
+              className="h-8 w-8 sm:h-9 sm:w-9"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              {currentPdfIndex + 1} / {pdfUrls.length}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleNextPdf}
+              disabled={currentPdfIndex >= pdfUrls.length - 1}
+              className="h-8 w-8 sm:h-9 sm:w-9"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* PDF Viewer */}
-      <div ref={containerRef} className="flex-1 overflow-auto bg-muted/30 flex items-center justify-center p-4">
+      <div 
+        ref={containerRef} 
+        className="flex-1 overflow-auto flex items-center justify-center p-4"
+        style={{ minHeight: '500px' }}
+      >
         {error ? (
-          <div className="flex flex-col items-center justify-center p-8 text-center">
-            <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
-            <div className="text-muted-foreground text-sm max-w-md mb-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="text-destructive text-center">
               {error}
             </div>
             <Button onClick={() => {
@@ -206,34 +200,18 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
             file={pdfUrls[currentPdfIndex]}
             onLoadSuccess={onDocumentLoadSuccess}
             onLoadError={onDocumentLoadError}
-            options={options}
             loading={
-              <div className="flex flex-col items-center justify-center min-h-[400px] text-foreground">
-                <div className="text-lg mb-2">Loading floor plan...</div>
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-lg">Loading floor plan...</div>
               </div>
             }
           >
             <Page
-              key={`page_${currentPage}`}
               pageNumber={currentPage}
               width={containerWidth}
               scale={scale}
               renderTextLayer={false}
               renderAnnotationLayer={false}
-              onRenderSuccess={() => {
-                console.log('🎨 Page rendered successfully');
-                const canvas = containerRef.current?.querySelector('canvas');
-                if (canvas instanceof HTMLCanvasElement) {
-                  console.log('Canvas state:', {
-                    visibility: canvas.style.visibility,
-                    display: canvas.style.display,
-                    computedVisibility: window.getComputedStyle(canvas).visibility,
-                    width: canvas.width,
-                    height: canvas.height
-                  });
-                }
-              }}
-              className="shadow-lg"
             />
           </Document>
         )}
