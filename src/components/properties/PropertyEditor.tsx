@@ -47,7 +47,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const [isTranslating, setIsTranslating] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [pdfUrls, setPdfUrls] = useState<string[]>([]);
+  const [floorPlanUrls, setFloorPlanUrls] = useState<string[]>([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -134,7 +134,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setBedroomCount(property.bedrooms ? parseInt(property.bedrooms) : 0);
       setBathroomCount(property.bathrooms || 0);
       setImageUrls(property.images || []);
-      setPdfUrls(property.floor_plans || []);
+      setFloorPlanUrls(property.floor_plans || []);
       setVideoUrls(property.video_urls || []);
     } else {
       // New property - reset to empty form
@@ -198,7 +198,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setBedroomCount(0);
       setBathroomCount(0);
       setImageUrls([]);
-      setPdfUrls([]);
+      setFloorPlanUrls([]);
       setVideoUrls([]);
     }
   }, [property]);
@@ -246,7 +246,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         luxury_house: data.luxury_house || false,
         sea_view: data.sea_view || false,
         images: imageUrls,
-        floor_plans: pdfUrls,
+        floor_plans: floorPlanUrls,
         bedrooms: bedroomCount.toString(),
         bathrooms: bathroomCount || null,
         total_floors: data.total_floors ? Number(data.total_floors) : null,
@@ -407,48 +407,51 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     setDraggedIndex(null);
   };
 
-  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("PDF upload triggered");
+  const handleFloorPlanUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) {
-      console.log("No files selected");
-      return;
-    }
-
-    console.log("Files selected:", files.length, "User ID:", supabaseUser?.id);
-    
-    if (!supabaseUser?.id) {
-      console.error("User not authenticated - supabaseUser:", supabaseUser);
-      toast({ title: "Erro: Usuário não autenticado", variant: "destructive" });
-      return;
-    }
+    if (!files) return;
 
     setUploading(true);
-    const newPdfUrls: string[] = [];
+    const newFloorPlanUrls: string[] = [];
 
-    for (const file of Array.from(files)) {
-      const timestamp = Date.now();
-      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const fileName = `${supabaseUser.id}/${timestamp}_${sanitizedName}`;
-      
-      console.log("Uploading PDF to:", fileName);
-      
-      const { error } = await supabase.storage
-        .from("pdfs")
-        .upload(fileName, file);
+    try {
+      for (const file of Array.from(files)) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const { error } = await supabase.storage
+          .from("property-images")
+          .upload(fileName, file);
 
-      if (error) {
-        console.error("PDF upload error:", error);
-        toast({ title: "Erro ao carregar PDF", description: error.message, variant: "destructive" });
-      } else {
-        console.log("PDF uploaded successfully");
-        const { data: urlData } = supabase.storage.from("pdfs").getPublicUrl(fileName);
-        newPdfUrls.push(urlData.publicUrl);
+        if (error) {
+          toast({ 
+            title: "Erro ao carregar planta", 
+            description: error.message,
+            variant: "destructive" 
+          });
+        } else {
+          const { data: urlData } = supabase.storage
+            .from("property-images")
+            .getPublicUrl(fileName);
+          newFloorPlanUrls.push(urlData.publicUrl);
+        }
       }
-    }
 
-    setPdfUrls([...pdfUrls, ...newPdfUrls]);
-    setUploading(false);
+      if (newFloorPlanUrls.length > 0) {
+        setFloorPlanUrls([...floorPlanUrls, ...newFloorPlanUrls]);
+        toast({ 
+          title: "Plantas carregadas com sucesso",
+          description: `${newFloorPlanUrls.length} planta(s) adicionada(s)`
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({ 
+        title: "Erro ao carregar plantas", 
+        variant: "destructive" 
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1229,18 +1232,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           {/* Floor Plans */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <h3 className="font-semibold">Planimetrias ({pdfUrls.length})</h3>
-              <span className="text-sm text-gray-600">Já podes carregar plantas em PDF</span>
+              <h3 className="font-semibold">Planimetrias ({floorPlanUrls.length})</h3>
+              <span className="text-sm text-gray-600">Plantas em imagem</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {pdfUrls.map((url, idx) => (
+              {floorPlanUrls.map((url, idx) => (
                 <div key={idx} className="relative group">
-                  <div className="w-full h-32 border rounded flex items-center justify-center bg-gray-100">
-                    <span className="text-sm">PDF {idx + 1}</span>
-                  </div>
+                  <img src={url} alt={`Planta ${idx + 1}`} className="w-full h-32 object-cover rounded border" />
                   <button
                     type="button"
-                    onClick={() => setPdfUrls(pdfUrls.filter((_, i) => i !== idx))}
+                    onClick={() => setFloorPlanUrls(floorPlanUrls.filter((_, i) => i !== idx))}
                     className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="w-4 h-4" />
@@ -1251,11 +1252,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 <input 
                   type="file" 
                   multiple
-                  accept=".pdf" 
-                  onChange={(e) => {
-                    console.log("File input onChange triggered", e.target.files);
-                    handlePdfUpload(e);
-                  }}
+                  accept="image/*" 
+                  onChange={handleFloorPlanUpload}
                   className="hidden"
                 />
                 <Plus className="w-8 h-8 text-gray-400 mb-1" />
