@@ -419,11 +419,23 @@ const PropertyDetail = () => {
             <X className="w-6 h-6" />
           </button>
           <div className="w-full h-full">
-            {property.floor_plans && property.floor_plans.length > 0 ? (
-              <FloorPlanViewer imageUrls={property.floor_plans} title={property.title} />
-            ) : property.floor_plan_url ? (
-              <FloorPlanViewer imageUrls={[property.floor_plan_url]} title={property.title} />
-            ) : null}
+            {(() => {
+              console.log('🔍 PropertyDetail - Floor Plans Debug:');
+              console.log('  - property.floor_plans:', property.floor_plans);
+              console.log('  - property.floor_plan_url:', property.floor_plan_url);
+              console.log('  - isFloorPlanModalOpen:', isFloorPlanModalOpen);
+              
+              if (property.floor_plans && property.floor_plans.length > 0) {
+                console.log('  ✅ Using floor_plans array, count:', property.floor_plans.length);
+                return <FloorPlanViewer pdfUrls={property.floor_plans} title={property.title} />;
+              } else if (property.floor_plan_url) {
+                console.log('  ✅ Using single floor_plan_url');
+                return <FloorPlanViewer pdfUrls={[property.floor_plan_url]} title={property.title} />;
+              } else {
+                console.log('  ❌ No floor plans available');
+                return null;
+              }
+            })()}
           </div>
         </DialogContent>
       </Dialog>

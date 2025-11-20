@@ -1,65 +1,292 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
+import { useRef, useState, useEffect, useMemo } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+import "./FloorPlanViewer.css";
+
+// Configure PDF.js worker from node_modules (Vite-compatible)
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 interface FloorPlanViewerProps {
-  imageUrls: string[];
+  pdfUrls: string[];
   title?: string;
 }
 
-const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
+  const [currentPdfIndex, setCurrentPdfIndex] = useState(0);
+  const [numPages, setNumPages] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [scale, setScale] = useState(1.0);
+  const [containerWidth, setContainerWidth] = useState<number>(800);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + imageUrls.length) % imageUrls.length);
+  // Memoize options to prevent unnecessary reloads
+  const options = useMemo(() => ({
+    cMapUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/cmaps/`,
+    cMapPacked: true,
+    standardFontDataUrl: `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/standard_fonts/`,
+  }), []);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.clientWidth - 32;
+        console.log('Container width updated:', width);
+        setContainerWidth(width > 0 ? width : 800);
+      }
+    };
+    
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  // Force canvas visibility using MutationObserver
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) {
+            const canvas = node.tagName === 'CANVAS' ? node : node.querySelector('canvas');
+            if (canvas instanceof HTMLCanvasElement) {
+              console.log('🎨 Canvas detected, forcing visibility');
+              canvas.style.visibility = 'visible';
+              canvas.style.display = 'block';
+              canvas.style.opacity = '1';
+            }
+          }
+        });
+      });
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current, {
+        childList: true,
+        subtree: true,
+      });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+    setNumPages(0);
+  }, [pdfUrls, currentPdfIndex]);
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    console.log('PDF loaded successfully, pages:', numPages);
+    setNumPages(numPages);
+    setCurrentPage(1);
+    setIsLoading(false);
+    setError(null);
+    
+    // Force all existing canvases to be visible
+    setTimeout(() => {
+      const canvases = document.querySelectorAll('.react-pdf__Page canvas');
+      canvases.forEach((canvas) => {
+        if (canvas instanceof HTMLCanvasElement) {
+          console.log('🎨 Forcing canvas visibility on load');
+          canvas.style.visibility = 'visible';
+          canvas.style.display = 'block';
+          canvas.style.opacity = '1';
+        }
+      });
+    }, 100);
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % imageUrls.length);
+  const onDocumentLoadError = (error: Error) => {
+    console.error("PDF loading error:", error.message);
+    setIsLoading(false);
+    setError(`Failed to load PDF: ${error.message}`);
   };
 
-  if (!imageUrls || imageUrls.length === 0) {
+  const handlePreviousPdf = () => {
+    setCurrentPdfIndex((prev) => (prev - 1 + pdfUrls.length) % pdfUrls.length);
+    setCurrentPage(1);
+    setScale(1.0);
+  };
+
+  const handleNextPdf = () => {
+    setCurrentPdfIndex((prev) => (prev + 1) % pdfUrls.length);
+    setCurrentPage(1);
+    setScale(1.0);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(numPages, prev + 1));
+  };
+
+  const handleZoomIn = () => {
+    setScale((prev) => Math.min(3, prev + 0.2));
+  };
+
+  const handleZoomOut = () => {
+    setScale((prev) => Math.max(0.5, prev - 0.2));
+  };
+
+  if (!pdfUrls || pdfUrls.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center bg-background">
         <div className="text-muted-foreground">No floor plans available</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col bg-background">
       {/* Controls */}
-      {imageUrls.length > 1 && (
-        <div className="flex items-center justify-center gap-4 p-4 border-b">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 p-2 sm:p-4 bg-background border-b border-border">
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="icon"
-            onClick={handlePrevious}
-            className="h-9 w-9"
+            onClick={handleZoomOut}
+            disabled={scale <= 0.5}
+            className="h-8 w-8 sm:h-9 sm:w-9"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ZoomOut className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
-          <span className="text-sm text-muted-foreground">
-            {currentIndex + 1} / {imageUrls.length}
+          <span className="text-xs sm:text-sm font-medium min-w-[50px] sm:min-w-[60px] text-center">
+            {Math.round(scale * 100)}%
           </span>
           <Button
             variant="outline"
             size="icon"
-            onClick={handleNext}
-            className="h-9 w-9"
+            onClick={handleZoomIn}
+            disabled={scale >= 3}
+            className="h-8 w-8 sm:h-9 sm:w-9"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ZoomIn className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
         </div>
-      )}
 
-      {/* Image Display */}
-      <div className="flex-1 overflow-auto flex items-center justify-center p-4 bg-black/50">
-        <img
-          src={imageUrls[currentIndex]}
-          alt={title ? `${title} - Planta ${currentIndex + 1}` : `Planta ${currentIndex + 1}`}
-          className="max-w-full max-h-full object-contain"
-        />
+        {numPages > 1 && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handlePreviousPage}
+              disabled={currentPage <= 1}
+              className="h-8 w-8 sm:h-9 sm:w-9"
+            >
+              <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+            </Button>
+            <span className="text-xs sm:text-sm font-medium min-w-[70px] sm:min-w-[80px] text-center">
+              Page {currentPage} / {numPages}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleNextPage}
+              disabled={currentPage >= numPages}
+              className="h-8 w-8 sm:h-9 sm:w-9"
+            >
+              <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+            </Button>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2">
+          {pdfUrls.length > 1 && (
+            <>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handlePreviousPdf}
+                className="h-8 w-8 sm:h-9 sm:w-9"
+              >
+                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Button>
+              <span className="text-xs sm:text-sm font-medium min-w-[80px] sm:min-w-[100px] text-center">
+                Plan {currentPdfIndex + 1} / {pdfUrls.length}
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleNextPdf}
+                className="h-8 w-8 sm:h-9 sm:w-9"
+              >
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* PDF Viewer */}
+      <div ref={containerRef} className="flex-1 overflow-auto bg-muted/30 flex items-center justify-center p-4">
+        {error ? (
+          <div className="flex flex-col items-center justify-center p-8 text-center">
+            <div className="text-destructive mb-4 text-lg font-semibold">Failed to load floor plan</div>
+            <div className="text-muted-foreground text-sm max-w-md mb-4">
+              {error}
+            </div>
+            <Button onClick={() => {
+              setError(null);
+              setIsLoading(true);
+            }}>
+              Try Again
+            </Button>
+          </div>
+        ) : (
+          <Document
+            file={pdfUrls[currentPdfIndex]}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            options={options}
+            loading={
+              <div className="flex flex-col items-center justify-center min-h-[400px] text-foreground">
+                <div className="text-lg mb-2">Loading floor plan...</div>
+              </div>
+            }
+          >
+            <Page
+              pageNumber={currentPage}
+              width={containerWidth}
+              scale={scale}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              onRenderSuccess={() => {
+                console.log('🎨 Page render success, forcing canvas visibility');
+                // Force visibility immediately after render
+                requestAnimationFrame(() => {
+                  const canvases = document.querySelectorAll('.react-pdf__Page canvas');
+                  canvases.forEach((canvas) => {
+                    if (canvas instanceof HTMLCanvasElement) {
+                      canvas.style.setProperty('visibility', 'visible', 'important');
+                      canvas.style.setProperty('display', 'block', 'important');
+                      canvas.style.setProperty('opacity', '1', 'important');
+                      console.log('✅ Canvas visibility forced:', {
+                        visibility: canvas.style.visibility,
+                        display: canvas.style.display,
+                        computed: window.getComputedStyle(canvas).visibility
+                      });
+                    }
+                  });
+                });
+              }}
+              className="shadow-lg"
+              loading={
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <div className="text-foreground">Rendering page {currentPage}...</div>
+                </div>
+              }
+            />
+          </Document>
+        )}
       </div>
     </div>
   );
