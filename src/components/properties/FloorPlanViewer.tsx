@@ -48,18 +48,37 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // Force canvas visibility using MutationObserver
+  // Force canvas visibility using MutationObserver with Safari-specific handling
   useEffect(() => {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
           if (node instanceof HTMLElement) {
             const canvas = node.tagName === 'CANVAS' ? node : node.querySelector('canvas');
             if (canvas instanceof HTMLCanvasElement) {
-              console.log('🎨 Canvas detected, forcing visibility');
-              canvas.style.visibility = 'visible';
-              canvas.style.display = 'block';
-              canvas.style.opacity = '1';
+              console.log('🎨 Canvas detected, forcing visibility (Safari:', isSafari, ')');
+              
+              // Remove inline visibility style completely
+              canvas.style.removeProperty('visibility');
+              canvas.style.removeProperty('display');
+              
+              // Set visible styles
+              canvas.style.cssText = `
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                transform: translateZ(0) !important;
+                -webkit-transform: translateZ(0) !important;
+              `;
+              
+              // Safari-specific: Force repaint
+              if (isSafari) {
+                canvas.style.display = 'none';
+                canvas.offsetHeight; // Force reflow
+                canvas.style.display = 'block';
+              }
             }
           }
         });
@@ -89,18 +108,36 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
     setIsLoading(false);
     setError(null);
     
-    // Force all existing canvases to be visible
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    // Force all existing canvases to be visible with Safari-specific handling
     setTimeout(() => {
       const canvases = document.querySelectorAll('.react-pdf__Page canvas');
       canvases.forEach((canvas) => {
         if (canvas instanceof HTMLCanvasElement) {
-          console.log('🎨 Forcing canvas visibility on load');
-          canvas.style.visibility = 'visible';
-          canvas.style.display = 'block';
-          canvas.style.opacity = '1';
+          console.log('🎨 Forcing canvas visibility on load (Safari:', isSafari, ')');
+          
+          // Remove inline styles
+          canvas.style.removeProperty('visibility');
+          canvas.style.removeProperty('display');
+          
+          canvas.style.cssText = `
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateZ(0) !important;
+            -webkit-transform: translateZ(0) !important;
+          `;
+          
+          // Safari-specific: Force repaint
+          if (isSafari) {
+            canvas.style.display = 'none';
+            canvas.offsetHeight; // Force reflow
+            canvas.style.display = 'block';
+          }
         }
       });
-    }, 100);
+    }, isSafari ? 200 : 100);
   };
 
   const onDocumentLoadError = (error: Error) => {
@@ -260,15 +297,33 @@ const FloorPlanViewer = ({ pdfUrls, title }: FloorPlanViewerProps) => {
               renderTextLayer={false}
               renderAnnotationLayer={false}
               onRenderSuccess={() => {
-                console.log('🎨 Page render success, forcing canvas visibility');
-                // Force visibility immediately after render
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                console.log('🎨 Page render success, forcing canvas visibility (Safari:', isSafari, ')');
+                
+                // Force visibility immediately after render with Safari-specific handling
                 requestAnimationFrame(() => {
                   const canvases = document.querySelectorAll('.react-pdf__Page canvas');
                   canvases.forEach((canvas) => {
                     if (canvas instanceof HTMLCanvasElement) {
-                      canvas.style.setProperty('visibility', 'visible', 'important');
-                      canvas.style.setProperty('display', 'block', 'important');
-                      canvas.style.setProperty('opacity', '1', 'important');
+                      // Remove inline styles
+                      canvas.style.removeProperty('visibility');
+                      canvas.style.removeProperty('display');
+                      
+                      canvas.style.cssText = `
+                        display: block !important;
+                        opacity: 1 !important;
+                        visibility: visible !important;
+                        transform: translateZ(0) !important;
+                        -webkit-transform: translateZ(0) !important;
+                      `;
+                      
+                      // Safari-specific: Force repaint
+                      if (isSafari) {
+                        canvas.style.display = 'none';
+                        canvas.offsetHeight; // Force reflow
+                        canvas.style.display = 'block';
+                      }
+                      
                       console.log('✅ Canvas visibility forced:', {
                         visibility: canvas.style.visibility,
                         display: canvas.style.display,
