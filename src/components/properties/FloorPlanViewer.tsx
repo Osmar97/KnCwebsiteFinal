@@ -11,18 +11,72 @@ interface FloorPlanViewerProps {
 const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [scale, setScale] = useState(1);
+  const [fitScale, setFitScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [touchDistance, setTouchDistance] = useState(0);
+  const [hasManuallyZoomed, setHasManuallyZoomed] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Calculate fit-to-screen scale
+  const calculateFitScale = () => {
+    if (!imageRef.current || !containerRef.current) return 1;
+    
+    const container = containerRef.current.getBoundingClientRect();
+    const image = imageRef.current;
+    
+    // Get natural image dimensions
+    const imageWidth = image.naturalWidth;
+    const imageHeight = image.naturalHeight;
+    
+    if (!imageWidth || !imageHeight) return 1;
+    
+    // Calculate scale to fit container (with some padding)
+    const padding = 40; // 20px padding on each side
+    const availableWidth = container.width - padding;
+    const availableHeight = container.height - padding;
+    
+    const scaleX = availableWidth / imageWidth;
+    const scaleY = availableHeight / imageHeight;
+    
+    // Use the smaller scale to ensure entire image fits
+    const calculatedScale = Math.min(scaleX, scaleY, 1); // Never scale up beyond 100%
+    
+    return calculatedScale;
+  };
+
+  // Apply fit-to-screen when image loads
+  const handleImageLoad = () => {
+    const newFitScale = calculateFitScale();
+    setFitScale(newFitScale);
+    setScale(newFitScale);
+    setPosition({ x: 0, y: 0 });
+    setHasManuallyZoomed(false);
+  };
+
   // Reset zoom and position when image changes
   useEffect(() => {
-    setScale(1);
+    setScale(fitScale);
     setPosition({ x: 0, y: 0 });
-  }, [currentIndex]);
+    setHasManuallyZoomed(false);
+  }, [currentIndex, fitScale]);
+
+  // Recalculate fit scale on window resize (only if user hasn't manually zoomed)
+  useEffect(() => {
+    const handleResize = () => {
+      if (!hasManuallyZoomed) {
+        const newFitScale = calculateFitScale();
+        setFitScale(newFitScale);
+        setScale(newFitScale);
+        setPosition({ x: 0, y: 0 });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [hasManuallyZoomed]);
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + imageUrls.length) % imageUrls.length);
@@ -34,27 +88,31 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
 
   const handleZoomIn = () => {
     setScale((prev) => Math.min(prev + 0.5, 5));
+    setHasManuallyZoomed(true);
   };
 
   const handleZoomOut = () => {
-    setScale((prev) => Math.max(prev - 0.5, 1));
-    if (scale <= 1.5) {
+    const newScale = Math.max(scale - 0.5, fitScale);
+    setScale(newScale);
+    if (newScale <= fitScale + 0.1) {
       setPosition({ x: 0, y: 0 });
     }
+    setHasManuallyZoomed(true);
   };
 
   const handleResetZoom = () => {
-    setScale(1);
+    setScale(fitScale);
     setPosition({ x: 0, y: 0 });
+    setHasManuallyZoomed(false);
   };
 
   // Mouse wheel zoom
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const delta = e.deltaY * -0.01;
-    const newScale = Math.min(Math.max(scale + delta, 1), 5);
+    const newScale = Math.min(Math.max(scale + delta, fitScale), 5);
     
-    if (newScale > 1) {
+    if (newScale > fitScale) {
       const rect = containerRef.current?.getBoundingClientRect();
       if (rect) {
         const x = e.clientX - rect.left;
@@ -68,21 +126,22 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
       }
       setScale(newScale);
     } else {
-      setScale(1);
+      setScale(fitScale);
       setPosition({ x: 0, y: 0 });
     }
+    setHasManuallyZoomed(true);
   };
 
   // Mouse drag to pan
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (scale > 1) {
+    if (scale > fitScale) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
     }
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging && scale > 1) {
+    if (isDragging && scale > fitScale) {
       setPosition({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
@@ -107,7 +166,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       setTouchDistance(getTouchDistance(e.touches));
-    } else if (e.touches.length === 1 && scale > 1) {
+    } else if (e.touches.length === 1 && scale > fitScale) {
       setIsDragging(true);
       setDragStart({
         x: e.touches[0].clientX - position.x,
@@ -121,9 +180,9 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
       const newDistance = getTouchDistance(e.touches);
       if (touchDistance > 0) {
         const delta = (newDistance - touchDistance) * 0.01;
-        const newScale = Math.min(Math.max(scale + delta, 1), 5);
+        const newScale = Math.min(Math.max(scale + delta, fitScale), 5);
         
-        if (newScale > 1) {
+        if (newScale > fitScale) {
           const rect = containerRef.current?.getBoundingClientRect();
           if (rect) {
             const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
@@ -139,12 +198,13 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
           }
           setScale(newScale);
         } else {
-          setScale(1);
+          setScale(fitScale);
           setPosition({ x: 0, y: 0 });
         }
+        setHasManuallyZoomed(true);
       }
       setTouchDistance(newDistance);
-    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+    } else if (e.touches.length === 1 && isDragging && scale > fitScale) {
       setPosition({
         x: e.touches[0].clientX - dragStart.x,
         y: e.touches[0].clientY - dragStart.y,
@@ -159,8 +219,8 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
 
   // Swipe for navigation (only when not zoomed)
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => scale === 1 && imageUrls.length > 1 && handleNext(),
-    onSwipedRight: () => scale === 1 && imageUrls.length > 1 && handlePrevious(),
+    onSwipedLeft: () => Math.abs(scale - fitScale) < 0.01 && imageUrls.length > 1 && handleNext(),
+    onSwipedRight: () => Math.abs(scale - fitScale) < 0.01 && imageUrls.length > 1 && handlePrevious(),
     trackMouse: false,
     preventScrollOnSwipe: true,
   });
@@ -183,7 +243,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
             variant="outline"
             size="icon"
             onClick={handleZoomOut}
-            disabled={scale <= 1}
+            disabled={scale <= fitScale}
             className="h-9 w-9 sm:h-10 sm:w-10"
             title="Zoom Out"
           >
@@ -206,7 +266,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
             variant="outline"
             size="icon"
             onClick={handleResetZoom}
-            disabled={scale === 1}
+            disabled={Math.abs(scale - fitScale) < 0.01}
             className="h-9 w-9 sm:h-10 sm:w-10"
             title="Reset Zoom"
           >
@@ -252,13 +312,14 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        {...(scale === 1 ? swipeHandlers : {})}
-        style={{ cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+        {...(Math.abs(scale - fitScale) < 0.01 ? swipeHandlers : {})}
+        style={{ cursor: scale > fitScale ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
       >
         <img
           ref={imageRef}
           src={imageUrls[currentIndex]}
           alt={title ? `${title} - Planta ${currentIndex + 1}` : `Planta ${currentIndex + 1}`}
+          onLoad={handleImageLoad}
           className="max-w-full max-h-full object-contain pointer-events-none"
           style={{
             transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
@@ -270,7 +331,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
       </div>
 
       {/* Mobile Hint */}
-      {scale === 1 && (
+      {Math.abs(scale - fitScale) < 0.01 && (
         <div className="p-2 text-center text-xs text-muted-foreground bg-background/95 backdrop-blur border-t sm:hidden">
           Pinch to zoom • Swipe to navigate
         </div>
