@@ -92,7 +92,8 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
   };
 
   const handleZoomOut = () => {
-    const newScale = Math.max(scale - 0.5, fitScale);
+    const minScale = Math.min(fitScale * 0.5, 0.3); // Allow zoom out to half of fit scale or 30%, whichever is smaller
+    const newScale = Math.max(scale - 0.5, minScale);
     setScale(newScale);
     if (newScale <= fitScale + 0.1) {
       setPosition({ x: 0, y: 0 });
@@ -110,7 +111,8 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const delta = e.deltaY * -0.01;
-    const newScale = Math.min(Math.max(scale + delta, fitScale), 5);
+    const minScale = Math.min(fitScale * 0.5, 0.3); // Allow zoom out to half of fit scale or 30%
+    const newScale = Math.min(Math.max(scale + delta, minScale), 5);
     
     if (newScale > fitScale) {
       const rect = containerRef.current?.getBoundingClientRect();
@@ -126,8 +128,10 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
       }
       setScale(newScale);
     } else {
-      setScale(fitScale);
-      setPosition({ x: 0, y: 0 });
+      setScale(newScale);
+      if (Math.abs(newScale - fitScale) < 0.01) {
+        setPosition({ x: 0, y: 0 });
+      }
     }
     setHasManuallyZoomed(true);
   };
@@ -180,7 +184,8 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
       const newDistance = getTouchDistance(e.touches);
       if (touchDistance > 0) {
         const delta = (newDistance - touchDistance) * 0.01;
-        const newScale = Math.min(Math.max(scale + delta, fitScale), 5);
+        const minScale = Math.min(fitScale * 0.5, 0.3); // Allow zoom out to half of fit scale or 30%
+        const newScale = Math.min(Math.max(scale + delta, minScale), 5);
         
         if (newScale > fitScale) {
           const rect = containerRef.current?.getBoundingClientRect();
@@ -198,8 +203,10 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
           }
           setScale(newScale);
         } else {
-          setScale(fitScale);
-          setPosition({ x: 0, y: 0 });
+          setScale(newScale);
+          if (Math.abs(newScale - fitScale) < 0.01) {
+            setPosition({ x: 0, y: 0 });
+          }
         }
         setHasManuallyZoomed(true);
       }
@@ -243,7 +250,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
             variant="outline"
             size="icon"
             onClick={handleZoomOut}
-            disabled={scale <= fitScale}
+            disabled={scale <= Math.min(fitScale * 0.5, 0.3)}
             className="h-9 w-9 sm:h-10 sm:w-10"
             title="Zoom Out"
           >
