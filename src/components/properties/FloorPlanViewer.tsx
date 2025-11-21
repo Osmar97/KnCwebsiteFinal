@@ -177,33 +177,8 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
     <div className="w-full h-full flex flex-col">
       {/* Top Controls */}
       <div className="flex items-center justify-between gap-4 p-3 sm:p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        {/* Navigation */}
-        {imageUrls.length > 1 && (
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handlePrevious}
-              className="h-9 w-9 sm:h-10 sm:w-10"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="text-xs sm:text-sm text-muted-foreground min-w-[60px] text-center">
-              {currentIndex + 1} / {imageUrls.length}
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleNext}
-              className="h-9 w-9 sm:h-10 sm:w-10"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-        
         {/* Zoom Controls */}
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Button
             variant="outline"
             size="icon"
@@ -238,6 +213,31 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
             <Maximize2 className="h-4 w-4" />
           </Button>
         </div>
+        
+        {/* Navigation */}
+        {imageUrls.length > 1 && (
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handlePrevious}
+              className="h-9 w-9 sm:h-10 sm:w-10"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-xs sm:text-sm text-muted-foreground min-w-[60px] text-center">
+              {currentIndex + 1} / {imageUrls.length}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleNext}
+              className="h-9 w-9 sm:h-10 sm:w-10"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Image Display */}
