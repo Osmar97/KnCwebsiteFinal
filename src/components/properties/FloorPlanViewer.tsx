@@ -87,13 +87,13 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
   };
 
   const handleZoomIn = () => {
-    setScale((prev) => Math.min(prev + 0.5, 5));
+    setScale((prev) => Math.min(prev + 0.2, 5));
     setHasManuallyZoomed(true);
   };
 
   const handleZoomOut = () => {
     const minScale = Math.min(fitScale * 0.5, 0.3); // Allow zoom out to half of fit scale or 30%, whichever is smaller
-    const newScale = Math.max(scale - 0.5, minScale);
+    const newScale = Math.max(scale - 0.2, minScale);
     setScale(newScale);
     if (newScale <= fitScale + 0.1) {
       setPosition({ x: 0, y: 0 });
