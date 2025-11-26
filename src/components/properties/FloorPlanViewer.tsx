@@ -51,7 +51,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
   const handleImageLoad = () => {
     const newFitScale = calculateFitScale();
     setFitScale(newFitScale);
-    setScale(newFitScale);
+    setScale(newFitScale * 0.5); // Start at 50% of fit scale for floor plans
     setPosition({ x: 0, y: 0 });
     setHasManuallyZoomed(false);
   };
