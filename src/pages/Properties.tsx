@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import PropertyCard from "@/components/properties/PropertyCard";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { PUBLIC_PROPERTY_COLUMNS } from "@/lib/propertyColumns";
 
 const Properties = () => {
   const [sortBy, setSortBy] = useState("relevance");
@@ -16,7 +17,7 @@ const Properties = () => {
     queryFn: async () => {
       let query = supabase
         .from("properties" as any)
-        .select("*")
+        .select(PUBLIC_PROPERTY_COLUMNS)
         .eq("status", "active") as any;
 
       // Apply sorting
