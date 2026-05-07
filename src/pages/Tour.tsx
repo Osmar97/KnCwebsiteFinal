@@ -278,7 +278,7 @@ export default function TourPage() {
     <div className="tour-page">
 
       {/* ── BACK BUTTON ── */}
-      <div style={{ position: "fixed", top: 24, left: 24, z-index: 100, display: "flex", gap: 12 }}>
+      <div style={{ position: "fixed", top: 24, left: 24, zIndex: 100, display: "flex", gap: 12 }}>
         <button className="back-btn" onClick={() => navigate("/services")} title={t('back')}>
           <ArrowLeft size={18} />
           <span>{t('back')}</span>
