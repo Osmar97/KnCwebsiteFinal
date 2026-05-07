@@ -6,7 +6,7 @@ export const TRANSLATIONS = {
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · July 2026",
-      h1_1: "Own",
+      h1_1: "Own a Piece of",
       h1_2: "Portugal.",
       h1_3: "Start Here.",
       date: "6 – 10 July · Lisbon, Portugal",
@@ -156,7 +156,7 @@ export const TRANSLATIONS = {
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · Julho 2026",
-      h1_1: "Own",
+      h1_1: "Own a Piece of",
       h1_2: "Portugal.",
       h1_3: "Comece Aqui.",
       date: "6 – 10 Julho · Lisboa, Portugal",
@@ -306,7 +306,7 @@ export const TRANSLATIONS = {
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · Juillet 2026",
-      h1_1: "Own",
+      h1_1: "Own a Piece of",
       h1_2: "Portugal.",
       h1_3: "Commencez Ici.",
       date: "6 – 10 Juillet · Lisbonne, Portugal",
