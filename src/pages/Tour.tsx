@@ -295,7 +295,7 @@ export default function TourPage() {
           <p className="hero-label">{t('hero.label')}</p>
           <div className="hero-eyebrow">
             <span className="eyebrow-line" />
-            <p className="eyebrow-text">{t('hero.eyebrow')}</p>
+            <p className="eyebrow-text">{t('hero.eyebrow').replace('{year}', String(new Date().getMonth() >= 6 ? new Date().getFullYear() + 1 : new Date().getFullYear()))}</p>
             <span className="eyebrow-line" />
           </div>
           <h1 className="hero-h1">
