@@ -110,7 +110,7 @@ export const TRANSLATIONS = {
         { text: "Kings 'n Company aftercare & continued support" }
       ],
       cta: "RESERVE MY SPOT — 3,500€",
-      deposit_note: "A deposit of 1,000€ secures your place. Balance due by 1 June 2025."
+      deposit_note: ""
     },
     private: {
       label: "Prefer Something Custom?",
@@ -260,7 +260,7 @@ export const TRANSLATIONS = {
         { text: "Aftercare & apoio contínuo da Kings 'n Company" }
       ],
       cta: "RESERVAR O MEU LUGAR — 3.500€",
-      deposit_note: "Um depósito de 1.000€ garante o seu lugar. Saldo devedor até 1 de Junho de 2025."
+      deposit_note: ""
     },
     private: {
       label: "Prefere Algo Personalizado?",
@@ -410,7 +410,7 @@ export const TRANSLATIONS = {
         { text: "Suivi & assistance continue de Kings 'n Company" }
       ],
       cta: "RÉSERVER MA PLACE — 3.500€",
-      deposit_note: "Un acompte de 1.000€ garantit votre place. Solde dû avant le 1er juin 2025."
+      deposit_note: ""
     },
     private: {
       label: "Vous Préférez Quelque Chose sur Mesure ?",
