@@ -14,7 +14,7 @@ export const TRANSLATIONS = {
       cta_private: "Request a Private Tour",
       scroll: "Scroll"
     },
-    intro: "An immersive five-day experience designed to take you from curiosity to confidence — and from renter to owner.",
+    intro: "An immersive five-day experience designed to take you from curiosity to ownership.",
     about: {
       label: "The Experience",
       heading_1: "Portugal is ",
@@ -164,7 +164,7 @@ export const TRANSLATIONS = {
       cta_private: "Solicitar Tour Privado",
       scroll: "Scroll"
     },
-    intro: "Uma experiência imersiva de cinco dias desenhada para te levar da curiosidade à confiança — e de arrendatário a proprietário.",
+    intro: "Uma experiência imersiva de cinco dias desenhada para o levar da curiosidade à propriedade.",
     about: {
       label: "A Experiência",
       heading_1: "Portugal está a ",
@@ -314,7 +314,7 @@ export const TRANSLATIONS = {
       cta_private: "Demander un Tour Privé",
       scroll: "Défiler"
     },
-    intro: "Une expérience immersive de cinq jours conçue pour vous faire passer de la curiosité à la confiance — et de locataire à propriétaire.",
+    intro: "Une expérience immersive de cinq jours conçue pour vous faire passer de la curiosité à la propriété.",
     about: {
       label: "L'Expérience",
       heading_1: "Le Portugal vous ",
