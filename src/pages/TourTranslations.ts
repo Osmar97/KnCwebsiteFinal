@@ -105,7 +105,7 @@ export const TRANSLATIONS = {
         { text: "Lawyer, accountant & mortgage broker sessions" },
         { text: "Live property tours across Lisbon" },
         { text: "Property typology & investment analysis workshop" },
-        { text: "Free 1:1 personal strategy consultation", highlight: true },
+        { text: "1:1 personal strategy consultation", highlight: true },
         { text: "KnC resource pack & personal property roadmap" },
         { text: "Kings 'n Company aftercare & continued support" }
       ],
@@ -255,7 +255,7 @@ export const TRANSLATIONS = {
         { text: "Sessões com advogado, contabilista & broker de crédito" },
         { text: "Tours de propriedades ao vivo em Lisboa" },
         { text: "Workshop de tipologia de propriedade & análise de investimento" },
-        { text: "Consultoria estratégica pessoal 1:1 gratuita", highlight: true },
+        { text: "Consultoria estratégica pessoal 1:1", highlight: true },
         { text: "Pack de recursos KnC & roteiro pessoal de propriedade" },
         { text: "Aftercare & apoio contínuo da Kings 'n Company" }
       ],
@@ -405,7 +405,7 @@ export const TRANSLATIONS = {
         { text: "Sessions avocat, comptable & courtier en prêts immobiliers" },
         { text: "Visites de propriétés en direct à travers Lisbonne" },
         { text: "Typologie immobilière & atelier d'analyse d'investissement" },
-        { text: "Consultation stratégique personnelle 1:1 gratuite", highlight: true },
+        { text: "Consultation stratégique personnelle 1:1", highlight: true },
         { text: "Pack de ressources KnC & feuille de route immobilière personnelle" },
         { text: "Suivi & assistance continue de Kings 'n Company" }
       ],
