@@ -25,7 +25,7 @@ export const PropertyOwnershipTour = () => {
   }];
 
   const handleBookingClick = () => {
-    navigate("/tour");
+    window.open("/tour", "_blank", "noopener,noreferrer");
   };
 
   const scrollToContact = () => {
