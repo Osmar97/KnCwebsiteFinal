@@ -5,7 +5,7 @@ export const TRANSLATIONS = {
     back: "Services",
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
-      eyebrow: "Portugal · July 2025",
+      eyebrow: "Portugal · July 2026",
       h1_1: "Own",
       h1_2: "Portugal.",
       h1_3: "Start Here.",
@@ -155,7 +155,7 @@ export const TRANSLATIONS = {
     back: "Serviços",
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
-      eyebrow: "Portugal · Julho 2025",
+      eyebrow: "Portugal · Julho 2026",
       h1_1: "Own",
       h1_2: "Portugal.",
       h1_3: "Comece Aqui.",
@@ -305,7 +305,7 @@ export const TRANSLATIONS = {
     back: "Services",
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
-      eyebrow: "Portugal · Juillet 2025",
+      eyebrow: "Portugal · Juillet 2026",
       h1_1: "Own",
       h1_2: "Portugal.",
       h1_3: "Commencez Ici.",
