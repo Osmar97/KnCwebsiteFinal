@@ -11,7 +11,7 @@ export const TRANSLATIONS = {
       h1_3: "Start Here.",
       date: "6 – 10 July · Lisbon, Portugal",
       cta_reserve: "RESERVE MY SPOT — 3,500€",
-      cta_private: "Book Private Tour",
+      cta_private: "Request a Private Tour",
       scroll: "Scroll"
     },
     intro: "An immersive five-day experience designed to take you from curiosity to confidence — and from renter to owner.",
@@ -161,7 +161,7 @@ export const TRANSLATIONS = {
       h1_3: "Comece Aqui.",
       date: "6 – 10 Julho · Lisboa, Portugal",
       cta_reserve: "RESERVAR O MEU LUGAR — 3.500€",
-      cta_private: "Reservar Tour Privado",
+      cta_private: "Solicitar Tour Privado",
       scroll: "Scroll"
     },
     intro: "Uma experiência imersiva de cinco dias desenhada para te levar da curiosidade à confiança — e de arrendatário a proprietário.",
@@ -311,7 +311,7 @@ export const TRANSLATIONS = {
       h1_3: "Commencez Ici.",
       date: "6 – 10 Juillet · Lisbonne, Portugal",
       cta_reserve: "RÉSERVER MA PLACE — 3.500€",
-      cta_private: "Réserver un Tour Privé",
+      cta_private: "Demander un Tour Privé",
       scroll: "Défiler"
     },
     intro: "Une expérience immersive de cinq jours conçue pour vous faire passer de la curiosité à la confiance — et de locataire à propriétaire.",
