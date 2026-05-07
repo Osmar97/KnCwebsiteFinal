@@ -271,8 +271,8 @@ export default function TourPage() {
     }
   };
 
-  const EMAIL_PRIVATE = "mailto:hello@kingsncompany.com?subject=Private%20Property%20Tour%20Enquiry";
-  const EMAIL_CONTACT = "mailto:hello@kingsncompany.com";
+  const EMAIL_PRIVATE = "mailto:services@kingsncompany.com?subject=Private%20Property%20Tour%20Enquiry";
+  const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
 
   return (
     <div className="tour-page">
@@ -491,7 +491,7 @@ export default function TourPage() {
           <Reveal className="tc-contact-box">
             <p className="tc-contact-text">
               {t('tc.contact')}
-              <a href={EMAIL_CONTACT} className="tc-link">hello@kingsncompany.com</a>{" "}
+              <a href={EMAIL_CONTACT} className="tc-link">services@kingsncompany.com</a>{" "}
               {t('tc.contact_cta')}
             </p>
           </Reveal>
