@@ -100,7 +100,7 @@ export const TRANSLATIONS = {
       currency: "€",
       note: "All-inclusive: hotel, meals, sessions, tours and consultancy",
       features: [
-        { text: "4-night hotel accommodation in central Lisbon", highlight: true },
+        { text: "4-night in a 4 star hotel accommodation in central Lisbon", highlight: true },
         { text: "One group meal per day throughout the programme" },
         { text: "Lawyer, accountant & mortgage broker sessions" },
         { text: "Live property tours across Lisbon" },
@@ -250,7 +250,7 @@ export const TRANSLATIONS = {
       currency: "€",
       note: "All-inclusive: hotel, refeições, sessões, tours e consultoria",
       features: [
-        { text: "Alojamento de 4 noites em hotel no centro de Lisboa", highlight: true },
+        { text: "Alojamento de 4 noites em hotel de 4 estrelas no centro de Lisboa", highlight: true },
         { text: "Uma refeição de grupo por dia durante o programa" },
         { text: "Sessões com advogado, contabilista & broker de crédito" },
         { text: "Tours de propriedades ao vivo em Lisboa" },
@@ -400,7 +400,7 @@ export const TRANSLATIONS = {
       currency: "€",
       note: "Tout inclus : hôtel, repas, sessions, visites et conseil",
       features: [
-        { text: "Hébergement de 4 nuits à l'hôtel au centre de Lisbonne", highlight: true },
+        { text: "Hébergement de 4 nuits dans un hôtel 4 étoiles au centre de Lisbonne", highlight: true },
         { text: "Un repas de groupe par jour tout au long du programme" },
         { text: "Sessions avocat, comptable & courtier en prêts immobiliers" },
         { text: "Visites de propriétés en direct à travers Lisbonne" },
