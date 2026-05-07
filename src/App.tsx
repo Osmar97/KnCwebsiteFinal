@@ -22,8 +22,30 @@ import FreeResources from "./pages/FreeResources";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
 import AdminProperties from "./pages/AdminProperties";
+import TourPage from "./pages/Tour";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // 1. Reduce excessive API calls by caching data
+      staleTime: 1000 * 60 * 5, // Data remains "fresh" for 5 minutes
+      gcTime: 1000 * 60 * 30, // Keep in cache for 30 minutes
+      
+      // 2. Avoid unnecessary re-renders/refetches
+      refetchOnWindowFocus: false, // Don't refetch when user switches tabs
+      refetchOnReconnect: 'always',
+      
+      // 3. Handle 429 responses with exponential backoff
+      retry: (failureCount, error: any) => {
+        // Only retry if it's a rate limit error (429) or network error
+        const status = error?.status || error?.response?.status;
+        if (status === 429 && failureCount < 3) return true;
+        return false;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // 1s, 2s, 4s... max 30s
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -49,6 +71,7 @@ const App = () => (
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/tour" element={<TourPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

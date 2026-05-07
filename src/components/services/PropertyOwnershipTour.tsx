@@ -1,8 +1,11 @@
 import { MapPin, Plane, Camera, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export const PropertyOwnershipTour = () => {
+  const navigate = useNavigate();
+
   const highlights = [{
     icon: MapPin,
     title: "Property Visits",
@@ -22,7 +25,7 @@ export const PropertyOwnershipTour = () => {
   }];
 
   const handleBookingClick = () => {
-    window.open('https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false', '_blank');
+    navigate("/tour");
   };
 
   const scrollToContact = () => {

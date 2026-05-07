@@ -18,7 +18,6 @@ import FloorPlanViewer from "@/components/properties/FloorPlanViewer";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { FullscreenGallery } from "@/components/properties/FullscreenGallery";
-import { PUBLIC_PROPERTY_COLUMNS } from "@/lib/propertyColumns";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -44,7 +43,7 @@ const PropertyDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("properties" as any)
-        .select(PUBLIC_PROPERTY_COLUMNS)
+        .select("*")
         .eq("id", id)
         .maybeSingle();
       if (error) throw error;
