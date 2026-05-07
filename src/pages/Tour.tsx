@@ -44,7 +44,7 @@ interface RevealProps {
 const STATS: StatBoxProps[] = [
   { num: "5", label: "Days of Immersion", variant: "default" },
   { num: "6", label: "Spots Available", variant: "gold" },
-  { num: "1:1", label: "Free Consultation", variant: "mid" },
+  { num: "1:1", label: "CONSULTATION", variant: "mid" },
   { num: "∞", label: "Doors Opened", variant: "dark-gold" },
 ];
 

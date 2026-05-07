@@ -25,7 +25,7 @@ export const TRANSLATIONS = {
       stats: [
         { num: "5", label: "Days of Immersion" },
         { num: "6", label: "Spots Available" },
-        { num: "1:1", label: "Free Consultation" },
+        { num: "1:1", label: "CONSULTATION" },
         { num: "∞", label: "Doors Opened" }
       ],
       who_label: "Who It's For",
@@ -175,7 +175,7 @@ export const TRANSLATIONS = {
       stats: [
         { num: "5", label: "Dias de Imersão" },
         { num: "6", label: "Lugares Disponíveis" },
-        { num: "1:1", label: "Consultoria Gratuita" },
+        { num: "1:1", label: "CONSULTORIA" },
         { num: "∞", label: "Portas Abertas" }
       ],
       who_label: "Para Quem É",
@@ -325,7 +325,7 @@ export const TRANSLATIONS = {
       stats: [
         { num: "5", label: "Jours d'Immersion" },
         { num: "6", label: "Places Disponibles" },
-        { num: "1:1", label: "Consultation Gratuite" },
+        { num: "1:1", label: "CONSULTATION" },
         { num: "∞", label: "Portes Ouvertes" }
       ],
       who_label: "Pour Qui",
