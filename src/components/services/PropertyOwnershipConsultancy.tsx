@@ -1,4 +1,5 @@
 import { Users, Search, FileText, TrendingUp } from "lucide-react";
+import { openInNewTab } from "@/lib/openLink";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const PropertyOwnershipConsultancy = () => {

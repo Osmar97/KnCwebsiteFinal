@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { openInNewTab } from "@/lib/openLink";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, ExternalLink, Download } from "lucide-react";
