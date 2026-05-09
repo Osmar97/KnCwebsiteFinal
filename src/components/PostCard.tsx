@@ -73,7 +73,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
 
   const handlePdfAccess = (pdfUrl: string, action: "view" | "download") => {
     if (action === "view") {
-      window.open(pdfUrl, '_blank');
+      openInNewTab(pdfUrl);
     } else {
       const fileName = pdfUrl.split('/').pop() || 'document.pdf';
       const link = document.createElement('a');

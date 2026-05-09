@@ -31,10 +31,8 @@ export const PropertyManagement = () => {
   ];
 
   const handleBookingClick = () => {
-    window.open(
-      "https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false",
-      "_blank",
-      "noopener,noreferrer"
+    openInNewTab(
+      "https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false"
     );
   };
 

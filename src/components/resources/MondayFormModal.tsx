@@ -93,7 +93,7 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fi
   };
 
   const openFormInNewTab = () => {
-    window.open(formUrl, '_blank');
+    openInNewTab(formUrl);
     // Since we can't detect submission in new tab, show download button after delay
     setTimeout(() => {
       setIsFormSubmitted(true);
