@@ -93,8 +93,8 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fi
     handleFormSubmission();
   };
 
-  const openFormInNewTab = () => {
-    openInNewTab(formUrl);
+  const openFormInNewTab = (fallbackMessage?: string) => {
+    openInNewTab(formUrl, { fallbackMessage });
     // Since we can't detect submission in new tab, show download button after delay
     setTimeout(() => {
       setIsFormSubmitted(true);

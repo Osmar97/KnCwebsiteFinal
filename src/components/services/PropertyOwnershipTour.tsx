@@ -25,8 +25,8 @@ export const PropertyOwnershipTour = () => {
     description: "Authentic cultural immersion in Portugal and Cabo Verde"
   }];
 
-  const handleBookingClick = () => {
-    openInNewTab("/tour", { navigate });
+  const handleBookingClick = (fallbackMessage?: string) => {
+    openInNewTab("/tour", { navigate, fallbackMessage });
   };
 
   const scrollToContact = () => {
