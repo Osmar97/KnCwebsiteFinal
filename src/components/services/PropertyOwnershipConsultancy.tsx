@@ -26,9 +26,10 @@ export const PropertyOwnershipConsultancy = () => {
     }
   ];
 
-  const handleBooking = () => {
+  const handleBooking = (fallbackMessage?: string) => {
     openInNewTab(
-      "https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false"
+      "https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false",
+      { fallbackMessage }
     );
   };
 
@@ -88,7 +89,7 @@ export const PropertyOwnershipConsultancy = () => {
             <div className="flex gap-4">
               <Card
                 className="bg-white/95 backdrop-blur-sm border-0 shadow-xl rounded-2xl cursor-pointer"
-                onClick={handleBooking}
+                onClick={() => handleBooking()}
               >
                 <CardContent className="p-6 hover:bg-gray-50 transition-colors rounded-2xl">
                   <div className="flex items-center space-x-4">

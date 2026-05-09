@@ -31,9 +31,10 @@ export const PropertyManagement = () => {
     },
   ];
 
-  const handleBookingClick = () => {
+  const handleBookingClick = (fallbackMessage?: string) => {
     openInNewTab(
-      "https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false"
+      "https://kingsncompany.setmore.com/book?step=additional-products&products=814e33aa-9b10-43a4-8104-652ace5e0647&type=service&staff=1b7d6db9-90af-4ac1-b392-1f3eb6ec83d2&staffSelected=false",
+      { fallbackMessage }
     );
   };
 
@@ -98,7 +99,7 @@ export const PropertyManagement = () => {
             <Card className="absolute -bottom-8 -left-8 bg-white/95 backdrop-blur-sm border-0 shadow-xl">
               <CardContent
                 className="p-6 cursor-pointer rounded-2xl hover:bg-gray-100/80 transition-colors"
-                onClick={handleBookingClick}
+                onClick={() => handleBookingClick()}
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center">
