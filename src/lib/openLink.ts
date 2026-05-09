@@ -1,5 +1,13 @@
 import { toast } from "sonner";
 
+/**
+ * Standard error toast message shown when a popup is blocked and we fall
+ * back to navigating in the current tab. Use as the default everywhere so
+ * the wording stays consistent across the app.
+ */
+export const POPUP_BLOCKED_MESSAGE =
+  "Popup blocked by your browser. Opening in the same tab instead.";
+
 const isInternalRoute = (url: string): boolean =>
   url.startsWith("/") && !url.startsWith("//");
 
@@ -21,10 +29,7 @@ export function openInNewTab(
 
   // Popup blocked: window.open returns null (or a closed window in some browsers)
   if (!win || win.closed || typeof win.closed === "undefined") {
-    toast.error(
-      options?.fallbackMessage ??
-        "Popup blocked by your browser. Opening in the same tab instead."
-    );
+    toast.error(options?.fallbackMessage ?? POPUP_BLOCKED_MESSAGE);
     if (isInternalRoute(url) && options?.navigate) {
       options.navigate(url);
     } else {
