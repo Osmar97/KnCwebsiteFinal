@@ -165,7 +165,7 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fi
           />
 
           <div className="mt-4 text-center space-y-2">
-            <Button onClick={openFormInNewTab} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={() => openFormInNewTab()} className="bg-blue-600 hover:bg-blue-700 text-white">
               <ExternalLink className="w-4 h-4 mr-2" />
               Open Form in New Tab
             </Button>

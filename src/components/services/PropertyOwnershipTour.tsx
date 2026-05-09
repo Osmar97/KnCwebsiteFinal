@@ -81,7 +81,7 @@ export const PropertyOwnershipTour = () => {
             <div className="flex gap-4">
               <Card
                 className="bg-white/95 backdrop-blur-sm border-0 shadow-xl rounded-2xl cursor-pointer"
-                onClick={handleBookingClick}
+                onClick={() => handleBookingClick()}
               >
                 <CardContent className="p-6 hover:bg-gray-50 transition-colors rounded-2xl">
                   <div className="flex items-center space-x-4">
