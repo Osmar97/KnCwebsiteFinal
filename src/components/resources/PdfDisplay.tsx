@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FileText, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MondayFormModal } from "./MondayFormModal";
+import { openInNewTab } from "@/lib/openLink";
 
 interface PdfDisplayProps {
   pdfUrls: string[];
@@ -16,7 +17,7 @@ export const PdfDisplay = ({ pdfUrls }: PdfDisplayProps) => {
 
   const handlePdfAccess = (pdfUrl: string, action: "view" | "download") => {
     if (action === "view") {
-      window.open(pdfUrl, '_blank');
+      openInNewTab(pdfUrl);
     } else {
       const fileName = pdfUrl.split('/').pop() || 'document.pdf';
       const link = document.createElement('a');

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { openInNewTab } from "@/lib/openLink";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -73,7 +74,7 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
 
   const handlePdfAccess = (pdfUrl: string, action: "view" | "download") => {
     if (action === "view") {
-      window.open(pdfUrl, '_blank');
+      openInNewTab(pdfUrl);
     } else {
       const fileName = pdfUrl.split('/').pop() || 'document.pdf';
       const link = document.createElement('a');

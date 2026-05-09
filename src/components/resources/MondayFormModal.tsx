@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { openInNewTab } from "@/lib/openLink";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, ExternalLink, Download } from "lucide-react";
@@ -93,7 +94,7 @@ export const MondayFormModal = ({ isOpen, onClose, onFormSubmitted, fileName, fi
   };
 
   const openFormInNewTab = () => {
-    window.open(formUrl, '_blank');
+    openInNewTab(formUrl);
     // Since we can't detect submission in new tab, show download button after delay
     setTimeout(() => {
       setIsFormSubmitted(true);
