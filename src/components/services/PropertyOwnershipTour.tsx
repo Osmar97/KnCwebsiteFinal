@@ -1,8 +1,8 @@
 import { MapPin, Plane, Camera, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import { openInNewTab } from "@/lib/openLink";
+import { useNavigate } from "react-router-dom";
 
 export const PropertyOwnershipTour = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export const PropertyOwnershipTour = () => {
   }];
 
   const handleBookingClick = () => {
-    openInNewTab("/tour");
+    openInNewTab("/tour", { navigate });
   };
 
   const scrollToContact = () => {
