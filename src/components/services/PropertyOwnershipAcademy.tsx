@@ -2,6 +2,7 @@
 import { GraduationCap, BookOpen, Users, Target } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { openInNewTab } from "@/lib/openLink";
 
 export const PropertyOwnershipAcademy = () => {
   const features = [
