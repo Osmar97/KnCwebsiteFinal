@@ -520,6 +520,13 @@ export default function TourPage() {
           {t('footer.copy')}
         </p>
       </footer>
+
+      <PreTourFormModal
+        open={showPreForm}
+        onOpenChange={setShowPreForm}
+        onSubmit={(data) => handleCheckout(data)}
+        isSubmitting={isCheckingOut}
+      />
     </div>
   );
 }
