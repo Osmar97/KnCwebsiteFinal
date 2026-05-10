@@ -66,3 +66,6 @@ verify_jwt = false
 
 [functions.improve-text]
 verify_jwt = false
+
+[functions.stripe-tour-webhook]
+verify_jwt = false
