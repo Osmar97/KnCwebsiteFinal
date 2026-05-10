@@ -442,7 +442,7 @@ export default function TourPage() {
                   </li>
                 ))}
               </ul>
-              <button onClick={handleCheckout} disabled={isCheckingOut} className="btn-primary btn-full">
+              <button onClick={openReserveForm} disabled={isCheckingOut} className="btn-primary btn-full">
                 {isCheckingOut && <Loader2 size={14} className="animate-spin" />}
                 {isCheckingOut ? "Processing..." : t('pricing.cta')}
               </button>
