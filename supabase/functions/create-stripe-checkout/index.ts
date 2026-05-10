@@ -10,11 +10,21 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') as string, {
 const handler = async (req: Request): Promise<Response> => {
   try {
     const reqBody = await req.json();
-    const { origin } = reqBody;
+    const { origin, preTourData } = reqBody;
+
+    // Flatten + truncate metadata (Stripe limits: 50 keys, 500 chars per value)
+    const metadata: Record<string, string> = {};
+    if (preTourData && typeof preTourData === "object") {
+      for (const [k, v] of Object.entries(preTourData)) {
+        const value = Array.isArray(v) ? v.join(", ") : String(v ?? "");
+        if (value) metadata[k] = value.slice(0, 500);
+      }
+    }
 
     // Create Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      customer_email: preTourData?.email || undefined,
       line_items: [
         {
           price_data: {
@@ -29,6 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
         },
       ],
       mode: 'payment',
+      metadata,
       success_url: `${origin || 'http://localhost:5173'}/tour?success=true`,
       cancel_url: `${origin || 'http://localhost:5173'}/tour?canceled=true`,
     });
