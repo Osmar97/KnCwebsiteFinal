@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { TRANSLATIONS, Language } from "./TourTranslations";
 import "./Tour.css";
+import PreTourFormModal, { PreTourFormData } from "@/components/tour/PreTourFormModal";
 
 // ── TYPES ──────────────────────────────────────────────────────────────────
 
@@ -237,6 +238,7 @@ export default function TourPage() {
   const { toast } = useToast();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [lang, setLang] = useState<Language>('en');
+  const [showPreForm, setShowPreForm] = useState(false);
 
   const t = (path: string) => {
     const keys = path.split('.');
@@ -247,14 +249,15 @@ export default function TourPage() {
     return obj || path;
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (preTourData?: PreTourFormData) => {
     try {
       setIsCheckingOut(true);
       const { data, error } = await supabase.functions.invoke("create-stripe-checkout", {
-        body: { origin: window.location.origin },
+        body: { origin: window.location.origin, preTourData },
       });
       if (error) throw error;
       if (data?.url) {
+        setShowPreForm(false);
         window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
@@ -270,6 +273,8 @@ export default function TourPage() {
       setIsCheckingOut(false);
     }
   };
+
+  const openReserveForm = () => setShowPreForm(true);
 
   const EMAIL_PRIVATE = "mailto:services@kingsncompany.com?subject=Private%20Property%20Tour%20Enquiry";
   const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
@@ -303,7 +308,7 @@ export default function TourPage() {
           </h1>
           <p className="hero-date">{t('hero.date')}</p>
           <div className="hero-ctas">
-            <button onClick={handleCheckout} disabled={isCheckingOut} className="btn-primary">
+            <button onClick={openReserveForm} disabled={isCheckingOut} className="btn-primary">
               {isCheckingOut && <Loader2 size={14} className="animate-spin" />}
               {isCheckingOut ? "Processing..." : t('hero.cta_reserve')}
             </button>
