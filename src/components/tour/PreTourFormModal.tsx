@@ -83,9 +83,10 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: PreTourFormData) => Promise<void> | void;
   isSubmitting?: boolean;
+  mode?: "payment" | "enquiry";
 }
 
-export default function PreTourFormModal({ open, onOpenChange, onSubmit, isSubmitting }: Props) {
+export default function PreTourFormModal({ open, onOpenChange, onSubmit, isSubmitting, mode = "payment" }: Props) {
   const [data, setData] = useState<PreTourFormData>(initialData);
   const { toast } = useToast();
 
@@ -138,7 +139,9 @@ export default function PreTourFormModal({ open, onOpenChange, onSubmit, isSubmi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Pre-Tour Preparation Form</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {mode === "enquiry" ? "Request a Private Tour" : "Pre-Tour Preparation Form"}
+          </DialogTitle>
           <DialogDescription>
             This short form helps us tailor the experience around your goals, preferences, and practical needs before arrival.
           </DialogDescription>
@@ -293,7 +296,9 @@ export default function PreTourFormModal({ open, onOpenChange, onSubmit, isSubmi
             </Button>
             <Button type="submit" disabled={!isValid || isSubmitting} className="bg-gold hover:bg-gold-dark text-black">
               {isSubmitting && <Loader2 size={14} className="animate-spin mr-2" />}
-              {isSubmitting ? "Processing..." : "Continue to Payment — 3,500€"}
+              {isSubmitting
+                ? (mode === "enquiry" ? "Sending..." : "Processing...")
+                : (mode === "enquiry" ? "Send Request" : "Continue to Payment — 3,500€")}
             </Button>
           </div>
         </form>
