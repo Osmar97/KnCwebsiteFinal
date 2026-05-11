@@ -239,6 +239,8 @@ export default function TourPage() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [lang, setLang] = useState<Language>('en');
   const [showPreForm, setShowPreForm] = useState(false);
+  const [showEnquiryForm, setShowEnquiryForm] = useState(false);
+  const [isSendingEnquiry, setIsSendingEnquiry] = useState(false);
 
   const t = (path: string) => {
     const keys = path.split('.');
@@ -275,6 +277,29 @@ export default function TourPage() {
   };
 
   const openReserveForm = () => setShowPreForm(true);
+  const openEnquiryForm = () => setShowEnquiryForm(true);
+
+  const handleEnquiry = async (data: PreTourFormData) => {
+    try {
+      setIsSendingEnquiry(true);
+      const { error } = await supabase.functions.invoke("send-tour-enquiry", { body: data });
+      if (error) throw error;
+      setShowEnquiryForm(false);
+      toast({
+        title: "Request sent",
+        description: "Thank you — we'll be in touch shortly to arrange your private tour.",
+      });
+    } catch (error) {
+      console.error("Enquiry error:", error);
+      toast({
+        title: "Something went wrong",
+        description: "We couldn't send your request. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingEnquiry(false);
+    }
+  };
 
   const EMAIL_PRIVATE = "mailto:services@kingsncompany.com?subject=Private%20Property%20Tour%20Enquiry";
   const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
@@ -463,7 +488,10 @@ export default function TourPage() {
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.82)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.8, fontFamily: "'Montserrat', sans-serif" }}>
               {t('private.body')}
             </p>
-            <a href={EMAIL_PRIVATE} className="btn-white">{t('private.cta')}</a>
+            <button onClick={openEnquiryForm} disabled={isSendingEnquiry} className="btn-white">
+              {isSendingEnquiry && <Loader2 size={14} className="animate-spin" style={{ marginRight: 6 }} />}
+              {t('private.cta')}
+            </button>
           </Reveal>
         </div>
       </section>
@@ -526,6 +554,14 @@ export default function TourPage() {
         onOpenChange={setShowPreForm}
         onSubmit={(data) => handleCheckout(data)}
         isSubmitting={isCheckingOut}
+      />
+
+      <PreTourFormModal
+        open={showEnquiryForm}
+        onOpenChange={setShowEnquiryForm}
+        onSubmit={(data) => handleEnquiry(data)}
+        isSubmitting={isSendingEnquiry}
+        mode="enquiry"
       />
     </div>
   );
