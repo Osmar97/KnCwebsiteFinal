@@ -30,6 +30,75 @@ export const Navigation = () => {
   const lastDir = useRef<"up" | "down">("up");
   const ticking = useRef(false);
 
+  // Background state — driven by hero visibility via IntersectionObserver.
+  // `scrolled` becomes true once the page has been scrolled past the hero
+  // sentinel (or, when no sentinel exists on the page, immediately).
+  useEffect(() => {
+    let observer: IntersectionObserver | null = null;
+    let mutationObserver: MutationObserver | null = null;
+    let rafId = 0;
+
+    const NAV_HEIGHT = 64;
+
+    const evaluate = (sentinel: HTMLElement) => {
+      const rect = sentinel.getBoundingClientRect();
+      // Hero is "in view" while sentinel sits below the navbar bottom.
+      setScrolled(rect.top <= NAV_HEIGHT);
+    };
+
+    const attach = () => {
+      const sentinel = document.querySelector<HTMLElement>("[data-hero-sentinel]");
+
+      if (!sentinel) {
+        // No hero on this page → solid navbar from the start.
+        setScrolled(true);
+        return;
+      }
+
+      // Initial sync (handles refresh + route change deep in the page).
+      evaluate(sentinel);
+
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          // The sentinel is rendered at the bottom edge of the hero.
+          // Once it crosses above the navbar, we switch to the blurred bg.
+          const passedTop =
+            !entry.isIntersecting && entry.boundingClientRect.top < NAV_HEIGHT;
+          setScrolled(passedTop);
+        },
+        {
+          // Trigger exactly when the sentinel meets the navbar bottom.
+          rootMargin: `-${NAV_HEIGHT}px 0px 0px 0px`,
+          threshold: [0, 1],
+        },
+      );
+      observer.observe(sentinel);
+    };
+
+    // Wait one frame so the new route's DOM is mounted before querying.
+    rafId = window.requestAnimationFrame(() => {
+      attach();
+
+      // If the sentinel mounts later (lazy hero, async data), watch for it.
+      if (!document.querySelector("[data-hero-sentinel]")) {
+        mutationObserver = new MutationObserver(() => {
+          if (document.querySelector("[data-hero-sentinel]")) {
+            mutationObserver?.disconnect();
+            mutationObserver = null;
+            attach();
+          }
+        });
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+      }
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      observer?.disconnect();
+      mutationObserver?.disconnect();
+    };
+  }, [location.pathname]);
+
   useEffect(() => {
     lastScrollY.current = window.scrollY;
     lastDirChangeY.current = window.scrollY;
@@ -41,8 +110,6 @@ export const Navigation = () => {
     const update = () => {
       ticking.current = false;
       const y = Math.max(0, window.scrollY);
-
-      setScrolled(y > 24);
 
       if (isPropertiesPage) {
         setHidden(false);
