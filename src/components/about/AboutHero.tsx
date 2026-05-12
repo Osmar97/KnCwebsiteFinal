@@ -32,6 +32,7 @@ export const AboutHero = ({ isVisible, scrolled }: AboutHeroProps) => {
           />
         </div>
       </div>
+      <div data-hero-sentinel aria-hidden className="h-px w-full" />
     </div>
   );
 };

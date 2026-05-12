@@ -21,6 +21,7 @@ export const OurApproachHero = () => {
           </p>
         </div>
       </div>
+      <div data-hero-sentinel aria-hidden className="h-px w-full" />
     </section>
   );
 };
