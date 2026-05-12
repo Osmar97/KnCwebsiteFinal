@@ -22,6 +22,7 @@ import FreeResources from "./pages/FreeResources";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
 import AdminProperties from "./pages/AdminProperties";
+import AdminAssets from "./pages/AdminAssets";
 import TourPage from "./pages/Tour";
 
 const queryClient = new QueryClient({
@@ -67,6 +68,7 @@ const App = () => (
               <Route path="/properties" element={<Properties />} />
               <Route path="/properties/:id" element={<PropertyDetail />} />
               <Route path="/admin/properties" element={<AdminProperties />} />
+              <Route path="/admin/assets" element={<AdminAssets />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
