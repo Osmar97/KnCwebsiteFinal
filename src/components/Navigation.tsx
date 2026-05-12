@@ -174,6 +174,11 @@ export const Navigation = () => {
                           Manage Properties
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/assets" className="cursor-pointer">
+                          Manage Assets
+                        </Link>
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 );
