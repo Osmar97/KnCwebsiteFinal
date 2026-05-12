@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from '../assets/logo.png';
@@ -15,7 +15,6 @@ export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
   const { isAdminLoggedIn } = useAdmin();
 
@@ -26,32 +25,70 @@ export const Navigation = () => {
   // Keep navbar static on properties page and property detail pages
   const isPropertiesPage = location.pathname === '/properties' || location.pathname.startsWith('/properties/');
 
+  const lastScrollY = useRef(0);
+  const lastDirChangeY = useRef(0);
+  const lastDir = useRef<"up" | "down">("up");
+  const ticking = useRef(false);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Don't hide navbar on properties page
+    lastScrollY.current = window.scrollY;
+    lastDirChangeY.current = window.scrollY;
+
+    const SHOW_AT_TOP = 80;       // always visible above this
+    const HIDE_AFTER = 120;       // only start hiding past this
+    const DIR_THRESHOLD = 8;      // ignore tiny direction flips (jitter)
+
+    const update = () => {
+      ticking.current = false;
+      const y = Math.max(0, window.scrollY);
+
+      setScrolled(y > 24);
+
       if (isPropertiesPage) {
         setHidden(false);
-      } else {
-        // Show navbar when scrolling up or at top
-        if (currentScrollY < lastScrollY || currentScrollY < 100) {
-          setHidden(false);
-        } 
-        // Hide navbar when scrolling down
-        else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-          setHidden(true);
-          setIsOpen(false); // Close mobile menu when hiding
-        }
+        lastScrollY.current = y;
+        return;
       }
-      
-      setScrolled(currentScrollY > 50);
-      setLastScrollY(currentScrollY);
+
+      if (y <= SHOW_AT_TOP) {
+        setHidden(false);
+        lastScrollY.current = y;
+        lastDirChangeY.current = y;
+        lastDir.current = "up";
+        return;
+      }
+
+      const delta = y - lastScrollY.current;
+      const dir: "up" | "down" = delta > 0 ? "down" : delta < 0 ? "up" : lastDir.current;
+
+      if (dir !== lastDir.current) {
+        lastDirChangeY.current = y;
+        lastDir.current = dir;
+      }
+
+      const distSinceFlip = Math.abs(y - lastDirChangeY.current);
+
+      if (dir === "down" && y > HIDE_AFTER && distSinceFlip > DIR_THRESHOLD) {
+        setHidden(true);
+        setIsOpen(false);
+      } else if (dir === "up" && distSinceFlip > DIR_THRESHOLD) {
+        setHidden(false);
+      }
+
+      lastScrollY.current = y;
     };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, isPropertiesPage]);
+
+    const onScroll = () => {
+      if (!ticking.current) {
+        ticking.current = true;
+        window.requestAnimationFrame(update);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isPropertiesPage]);
 
   const navItems = [
     { name: "ABOUT", href: "/about" },
@@ -69,8 +106,24 @@ export const Navigation = () => {
   const subtitleColor = isDarkBackground ? 'text-gray-400' : 'text-gray-600';
   const mobileTextColor = isDarkBackground ? 'text-white' : 'text-[#85754E]';
 
+  const baseBg = isPropertiesPage
+    ? "bg-black"
+    : scrolled
+      ? (isDarkBackground
+          ? "bg-black/60 backdrop-blur-xl backdrop-saturate-150 border-b border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.25)]"
+          : "bg-white/70 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5 shadow-[0_4px_30px_rgba(0,0,0,0.06)]")
+      : "bg-transparent";
+
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${hidden ? '-top-20' : 'top-0'} ${isPropertiesPage ? 'bg-black' : ''}`}>
+    <nav
+      style={{
+        transform: hidden ? "translate3d(0,-100%,0)" : "translate3d(0,0,0)",
+        transition:
+          "transform 500ms cubic-bezier(0.22, 1, 0.36, 1), background-color 400ms ease, backdrop-filter 400ms ease, box-shadow 400ms ease, border-color 400ms ease",
+        willChange: "transform",
+      }}
+      className={`fixed inset-x-0 top-0 w-full z-50 ${baseBg}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
