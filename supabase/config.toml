@@ -72,3 +72,6 @@ verify_jwt = false
 
 [functions.send-tour-enquiry]
 verify_jwt = false
+
+[functions.storage-policy-tests]
+verify_jwt = false
