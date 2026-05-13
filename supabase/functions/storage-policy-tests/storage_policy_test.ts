@@ -19,12 +19,15 @@ function makeFile(name: string, content = "test") {
   return new File([new Blob([content])], name, { type: "text/plain" });
 }
 
+// deno-lint-ignore no-explicit-any
+type AnyClient = any;
+
 async function withNonAdminUser<T>(
   fn: (ctx: {
     userId: string;
     email: string;
-    userClient: ReturnType<typeof createClient>;
-    adminClient: ReturnType<typeof createClient>;
+    userClient: AnyClient;
+    adminClient: AnyClient;
   }) => Promise<T>,
 ): Promise<T> {
   assert(SUPABASE_URL, "SUPABASE_URL env required");
