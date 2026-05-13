@@ -7,11 +7,22 @@
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const SUPABASE_URL =
+  Deno.env.get("SUPABASE_URL") ?? Deno.env.get("VITE_SUPABASE_URL");
+const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const ANON_KEY =
   Deno.env.get("SUPABASE_ANON_KEY") ??
-  Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
+  Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ??
+  Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY");
+
+const HAS_ENV = Boolean(SUPABASE_URL && SERVICE_ROLE_KEY && ANON_KEY);
+if (!HAS_ENV) {
+  console.warn(
+    "[storage-policy-tests] Skipping: requires SUPABASE_URL, " +
+      "SUPABASE_SERVICE_ROLE_KEY, and SUPABASE_ANON_KEY in env. " +
+      "Run inside the Supabase functions runtime or export the secrets locally.",
+  );
+}
 
 const BUCKETS = ["pdfs", "videos"] as const;
 
@@ -30,11 +41,7 @@ async function withNonAdminUser<T>(
     adminClient: AnyClient;
   }) => Promise<T>,
 ): Promise<T> {
-  assert(SUPABASE_URL, "SUPABASE_URL env required");
-  assert(SERVICE_ROLE_KEY, "SUPABASE_SERVICE_ROLE_KEY env required");
-  assert(ANON_KEY, "SUPABASE_ANON_KEY/PUBLISHABLE_KEY env required");
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+  const adminClient = createClient(SUPABASE_URL!, SERVICE_ROLE_KEY!, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
@@ -50,7 +57,7 @@ async function withNonAdminUser<T>(
   assert(!createErr, `failed to create test user: ${createErr?.message}`);
   const userId = created.user!.id;
 
-  const userClient = createClient(SUPABASE_URL, ANON_KEY, {
+  const userClient = createClient(SUPABASE_URL!, ANON_KEY!, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
   const { error: signInErr } = await userClient.auth.signInWithPassword({
@@ -78,7 +85,10 @@ async function withNonAdminUser<T>(
 }
 
 for (const bucket of BUCKETS) {
-  Deno.test(`[${bucket}] non-admin INSERT is rejected`, async () => {
+  Deno.test({
+    name: `[${bucket}] non-admin INSERT is rejected`,
+    ignore: !HAS_ENV,
+    fn: async () => {
     await withNonAdminUser(async ({ userId, userClient, adminClient }) => {
       const path = `${userId}/insert-test.txt`;
       const { error } = await userClient.storage
@@ -96,9 +106,13 @@ for (const bucket of BUCKETS) {
         `non-admin should not have written any file to ${bucket}`,
       );
     });
+    },
   });
 
-  Deno.test(`[${bucket}] non-admin UPDATE is rejected`, async () => {
+  Deno.test({
+    name: `[${bucket}] non-admin UPDATE is rejected`,
+    ignore: !HAS_ENV,
+    fn: async () => {
     await withNonAdminUser(async ({ userId, userClient, adminClient }) => {
       // Seed an admin-owned file via service role (bypasses RLS).
       const path = `${userId}/update-test.txt`;
@@ -112,9 +126,13 @@ for (const bucket of BUCKETS) {
         .update(path, makeFile("hacked"), { upsert: false });
       assert(error, `expected non-admin update on ${bucket} to fail`);
     });
+    },
   });
 
-  Deno.test(`[${bucket}] non-admin DELETE is rejected`, async () => {
+  Deno.test({
+    name: `[${bucket}] non-admin DELETE is rejected`,
+    ignore: !HAS_ENV,
+    fn: async () => {
     await withNonAdminUser(async ({ userId, userClient, adminClient }) => {
       const path = `${userId}/delete-test.txt`;
       const seed = await adminClient.storage
@@ -136,5 +154,6 @@ for (const bucket of BUCKETS) {
         `non-admin DELETE on ${bucket} should not remove the file (error=${removeErr?.message ?? "none"})`,
       );
     });
+    },
   });
 }
