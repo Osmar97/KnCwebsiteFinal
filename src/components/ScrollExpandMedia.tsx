@@ -280,6 +280,24 @@ const ScrollExpandMedia = ({
                   {restOfTitle}
                 </div>
               </div>
+
+              {/* Premium scroll indicator — pinned to bottom of hero viewport */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 transition-opacity duration-500 ease-out"
+                style={{
+                  opacity: mediaFullyExpanded ? 0 : Math.max(0, 1 - scrollProgress * 2.5),
+                }}
+              >
+                <div className="flex flex-col items-center gap-1.5 sm:gap-2">
+                  <span className="text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/60 font-light">
+                    Scroll
+                  </span>
+                  <div className="relative h-8 w-[18px] sm:h-10 sm:w-[22px] rounded-full border border-white/30 overflow-hidden backdrop-blur-sm">
+                    <span className="absolute left-1/2 top-1.5 -translate-x-1/2 h-1.5 w-[2px] rounded-full bg-gold animate-scroll-dot" />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <section
@@ -288,24 +306,6 @@ const ScrollExpandMedia = ({
             >
               {children}
             </section>
-          </div>
-
-          {/* Premium scroll indicator — bottom of hero */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 transition-opacity duration-500 ease-out"
-            style={{
-              opacity: mediaFullyExpanded ? 0 : Math.max(0, 1 - scrollProgress * 2.5),
-            }}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-[10px] tracking-[0.3em] uppercase text-white/60 font-light">
-                Scroll
-              </span>
-              <div className="relative h-10 w-[22px] rounded-full border border-white/30 overflow-hidden backdrop-blur-sm">
-                <span className="absolute left-1/2 top-1.5 -translate-x-1/2 h-1.5 w-[2px] rounded-full bg-gold animate-scroll-dot" />
-              </div>
-            </div>
           </div>
         </div>
       </section>
