@@ -130,7 +130,7 @@ for (const bucket of BUCKETS) {
       const { data: stillThere } = await adminClient.storage
         .from(bucket)
         .list(userId);
-      const names = (stillThere ?? []).map((o) => o.name);
+      const names = (stillThere ?? []).map((o: { name: string }) => o.name);
       assert(
         names.includes("delete-test.txt"),
         `non-admin DELETE on ${bucket} should not remove the file (error=${removeErr?.message ?? "none"})`,
