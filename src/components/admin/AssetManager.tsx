@@ -23,6 +23,20 @@ interface AssetFile {
 const sanitize = (name: string) =>
   name.replace(/[^a-zA-Z0-9.-]/g, "_").replace(/\s+/g, "_").toLowerCase();
 
+const logStorageAttempt = async (payload: {
+  bucket: "pdfs" | "videos";
+  action: "INSERT" | "UPDATE" | "DELETE";
+  object_path?: string | null;
+  success: boolean;
+  error_message?: string | null;
+}) => {
+  try {
+    await supabase.functions.invoke("log-storage-attempt", { body: payload });
+  } catch {
+    // Logging must never break the user flow.
+  }
+};
+
 export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerProps) => {
   const { toast } = useToast();
   const { supabaseUser, isAdminLoggedIn } = useAdmin();
@@ -95,6 +109,14 @@ export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerP
         contentType: file.type || undefined,
       });
 
+      logStorageAttempt({
+        bucket,
+        action: "INSERT",
+        object_path: path,
+        success: !error,
+        error_message: error?.message ?? null,
+      });
+
       if (error) {
         toast({
           title: "Upload failed",
@@ -114,6 +136,13 @@ export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerP
   const handleDelete = async (path: string) => {
     if (!confirm("Delete this file? This cannot be undone.")) return;
     const { error } = await supabase.storage.from(bucket).remove([path]);
+    logStorageAttempt({
+      bucket,
+      action: "DELETE",
+      object_path: path,
+      success: !error,
+      error_message: error?.message ?? null,
+    });
     if (error) {
       toast({ title: "Delete failed", description: error.message, variant: "destructive" });
       return;
