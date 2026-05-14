@@ -284,9 +284,10 @@ const ScrollExpandMedia = ({
               {/* Premium scroll indicator — pinned to bottom of hero viewport */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 transition-opacity duration-500 ease-out"
+                className="pointer-events-none absolute left-1/2 -translate-x-1/2 z-30 transition-opacity duration-500 ease-out"
                 style={{
                   opacity: mediaFullyExpanded ? 0 : Math.max(0, 1 - scrollProgress * 2.5),
+                  bottom: `calc(env(safe-area-inset-bottom, 0px) + ${isMobileState ? '1.25rem' : '2rem'})`,
                 }}
               >
                 <div className="flex flex-col items-center gap-1.5 sm:gap-2">
