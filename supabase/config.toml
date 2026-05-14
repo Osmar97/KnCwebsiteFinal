@@ -75,3 +75,6 @@ verify_jwt = false
 
 [functions.storage-policy-tests]
 verify_jwt = false
+
+[functions.log-storage-attempt]
+verify_jwt = false
