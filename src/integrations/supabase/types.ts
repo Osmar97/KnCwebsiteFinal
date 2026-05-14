@@ -242,6 +242,51 @@ export type Database = {
         }
         Relationships: []
       }
+      storage_audit_log: {
+        Row: {
+          action: string
+          bucket: string
+          created_at: string
+          error_message: string | null
+          id: string
+          ip_address: string | null
+          object_path: string | null
+          success: boolean
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          was_admin: boolean
+        }
+        Insert: {
+          action: string
+          bucket: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          ip_address?: string | null
+          object_path?: string | null
+          success: boolean
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          was_admin: boolean
+        }
+        Update: {
+          action?: string
+          bucket?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          ip_address?: string | null
+          object_path?: string | null
+          success?: boolean
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          was_admin?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
