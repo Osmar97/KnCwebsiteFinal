@@ -1247,11 +1247,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 </div>
               ))}
               <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
-                <input 
-                  type="file" 
-                  multiple 
-                  accept="image/*" 
-                  onChange={handleImageUpload} 
+                <input
+                  type="file"
+                  multiple
+                  accept={ACCEPT_STRINGS.image}
+                  onChange={handleImageUpload}
                   className="hidden"
                 />
                 <Plus className="w-8 h-8 text-gray-400 mb-1" />
