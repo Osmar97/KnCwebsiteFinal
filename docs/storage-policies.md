@@ -62,10 +62,19 @@ The `AdminContext` (`src/contexts/AdminContext.tsx`) mirrors this by calling `is
 
 The Supabase Storage bucket policies enforce the admin-only rule. In the Supabase dashboard, the effective policy pattern is:
 
-- **SELECT** — Allow public (anon) reads.
-- **INSERT** — `public.is_admin_user() = true`
-- **UPDATE** — `public.is_admin_user() = true`
-- **DELETE** — `public.is_admin_user() = true`
+- **SELECT** — Public (anon + authenticated). Buckets are marked `public = true` so files load via `getPublicUrl()` on public listings.
+- **INSERT** — `TO authenticated` + `public.is_admin_user() = true`
+- **UPDATE** — `TO authenticated` + `public.is_admin_user() = true`
+- **DELETE** — `TO authenticated` + `public.is_admin_user() = true`
+
+### 3.1 Read access decision
+
+Reads are intentionally kept public because property brochures (PDFs) and tour videos are embedded on public, unauthenticated pages. If a future requirement introduces *truly* sensitive documents (contracts, signed offers, internal-only material), they MUST go in a separate **private** bucket (`public = false`) with:
+
+- `SELECT` policy: `TO authenticated USING (public.is_admin_user())` (or a per-owner rule)
+- Client access via `supabase.storage.from(bucket).createSignedUrl(path, ttl)` — never `getPublicUrl()`
+
+Do not flip `pdfs` or `videos` to `public = false` without first migrating every consumer (`PropertyEditor`, `AssetManager`, `PdfUpload`, `VideoUpload`, property/post render paths) off `getPublicUrl()`.
 
 > **Important:** There is no `is_admin_user` parameter in the policy expression — call the zero-argument function exactly as `public.is_admin_user() = true`.
 
