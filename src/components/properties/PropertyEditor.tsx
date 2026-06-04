@@ -324,6 +324,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     },
   });
 
+import { validateImage, validateFloorPlan, validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -333,6 +335,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
     try {
       for (const file of Array.from(files)) {
+        const check = validateImage(file, 10);
+        if (!check.valid) {
+          toast({
+            title: "Upload rejected",
+            description: check.error,
+            variant: "destructive",
+          });
+          continue;
+        }
+
         const fileExt = file.name.split(".").pop();
         const fileName = `${Math.random()}.${fileExt}`;
         const { error } = await supabase.storage
@@ -340,10 +352,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           .upload(fileName, file);
 
         if (error) {
-          toast({ 
-            title: "Erro ao carregar imagem", 
+          toast({
+            title: "Erro ao carregar imagem",
             description: error.message,
-            variant: "destructive" 
+            variant: "destructive",
           });
         } else {
           const { data: urlData } = supabase.storage
@@ -355,16 +367,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
       if (newImageUrls.length > 0) {
         setImageUrls([...imageUrls, ...newImageUrls]);
-        toast({ 
+        toast({
           title: "Imagens carregadas com sucesso",
-          description: `${newImageUrls.length} imagem(ns) adicionada(s)`
+          description: `${newImageUrls.length} imagem(ns) adicionada(s)`,
         });
       }
     } catch (error) {
       console.error(error);
-      toast({ 
-        title: "Erro ao carregar imagens", 
-        variant: "destructive" 
+      toast({
+        title: "Erro ao carregar imagens",
+        variant: "destructive",
       });
     } finally {
       setUploading(false);
