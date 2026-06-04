@@ -8,7 +8,6 @@ import { validatePdf, validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidati
 
 interface AssetManagerProps {
   bucket: "pdfs" | "videos";
-  accept: string;
   maxSizeMb: number;
   label: string;
 }
