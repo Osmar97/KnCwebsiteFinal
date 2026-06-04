@@ -129,7 +129,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
           id="video-upload"
           type="file"
           multiple
-          accept="video/*"
+          accept={ACCEPT_STRINGS.video}
           onChange={handleFileUpload}
           className="hidden"
         />
