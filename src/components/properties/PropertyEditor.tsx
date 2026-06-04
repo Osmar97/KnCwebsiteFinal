@@ -325,7 +325,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     },
   });
 
-import { validateImage, validateFloorPlan, validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
