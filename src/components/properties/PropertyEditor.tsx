@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X, Minus, ArrowLeft, ArrowRight } from "lucide-react";
+import { validateImage, validateFloorPlan, validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
 import { Badge } from "@/components/ui/badge";
 import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
