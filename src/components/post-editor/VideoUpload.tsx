@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/contexts/AdminContext";
+import { validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
 
 interface VideoUploadProps {
   videoUrls: string[];
