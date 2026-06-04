@@ -428,6 +428,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
     try {
       for (const file of Array.from(files)) {
+        const check = validateFloorPlan(file, 20);
+        if (!check.valid) {
+          toast({
+            title: "Upload rejected",
+            description: check.error,
+            variant: "destructive",
+          });
+          continue;
+        }
+
         const fileExt = file.name.split(".").pop();
         const fileName = `${Math.random()}.${fileExt}`;
         const { error } = await supabase.storage
@@ -435,10 +445,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           .upload(fileName, file);
 
         if (error) {
-          toast({ 
-            title: "Erro ao carregar planta", 
+          toast({
+            title: "Erro ao carregar planta",
             description: error.message,
-            variant: "destructive" 
+            variant: "destructive",
           });
         } else {
           const { data: urlData } = supabase.storage
@@ -450,16 +460,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
       if (newFloorPlanUrls.length > 0) {
         setFloorPlanUrls([...floorPlanUrls, ...newFloorPlanUrls]);
-        toast({ 
+        toast({
           title: "Plantas carregadas com sucesso",
-          description: `${newFloorPlanUrls.length} planta(s) adicionada(s)`
+          description: `${newFloorPlanUrls.length} planta(s) adicionada(s)`,
         });
       }
     } catch (error) {
       console.error(error);
-      toast({ 
-        title: "Erro ao carregar plantas", 
-        variant: "destructive" 
+      toast({
+        title: "Erro ao carregar plantas",
+        variant: "destructive",
       });
     } finally {
       setUploading(false);
