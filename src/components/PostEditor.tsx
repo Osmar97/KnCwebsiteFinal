@@ -130,19 +130,11 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     }
 
     Array.from(files).forEach(file => {
-      if (!file.type.startsWith('image/')) {
+      const check = validateImage(file, 5);
+      if (!check.valid) {
         toast({
-          title: "Invalid File Type",
-          description: "Please select only image files.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (file.size > 100 * 1024 * 1024) {
-        toast({
-          title: "File Too Large",
-          description: "Images must be smaller than 5MB.",
+          title: "Upload rejected",
+          description: check.error,
           variant: "destructive",
         });
         return;
@@ -157,7 +149,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       };
       reader.readAsDataURL(file);
     });
-    
+
     e.target.value = '';
   };
 
