@@ -20,19 +20,11 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
     if (!files) return;
 
     for (const file of Array.from(files)) {
-      if (!file.type.includes('video/')) {
+      const check = validateVideo(file, 500);
+      if (!check.valid) {
         toast({
-          title: "Invalid File Type",
-          description: "Please select only video files.",
-          variant: "destructive",
-        });
-        continue;
-      }
-
-      if (file.size > 500 * 1024 * 1024) {
-        toast({
-          title: "File Too Large",
-          description: "Video files must be smaller than 500MB.",
+          title: "Upload rejected",
+          description: check.error,
           variant: "destructive",
         });
         continue;
