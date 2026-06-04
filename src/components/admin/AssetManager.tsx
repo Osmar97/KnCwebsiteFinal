@@ -37,7 +37,7 @@ const logStorageAttempt = async (payload: {
   }
 };
 
-export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerProps) => {
+export const AssetManager = ({ bucket, maxSizeMb, label }: AssetManagerProps) => {
   const { toast } = useToast();
   const { supabaseUser, isAdminLoggedIn } = useAdmin();
   const [files, setFiles] = useState<AssetFile[]>([]);
