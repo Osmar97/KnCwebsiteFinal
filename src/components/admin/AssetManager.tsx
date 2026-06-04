@@ -4,6 +4,7 @@ import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Upload, Trash2, Copy, FileText, Video as VideoIcon, Loader2 } from "lucide-react";
+import { validatePdf, validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
 
 interface AssetManagerProps {
   bucket: "pdfs" | "videos";
