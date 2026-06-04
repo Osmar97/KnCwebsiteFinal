@@ -94,10 +94,12 @@ export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerP
       i += 1;
       setProgress({ current: i, total: arr.length });
 
-      if (file.size > maxSizeMb * 1024 * 1024) {
+      const validate = bucket === "pdfs" ? validatePdf : validateVideo;
+      const check = validate(file, maxSizeMb);
+      if (!check.valid) {
         toast({
-          title: "File too large",
-          description: `${file.name} exceeds ${maxSizeMb}MB.`,
+          title: "Upload rejected",
+          description: check.error,
           variant: "destructive",
         });
         continue;
