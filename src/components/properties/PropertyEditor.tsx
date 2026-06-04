@@ -489,10 +489,20 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     const newVideoUrls: string[] = [];
 
     for (const file of Array.from(files)) {
+      const check = validateVideo(file, 500);
+      if (!check.valid) {
+        toast({
+          title: "Upload rejected",
+          description: check.error,
+          variant: "destructive",
+        });
+        continue;
+      }
+
       const timestamp = Date.now();
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${supabaseUser.id}/${timestamp}_${sanitizedName}`;
-      
+
       const { error } = await supabase.storage
         .from("videos")
         .upload(fileName, file);
