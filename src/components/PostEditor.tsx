@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { usePosts, type Post } from "@/contexts/PostsContext";
 import { useToast } from "@/hooks/use-toast";
 import { PostEditorForm } from "./post-editor/PostEditorForm";
+import { validateImage } from "@/lib/uploadValidation";
 
 interface PostEditorProps {
   post?: Post;
