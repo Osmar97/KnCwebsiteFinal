@@ -178,10 +178,10 @@ export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerP
           <h2 className="text-xl font-semibold text-white">{label}</h2>
           <p className="text-sm text-gray-400">Up to {maxSizeMb}MB per file. Admin only.</p>
         </div>
-        <label className="cursor-pointer">
+      <label className="cursor-pointer">
           <input
             type="file"
-            accept={accept}
+            accept={bucket === "pdfs" ? ACCEPT_STRINGS.pdf : ACCEPT_STRINGS.video}
             multiple
             className="hidden"
             onChange={handleUpload}
