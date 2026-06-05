@@ -1,4 +1,4 @@
-import { Users, Search, FileText, TrendingUp } from "lucide-react";
+import { Users, Search, FileText, TrendingUp, ArrowUpRight } from "lucide-react";
 import { openInNewTab } from "@/lib/openLink";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -88,18 +88,21 @@ export const PropertyOwnershipConsultancy = () => {
             {/* Custom Styled Card Button */}
             <div className="flex gap-4">
               <Card
-                className="bg-white/95 backdrop-blur-sm border-0 shadow-xl rounded-2xl cursor-pointer"
+                className="group w-full md:w-auto bg-[#FAFAFA]/90 backdrop-blur-md border border-white/50 shadow-xl hover:shadow-2xl hover:shadow-[#85754E]/20 rounded-2xl cursor-pointer transition-all duration-400 ease-out hover:-translate-y-1.5 hover:bg-white/95"
                 onClick={() => handleBooking()}
               >
-                <CardContent className="p-6 hover:bg-gray-50 transition-colors rounded-2xl">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-[#85754E] rounded-full flex items-center justify-center">
-                      <Users className="w-6 h-6 text-white" />
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between gap-8">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-[#85754E] rounded-full flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-400">
+                        <Users className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900 tracking-wide group-hover:text-[#85754E] transition-colors duration-400">Let’s Talk Strategy</p>
+                        <p className="text-sm text-gray-500 font-light">Book Discovery Call</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Let’s Talk Strategy</p>
-                      <p className="text-sm text-gray-600">Book Discovery Call</p>
-                    </div>
+                    <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-[#85754E] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-400" />
                   </div>
                 </CardContent>
               </Card>

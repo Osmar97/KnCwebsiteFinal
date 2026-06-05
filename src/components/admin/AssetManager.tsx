@@ -4,10 +4,10 @@ import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Upload, Trash2, Copy, FileText, Video as VideoIcon, Loader2 } from "lucide-react";
-import { validatePdf, validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
 
 interface AssetManagerProps {
   bucket: "pdfs" | "videos";
+  accept: string;
   maxSizeMb: number;
   label: string;
 }
@@ -37,7 +37,7 @@ const logStorageAttempt = async (payload: {
   }
 };
 
-export const AssetManager = ({ bucket, maxSizeMb, label }: AssetManagerProps) => {
+export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerProps) => {
   const { toast } = useToast();
   const { supabaseUser, isAdminLoggedIn } = useAdmin();
   const [files, setFiles] = useState<AssetFile[]>([]);
@@ -93,12 +93,10 @@ export const AssetManager = ({ bucket, maxSizeMb, label }: AssetManagerProps) =>
       i += 1;
       setProgress({ current: i, total: arr.length });
 
-      const validate = bucket === "pdfs" ? validatePdf : validateVideo;
-      const check = validate(file, maxSizeMb);
-      if (!check.valid) {
+      if (file.size > maxSizeMb * 1024 * 1024) {
         toast({
-          title: "Upload rejected",
-          description: check.error,
+          title: "File too large",
+          description: `${file.name} exceeds ${maxSizeMb}MB.`,
           variant: "destructive",
         });
         continue;
@@ -177,10 +175,10 @@ export const AssetManager = ({ bucket, maxSizeMb, label }: AssetManagerProps) =>
           <h2 className="text-xl font-semibold text-white">{label}</h2>
           <p className="text-sm text-gray-400">Up to {maxSizeMb}MB per file. Admin only.</p>
         </div>
-      <label className="cursor-pointer">
+        <label className="cursor-pointer">
           <input
             type="file"
-            accept={bucket === "pdfs" ? ACCEPT_STRINGS.pdf : ACCEPT_STRINGS.video}
+            accept={accept}
             multiple
             className="hidden"
             onChange={handleUpload}

@@ -43,10 +43,10 @@ const AdminAssets = () => {
             <TabsTrigger value="videos">Videos</TabsTrigger>
           </TabsList>
           <TabsContent value="pdfs" className="mt-6">
-            <AssetManager bucket="pdfs" maxSizeMb={100} label="PDF Documents" />
+            <AssetManager bucket="pdfs" accept=".pdf,application/pdf" maxSizeMb={100} label="PDF Documents" />
           </TabsContent>
           <TabsContent value="videos" className="mt-6">
-            <AssetManager bucket="videos" maxSizeMb={500} label="Videos" />
+            <AssetManager bucket="videos" accept="video/*" maxSizeMb={500} label="Videos" />
           </TabsContent>
         </Tabs>
       </div>

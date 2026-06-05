@@ -8,6 +8,7 @@ import { TailoredStrategies } from "@/components/our-approach/TailoredStrategies
 import { LongTermPartnership } from "@/components/our-approach/LongTermPartnership";
 import { InvestorTimeline } from "@/components/our-approach/InvestorTimeline";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
+import { GlobalCTA } from "@/components/GlobalCTA";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const OurApproachPage = () => {
@@ -24,6 +25,7 @@ const OurApproachPage = () => {
         <LongTermPartnership />
         <InvestorTimeline />
       </div>
+      <GlobalCTA />
       <GenerationalWealthHero />
       <Footer />
     </div>

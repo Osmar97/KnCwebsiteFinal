@@ -56,8 +56,6 @@ export const TeamSection = () => {
       image: "/lovable-uploads/2.png",
       quote:
         "I believe in delivering solid, data-driven insights to help investors make the most strategic decisions possible.",
-      linkedin:
-        "https://www.linkedin.com/in/nuno-miguel-andrade-monteiro-b37509a5/",
       flagEmoji: "🇨🇻", // Cape Verde
     },
     {
@@ -68,9 +66,6 @@ export const TeamSection = () => {
       image: "/lovable-uploads/Karen.png", // placeholder
       quote:
         "Leading innovative change and creating pathways for sustainable growth in a rapidly evolving world.",
-      linkedin: "https://www.linkedin.com/in/karen-silva-0906a5235/",
-      instagram:
-        "https://www.instagram.com/karenserenaa?igsh=MWM3aDlneW02OHU1dQ==",
       flagEmoji: "🇦🇴", // Angola
     },
   ];

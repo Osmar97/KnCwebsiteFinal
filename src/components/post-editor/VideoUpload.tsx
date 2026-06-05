@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/contexts/AdminContext";
-import { validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
 
 interface VideoUploadProps {
   videoUrls: string[];
@@ -20,11 +19,19 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
     if (!files) return;
 
     for (const file of Array.from(files)) {
-      const check = validateVideo(file, 500);
-      if (!check.valid) {
+      if (!file.type.includes('video/')) {
         toast({
-          title: "Upload rejected",
-          description: check.error,
+          title: "Invalid File Type",
+          description: "Please select only video files.",
+          variant: "destructive",
+        });
+        continue;
+      }
+
+      if (file.size > 500 * 1024 * 1024) {
+        toast({
+          title: "File Too Large",
+          description: "Video files must be smaller than 500MB.",
           variant: "destructive",
         });
         continue;
@@ -129,7 +136,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
           id="video-upload"
           type="file"
           multiple
-          accept={ACCEPT_STRINGS.video}
+          accept="video/*"
           onChange={handleFileUpload}
           className="hidden"
         />

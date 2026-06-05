@@ -1,5 +1,4 @@
-
-import { GraduationCap, BookOpen, Users, Target } from "lucide-react";
+import { GraduationCap, BookOpen, Users, Target, ArrowUpRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { openInNewTab } from "@/lib/openLink";
@@ -94,18 +93,22 @@ export const PropertyOwnershipAcademy = () => {
             </div>
             
             {/* Floating Card */}
-            <Card className="absolute -bottom-8 -left-8 bg-white/95 backdrop-blur-sm border-0 shadow-xl">
-              <CardContent 
-                className="p-6 cursor-pointer rounded-2xl hover:bg-gray-100/80 transition-colors" 
-                onClick={() => handleSetmoreClick()}>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center">
-                    <GraduationCap className="w-6 h-6 text-white" />
+            <Card 
+              className="absolute -bottom-8 -left-8 md:-left-12 group bg-[#FAFAFA]/90 backdrop-blur-md border border-white/50 shadow-xl hover:shadow-2xl hover:shadow-gold/20 rounded-2xl cursor-pointer transition-all duration-400 ease-out hover:-translate-y-1.5 hover:bg-white/95 z-20"
+              onClick={() => handleSetmoreClick()}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between gap-6 md:gap-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-400">
+                      <GraduationCap className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900 tracking-wide group-hover:text-gold transition-colors duration-400">Foundations First</p>
+                      <p className="text-sm text-gray-500 font-light">Personalized 1:1 Sessions</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">Foundations First</p>
-                    <p className="text-sm text-gray-600">Personalized 1:1 Sessions</p>
-                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-gold group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-400" />
                 </div>
               </CardContent>
             </Card>

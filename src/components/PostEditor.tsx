@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 import { usePosts, type Post } from "@/contexts/PostsContext";
 import { useToast } from "@/hooks/use-toast";
 import { PostEditorForm } from "./post-editor/PostEditorForm";
-import { validateImage } from "@/lib/uploadValidation";
 
 interface PostEditorProps {
   post?: Post;
@@ -130,11 +129,19 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
     }
 
     Array.from(files).forEach(file => {
-      const check = validateImage(file, 5);
-      if (!check.valid) {
+      if (!file.type.startsWith('image/')) {
         toast({
-          title: "Upload rejected",
-          description: check.error,
+          title: "Invalid File Type",
+          description: "Please select only image files.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (file.size > 100 * 1024 * 1024) {
+        toast({
+          title: "File Too Large",
+          description: "Images must be smaller than 5MB.",
           variant: "destructive",
         });
         return;
@@ -149,7 +156,7 @@ export const PostEditor = ({ post, isEdit = false, onClose }: PostEditorProps) =
       };
       reader.readAsDataURL(file);
     });
-
+    
     e.target.value = '';
   };
 

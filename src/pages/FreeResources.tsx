@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Mail, Download, BookOpen, TrendingUp, DollarSign, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePosts } from "@/contexts/PostsContext";
+import { GlobalCTA } from "@/components/GlobalCTA";
+
 const FreeResources = () => {
   const [email, setEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
@@ -218,20 +220,8 @@ const FreeResources = () => {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-20 px-4 bg-gradient-to-r from-gold/10 to-gold/5">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-white mb-6">
-              Ready to Start Your Investment Journey?
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              Book a free consultation to discuss your property investment goals.
-            </p>
-            <Button size="lg" className="bg-gold hover:bg-gold/90 text-black font-semibold px-8 py-3">
-              Book Free Consultation
-            </Button>
-          </div>
-        </section>
+        {/* Global CTA Section */}
+        <GlobalCTA />
       </main>
 
       <Footer />

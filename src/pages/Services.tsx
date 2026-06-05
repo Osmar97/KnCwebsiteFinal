@@ -6,6 +6,7 @@ import { PropertyOwnershipTour } from "@/components/services/PropertyOwnershipTo
 import { PropertyManagement } from "@/components/services/PropertyManagement";
 import { CoInvestmentOpportunities } from "@/components/services/CoInvestmentOpportunities";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
+import { GlobalCTA } from "@/components/GlobalCTA";
 import { Footer } from "@/components/Footer";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
@@ -22,6 +23,7 @@ const ServicesPage = () => {
         <PropertyManagement />
         <CoInvestmentOpportunities />
       </div>
+      <GlobalCTA />
       <GenerationalWealthHero />
       <Footer />
     </div>

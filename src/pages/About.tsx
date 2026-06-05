@@ -2,6 +2,7 @@
 import { Navigation } from "@/components/Navigation";
 import { About } from "@/components/About";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
+import { GlobalCTA } from "@/components/GlobalCTA";
 import { Footer } from "@/components/Footer";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
@@ -14,6 +15,7 @@ const AboutPage = () => {
       <div className="pt-14 sm:pt-16">
         <About />
       </div>
+      <GlobalCTA />
       <GenerationalWealthHero />
       <Footer />
     </div>

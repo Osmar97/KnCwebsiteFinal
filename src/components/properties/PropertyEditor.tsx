@@ -12,7 +12,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X, Minus, ArrowLeft, ArrowRight } from "lucide-react";
-import { validateImage, validateFloorPlan, validateVideo, ACCEPT_STRINGS } from "@/lib/uploadValidation";
 import { Badge } from "@/components/ui/badge";
 import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
@@ -325,7 +324,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     },
   });
 
-
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -335,16 +333,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
     try {
       for (const file of Array.from(files)) {
-        const check = validateImage(file, 10);
-        if (!check.valid) {
-          toast({
-            title: "Upload rejected",
-            description: check.error,
-            variant: "destructive",
-          });
-          continue;
-        }
-
         const fileExt = file.name.split(".").pop();
         const fileName = `${Math.random()}.${fileExt}`;
         const { error } = await supabase.storage
@@ -352,10 +340,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           .upload(fileName, file);
 
         if (error) {
-          toast({
-            title: "Erro ao carregar imagem",
+          toast({ 
+            title: "Erro ao carregar imagem", 
             description: error.message,
-            variant: "destructive",
+            variant: "destructive" 
           });
         } else {
           const { data: urlData } = supabase.storage
@@ -367,16 +355,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
       if (newImageUrls.length > 0) {
         setImageUrls([...imageUrls, ...newImageUrls]);
-        toast({
+        toast({ 
           title: "Imagens carregadas com sucesso",
-          description: `${newImageUrls.length} imagem(ns) adicionada(s)`,
+          description: `${newImageUrls.length} imagem(ns) adicionada(s)`
         });
       }
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Erro ao carregar imagens",
-        variant: "destructive",
+      toast({ 
+        title: "Erro ao carregar imagens", 
+        variant: "destructive" 
       });
     } finally {
       setUploading(false);
@@ -428,16 +416,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
     try {
       for (const file of Array.from(files)) {
-        const check = validateFloorPlan(file, 20);
-        if (!check.valid) {
-          toast({
-            title: "Upload rejected",
-            description: check.error,
-            variant: "destructive",
-          });
-          continue;
-        }
-
         const fileExt = file.name.split(".").pop();
         const fileName = `${Math.random()}.${fileExt}`;
         const { error } = await supabase.storage
@@ -445,10 +423,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           .upload(fileName, file);
 
         if (error) {
-          toast({
-            title: "Erro ao carregar planta",
+          toast({ 
+            title: "Erro ao carregar planta", 
             description: error.message,
-            variant: "destructive",
+            variant: "destructive" 
           });
         } else {
           const { data: urlData } = supabase.storage
@@ -460,16 +438,16 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
       if (newFloorPlanUrls.length > 0) {
         setFloorPlanUrls([...floorPlanUrls, ...newFloorPlanUrls]);
-        toast({
+        toast({ 
           title: "Plantas carregadas com sucesso",
-          description: `${newFloorPlanUrls.length} planta(s) adicionada(s)`,
+          description: `${newFloorPlanUrls.length} planta(s) adicionada(s)`
         });
       }
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Erro ao carregar plantas",
-        variant: "destructive",
+      toast({ 
+        title: "Erro ao carregar plantas", 
+        variant: "destructive" 
       });
     } finally {
       setUploading(false);
@@ -489,20 +467,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
     const newVideoUrls: string[] = [];
 
     for (const file of Array.from(files)) {
-      const check = validateVideo(file, 500);
-      if (!check.valid) {
-        toast({
-          title: "Upload rejected",
-          description: check.error,
-          variant: "destructive",
-        });
-        continue;
-      }
-
       const timestamp = Date.now();
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
       const fileName = `${supabaseUser.id}/${timestamp}_${sanitizedName}`;
-
+      
       const { error } = await supabase.storage
         .from("videos")
         .upload(fileName, file);
@@ -1247,11 +1215,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 </div>
               ))}
               <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
-                <input
-                  type="file"
-                  multiple
-                  accept={ACCEPT_STRINGS.image}
-                  onChange={handleImageUpload}
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*" 
+                  onChange={handleImageUpload} 
                   className="hidden"
                 />
                 <Plus className="w-8 h-8 text-gray-400 mb-1" />
@@ -1281,10 +1249,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 </div>
               ))}
               <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
-                <input
-                  type="file"
+                <input 
+                  type="file" 
                   multiple
-                  accept={ACCEPT_STRINGS.image}
+                  accept="image/*" 
                   onChange={handleFloorPlanUpload}
                   className="hidden"
                 />
@@ -1311,10 +1279,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 </div>
               ))}
               <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50">
-                <input
-                  type="file"
+                <input 
+                  type="file" 
                   multiple
-                  accept={ACCEPT_STRINGS.video}
+                  accept="video/*"
                   onChange={handleVideoUpload}
                   className="hidden"
                 />

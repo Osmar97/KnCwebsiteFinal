@@ -158,11 +158,11 @@ export const Navigation = () => {
   }, [isPropertiesPage]);
 
   const navItems = [
+    { name: "HOME", href: "/" },
     { name: "ABOUT", href: "/about" },
     { name: "SERVICES", href: "/services" },
+    { name: "TOURS", href: "/POT" },
     { name: "OUR APPROACH", href: "/our-approach" },
-    { name: "PROPERTIES", href: "/properties" },
-    { name: "RESOURCES", href: "/resources" },
     { name: "CONTACT", href: "/contact" }
   ];
 
@@ -221,47 +221,42 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
-            {navItems.map((item) => {
-              // Show dropdown for PROPERTIES when admin is logged in
-              if (item.name === "PROPERTIES" && isAdminLoggedIn) {
-                return (
-                  <DropdownMenu key={item.name}>
-                    <DropdownMenuTrigger className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group flex items-center gap-1`}>
-                      {item.name}
-                      <ChevronDown className="w-3 h-3" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-background border-border z-50">
-                      <DropdownMenuItem asChild>
-                        <Link to="/properties" className="cursor-pointer">
-                          Properties
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin/properties" className="cursor-pointer">
-                          Manage Properties
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin/assets" className="cursor-pointer">
-                          Manage Assets
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                );
-              }
-              
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group`}
-                >
-                  {item.name}
-                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
-                </Link>
-              );
-            })}
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group`}
+              >
+                {item.name}
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
+              </Link>
+            ))}
+            
+            {isAdminLoggedIn && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group flex items-center gap-1`}>
+                  ADMIN
+                  <ChevronDown className="w-3 h-3" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-background border-border z-50">
+                  <DropdownMenuItem asChild>
+                    <Link to="/properties" className="cursor-pointer">
+                      Properties
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/properties" className="cursor-pointer">
+                      Manage Properties
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/assets" className="cursor-pointer">
+                      Manage Assets
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Mobile menu button */}

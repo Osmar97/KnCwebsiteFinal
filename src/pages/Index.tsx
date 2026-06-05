@@ -4,6 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { SectionsCarousel } from "@/components/SectionsCarousel";
 import { Testimonials } from "@/components/Testimonials";
 import { GenerationalWealthHero } from "@/components/GenerationalWealthHero";
+import { GlobalCTA } from "@/components/GlobalCTA";
 import { Footer } from "@/components/Footer";
 import { B2BScalingHero } from "@/components/B2BScalingHero";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
@@ -26,6 +27,8 @@ const Index = () => {
       
       {/* Testimonials Section */}
       <Testimonials />
+      
+      <GlobalCTA />
       
       {/* Generational Wealth Hero */}
       <GenerationalWealthHero />
