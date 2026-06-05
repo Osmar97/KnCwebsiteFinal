@@ -162,7 +162,8 @@ const ScrollExpandMedia = ({
           >
             <img
               src={bgImageSrc}
-              alt="Background"
+              alt=""
+              aria-hidden="true"
               className="w-screen h-screen object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-gray-900 opacity-95" />
@@ -200,7 +201,7 @@ const ScrollExpandMedia = ({
                 <div className="relative w-full h-full">
                   <img
                     src={mediaSrc}
-                    alt={title || 'Hero image'}
+                    alt={title || "Luxury property featured by Kings 'n Company"}
                     className="w-full h-full object-cover rounded-xl"
                   />
                   <div
@@ -236,7 +237,7 @@ const ScrollExpandMedia = ({
                 {/* Logo */}
                 <img 
                   src="/lovable-uploads/1_Simbolo_Dourado.png" 
-                  alt="Logo" 
+                  alt="Kings 'n Company gold symbol logo" 
                   className="w-32 h-32 object-contain drop-shadow-[0_0_10px_rgba(160,143,42,0.8)] mb-6" 
                 />
 
@@ -251,9 +252,9 @@ const ScrollExpandMedia = ({
                   <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mb-6 mx-auto"></div>
 
                   {/* Heading */}
-                  <p className="text-gray-300 text-lg md:text-xl max-w-3xl leading-relaxed font-bold mb-3">
+                  <h1 className="text-gray-300 text-lg md:text-xl max-w-3xl leading-relaxed font-bold mb-3">
                     Connecting Visionary Investors to Remarkable Properties
-                  </p>
+                  </h1>
 
                   {/* Subheading */}
                   <p className="text-white text-xl md:text-base font-extralight">
