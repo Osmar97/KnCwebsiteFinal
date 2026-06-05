@@ -1,0 +1,23 @@
+# Kings 'n Company
+
+> Premium international real estate network specializing in property ownership, relocation, and investment from Lisbon to Cabo Verde and beyond.
+
+Kings 'n Company connects visionary investors to remarkable properties across Portugal and Cabo Verde, offering consultancy, property management, co-investment opportunities, and a Property Ownership Tour.
+
+## Pages
+
+- [Home](/): Overview of Kings 'n Company and our investment network.
+- [About](/about): Our company, mission, values, and team.
+- [Services](/services): Property ownership consultancy, management, academy, and co-investment.
+- [Our Approach](/our-approach): How we work with investors end-to-end.
+- [Properties](/properties): Exclusive property listings in Portugal and Cabo Verde.
+- [Resources](/resources): Articles and guides on real estate investment.
+- [Free Resources](/free-resources): Downloadable investor materials.
+- [Property Ownership Tour](/POT): On-site tour experience for prospective investors.
+- [Booking](/booking): Schedule a consultation.
+- [Contact](/contact): Get in touch with our team.
+
+## Optional
+
+- [Privacy Policy](/privacy-policy)
+- [Terms of Service](/terms-of-service)
