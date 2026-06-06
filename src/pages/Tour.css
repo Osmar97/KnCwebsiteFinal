@@ -42,50 +42,90 @@
 }
 .tour-page .reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* ── FLOATING CONTROLS ────────────────────────────────────────────────── */
+/* ── TOP NAV ──────────────────────────────────────────────────────────── */
+.tour-page .tnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 72px;
+  background: rgba(250,247,242,0.96);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 0.5px solid var(--border);
+}
+.tour-page .tnav-left { display: flex; align-items: center; gap: 18px; }
 .tour-page .back-btn {
-  position: fixed;
-  top: 24px; left: 24px; z-index: 200;
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 18px 10px 14px;
-  background: rgba(20,18,16,0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(133,117,78,0.3);
-  border-radius: 40px;
-  color: var(--gold-light);
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px 8px 12px;
+  background: transparent;
+  border: 1px solid var(--border-strong); border-radius: 40px;
+  color: var(--ink-soft);
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px; font-weight: 600;
+  font-size: 10px; font-weight: 700;
   letter-spacing: 0.15em; text-transform: uppercase;
-  cursor: pointer; transition: all 0.3s ease;
+  cursor: pointer; transition: all 0.25s;
 }
 .tour-page .back-btn:hover {
-  background: rgba(133,117,78,0.2);
-  border-color: rgba(133,117,78,0.6);
-  color: var(--white);
+  background: var(--gold); border-color: var(--gold); color: var(--white);
   transform: translateX(-2px);
 }
+.tour-page .tnav-logo {
+  display: flex; align-items: center; gap: 10px; text-decoration: none;
+}
+.tour-page .tnav-logo-mark {
+  width: 36px; height: 36px; background: var(--gold); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 14px; color: var(--white);
+}
+.tour-page .tnav-logo-text {
+  font-weight: 700; font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink); line-height: 1.2;
+}
+.tour-page .tnav-logo-text span {
+  display: block; font-weight: 400; font-size: 9px;
+  letter-spacing: 0.22em; color: var(--gold);
+}
+.tour-page .tnav-links {
+  display: flex; align-items: center; gap: 28px;
+  list-style: none; padding: 0; margin: 0;
+}
+.tour-page .tnav-links a {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.13em;
+  text-transform: uppercase; color: var(--ink-soft);
+  text-decoration: none; position: relative; transition: color 0.2s;
+}
+.tour-page .tnav-links a::after {
+  content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+  height: 1px; background: var(--gold);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+}
+.tour-page .tnav-links a:hover { color: var(--gold); }
+.tour-page .tnav-links a:hover::after { transform: scaleX(1); }
+.tour-page .tnav-right { display: flex; align-items: center; gap: 14px; }
+.tour-page .tnav-cta {
+  background: var(--gold); color: var(--white);
+  border: none; padding: 10px 22px; border-radius: 2px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s;
+}
+.tour-page .tnav-cta:hover:not(:disabled) { background: var(--gold-dark); }
+.tour-page .tnav-cta:disabled { opacity: 0.65; cursor: not-allowed; }
 
+/* Language switcher (inside nav) */
 .tour-page .lang-switcher {
-  position: fixed;
-  top: 24px; right: 24px; z-index: 200;
-  display: flex; gap: 4px;
-  background: rgba(20,18,16,0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(133,117,78,0.3);
-  border-radius: 40px;
-  padding: 4px;
+  display: flex; gap: 2px;
+  background: rgba(133,117,78,0.08);
+  border: 1px solid var(--border);
+  border-radius: 40px; padding: 3px;
 }
 .tour-page .lang-btn {
   background: transparent; border: none;
-  color: rgba(255,255,255,0.4);
+  color: var(--ink-soft);
   font-family: 'Montserrat', sans-serif;
   font-size: 10px; font-weight: 700;
-  padding: 6px 12px; cursor: pointer;
+  padding: 5px 10px; cursor: pointer;
   border-radius: 20px; transition: all 0.25s;
 }
-.tour-page .lang-btn:hover { color: var(--white); }
+.tour-page .lang-btn:hover { color: var(--gold); }
 .tour-page .lang-btn.active { background: var(--gold); color: var(--white); }
 
 /* ── HERO ─────────────────────────────────────────────────────────────── */
