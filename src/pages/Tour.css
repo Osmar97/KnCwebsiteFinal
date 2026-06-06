@@ -736,6 +736,8 @@
   .tour-page .test-grid { grid-template-columns: 1fr 1fr; }
   .tour-page .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
   .tour-page .private-inner { grid-template-columns: 1fr; gap: 40px; }
+  .tour-page .nl-grid { grid-template-columns: 1fr; gap: 40px; }
+  .tour-page .tnav-links { display: none; }
 }
 @media (max-width: 768px) {
   .tour-page .hero-section { padding: 120px 24px 80px; }
@@ -750,7 +752,7 @@
   .tour-page .group-section,
   .tour-page .test-section,
   .tour-page .private-section,
-  .tour-page .tc-section,
+  .tour-page .nl-section,
   .tour-page .tour-types { padding: 64px 0; }
   .tour-page .includes-grid { grid-template-columns: 1fr; }
   .tour-page .include-card { border-right: none; }
@@ -769,5 +771,7 @@
   .tour-page .footer-top { grid-template-columns: 1fr; }
   .tour-page .footer-bot { flex-direction: column; gap: 16px; }
   .tour-page .back-btn span { display: none; }
-  .tour-page .back-btn { padding: 10px 12px; }
+  .tour-page .back-btn { padding: 8px 10px; }
+  .tour-page .tnav { padding: 0 16px; }
+  .tour-page .tnav-logo-text { display: none; }
 }
