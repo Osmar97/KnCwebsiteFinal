@@ -340,12 +340,34 @@ export default function TourPage() {
   return (
     <div className="tour-page">
 
-      {/* ── FLOATING CONTROLS ── */}
-      <button className="back-btn" onClick={() => navigate("/services")} title={t("back")}>
-        <ArrowLeft size={16} />
-        <span>{t("back")}</span>
-      </button>
-      <LanguageSwitcher current={lang} onChange={setLang} />
+      {/* ── TOP NAV ── */}
+      <nav className="tnav">
+        <div className="tnav-left">
+          <button className="back-btn" onClick={() => navigate("/services")} title={t("back")}>
+            <ArrowLeft size={16} />
+            <span>{t("back")}</span>
+          </button>
+          <a href="#top" className="tnav-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+            <div className="tnav-logo-mark">KnC</div>
+            <div className="tnav-logo-text">
+              Kings 'n Company
+              <span>Property Ownership Tours</span>
+            </div>
+          </a>
+        </div>
+        <ul className="tnav-links">
+          <li><a href="#tours">{t("nav.tours")}</a></li>
+          <li><a href="#destinations">{t("nav.destinations")}</a></li>
+          <li><a href="#how">{t("nav.how")}</a></li>
+          <li><a href="#testimonials">{t("nav.stories")}</a></li>
+        </ul>
+        <div className="tnav-right">
+          <LanguageSwitcher current={lang} onChange={setLang} />
+          <button className="tnav-cta" onClick={openReserveForm} disabled={isCheckingOut}>
+            {t("nav.cta")}
+          </button>
+        </div>
+      </nav>
 
       {/* ── HERO ── */}
       <section className="hero-section">
@@ -663,39 +685,34 @@ export default function TourPage() {
         </div>
       </section>
 
-      {/* ── T&C ── */}
-      <section className="tc-section">
-        <div className="t-container">
-          <Reveal style={{ maxWidth: 560 }}>
-            <div className="section-eyebrow">{t("tc.label")}</div>
-            <h2 className="section-title">
-              {t("tc.heading_1")}<em>{t("tc.heading_2")}</em>
+      {/* ── NEWSLETTER ── */}
+      <section className="nl-section">
+        <div className="t-container nl-grid">
+          <Reveal className="nl-text">
+            <div className="section-eyebrow">{t("newsletter.eyebrow")}</div>
+            <h2>
+              {t("newsletter.heading_1")}<em>{t("newsletter.heading_2")}</em>
             </h2>
-            <p className="section-desc">{t("tc.body")}</p>
+            <p>{t("newsletter.body")}</p>
           </Reveal>
-          <div className="tc-grid">
-            {(t("tc.blocks") as any[]).map((block, i) => (
-              <Reveal key={block.title} delay={i * 0.1}>
-                <h3 className="tc-block-title">{block.title}</h3>
-                <ul style={{ listStyle: "none", padding: 0 }}>
-                  {block.items.map((item: string, j: number) => (
-                    <li key={j} className="tc-block-item">
-                      <span className="tc-bullet" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            ))}
-          </div>
           <Reveal>
-            <div className="tc-contact-box">
-              <p className="tc-contact-text">
-                {t("tc.contact")}
-                <a href={EMAIL_CONTACT} className="tc-link">services@kingsncompany.com</a>{" "}
-                {t("tc.contact_cta")}
-              </p>
-            </div>
+            <form
+              className="nl-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const input = (e.currentTarget.elements.namedItem("email") as HTMLInputElement);
+                if (input?.value) {
+                  toast({ title: "Thank you", description: "You're on the list." });
+                  input.value = "";
+                }
+              }}
+            >
+              <div className="nl-row">
+                <input type="email" name="email" required placeholder={t("newsletter.placeholder")} />
+                <button type="submit">{t("newsletter.cta")}</button>
+              </div>
+              <p className="nl-note">{t("newsletter.note")}</p>
+            </form>
           </Reveal>
         </div>
       </section>

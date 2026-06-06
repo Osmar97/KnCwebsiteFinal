@@ -3,6 +3,22 @@ export type Language = 'en' | 'pt' | 'fr';
 export const TRANSLATIONS = {
   en: {
     back: "Services",
+    nav: {
+      tours: "Our Tours",
+      destinations: "Destinations",
+      how: "How It Works",
+      stories: "Stories",
+      cta: "Reserve Your Spot"
+    },
+    newsletter: {
+      eyebrow: "Stay Close",
+      heading_1: "Join the ",
+      heading_2: "diaspora circle.",
+      body: "Monthly notes on the Portugal and Cabo Verde property markets, new tour dates, and quiet opportunities reserved for our community.",
+      placeholder: "Your email address",
+      cta: "Subscribe",
+      note: "No spam. Unsubscribe anytime."
+    },
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · July {year}",
@@ -153,6 +169,22 @@ export const TRANSLATIONS = {
   },
   pt: {
     back: "Serviços",
+    nav: {
+      tours: "Os Nossos Tours",
+      destinations: "Destinos",
+      how: "Como Funciona",
+      stories: "Histórias",
+      cta: "Reservar Lugar"
+    },
+    newsletter: {
+      eyebrow: "Mantenha-se Próximo",
+      heading_1: "Junte-se ao ",
+      heading_2: "círculo da diáspora.",
+      body: "Notas mensais sobre os mercados imobiliários de Portugal e Cabo Verde, novas datas de tours e oportunidades reservadas à nossa comunidade.",
+      placeholder: "O seu email",
+      cta: "Subscrever",
+      note: "Sem spam. Cancele quando quiser."
+    },
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · Julho {year}",
@@ -303,6 +335,22 @@ export const TRANSLATIONS = {
   },
   fr: {
     back: "Services",
+    nav: {
+      tours: "Nos Tours",
+      destinations: "Destinations",
+      how: "Comment Ça Marche",
+      stories: "Témoignages",
+      cta: "Réserver Ma Place"
+    },
+    newsletter: {
+      eyebrow: "Restez Proche",
+      heading_1: "Rejoignez le ",
+      heading_2: "cercle de la diaspora.",
+      body: "Notes mensuelles sur les marchés immobiliers du Portugal et du Cap-Vert, nouvelles dates de tours et opportunités réservées à notre communauté.",
+      placeholder: "Votre adresse e-mail",
+      cta: "S'abonner",
+      note: "Pas de spam. Désabonnement à tout moment."
+    },
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · Juillet {year}",
