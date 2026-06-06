@@ -3,6 +3,22 @@ export type Language = 'en' | 'pt' | 'fr';
 export const TRANSLATIONS = {
   en: {
     back: "Services",
+    nav: {
+      tours: "Our Tours",
+      destinations: "Destinations",
+      how: "How It Works",
+      stories: "Stories",
+      cta: "Reserve Your Spot"
+    },
+    newsletter: {
+      eyebrow: "Stay Close",
+      heading_1: "Join the ",
+      heading_2: "diaspora circle.",
+      body: "Monthly notes on the Portugal and Cabo Verde property markets, new tour dates, and quiet opportunities reserved for our community.",
+      placeholder: "Your email address",
+      cta: "Subscribe",
+      note: "No spam. Unsubscribe anytime."
+    },
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · July {year}",
