@@ -335,6 +335,22 @@ export const TRANSLATIONS = {
   },
   fr: {
     back: "Services",
+    nav: {
+      tours: "Nos Tours",
+      destinations: "Destinations",
+      how: "Comment Ça Marche",
+      stories: "Témoignages",
+      cta: "Réserver Ma Place"
+    },
+    newsletter: {
+      eyebrow: "Restez Proche",
+      heading_1: "Rejoignez le ",
+      heading_2: "cercle de la diaspora.",
+      body: "Notes mensuelles sur les marchés immobiliers du Portugal et du Cap-Vert, nouvelles dates de tours et opportunités réservées à notre communauté.",
+      placeholder: "Votre adresse e-mail",
+      cta: "S'abonner",
+      note: "Pas de spam. Désabonnement à tout moment."
+    },
     hero: {
       label: "Kings 'n Company · Property Ownership Tour",
       eyebrow: "Portugal · Juillet {year}",
