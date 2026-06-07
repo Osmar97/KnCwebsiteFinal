@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { TRANSLATIONS, Language } from "./TourTranslations";
 import "./Tour.css";
 import PreTourFormModal, { PreTourFormData } from "@/components/tour/PreTourFormModal";
+import InlineTourForm from "@/components/tour/InlineTourForm";
 
 // ── STATIC DATA ─────────────────────────────────────────────────────────────
 
@@ -284,6 +285,10 @@ export default function TourPage() {
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
   const [isSendingEnquiry, setIsSendingEnquiry] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [privateSubmitted, setPrivateSubmitted] = useState(false);
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [isSubmittingPrivate, setIsSubmittingPrivate] = useState(false);
+  const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
 
   const t = (path: string) => {
     const keys = path.split(".");
@@ -325,6 +330,29 @@ export default function TourPage() {
       toast({ title: "Something went wrong", description: "We couldn't send your request. Please try again or contact us directly.", variant: "destructive" });
     } finally {
       setIsSendingEnquiry(false);
+    }
+  };
+
+  const submitInlineForm = async (
+    payload: Record<string, unknown>,
+    setLoading: (b: boolean) => void,
+    setSubmitted: (b: boolean) => void,
+  ) => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.functions.invoke("send-tour-enquiry", { body: payload });
+      if (error) throw error;
+      setSubmitted(true);
+      toast({ title: "Request received", description: "Thank you — we'll be in touch shortly." });
+    } catch (err) {
+      console.error("Inline form error:", err);
+      toast({
+        title: "Something went wrong",
+        description: "We couldn't send your request. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -649,38 +677,39 @@ export default function TourPage() {
       </section>
 
       {/* ── PRIVATE TOUR ── */}
-      <section className="private-section" id="private">
+      <section className="form-section" id="private">
         <div className="t-container">
+          <div className="section-eyebrow">Private Tour</div>
+          <h2 className="section-title">Design your<br /><em>experience</em></h2>
+          <p className="section-desc">
+            Tell us what you're looking for. We'll review your submission and send a tailored quote within 48 hours, along with availability for your first consultation call.
+          </p>
           <Reveal>
-            <div className="private-inner">
-              <div className="private-text">
-                <div className="section-eyebrow light">{t("private.label")}</div>
-                <h2 className="section-title light">
-                  {t("private.heading_1")}<em>{t("private.heading_2")}</em>
-                </h2>
-                <p>{t("private.body")}</p>
-                <button onClick={openEnquiryForm} disabled={isSendingEnquiry} className="btn-primary">
-                  {isSendingEnquiry && <Loader2 size={14} className="animate-spin" />}
-                  {t("private.cta")}
-                </button>
-              </div>
-              <div>
-                {[
-                  { icon: "🗓", label: "1 to 10 days", sub: "Your schedule, your pace" },
-                  { icon: "🏡", label: "Portugal or Cabo Verde", sub: "Choose your market" },
-                  { icon: "👥", label: "Up to 4 people", sub: "Solo, couple, or small group" },
-                  { icon: "⚖️", label: "Lawyer & broker add-ons", sub: "Legal team at your side" },
-                ].map((item) => (
-                  <div key={item.label} className="how-step" style={{ borderColor: "rgba(133,117,78,0.2)" }}>
-                    <div className="hs-n" style={{ fontSize: 28 }}>{item.icon}</div>
-                    <div className="hs-b">
-                      <h4 style={{ color: "var(--white)", marginTop: 4 }}>{item.label}</h4>
-                      <p style={{ color: "rgba(255,255,255,0.4)" }}>{item.sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <InlineTourForm
+              variant="private"
+              isSubmitting={isSubmittingPrivate}
+              submitted={privateSubmitted}
+              onSubmit={(payload) => submitInlineForm(payload, setIsSubmittingPrivate, setPrivateSubmitted)}
+            />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── GROUP WAITLIST FORM ── */}
+      <section className="form-section dark" id="waitlist">
+        <div className="t-container">
+          <div className="section-eyebrow">Join the Waitlist</div>
+          <h2 className="section-title">Tell us where<br /><em>you want to go</em></h2>
+          <p className="section-desc">
+            Whether you're joining a group trip or considering a private tour, this form gives us everything we need to find the right experience for you. We'll be in touch within 5 business days.
+          </p>
+          <Reveal>
+            <InlineTourForm
+              variant="waitlist"
+              isSubmitting={isSubmittingWaitlist}
+              submitted={waitlistSubmitted}
+              onSubmit={(payload) => submitInlineForm(payload, setIsSubmittingWaitlist, setWaitlistSubmitted)}
+            />
           </Reveal>
         </div>
       </section>
