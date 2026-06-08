@@ -14,7 +14,6 @@ import {
 } from "@/components/tour/tour-data";
 import { useTourSubmissions } from "@/hooks/useTourSubmissions";
 import {
-  StatsBar,
   IncludesSection,
   TwoWaysSection,
   DestinationsSection,
