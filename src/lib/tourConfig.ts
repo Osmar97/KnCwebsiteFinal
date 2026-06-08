@@ -21,4 +21,4 @@ export const formatTourReservePrice = (
 export const interpolateTourPrice = (
   template: string,
   locale: "en" | "pt" | "fr" = "en",
-): string => template.replaceAll("{price}", `${formatTourReservePrice(locale)}€`);
+): string => template.split("{price}").join(`${formatTourReservePrice(locale)}€`);
