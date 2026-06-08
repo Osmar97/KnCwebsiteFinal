@@ -8,124 +8,19 @@ import { TRANSLATIONS, Language } from "./TourTranslations";
 import "./Tour.css";
 import PreTourFormModal, { PreTourFormData } from "@/components/tour/PreTourFormModal";
 import InlineTourForm from "@/components/tour/InlineTourForm";
+import TourDetailModal from "@/components/tour/TourDetailModal";
+import { useTours, pickLocalized, nextTourDate, formatTourDateRange, type TourRow } from "@/hooks/useTours";
 
 // ── STATIC DATA ─────────────────────────────────────────────────────────────
 
-interface TourCardData {
-  id: string;
-  category: "portugal" | "cabo-verde" | "combined";
-  imgClass: string;
-  badge?: string;
-  badgeGold?: boolean;
-  flag: string;
-  spotsText: string;
-  spotsFew?: boolean;
-  location: string;
-  title: string;
-  desc: string;
-  pills: string[];
-  price: string;
-  date: string;
-  dateNote: string;
-}
+const CURRENCY_SYMBOL: Record<string, string> = { EUR: "€", USD: "$", GBP: "£" };
 
-const TOUR_CARDS: TourCardData[] = [
-  {
-    id: "lisbon-core",
-    category: "portugal",
-    imgClass: "ti-lisbon",
-    badge: "GROUP",
-    flag: "🇵🇹",
-    spotsText: "4 spots left",
-    spotsFew: true,
-    location: "Portugal · Lisbon",
-    title: "The Lisbon Core",
-    desc: "Five days across Estrela, Mouraria, Alcântara and Marvila. Solicitor day included.",
-    pills: ["5 Days", "6–9 Participants", "Solicitor Day"],
-    price: "€790",
-    date: "12–16 Sept",
-    dateNote: "per person",
-  },
-  {
-    id: "porto-rise",
-    category: "portugal",
-    imgClass: "ti-porto",
-    badge: "GROUP",
-    flag: "🇵🇹",
-    spotsText: "6 spots",
-    location: "Portugal · Porto",
-    title: "The Porto Rise",
-    desc: "Bonfim, Paranhos, Cedofeita — Porto's emerging neighbourhoods before they peak.",
-    pills: ["3 Days", "5–9 Participants", "Investor Breakfast"],
-    price: "€590",
-    date: "10–12 Oct",
-    dateNote: "per person",
-  },
-  {
-    id: "algarve-coast",
-    category: "portugal",
-    imgClass: "ti-algarve",
-    badge: "FEATURED",
-    badgeGold: true,
-    flag: "🇵🇹",
-    spotsText: "2 spots left",
-    spotsFew: true,
-    location: "Portugal · Algarve",
-    title: "The Algarve Coast",
-    desc: "Lagos, Portimão, Silves and Tavira. Sun, yield, and long-term appreciation.",
-    pills: ["5 Days", "Pool & Sea Views", "Rental Yield Focus"],
-    price: "€850",
-    date: "3–7 Nov",
-    dateNote: "per person",
-  },
-  {
-    id: "praia-ground",
-    category: "cabo-verde",
-    imgClass: "ti-praia",
-    badge: "GROUP",
-    flag: "🇨🇻",
-    spotsText: "7 spots",
-    location: "Cabo Verde · Praia",
-    title: "Praia Ground Zero",
-    desc: "Santiago Island's capital. Understand the emerging market before the wave arrives.",
-    pills: ["3 Days", "Pre-Market Focus", "Local Contacts"],
-    price: "€690",
-    date: "18–20 Oct",
-    dateNote: "per person",
-  },
-  {
-    id: "mindelo-culture",
-    category: "cabo-verde",
-    imgClass: "ti-mindelo",
-    badge: "GROUP",
-    flag: "🇨🇻",
-    spotsText: "5 spots",
-    location: "Cabo Verde · São Vicente",
-    title: "Mindelo & The Culture",
-    desc: "São Vicente's creative capital. Boutique buys, arts district, and the hospitality market.",
-    pills: ["3 Days", "Culture Focus", "Boutique Buys"],
-    price: "€690",
-    date: "22–24 Nov",
-    dateNote: "per person",
-  },
-  {
-    id: "dual-market",
-    category: "combined",
-    imgClass: "ti-combined",
-    badge: "EXCLUSIVE",
-    badgeGold: true,
-    flag: "🌍",
-    spotsText: "3 spots left",
-    spotsFew: true,
-    location: "Portugal + Cabo Verde",
-    title: "The Dual Market",
-    desc: "Lisbon then Praia. Two markets, two strategies, one transformative trip.",
-    pills: ["10 Days", "Max 4 Participants", "Both Countries"],
-    price: "€2,100",
-    date: "Oct–Nov",
-    dateNote: "per person",
-  },
-];
+function tourCategoryFilter(t: TourRow): "portugal" | "cabo-verde" | "combined" {
+  const flag = t.flag || "";
+  if (flag === "🇵🇹") return "portugal";
+  if (flag === "🇨🇻") return "cabo-verde";
+  return "combined";
+}
 
 interface GroupTourData {
   num: string;
