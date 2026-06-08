@@ -405,10 +405,10 @@ export default function TourPage() {
         <div className="t-container">
           <div className="tours-header">
             <div>
-              <div className="section-eyebrow">Upcoming Tours</div>
-              <h2 className="section-title">Choose Your<br /><em>Ownership Journey</em></h2>
+              <div className="section-eyebrow">{t("tours_section.eyebrow")}</div>
+              <h2 className="section-title">{t("tours_section.title_1")}<br /><em>{t("tours_section.title_2")}</em></h2>
             </div>
-            <a href="#group" className="see-all">View All Dates →</a>
+            <a href="#group" className="see-all">{t("tours_section.view_all")}</a>
           </div>
           <div className="tour-tabs">
             {[
@@ -427,37 +427,68 @@ export default function TourPage() {
             ))}
           </div>
           <div className="tours-grid">
-            {filteredTours.map((card, i) => (
-              <Reveal key={card.id} delay={i * 0.05}>
-                <div className="tour-card" onClick={openEnquiryForm} role="button" tabIndex={0}
-                  onKeyDown={(e) => e.key === "Enter" && openEnquiryForm()}>
-                  <div className="tour-img">
-                    <div className={`tour-img-inner ${card.imgClass}`} />
-                    {card.badge && <div className={`tour-badge ${card.badgeGold ? "gold" : ""}`}>{card.badge}</div>}
-                    <div className="tour-flag">{card.flag}</div>
-                    <div className={`tour-spots ${card.spotsFew ? "few" : ""}`}>{card.spotsText}</div>
-                  </div>
-                  <div className="tour-body">
-                    <div className="tour-loc">{card.location}</div>
-                    <div className="tour-title">{card.title}</div>
-                    <p className="tour-desc">{card.desc}</p>
-                    <div className="tour-meta">
-                      {card.pills.map((p) => <span key={p} className="tour-pill">{p}</span>)}
+            {toursLoading && <p style={{ opacity: 0.6 }}>Loading tours…</p>}
+            {!toursLoading && filteredTours.length === 0 && (
+              <p style={{ opacity: 0.6 }}>No tours available right now. Check back soon.</p>
+            )}
+            {filteredTours.map((card, i) => {
+              const next = nextTourDate(card.dates);
+              const avail = next ? availability[next.id] : undefined;
+              const remaining = avail?.remaining ?? next?.capacity ?? 0;
+              const cap = avail?.capacity ?? next?.capacity ?? 0;
+              const spotsText = !next ? "Coming soon"
+                : next.sold_out ? "Sold out"
+                : remaining <= 3 ? `${remaining} spots left`
+                : `${remaining} spots`;
+              const spotsFew = next ? (next.sold_out || remaining <= 3) : false;
+              const symbol = CURRENCY_SYMBOL[card.currency] || card.currency;
+              const price = `${symbol}${Number(card.base_price).toLocaleString()}`;
+              const dateLabel = next ? formatTourDateRange(next, lang === "en" ? "en-GB" : lang === "pt" ? "pt-PT" : "fr-FR") : "TBA";
+              const cardRec = card as unknown as Record<string, unknown>;
+              const name = pickLocalized(cardRec, "name", lang);
+              const shortDesc = pickLocalized(cardRec, "short_desc", lang);
+              const openModal = () => setSelectedTour(card);
+              return (
+                <Reveal key={card.id} delay={i * 0.05}>
+                  <div className="tour-card" onClick={openModal} role="button" tabIndex={0}
+                    onKeyDown={(e) => e.key === "Enter" && openModal()}>
+                    <div className="tour-img">
+                      <div className={`tour-img-inner ${card.hero_image || ""}`} />
+                      {card.badge && <div className={`tour-badge ${card.badge_variant === "gold" ? "gold" : ""}`}>{card.badge}</div>}
+                      {card.flag && <div className="tour-flag">{card.flag}</div>}
+                      <div className={`tour-spots ${spotsFew ? "few" : ""}`}>{spotsText}</div>
                     </div>
-                    <div className="tour-footer">
-                      <div className="tour-price">
-                        <strong>{card.price}</strong>
-                        {card.dateNote}
+                    <div className="tour-body">
+                      <div className="tour-loc">{card.destinations.slice(0, 2).join(" · ")}</div>
+                      <div className="tour-title">{name}</div>
+                      <p className="tour-desc">{shortDesc}</p>
+                      <div className="tour-meta">
+                        <span className="tour-pill">{card.duration_days} Days</span>
+                        {cap > 0 && <span className="tour-pill">{cap} Participants</span>}
+                        {card.tags[0] && <span className="tour-pill">{card.tags[0]}</span>}
                       </div>
-                      <div className="tour-date">
-                        {card.date}
-                        <span>{card.dateNote}</span>
+                      <div className="tour-footer">
+                        <div className="tour-price">
+                          <strong>{price}</strong>
+                          per person
+                        </div>
+                        <div className="tour-date">
+                          {dateLabel}
+                          <span>NEXT</span>
+                        </div>
                       </div>
+                      <button
+                        type="button"
+                        className="tour-request-custom"
+                        onClick={(e) => { e.stopPropagation(); scrollToId("private"); }}
+                      >
+                        {t("tours_section.request_custom")}
+                      </button>
                     </div>
                   </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
