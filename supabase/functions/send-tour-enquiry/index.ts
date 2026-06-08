@@ -24,6 +24,7 @@ const FIELD_LABELS: Record<string, string> = {
   pace: "Pace preference",
   dietary: "Dietary / accessibility",
   notes: "Anything else",
+  formType: "Form type",
 };
 
 const escapeHtml = (s: string) =>
