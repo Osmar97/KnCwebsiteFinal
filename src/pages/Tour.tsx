@@ -1,8 +1,5 @@
-import { useEffect, useRef, useState, ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { TRANSLATIONS, Language } from "./TourTranslations";
 import "./Tour.css";
@@ -11,131 +8,29 @@ import InlineTourForm from "@/components/tour/InlineTourForm";
 import TourDetailModal from "@/components/tour/TourDetailModal";
 import { useTours, pickLocalized, nextTourDate, formatTourDateRange, type TourRow } from "@/hooks/useTours";
 import { formatPrice, formatPriceShort } from "@/lib/formatPrice";
-
-// ── STATIC DATA ─────────────────────────────────────────────────────────────
-
-function tourCategoryFilter(t: TourRow): "portugal" | "cabo-verde" | "combined" {
-  const flag = t.flag || "";
-  if (flag === "🇵🇹") return "portugal";
-  if (flag === "🇨🇻") return "cabo-verde";
-  return "combined";
-}
-
-function countryFromFlag(flag: string | null): string {
-  if (flag === "🇵🇹") return "Portugal";
-  if (flag === "🇨🇻") return "Cabo Verde";
-  return "Portugal · Cabo Verde";
-}
-
-/** Maps a tour's hero_image (e.g. "ti-lisbon") to its destination bg class. */
-function destBgClassFor(heroImage: string | null, flag: string | null): string {
-  if (heroImage?.startsWith("ti-")) {
-    return `db-${heroImage.slice(3)}`;
-  }
-  if (flag === "🇨🇻") return "db-cv";
-  return "db-lisbon";
-}
-
-const HOW_STEPS = [
-  {
-    num: "01",
-    title: "Apply for Your Tour",
-    body: "Submit your budget, target market, and buying timeline. We confirm your tour date and match you with the right property shortlist within 48 hours.",
-  },
-  {
-    num: "02",
-    title: "Pre-Tour Briefing",
-    body: "One week before departure, we hold a 60-minute video call covering your shortlist, tax implications, visa options, and what to bring to property viewings.",
-  },
-  {
-    num: "03",
-    title: "The Tour — On the Ground",
-    body: "Curated property viewings, neighbourhood walks, legal and financial briefings, and one cultural experience that helps you understand where you're investing.",
-  },
-  {
-    num: "04",
-    title: "Solicitor Day",
-    body: "A dedicated session with a bilingual solicitor and, if needed, a mortgage broker. Walk through the legal structure and ask every question you have.",
-  },
-  {
-    num: "05",
-    title: "Post-Tour Report & Follow-Up",
-    body: "Within 5 days of your tour, you receive a written report: property shortlist, solicitor notes, tax overview, and your recommended next steps.",
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    initials: "MJ", avClass: "av1",
-    text: "I came on the Lisbon tour in March not sure if I was ready. By day 3 I had a solicitor and a property I loved. I signed the CPCV six weeks later. Kings 'n Company made it real.",
-    name: "Marcus J.",
-    origin: "Atlanta, GA · Lisbon Property Owner",
-  },
-  {
-    initials: "AF", avClass: "av2",
-    text: "The dual-market tour changed how I see my money. I bought in Praia and I'm now under offer in Porto. Ismael and the team know every corner of both markets and it shows.",
-    name: "Amina F.",
-    origin: "London, UK · Porto & Praia Investor",
-  },
-  {
-    initials: "DS", avClass: "av3",
-    text: "As a first-time buyer abroad the legal side terrified me. Having the solicitor day built into the tour and getting that written report after made me feel protected the whole way through.",
-    name: "David S.",
-    origin: "Toronto, CA · Algarve Property Owner",
-  },
-];
-
-// ── UTILITY COMPONENTS ───────────────────────────────────────────────────────
-
-function LanguageSwitcher({ current, onChange }: { current: Language; onChange: (l: Language) => void }) {
-  const langs: { key: Language; label: string }[] = [
-    { key: "en", label: "EN" },
-    { key: "pt", label: "PT" },
-    { key: "fr", label: "FR" },
-  ];
-  return (
-    <div className="lang-switcher">
-      {langs.map((l) => (
-        <button
-          key={l.key}
-          className={`lang-btn ${current === l.key ? "active" : ""}`}
-          onClick={() => onChange(l.key)}
-        >
-          {l.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function Reveal({ children, className = "", style = {}, delay = 0 }: { children: ReactNode; className?: string; style?: React.CSSProperties; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.transitionDelay = `${delay}s`;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { el.classList.add("visible"); obs.unobserve(el); } },
-      { threshold: 0.08 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [delay]);
-  return <div ref={ref} className={`reveal ${className}`} style={style}>{children}</div>;
-}
+import { Reveal } from "@/components/tour/Reveal";
+import { TourTopNav } from "@/components/tour/TourTopNav";
+import { TourHero } from "@/components/tour/TourHero";
+import { TourFooter } from "@/components/tour/TourFooter";
+import {
+  tourCategoryFilter,
+  countryFromFlag,
+  destBgClassFor,
+  HOW_STEPS,
+  TESTIMONIALS,
+  INCLUDES,
+} from "@/components/tour/tour-data";
+import { useTourSubmissions } from "@/hooks/useTourSubmissions";
 
 // ── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export default function TourPage() {
   useScrollToTop();
-  const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [lang, setLang] = useState<Language>("en");
   const [showPreForm, setShowPreForm] = useState(false);
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
-  const [isSendingEnquiry, setIsSendingEnquiry] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [privateSubmitted, setPrivateSubmitted] = useState(false);
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
@@ -143,6 +38,8 @@ export default function TourPage() {
   const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
   const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
   const { tours, availability, loading: toursLoading } = useTours();
+  const { isCheckingOut, isSendingEnquiry, handleCheckout, handleEnquiry, submitInlineForm } =
+    useTourSubmissions();
 
   const t = (path: string) => {
     const keys = path.split(".");
@@ -151,63 +48,13 @@ export default function TourPage() {
     return obj || path;
   };
 
-  const handleCheckout = async (preTourData?: PreTourFormData) => {
-    try {
-      setIsCheckingOut(true);
-      const { data, error } = await supabase.functions.invoke("create-stripe-checkout", {
-        body: { origin: window.location.origin, preTourData },
-      });
-      if (error) throw error;
-      if (data?.url) {
-        setShowPreForm(false);
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (error) {
-      console.error("Checkout error:", error);
-      toast({ title: "Checkout failed", description: "There was a problem initiating your checkout. Please try again or contact us.", variant: "destructive" });
-    } finally {
-      setIsCheckingOut(false);
-    }
+  const onReserveSubmit = async (data: PreTourFormData) => {
+    const ok = await handleCheckout(data);
+    if (ok) setShowPreForm(false);
   };
-
-  const handleEnquiry = async (data: PreTourFormData) => {
-    try {
-      setIsSendingEnquiry(true);
-      const { error } = await supabase.functions.invoke("send-tour-enquiry", { body: data });
-      if (error) throw error;
-      setShowEnquiryForm(false);
-      toast({ title: "Request sent", description: "Thank you — we'll be in touch shortly to arrange your private tour." });
-    } catch (error) {
-      console.error("Enquiry error:", error);
-      toast({ title: "Something went wrong", description: "We couldn't send your request. Please try again or contact us directly.", variant: "destructive" });
-    } finally {
-      setIsSendingEnquiry(false);
-    }
-  };
-
-  const submitInlineForm = async (
-    payload: Record<string, unknown>,
-    setLoading: (b: boolean) => void,
-    setSubmitted: (b: boolean) => void,
-  ) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.functions.invoke("send-tour-enquiry", { body: payload });
-      if (error) throw error;
-      setSubmitted(true);
-      toast({ title: "Request received", description: "Thank you — we'll be in touch shortly." });
-    } catch (err) {
-      console.error("Inline form error:", err);
-      toast({
-        title: "Something went wrong",
-        description: "We couldn't send your request. Please try again or contact us directly.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const onEnquirySubmit = async (data: PreTourFormData) => {
+    const ok = await handleEnquiry(data);
+    if (ok) setShowEnquiryForm(false);
   };
 
   const openReserveForm = () => setShowPreForm(true);
@@ -274,74 +121,17 @@ export default function TourPage() {
     return out;
   })();
 
-  const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
-
   return (
     <div className="tour-page">
 
-      {/* ── TOP NAV ── */}
-      <nav className="tnav">
-        <div className="tnav-left">
-          <button className="back-btn" onClick={() => navigate("/services")} title={t("back")}>
-            <ArrowLeft size={16} />
-            <span>{t("back")}</span>
-          </button>
-          <a href="#top" className="tnav-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
-            <div className="tnav-logo-mark">KnC</div>
-            <div className="tnav-logo-text">
-              Kings 'n Company
-              <span>Property Ownership Tours</span>
-            </div>
-          </a>
-        </div>
-        <ul className="tnav-links">
-          <li><a href="#tours">{t("nav.tours")}</a></li>
-          <li><a href="#destinations">{t("nav.destinations")}</a></li>
-          <li><a href="#how">{t("nav.how")}</a></li>
-          <li><a href="#testimonials">{t("nav.stories")}</a></li>
-        </ul>
-        <div className="tnav-right">
-          <LanguageSwitcher current={lang} onChange={setLang} />
-          <button className="tnav-cta" onClick={openReserveForm} disabled={isCheckingOut}>
-            {t("nav.cta")}
-          </button>
-        </div>
-      </nav>
-
-      {/* ── HERO ── */}
-      <section className="hero-section">
-        <div className="hero-grain" />
-        <div className="hero-radial" />
-        <div className="hero-content">
-          <div className="hero-eyebrow">{t("hero.label")}</div>
-          <h1 className="hero-h1">
-            {t("hero.h1_line1")}<br />
-            <em>{t("hero.h1_line2")}</em><br />
-            {t("hero.h1_line3")}
-          </h1>
-          <p className="hero-sub">
-            {t("hero.sub")}
-          </p>
-          <div className="hero-ctas">
-            <button onClick={openReserveForm} disabled={isCheckingOut} className="btn-primary">
-              {isCheckingOut && <Loader2 size={14} className="animate-spin" />}
-              {isCheckingOut ? "Processing..." : "Book Private Tour"}
-            </button>
-            <a href="#group" className="btn-outline">Join a Group Tour</a>
-          </div>
-        </div>
-        <div className="hero-stats">
-          <div className="h-stat">
-            <span className="h-stat-n">{derivedDestinations.length || "—"}</span>
-            <span className="h-stat-l">Destinations</span>
-          </div>
-          <div className="h-stat">
-            <span className="h-stat-n">{groupTours.length || "—"}</span>
-            <span className="h-stat-l">Group Themes</span>
-          </div>
-          <div className="h-stat"><span className="h-stat-n">1–10</span><span className="h-stat-l">Days, Private</span></div>
-        </div>
-      </section>
+      <TourTopNav lang={lang} setLang={setLang} t={t} onReserve={openReserveForm} isCheckingOut={isCheckingOut} />
+      <TourHero
+        t={t}
+        destinationsCount={derivedDestinations.length}
+        groupThemesCount={groupTours.length}
+        onReserve={openReserveForm}
+        isCheckingOut={isCheckingOut}
+      />
 
       {/* ── STATS BAR ── */}
       <div className="stats-bar">
@@ -358,14 +148,7 @@ export default function TourPage() {
           <h2 className="section-title">What comes<br /><em>standard</em></h2>
           <Reveal>
             <div className="includes-grid">
-              {[
-                { icon: "🛎", title: "Hotel Included", desc: "3-star accommodation, upgraded tiers available. Negotiated group rates ensure quality without overpaying." },
-                { icon: "🚐", title: "Private Transport", desc: "Dedicated driver between all property visits, neighbourhoods, and activities. No taxis, no confusion." },
-                { icon: "☀️", title: "Breakfast + Lunch", desc: "Breakfast at the hotel, lunch at a curated local restaurant chosen for the day's area and energy." },
-                { icon: "📋", title: "Consultation & Debrief", desc: "A call before you arrive, and a structured final session before you leave. You come with questions. You leave with a plan." },
-                { icon: "🏛", title: "Airport Transfers", desc: "Pickup and drop-off included for private tours. Group tours include an optional shared shuttle." },
-                { icon: "🎭", title: "One Curated Activity", desc: "A boat tour, cultural workshop, or community event matched to your group's vibe. Context matters." },
-              ].map((item) => (
+              {INCLUDES.map((item) => (
                 <div key={item.title} className="include-card">
                   <span className="include-icon">{item.icon}</span>
                   <div className="include-title">{item.title}</div>
