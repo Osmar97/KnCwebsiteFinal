@@ -24,6 +24,11 @@ import PropertyDetail from "./pages/PropertyDetail";
 import AdminProperties from "./pages/AdminProperties";
 import AdminAssets from "./pages/AdminAssets";
 import TourPage from "./pages/Tour";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminTours from "./pages/AdminTours";
+import AdminBookings from "./pages/AdminBookings";
+import AdminWaitlist from "./pages/AdminWaitlist";
+import AdminQuotes from "./pages/AdminQuotes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,6 +74,11 @@ const App = () => (
               <Route path="/properties/:id" element={<PropertyDetail />} />
               <Route path="/admin/properties" element={<AdminProperties />} />
               <Route path="/admin/assets" element={<AdminAssets />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/tours" element={<AdminTours />} />
+              <Route path="/admin/bookings" element={<AdminBookings />} />
+              <Route path="/admin/waitlist" element={<AdminWaitlist />} />
+              <Route path="/admin/quotes" element={<AdminQuotes />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
