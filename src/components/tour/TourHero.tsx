@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 
 interface Props {
-  t: (path: string) => string;
+  t: (path: string) => any;
   onReserve: () => void;
   isCheckingOut: boolean;
 }
@@ -22,9 +22,9 @@ export function TourHero({ t, onReserve, isCheckingOut }: Props) {
         <div className="hero-ctas">
           <button onClick={onReserve} disabled={isCheckingOut} className="btn-primary">
             {isCheckingOut && <Loader2 size={14} className="animate-spin" />}
-            {isCheckingOut ? "Processing..." : "Book Private Tour"}
+            {isCheckingOut ? t("hero.processing") : t("hero.cta_book_private")}
           </button>
-          <a href="#group" className="btn-outline">Join a Group Tour</a>
+          <a href="#group" className="btn-outline">{t("hero.cta_join_group")}</a>
         </div>
       </div>
     </section>
