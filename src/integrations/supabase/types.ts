@@ -605,6 +605,168 @@ export type Database = {
       }
     }
     Views: {
+      properties_public: {
+        Row: {
+          adapted_house: boolean | null
+          air_conditioning: boolean | null
+          balcony_terrace: boolean | null
+          bathrooms: number | null
+          bedrooms: string | null
+          building_year: number | null
+          built_in_wardrobes: boolean | null
+          city: string | null
+          condition: string | null
+          construction_area: number | null
+          created_at: string | null
+          description: string | null
+          descriptions: Json | null
+          divisions: Json | null
+          duplex: boolean | null
+          elevator: boolean | null
+          energy_class: string | null
+          featured: boolean | null
+          floor: number | null
+          floor_plan_url: string | null
+          floor_plans: string[] | null
+          garden: boolean | null
+          heating_type: string | null
+          id: string | null
+          images: string[] | null
+          is_top_floor: boolean | null
+          location: string | null
+          lot_area: number | null
+          luxury_house: boolean | null
+          operation_rent: boolean | null
+          operation_sale: boolean | null
+          orientation_east: boolean | null
+          orientation_north: boolean | null
+          orientation_south: boolean | null
+          orientation_west: boolean | null
+          parking: boolean | null
+          penthouse: boolean | null
+          pool: boolean | null
+          price: number | null
+          private_area: number | null
+          property_type: string | null
+          sea_view: boolean | null
+          status: string | null
+          storage: boolean | null
+          t0: boolean | null
+          title: string | null
+          total_floors: number | null
+          transaction_type: string | null
+          updated_at: string | null
+          video_url: string | null
+          virtual_tour_url: string | null
+        }
+        Insert: {
+          adapted_house?: boolean | null
+          air_conditioning?: boolean | null
+          balcony_terrace?: boolean | null
+          bathrooms?: number | null
+          bedrooms?: string | null
+          building_year?: number | null
+          built_in_wardrobes?: boolean | null
+          city?: string | null
+          condition?: string | null
+          construction_area?: number | null
+          created_at?: string | null
+          description?: string | null
+          descriptions?: Json | null
+          divisions?: Json | null
+          duplex?: boolean | null
+          elevator?: boolean | null
+          energy_class?: string | null
+          featured?: boolean | null
+          floor?: number | null
+          floor_plan_url?: string | null
+          floor_plans?: string[] | null
+          garden?: boolean | null
+          heating_type?: string | null
+          id?: string | null
+          images?: string[] | null
+          is_top_floor?: boolean | null
+          location?: string | null
+          lot_area?: number | null
+          luxury_house?: boolean | null
+          operation_rent?: boolean | null
+          operation_sale?: boolean | null
+          orientation_east?: boolean | null
+          orientation_north?: boolean | null
+          orientation_south?: boolean | null
+          orientation_west?: boolean | null
+          parking?: boolean | null
+          penthouse?: boolean | null
+          pool?: boolean | null
+          price?: number | null
+          private_area?: number | null
+          property_type?: string | null
+          sea_view?: boolean | null
+          status?: string | null
+          storage?: boolean | null
+          t0?: boolean | null
+          title?: string | null
+          total_floors?: number | null
+          transaction_type?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+          virtual_tour_url?: string | null
+        }
+        Update: {
+          adapted_house?: boolean | null
+          air_conditioning?: boolean | null
+          balcony_terrace?: boolean | null
+          bathrooms?: number | null
+          bedrooms?: string | null
+          building_year?: number | null
+          built_in_wardrobes?: boolean | null
+          city?: string | null
+          condition?: string | null
+          construction_area?: number | null
+          created_at?: string | null
+          description?: string | null
+          descriptions?: Json | null
+          divisions?: Json | null
+          duplex?: boolean | null
+          elevator?: boolean | null
+          energy_class?: string | null
+          featured?: boolean | null
+          floor?: number | null
+          floor_plan_url?: string | null
+          floor_plans?: string[] | null
+          garden?: boolean | null
+          heating_type?: string | null
+          id?: string | null
+          images?: string[] | null
+          is_top_floor?: boolean | null
+          location?: string | null
+          lot_area?: number | null
+          luxury_house?: boolean | null
+          operation_rent?: boolean | null
+          operation_sale?: boolean | null
+          orientation_east?: boolean | null
+          orientation_north?: boolean | null
+          orientation_south?: boolean | null
+          orientation_west?: boolean | null
+          parking?: boolean | null
+          penthouse?: boolean | null
+          pool?: boolean | null
+          price?: number | null
+          private_area?: number | null
+          property_type?: string | null
+          sea_view?: boolean | null
+          status?: string | null
+          storage?: boolean | null
+          t0?: boolean | null
+          title?: string | null
+          total_floors?: number | null
+          transaction_type?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+          virtual_tour_url?: string | null
+        }
+        Relationships: []
+      }
       tour_date_availability: {
         Row: {
           capacity: number | null
@@ -625,6 +787,150 @@ export type Database = {
       }
     }
     Functions: {
+      admin_get_property: {
+        Args: { _id: string }
+        Returns: {
+          adapted_house: boolean | null
+          agent_captador: string | null
+          agent_comercializador: string | null
+          air_conditioning: boolean | null
+          balcony_terrace: boolean | null
+          bathrooms: number | null
+          bedrooms: string | null
+          block: string | null
+          building_year: number | null
+          built_in_wardrobes: boolean | null
+          city: string
+          condition: string | null
+          construction_area: number | null
+          created_at: string
+          description: string
+          descriptions: Json | null
+          divisions: Json | null
+          door: string | null
+          duplex: boolean | null
+          elevator: boolean | null
+          energy_class: string | null
+          featured: boolean | null
+          floor: number | null
+          floor_plan_url: string | null
+          floor_plans: string[] | null
+          garden: boolean | null
+          heating_type: string | null
+          id: string
+          images: string[] | null
+          internal_reference: string | null
+          is_top_floor: boolean | null
+          location: string
+          lot_area: number | null
+          luxury_house: boolean | null
+          no_street_number: boolean | null
+          notes_visibility: string | null
+          operation_rent: boolean | null
+          operation_sale: boolean | null
+          orientation_east: boolean | null
+          orientation_north: boolean | null
+          orientation_south: boolean | null
+          orientation_west: boolean | null
+          parking: boolean | null
+          penthouse: boolean | null
+          pool: boolean | null
+          price: number
+          private_area: number | null
+          private_notes: string | null
+          property_type: string
+          sea_view: boolean | null
+          status: string | null
+          storage: boolean | null
+          street_number: string | null
+          t0: boolean | null
+          title: string
+          total_floors: number | null
+          transaction_type: string
+          updated_at: string
+          urbanization_name: string | null
+          video_url: string | null
+          virtual_tour_url: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "properties"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      admin_list_properties: {
+        Args: never
+        Returns: {
+          adapted_house: boolean | null
+          agent_captador: string | null
+          agent_comercializador: string | null
+          air_conditioning: boolean | null
+          balcony_terrace: boolean | null
+          bathrooms: number | null
+          bedrooms: string | null
+          block: string | null
+          building_year: number | null
+          built_in_wardrobes: boolean | null
+          city: string
+          condition: string | null
+          construction_area: number | null
+          created_at: string
+          description: string
+          descriptions: Json | null
+          divisions: Json | null
+          door: string | null
+          duplex: boolean | null
+          elevator: boolean | null
+          energy_class: string | null
+          featured: boolean | null
+          floor: number | null
+          floor_plan_url: string | null
+          floor_plans: string[] | null
+          garden: boolean | null
+          heating_type: string | null
+          id: string
+          images: string[] | null
+          internal_reference: string | null
+          is_top_floor: boolean | null
+          location: string
+          lot_area: number | null
+          luxury_house: boolean | null
+          no_street_number: boolean | null
+          notes_visibility: string | null
+          operation_rent: boolean | null
+          operation_sale: boolean | null
+          orientation_east: boolean | null
+          orientation_north: boolean | null
+          orientation_south: boolean | null
+          orientation_west: boolean | null
+          parking: boolean | null
+          penthouse: boolean | null
+          pool: boolean | null
+          price: number
+          private_area: number | null
+          private_notes: string | null
+          property_type: string
+          sea_view: boolean | null
+          status: string | null
+          storage: boolean | null
+          street_number: string | null
+          t0: boolean | null
+          title: string
+          total_floors: number | null
+          transaction_type: string
+          updated_at: string
+          urbanization_name: string | null
+          video_url: string | null
+          virtual_tour_url: string | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "properties"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_tour_availability: {
         Args: never
         Returns: {
