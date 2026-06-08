@@ -131,7 +131,6 @@ export default function TourPage() {
         isCheckingOut={isCheckingOut}
       />
 
-      <StatsBar />
       <IncludesSection />
       <TwoWaysSection
         privateFromPrice={privateFromPrice}
