@@ -193,6 +193,23 @@ export const TRANSLATIONS = {
       stories: "Histórias",
       cta: "Reservar Lugar"
     },
+    tours_section: {
+      eyebrow: "Tours Privados",
+      title_1: "Escolha a Sua",
+      title_2: "Jornada de Propriedade",
+      request_custom: "Pedido Personalizado",
+      view_all: "Ver Todas as Datas →"
+    },
+    tour_modal: {
+      destinations: "Destinos:",
+      next_date: "Próxima data:",
+      spots_filled: "{filled} de {total} lugares preenchidos",
+      remaining: "· {n} restantes",
+      from: "DESDE",
+      join_waitlist: "ENTRAR NA LISTA",
+      close: "Fechar",
+      sold_out: "ESGOTADO"
+    },
     newsletter: {
       eyebrow: "Mantenha-se Próximo",
       heading_1: "Junte-se ao ",
