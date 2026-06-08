@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/tour/Reveal";
 import { HOW_STEPS, INCLUDES, TESTIMONIALS } from "@/components/tour/tour-data";
-import { formatPrice, formatPriceShort } from "@/lib/formatPrice";
+import { formatPrice } from "@/lib/formatPrice";
 import { useToast } from "@/hooks/use-toast";
 
 type T = (path: string) => string;
