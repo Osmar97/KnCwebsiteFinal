@@ -240,18 +240,38 @@ export const Navigation = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-background border-border z-50">
                   <DropdownMenuItem asChild>
-                    <Link to="/properties" className="cursor-pointer">
-                      Properties
+                    <Link to="/admin" className="cursor-pointer">
+                      Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/admin/properties" className="cursor-pointer">
-                      Manage Properties
+                      Properties
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/admin/assets" className="cursor-pointer">
-                      Manage Assets
+                      Assets
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/tours" className="cursor-pointer">
+                      Tours
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/bookings" className="cursor-pointer">
+                      Bookings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/waitlist" className="cursor-pointer">
+                      Waitlist
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/quotes" className="cursor-pointer">
+                      Custom Quotes
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
