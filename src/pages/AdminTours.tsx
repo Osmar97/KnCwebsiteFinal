@@ -1,19 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Pencil, Trash2, Copy, Archive, Eye, EyeOff } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import TourEditor from "@/components/admin/TourEditor";
 import { formatPrice } from "@/lib/formatPrice";
-import type { Tables } from "@/integrations/supabase/types";
-
-type TourWithDates = Tables<"tours"> & {
-  tour_dates: Tables<"tour_dates">[];
-};
+import {
+  useAdminTours,
+  useDeleteTour,
+  useDuplicateTour,
+  useInvalidateAdminTours,
+  useUpdateTourStatus,
+} from "@/hooks/admin/useAdminTours";
 
 const STATUSES = ["all", "published", "draft", "archived"] as const;
 
@@ -22,8 +21,6 @@ const AdminTours = () => {
   const [editingId, setEditingId] = useState<string | "new" | null>(null);
   const [filter, setFilter] = useState<(typeof STATUSES)[number]>("all");
   const [search, setSearch] = useState("");
-  const { toast } = useToast();
-  const qc = useQueryClient();
 
   useEffect(() => {
     if (searchParams.get("new") === "1") {
@@ -33,55 +30,11 @@ const AdminTours = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  const { data: tours, isLoading } = useQuery({
-    queryKey: ["admin-tours"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tours")
-        .select("*, tour_dates(*)")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return (data ?? []) as unknown as TourWithDates[];
-    },
-  });
-
-  const invalidate = () => qc.invalidateQueries({ queryKey: ["admin-tours"] });
-
-  const updateStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("tours").update({ status }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: (_d, v) => { invalidate(); toast({ title: `Tour ${v.status}` }); },
-    onError: (e: Error) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
-  });
-
-  const deleteTour = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("tours").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => { invalidate(); toast({ title: "Tour deleted" }); },
-    onError: (e: Error) => toast({ title: "Delete failed", description: e.message, variant: "destructive" }),
-  });
-
-  const duplicateTour = useMutation({
-    mutationFn: async (id: string) => {
-      const src = tours?.find((t) => t.id === id);
-      if (!src) throw new Error("Source tour not found");
-      const { id: _i, created_at: _c, updated_at: _u, tour_dates: _d, ...rest } = src;
-      const insert = {
-        ...rest,
-        slug: `${src.slug}-copy-${Date.now().toString(36)}`,
-        name_en: `${src.name_en} (Copy)`,
-        status: "draft",
-      };
-      const { error } = await supabase.from("tours").insert(insert);
-      if (error) throw error;
-    },
-    onSuccess: () => { invalidate(); toast({ title: "Tour duplicated" }); },
-    onError: (e: Error) => toast({ title: "Duplicate failed", description: e.message, variant: "destructive" }),
-  });
+  const { data: tours, isLoading } = useAdminTours();
+  const invalidate = useInvalidateAdminTours();
+  const updateStatus = useUpdateTourStatus();
+  const deleteTour = useDeleteTour();
+  const duplicateTour = useDuplicateTour(tours);
 
   const filtered = useMemo(() => {
     let list = tours ?? [];

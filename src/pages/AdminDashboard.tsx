@@ -1,19 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Link } from "react-router-dom";
 import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, CheckCircle2, FileEdit } from "lucide-react";
-
-const useCount = (key: string, fn: () => Promise<number>) =>
-  useQuery({ queryKey: ["admin-count", key], queryFn: fn });
-
-const countOf = async (table: string, filters?: (q: any) => any) => {
-  let q = supabase.from(table as any).select("*", { count: "exact", head: true });
-  if (filters) q = filters(q);
-  const { count, error } = await q;
-  if (error) throw error;
-  return count ?? 0;
-};
+import { useAdminCounts } from "@/hooks/admin/useAdminCounts";
+import type { UseQueryResult } from "@tanstack/react-query";
 
 interface StatProps {
   label: string;
@@ -39,15 +28,8 @@ const Stat = ({ label, value, icon: Icon, to, accent }: StatProps) => {
 };
 
 const AdminDashboard = () => {
-  const properties = useCount("properties", () => countOf("properties"));
-  const tours = useCount("tours", () => countOf("tours"));
-  const toursPublished = useCount("tours-published", () => countOf("tours", (q) => q.eq("status", "published")));
-  const toursDraft = useCount("tours-draft", () => countOf("tours", (q) => q.eq("status", "draft")));
-  const bookings = useCount("tour_bookings", () => countOf("tour_bookings"));
-  const waitlist = useCount("tour_waitlist_requests", () => countOf("tour_waitlist_requests"));
-  const quotes = useCount("tour_custom_quote_requests", () => countOf("tour_custom_quote_requests"));
-
-  const n = (q: ReturnType<typeof useCount>) => (q.isLoading ? "…" : q.data ?? 0);
+  const { properties, tours, toursPublished, toursDraft, bookings, waitlist, quotes } = useAdminCounts();
+  const n = (q: UseQueryResult<number>) => (q.isLoading ? "…" : q.data ?? 0);
 
   return (
     <AdminLayout title="Admin Dashboard" description="Overview of platform content and recent activity.">

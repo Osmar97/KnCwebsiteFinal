@@ -1,36 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { useToast } from "@/hooks/use-toast";
-import type { Tables } from "@/integrations/supabase/types";
-
-type QuoteRow = Tables<"tour_custom_quote_requests">;
+import { useAdminQuotes, useUpdateQuoteStatus } from "@/hooks/admin/useAdminQuotes";
 
 const STATUS_OPTIONS = ["new", "in_review", "quoted", "won", "lost"];
 
 const AdminQuotes = () => {
-  const { toast } = useToast();
-  const qc = useQueryClient();
-  const { data, isLoading } = useQuery({
-    queryKey: ["admin-quotes"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tour_custom_quote_requests")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as QuoteRow[];
-    },
-  });
-
-  const updateStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("tour_custom_quote_requests").update({ status }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-quotes"] }); toast({ title: "Status updated" }); },
-    onError: (e: Error) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
-  });
+  const { data, isLoading } = useAdminQuotes();
+  const updateStatus = useUpdateQuoteStatus();
 
   return (
     <AdminLayout title="Custom Quote Requests" description="Bespoke private-tour enquiries from the public site.">

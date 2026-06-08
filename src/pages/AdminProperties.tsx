@@ -1,35 +1,23 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import PropertyEditor from "@/components/properties/PropertyEditor";
-import { useToast } from "@/hooks/use-toast";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import { AdminLogin } from "@/components/AdminLogin";
+import { useAdminProperties, useDeleteProperty, fetchPropertyById } from "@/hooks/admin/useAdminProperties";
 
 const AdminProperties = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showList, setShowList] = useState(true);
   const [editingProperty, setEditingProperty] = useState(null);
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isAdminLoggedIn, supabaseUser } = useAdmin();
   const navigate = useNavigate();
 
-  const { data: properties, isLoading } = useQuery({
-    queryKey: ["admin-properties"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("properties" as any)
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as any[];
-    },
-  });
+  const { data: properties, isLoading } = useAdminProperties();
 
   // Handle edit query parameter
   useEffect(() => {
@@ -43,16 +31,7 @@ const AdminProperties = () => {
     }
   }, [searchParams, properties]);
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("properties" as any).delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
-      toast({ title: "Imóvel eliminado com sucesso" });
-    },
-  });
+  const deleteMutation = useDeleteProperty({ successTitle: "Imóvel eliminado com sucesso" });
 
   // Show property editor if in edit mode - do this check first
   if (!showList) {
@@ -89,14 +68,8 @@ const AdminProperties = () => {
   }
 
   const handleEdit = async (property: any) => {
-    // Fetch fresh property data from database
-    const { data } = await supabase
-      .from("properties" as any)
-      .select("*")
-      .eq("id", property.id)
-      .single();
-    
-    setEditingProperty(data || property);
+    const fresh = await fetchPropertyById(property.id);
+    setEditingProperty(fresh || property);
     setShowList(false);
   };
 
