@@ -10,10 +10,9 @@ import PreTourFormModal, { PreTourFormData } from "@/components/tour/PreTourForm
 import InlineTourForm from "@/components/tour/InlineTourForm";
 import TourDetailModal from "@/components/tour/TourDetailModal";
 import { useTours, pickLocalized, nextTourDate, formatTourDateRange, type TourRow } from "@/hooks/useTours";
+import { formatPrice, formatPriceShort } from "@/lib/formatPrice";
 
 // ── STATIC DATA ─────────────────────────────────────────────────────────────
-
-const CURRENCY_SYMBOL: Record<string, string> = { EUR: "€", USD: "$", GBP: "£" };
 
 function tourCategoryFilter(t: TourRow): "portugal" | "cabo-verde" | "combined" {
   const flag = t.flag || "";
@@ -22,55 +21,20 @@ function tourCategoryFilter(t: TourRow): "portugal" | "cabo-verde" | "combined" 
   return "combined";
 }
 
-interface GroupTourData {
-  num: string;
-  theme: string;
-  name: string;
-  dest: string;
-  tags: string[];
-  waitlistPct: number;
-  waitlistLabel: string;
-  price: string;
+function countryFromFlag(flag: string | null): string {
+  if (flag === "🇵🇹") return "Portugal";
+  if (flag === "🇨🇻") return "Cabo Verde";
+  return "Portugal · Cabo Verde";
 }
 
-const GROUP_TOURS: GroupTourData[] = [
-  {
-    num: "01", theme: "Coastal Lifestyle",
-    name: "The Sun & Yield Tour",
-    dest: "Algarve, Portugal · 5 Days",
-    tags: ["Pool Views", "Rental Yield", "Beach Access"],
-    waitlistPct: 78,
-    waitlistLabel: "7/9 spots filled",
-    price: "850€",
-  },
-  {
-    num: "02", theme: "Capital Growth",
-    name: "The Lisbon Ascent",
-    dest: "Lisbon, Portugal · 5 Days",
-    tags: ["Emerging Hoods", "Long-Term Holds", "Legal Day"],
-    waitlistPct: 56,
-    waitlistLabel: "5/9 spots filled",
-    price: "790€",
-  },
-  {
-    num: "03", theme: "First-Time Buyer",
-    name: "The Entry Point",
-    dest: "Porto, Portugal · 3 Days",
-    tags: ["Under €200K", "Beginner-Friendly", "High ROI"],
-    waitlistPct: 44,
-    waitlistLabel: "4/9 spots filled",
-    price: "590€",
-  },
-  {
-    num: "04", theme: "Diaspora Pioneer",
-    name: "The Cabo Verde Opener",
-    dest: "Praia + Mindelo, Cabo Verde · 5 Days",
-    tags: ["Pre-Market", "Diaspora Focus", "Cultural Immersion"],
-    waitlistPct: 33,
-    waitlistLabel: "3/9 spots filled",
-    price: "690€",
-  },
-];
+/** Maps a tour's hero_image (e.g. "ti-lisbon") to its destination bg class. */
+function destBgClassFor(heroImage: string | null, flag: string | null): string {
+  if (heroImage?.startsWith("ti-")) {
+    return `db-${heroImage.slice(3)}`;
+  }
+  if (flag === "🇨🇻") return "db-cv";
+  return "db-lisbon";
+}
 
 const HOW_STEPS = [
   {
@@ -119,13 +83,6 @@ const TESTIMONIALS = [
     name: "David S.",
     origin: "Toronto, CA · Algarve Property Owner",
   },
-];
-
-const DESTINATIONS = [
-  { bgClass: "db-lisbon", country: "Portugal", name: "Lisbon", detail: "Estrela · Mouraria · Alcântara · Marvila · Belém" },
-  { bgClass: "db-porto", country: "Portugal", name: "Porto", detail: "Bonfim · Paranhos · Cedofeita" },
-  { bgClass: "db-algarve", country: "Portugal", name: "Algarve", detail: "Lagos · Portimão · Silves · Tavira" },
-  { bgClass: "db-cv", country: "Cabo Verde", name: "Santiago + Sal", detail: "Praia · Mindelo · Sal Island" },
 ];
 
 // ── UTILITY COMPONENTS ───────────────────────────────────────────────────────
@@ -265,6 +222,58 @@ export default function TourPage() {
     ? tours
     : tours.filter((c) => tourCategoryFilter(c) === activeTab);
 
+  // Cheapest published prices, used to render the "From X" lines on the
+  // "Two ways to explore" cards. Falls back to the cheapest tour of any type
+  // when one of the categories is not yet seeded.
+  const fallbackMin = tours.length
+    ? Math.min(...tours.map((t) => Number(t.base_price) || Infinity))
+    : null;
+  const cheapestGroup = tours
+    .filter((t) => t.tour_type === "group")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const cheapestPrivate = tours
+    .filter((t) => t.tour_type === "private")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const defaultCurrency = tours[0]?.currency || "EUR";
+  const groupFromPrice =
+    cheapestGroup ?? fallbackMin ?? null;
+  const privateFromPrice =
+    cheapestPrivate ?? fallbackMin ?? null;
+
+  // Group-tour cards are now sourced from the database (tour_type === 'group').
+  const groupTours = tours.filter((t) => t.tour_type === "group");
+
+  // Destinations are derived from published tours. We deduplicate by the
+  // primary destination + country so the section auto-updates whenever a new
+  // tour is published from the admin dashboard.
+  const derivedDestinations = (() => {
+    const seen = new Set<string>();
+    const out: { key: string; bgClass: string; country: string; name: string; detail: string }[] = [];
+    tours.forEach((t) => {
+      const primary = t.destinations?.[0];
+      if (!primary) return;
+      const country = countryFromFlag(t.flag);
+      const key = `${country}::${primary}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const rest = (t.destinations || []).slice(1).join(" · ");
+      out.push({
+        key,
+        bgClass: destBgClassFor(t.hero_image, t.flag),
+        country,
+        name: primary,
+        detail: rest || country,
+      });
+    });
+    return out;
+  })();
+
   const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
 
   return (
@@ -322,8 +331,14 @@ export default function TourPage() {
           </div>
         </div>
         <div className="hero-stats">
-          <div className="h-stat"><span className="h-stat-n">10</span><span className="h-stat-l">Destinations</span></div>
-          <div className="h-stat"><span className="h-stat-n">10</span><span className="h-stat-l">Group Themes</span></div>
+          <div className="h-stat">
+            <span className="h-stat-n">{derivedDestinations.length || "—"}</span>
+            <span className="h-stat-l">Destinations</span>
+          </div>
+          <div className="h-stat">
+            <span className="h-stat-n">{groupTours.length || "—"}</span>
+            <span className="h-stat-l">Group Themes</span>
+          </div>
           <div className="h-stat"><span className="h-stat-n">1–10</span><span className="h-stat-l">Days, Private</span></div>
         </div>
       </section>
@@ -332,7 +347,7 @@ export default function TourPage() {
       <div className="stats-bar">
         <div className="sb"><div className="sb-n">47+</div><div className="sb-l">Investors Hosted</div></div>
         <div className="sb"><div className="sb-n">2</div><div className="sb-l">Countries</div></div>
-        <div className="sb"><div className="sb-n">€260K</div><div className="sb-l">Avg Deal Size</div></div>
+        <div className="sb"><div className="sb-n">{formatPriceShort(260000, "EUR")}</div><div className="sb-l">Avg Deal Size</div></div>
         <div className="sb"><div className="sb-n">100%</div><div className="sb-l">Guided End-to-End</div></div>
       </div>
 
@@ -379,7 +394,11 @@ export default function TourPage() {
                   <div className="fmeta-item"><span className="fmeta-dot" />Up to 4 people</div>
                   <div className="fmeta-item"><span className="fmeta-dot" />Add lawyer, mortgage, accountant</div>
                 </div>
-                <div className="format-price">From €350 / day per person</div>
+                <div className="format-price">
+                  {privateFromPrice !== null
+                    ? `From ${formatPrice(privateFromPrice, defaultCurrency)} / person`
+                    : "Custom pricing on enquiry"}
+                </div>
                 <div className="format-arrow">→</div>
               </a>
               <a href="#group" className="format-card">
@@ -392,7 +411,11 @@ export default function TourPage() {
                   <div className="fmeta-item"><span className="fmeta-dot" />10 preset themes</div>
                   <div className="fmeta-item"><span className="fmeta-dot" />Pre-trip 1-on-1 call included</div>
                 </div>
-                <div className="format-price">From €790 / person</div>
+                <div className="format-price">
+                  {groupFromPrice !== null
+                    ? `From ${formatPrice(groupFromPrice, defaultCurrency)} / person`
+                    : "Pricing announced soon"}
+                </div>
                 <div className="format-arrow">→</div>
               </a>
             </div>
@@ -441,8 +464,7 @@ export default function TourPage() {
                 : remaining <= 3 ? `${remaining} spots left`
                 : `${remaining} spots`;
               const spotsFew = next ? (next.sold_out || remaining <= 3) : false;
-              const symbol = CURRENCY_SYMBOL[card.currency] || card.currency;
-              const price = `${symbol}${Number(card.base_price).toLocaleString()}`;
+              const price = formatPrice(card.base_price, card.currency);
               const dateLabel = next ? formatTourDateRange(next, lang === "en" ? "en-GB" : lang === "pt" ? "pt-PT" : "fr-FR") : "TBA";
               const cardRec = card as unknown as Record<string, unknown>;
               const name = pickLocalized(cardRec, "name", lang);
@@ -500,8 +522,11 @@ export default function TourPage() {
           <h2 className="section-title">Two countries.<br /><em>Endless opportunity.</em></h2>
           <Reveal>
             <div className="dest-grid">
-              {DESTINATIONS.map((d) => (
-                <div key={d.name} className="dest-card">
+              {derivedDestinations.length === 0 && !toursLoading && (
+                <p style={{ opacity: 0.6 }}>Destinations will appear here when tours are published.</p>
+              )}
+              {derivedDestinations.map((d) => (
+                <div key={d.key} className="dest-card">
                   <div className={`dest-bg-inner ${d.bgClass}`} />
                   <div className="dest-ov" />
                   <div className="dest-cnt">
@@ -554,31 +579,60 @@ export default function TourPage() {
       <section className="group-section" id="group">
         <div className="t-container">
           <div className="section-eyebrow">Group Tours</div>
-          <h2 className="section-title">Ten themed<br /><em>journeys</em></h2>
+          <h2 className="section-title">Curated themed<br /><em>journeys</em></h2>
           <p className="section-desc">
             Join a curated group of 5–9 investors. We launch the trip when the group fills. Join the waitlist, attend your individual pre-trip call, and arrive ready to decide.
           </p>
           <Reveal>
             <div className="group-grid">
-              {GROUP_TOURS.map((tour) => (
-                <div key={tour.num} className="group-card">
-                  <div className="gc-num">{tour.num}</div>
-                  <span className="gc-theme">{tour.theme}</span>
-                  <div className="gc-name">{tour.name}</div>
-                  <div className="gc-dest">{tour.dest}</div>
-                  <div className="gc-tags">
-                    {tour.tags.map((tag) => <span key={tag} className="gc-tag">{tag}</span>)}
+              {toursLoading && <p style={{ opacity: 0.6 }}>Loading group tours…</p>}
+              {!toursLoading && groupTours.length === 0 && (
+                <p style={{ opacity: 0.6 }}>No group tours announced yet. Check back soon.</p>
+              )}
+              {groupTours.map((tour, idx) => {
+                const next = nextTourDate(tour.dates);
+                const avail = next ? availability[next.id] : undefined;
+                const cap = avail?.capacity ?? next?.capacity ?? 0;
+                const filled = avail?.confirmed_count ?? 0;
+                const remaining = avail?.remaining ?? Math.max(cap - filled, 0);
+                const pct = cap > 0 ? Math.min((filled / cap) * 100, 100) : 0;
+                const rec = tour as unknown as Record<string, unknown>;
+                const localizedName = pickLocalized(rec, "name", lang);
+                const num = String(idx + 1).padStart(2, "0");
+                const destDetail = [tour.destinations?.[0], countryFromFlag(tour.flag)]
+                  .filter(Boolean)
+                  .join(", ") + (tour.duration_days ? ` · ${tour.duration_days} Days` : "");
+                const fillLabel = cap > 0
+                  ? `${filled}/${cap} spots filled`
+                  : "Waitlist open";
+                return (
+                  <div key={tour.id} className="group-card">
+                    <div className="gc-num">{num}</div>
+                    <span className="gc-theme">{tour.category}</span>
+                    <div className="gc-name">{localizedName}</div>
+                    <div className="gc-dest">{destDetail}</div>
+                    <div className="gc-tags">
+                      {tour.tags.slice(0, 3).map((tag) => (
+                        <span key={tag} className="gc-tag">{tag}</span>
+                      ))}
+                    </div>
+                    <div className="wl-bar">
+                      <div className="wl-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                    <p className="wl-label">
+                      <strong>{fillLabel}</strong> — join the waitlist to lock your spot
+                    </p>
+                    <div className="gc-footer">
+                      <div className="gc-price">
+                        {formatPrice(tour.base_price, tour.currency)} <span>/ person</span>
+                      </div>
+                      <button className="btn-gold-outline" onClick={openEnquiryForm}>
+                        {next?.sold_out ? t("tour_modal.sold_out") : "Join Waitlist"}
+                      </button>
+                    </div>
                   </div>
-                  <div className="wl-bar">
-                    <div className="wl-fill" style={{ width: `${tour.waitlistPct}%` }} />
-                  </div>
-                  <p className="wl-label"><strong>{tour.waitlistLabel}</strong> — join the waitlist to lock your spot</p>
-                  <div className="gc-footer">
-                    <div className="gc-price">{tour.price} <span>/ person</span></div>
-                    <button className="btn-gold-outline" onClick={openEnquiryForm}>Join Waitlist</button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </Reveal>
         </div>
