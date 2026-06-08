@@ -313,14 +313,14 @@ export default function TourPage() {
         <div className="hero-grain" />
         <div className="hero-radial" />
         <div className="hero-content">
-          <div className="hero-eyebrow">Kings 'n Company — Property Ownership Tours</div>
+          <div className="hero-eyebrow">{t("hero.label")}</div>
           <h1 className="hero-h1">
-            See it.<br />
-            <em>Understand it.</em><br />
-            Own it.
+            {t("hero.h1_line1")}<br />
+            <em>{t("hero.h1_line2")}</em><br />
+            {t("hero.h1_line3")}
           </h1>
           <p className="hero-sub">
-            Curated property exploration experiences across Portugal and Cabo Verde. For the diaspora investor who wants to walk the ground before signing the contract.
+            {t("hero.sub")}
           </p>
           <div className="hero-ctas">
             <button onClick={openReserveForm} disabled={isCheckingOut} className="btn-primary">
