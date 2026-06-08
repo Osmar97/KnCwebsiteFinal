@@ -572,13 +572,13 @@ export default function TourPage() {
       <PreTourFormModal
         open={showPreForm}
         onOpenChange={setShowPreForm}
-        onSubmit={(data) => handleCheckout(data)}
+        onSubmit={onReserveSubmit}
         isSubmitting={isCheckingOut}
       />
       <PreTourFormModal
         open={showEnquiryForm}
         onOpenChange={setShowEnquiryForm}
-        onSubmit={(data) => handleEnquiry(data)}
+        onSubmit={onEnquirySubmit}
         isSubmitting={isSendingEnquiry}
         mode="enquiry"
       />
