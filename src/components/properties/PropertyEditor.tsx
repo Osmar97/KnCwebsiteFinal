@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,12 +10,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X, Minus, ArrowLeft, ArrowRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
-import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import { ADMIN_PROFILES } from "@/lib/adminConfig";
+import { usePropertyMediaUploads } from "@/hooks/properties/usePropertyMediaUploads";
+import { usePropertyDescriptions } from "@/hooks/properties/usePropertyDescriptions";
+import { buildPropertyPayload, useSaveProperty } from "@/hooks/properties/useSaveProperty";
 
 interface PropertyEditorProps {
   property?: any;
@@ -25,7 +24,6 @@ interface PropertyEditorProps {
 }
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
-  const navigate = useNavigate();
   const { supabaseUser } = useAdmin();
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -34,27 +32,49 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   });
 
   const propertyType = watch("property_type");
-  const [descriptions, setDescriptions] = useState<Record<string, string>>(() => {
-    if (property?.descriptions && typeof property.descriptions === 'object') {
-      return property.descriptions;
-    }
-    return { pt: property?.description || "" };
-  });
-  const [currentLang, setCurrentLang] = useState("pt");
-  const [additionalLangs, setAdditionalLangs] = useState<string[]>([]);
+  const initialDescriptions: Record<string, string> =
+    property?.descriptions && typeof property.descriptions === "object"
+      ? property.descriptions
+      : { pt: property?.description || "" };
+  const initialAdditionalLangs =
+    property?.descriptions && typeof property.descriptions === "object"
+      ? Object.keys(property.descriptions).filter((l) => l !== "pt")
+      : [];
+
+  const {
+    descriptions, setDescriptions,
+    currentLang, setCurrentLang,
+    additionalLangs, setAdditionalLangs,
+    isTranslating, isImproving,
+    handleAddLanguage, handleImproveText,
+  } = usePropertyDescriptions({ initialDescriptions, initialAdditionalLangs });
+
   const [bedroomCount, setBedroomCount] = useState(property?.bedrooms ? parseInt(property.bedrooms) : 0);
   const [floorCount, setFloorCount] = useState(property?.floors || 0);
   const [bathroomCount, setBathroomCount] = useState(property?.bathrooms || 0);
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [isImproving, setIsImproving] = useState(false);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [floorPlanUrls, setFloorPlanUrls] = useState<string[]>([]);
-  const [videoUrls, setVideoUrls] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const {
+    imageUrls, setImageUrls,
+    floorPlanUrls, setFloorPlanUrls,
+    videoUrls, setVideoUrls,
+    uploading,
+    draggedIndex,
+    handleImageUpload,
+    handleFloorPlanUpload,
+    handleVideoUpload,
+    moveImage,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+  } = usePropertyMediaUploads({
+    images: property?.images ?? [],
+    floorPlans: property?.floor_plans ?? [],
+    videos: property?.video_urls ?? [],
+    userId: supabaseUser?.id ?? null,
+  });
 
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   // Reset form when property data changes or on mount
   useEffect(() => {
