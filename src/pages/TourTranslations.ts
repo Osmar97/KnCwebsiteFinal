@@ -44,7 +44,7 @@ export const TRANSLATIONS = {
       h1_line3: "Own it.",
       sub: "Guided exploration experiences across Portugal and Cabo Verde for those who believe every acquisition deserves firsthand insight.",
       date: "6 – 10 July · Lisbon, Portugal",
-      cta_reserve: "RESERVE MY SPOT — 3,500€",
+      cta_reserve: "RESERVE MY SPOT — {price}",
       cta_private: "Request a Private Tour",
       scroll: "Scroll"
     },
@@ -130,7 +130,7 @@ export const TRANSLATIONS = {
       body: "No hidden fees. No surprises. Everything listed above is included.",
       badge: "⚡ Max. 6 Spots — First Edition",
       tier: "Group Tour · Per Person",
-      amount: "3,500",
+      amount: "{price-num}",
       currency: "€",
       note: "All-inclusive: hotel, meals, sessions, tours and consultancy",
       features: [
@@ -143,7 +143,7 @@ export const TRANSLATIONS = {
         { text: "KnC resource pack & personal property roadmap" },
         { text: "Kings 'n Company aftercare & continued support" }
       ],
-      cta: "RESERVE MY SPOT — 3,500€",
+      cta: "RESERVE MY SPOT — {price}",
       deposit_note: ""
     },
     private: {
@@ -228,7 +228,7 @@ export const TRANSLATIONS = {
       h1_line3: "Adquira.",
       sub: "Experiências de exploração guiadas por Portugal e Cabo Verde para quem acredita que cada aquisição merece conhecimento de primeira mão.",
       date: "6 – 10 Julho · Lisboa, Portugal",
-      cta_reserve: "RESERVAR O MEU LUGAR — 3.500€",
+      cta_reserve: "RESERVAR O MEU LUGAR — {price}",
       cta_private: "Solicitar Tour Privado",
       scroll: "Scroll"
     },
@@ -314,7 +314,7 @@ export const TRANSLATIONS = {
       body: "Sem taxas ocultas. Sem surpresas. Tudo o que está listado acima está incluído.",
       badge: "⚡ Máx. 6 Lugares — Primeira Edição",
       tier: "Tour em Grupo · Por Pessoa",
-      amount: "3.500",
+      amount: "{price-num}",
       currency: "€",
       note: "All-inclusive: hotel, refeições, sessões, tours e consultoria",
       features: [
@@ -327,7 +327,7 @@ export const TRANSLATIONS = {
         { text: "Pack de recursos KnC & roteiro pessoal de propriedade" },
         { text: "Aftercare & apoio contínuo da Kings 'n Company" }
       ],
-      cta: "RESERVAR O MEU LUGAR — 3.500€",
+      cta: "RESERVAR O MEU LUGAR — {price}",
       deposit_note: ""
     },
     private: {
@@ -412,7 +412,7 @@ export const TRANSLATIONS = {
       h1_line3: "Possédez.",
       sub: "Des expériences d'exploration guidées au Portugal et au Cap-Vert pour ceux qui croient que chaque acquisition mérite une connaissance de première main.",
       date: "6 – 10 Juillet · Lisbonne, Portugal",
-      cta_reserve: "RÉSERVER MA PLACE — 3.500€",
+      cta_reserve: "RÉSERVER MA PLACE — {price}",
       cta_private: "Demander un Tour Privé",
       scroll: "Défiler"
     },
@@ -498,7 +498,7 @@ export const TRANSLATIONS = {
       body: "Pas de frais cachés. Pas de surprises. Tout ce qui est listé ci-dessus est inclus.",
       badge: "⚡ Max. 6 Places — Première Édition",
       tier: "Tour en Groupe · Par Personne",
-      amount: "3.500",
+      amount: "{price-num}",
       currency: "€",
       note: "Tout inclus : hôtel, repas, sessions, visites et conseil",
       features: [
@@ -511,7 +511,7 @@ export const TRANSLATIONS = {
         { text: "Pack de ressources KnC & feuille de route immobilière personnelle" },
         { text: "Suivi & assistance continue de Kings 'n Company" }
       ],
-      cta: "RÉSERVER MA PLACE — 3.500€",
+      cta: "RÉSERVER MA PLACE — {price}",
       deposit_note: ""
     },
     private: {

@@ -17,6 +17,7 @@ import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
+import { ADMIN_PROFILES } from "@/lib/adminConfig";
 
 interface PropertyEditorProps {
   property?: any;
@@ -57,9 +58,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   // Reset form when property data changes or on mount
   useEffect(() => {
-    console.log("PropertyEditor useEffect - property:", property);
     if (property) {
-      console.log("Resetting form with property data:", property);
       const formValues = {
         title: property.title || "",
         location: property.location || "",
@@ -116,8 +115,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         agent_captador: property.agent_captador || "",
         agent_comercializador: property.agent_comercializador || "",
       };
-      console.log("Form values for reset:", formValues);
-      
+
       // Force reset with new values
       reset(formValues, { keepDefaultValues: false });
       
@@ -207,8 +205,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   const saveMutation = useMutation({
     mutationFn: async (data: PropertyFormData): Promise<string> => {
-      console.log("Starting save mutation with data:", data);
-      
       const propertyData = {
         title: data.title || "",
         property_type: data.property_type || "",
@@ -271,39 +267,27 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         agent_comercializador: data.agent_comercializador || null,
       };
 
-      console.log("Property data to save:", propertyData);
-
       if (property) {
-        console.log("Updating existing property:", property.id);
         const { error } = await supabase
           .from("properties" as any)
           .update(propertyData)
           .eq("id", property.id);
         if (error) {
-          console.error("Update error:", error);
           throw error;
         }
-        console.log("Property updated successfully");
         return property.id as string;
       } else {
-        console.log("Creating new property");
         const { data: newProperty, error } = await supabase
           .from("properties" as any)
           .insert([propertyData])
           .select()
           .single();
-        
-        if (error) {
-          console.error("Insert error:", error);
-          throw error;
-        }
-        
-        console.log("New property created:", newProperty);
+
+        if (error) throw error;
         return (newProperty as any).id as string;
       }
     },
-    onSuccess: async (propertyId) => {
-      console.log("Save successful, property ID:", propertyId);
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
       
       toast({ 
@@ -314,9 +298,8 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       // Always redirect to property management page after save
       onClose();
     },
-    onError: (error: any) => {
-      console.error("Save mutation error:", error);
-      toast({ 
+    onError: (error: Error) => {
+      toast({
         title: "Erro ao guardar imóvel", 
         description: error?.message || "Por favor, tente novamente",
         variant: "destructive" 
@@ -561,8 +544,6 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       </div>
 
       <form onSubmit={handleSubmit((data) => {
-        console.log("Form submitted with data:", data);
-        console.log("Form errors:", errors);
         saveMutation.mutate(data);
       })} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
@@ -1399,8 +1380,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   <SelectValue placeholder="Selecionar agente" />
                 </SelectTrigger>
                 <SelectContent className="bg-white z-50">
-                  <SelectItem value="ismael@kingsncompany.com">Ismael</SelectItem>
-                  <SelectItem value="joey@kingsncompany.com">Joey</SelectItem>
+                  {ADMIN_PROFILES.map((a) => (
+                    <SelectItem key={a.email} value={a.email}>{a.shortName}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <p className="text-sm text-gray-600 mt-1">O agente que capta o imóvel. Registo a nível interno da agência.</p>
@@ -1413,8 +1395,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                   <SelectValue placeholder="Selecionar agente" />
                 </SelectTrigger>
                 <SelectContent className="bg-white z-50">
-                  <SelectItem value="ismael@kingsncompany.com">Ismael</SelectItem>
-                  <SelectItem value="joey@kingsncompany.com">Joey</SelectItem>
+                  {ADMIN_PROFILES.map((a) => (
+                    <SelectItem key={a.email} value={a.email}>{a.shortName}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <p className="text-sm text-gray-600 mt-1">O imóvel é atribuído ao agente comercializador.</p>
@@ -1440,9 +1423,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <Button 
             type="button"
             onClick={() => {
-              console.log("Guardar button clicked");
               const formData = watch();
-              console.log("Current form data:", formData);
               
               const propertyData = {
                 title: formData.title || "",
@@ -1501,8 +1482,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
                 t0: formData.t0 || false,
                 duplex: formData.duplex || false,
               };
-              
-              console.log("Submitting property data:", propertyData);
+
               saveMutation.mutate(propertyData as PropertyFormData);
             }}
             disabled={saveMutation.isPending} 

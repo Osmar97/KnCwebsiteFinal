@@ -9,8 +9,11 @@ import { Plus, Pencil, Trash2, Copy, Archive, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import TourEditor from "@/components/admin/TourEditor";
 import { formatPrice } from "@/lib/formatPrice";
+import type { Tables } from "@/integrations/supabase/types";
 
-type AnyRow = Record<string, any>;
+type TourWithDates = Tables<"tours"> & {
+  tour_dates: Tables<"tour_dates">[];
+};
 
 const STATUSES = ["all", "published", "draft", "archived"] as const;
 
@@ -38,7 +41,7 @@ const AdminTours = () => {
         .select("*, tour_dates(*)")
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return data as AnyRow[];
+      return (data ?? []) as unknown as TourWithDates[];
     },
   });
 
@@ -50,7 +53,7 @@ const AdminTours = () => {
       if (error) throw error;
     },
     onSuccess: (_d, v) => { invalidate(); toast({ title: `Tour ${v.status}` }); },
-    onError: (e: any) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
+    onError: (e: Error) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
   });
 
   const deleteTour = useMutation({
@@ -59,7 +62,7 @@ const AdminTours = () => {
       if (error) throw error;
     },
     onSuccess: () => { invalidate(); toast({ title: "Tour deleted" }); },
-    onError: (e: any) => toast({ title: "Delete failed", description: e.message, variant: "destructive" }),
+    onError: (e: Error) => toast({ title: "Delete failed", description: e.message, variant: "destructive" }),
   });
 
   const duplicateTour = useMutation({
@@ -77,7 +80,7 @@ const AdminTours = () => {
       if (error) throw error;
     },
     onSuccess: () => { invalidate(); toast({ title: "Tour duplicated" }); },
-    onError: (e: any) => toast({ title: "Duplicate failed", description: e.message, variant: "destructive" }),
+    onError: (e: Error) => toast({ title: "Duplicate failed", description: e.message, variant: "destructive" }),
   });
 
   const filtered = useMemo(() => {

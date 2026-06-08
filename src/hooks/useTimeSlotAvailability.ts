@@ -60,13 +60,11 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
               availabilityMap[timeSlot] = false;
             }
           } catch (err) {
-            // If there's an error checking this slot, assume it's unavailable
-            console.warn(`Error checking slot ${timeSlot}:`, err);
+            // If there's an error checking this slot, assume it's unavailable.
             availabilityMap[timeSlot] = false;
           }
         }
 
-        console.log("Final availability map:", availabilityMap);
         setAvailability(availabilityMap);
       } catch (error) {
         console.error("Error checking availability:", error);

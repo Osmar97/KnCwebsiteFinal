@@ -2,6 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useToast } from "@/hooks/use-toast";
+import type { Tables } from "@/integrations/supabase/types";
+
+type WaitlistRow = Tables<"tour_waitlist_requests"> & {
+  tours: Pick<Tables<"tours">, "name_en"> | null;
+};
 
 const STATUS_OPTIONS = ["new", "contacted", "converted", "closed"];
 
@@ -16,7 +21,7 @@ const AdminWaitlist = () => {
         .select("*, tours(name_en)")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as any[];
+      return (data ?? []) as unknown as WaitlistRow[];
     },
   });
 
@@ -26,7 +31,7 @@ const AdminWaitlist = () => {
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-waitlist"] }); toast({ title: "Status updated" }); },
-    onError: (e: any) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
+    onError: (e: Error) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
   });
 
   return (

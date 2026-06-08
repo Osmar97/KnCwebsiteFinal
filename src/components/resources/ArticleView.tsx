@@ -33,9 +33,6 @@ export const ArticleView = () => {
   useEffect(() => {
     if (id) {
       const foundPost = getPostById(id);
-      console.log("Found post:", foundPost);
-      console.log("Post PDFs:", foundPost?.pdf_urls);
-      console.log("Post videos:", foundPost?.video_urls);
       if (foundPost) {
         setPost(foundPost);
         // Get related posts from same category, excluding current post
@@ -76,9 +73,6 @@ export const ArticleView = () => {
       });
     }
   };
-
-  console.log("Rendering ArticleView with PDFs:", post.pdf_urls);
-  console.log("Rendering ArticleView with videos:", post.video_urls);
 
   return <div className="min-h-screen bg-neutral-900 text-white">
       <div className="max-w-4xl mx-auto px-4 py-8">
