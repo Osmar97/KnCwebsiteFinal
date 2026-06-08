@@ -19,6 +19,7 @@ import { ArticleView } from "./components/resources/ArticleView";
 import { AdminProvider } from "./contexts/AdminContext";
 import { PostsProvider } from "./contexts/PostsContext";
 import FreeResources from "./pages/FreeResources";
+import InvestingInPortugalForAmericans from "./pages/InvestingInPortugalForAmericans";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
 import AdminProperties from "./pages/AdminProperties";
@@ -70,6 +71,10 @@ const App = () => (
               <Route path="/resources" element={<Resources />} />
               <Route path="/resources/:category/:id" element={<ArticleView />} />
               <Route path="/free-resources" element={<FreeResources />} />
+              <Route
+                path="/resources/guides/investing-in-portugal-for-americans"
+                element={<InvestingInPortugalForAmericans />}
+              />
               <Route path="/properties" element={<Properties />} />
               <Route path="/properties/:id" element={<PropertyDetail />} />
               <Route path="/admin/properties" element={<AdminProperties />} />
