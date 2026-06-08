@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useProperty, useDeleteProperty } from "@/hooks/admin/useAdminProperties";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,6 @@ const PropertyDetail = () => {
   const navigate = useNavigate();
   const { isAdminLoggedIn } = useAdmin();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("photos");
   const [selectedLang, setSelectedLang] = useState("en");
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
@@ -38,28 +37,10 @@ const PropertyDetail = () => {
   });
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
 
-  const { data: property, isLoading } = useQuery({
-    queryKey: ["property", id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("properties" as any)
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
-      if (error) throw error;
-      return data as any;
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (propertyId: string) => {
-      const { error } = await supabase.from("properties" as any).delete().eq("id", propertyId);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast({ title: "Property deleted successfully" });
-      navigate("/properties");
-    },
+  const { data: property, isLoading } = useProperty(id);
+  const deleteMutation = useDeleteProperty({
+    successTitle: "Property deleted successfully",
+    onSuccess: () => navigate("/properties"),
   });
 
   const handleDelete = () => {
