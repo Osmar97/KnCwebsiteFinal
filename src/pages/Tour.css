@@ -1087,3 +1087,101 @@
   font-size: 13px;
   font-weight: 500;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Mobile responsiveness hardening
+   Targets phones, small tablets, large tablets / small laptops, and ensures
+   nothing overflows horizontally on any breakpoint.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.tour-page,
+.tour-page * {
+  box-sizing: border-box;
+}
+.tour-page img,
+.tour-page video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Small laptops / large tablets */
+@media (max-width: 1024px) {
+  .tour-page .hero-h1 { font-size: clamp(40px, 7vw, 72px); line-height: 1.05; }
+  .tour-page .section-title { font-size: clamp(28px, 5vw, 48px); }
+  .tour-page .group-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .tour-page .hero-section { padding: 100px 20px 64px; }
+  .tour-page .hero-eyebrow { font-size: 10px; }
+  .tour-page .hero-h1 { font-size: clamp(34px, 9vw, 52px); }
+  .tour-page .hero-sub { font-size: 14px; line-height: 1.6; }
+  .tour-page .hero-ctas { flex-direction: column; align-items: stretch; gap: 12px; }
+  .tour-page .hero-ctas .btn-primary,
+  .tour-page .hero-ctas .btn-outline {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px; /* touch target */
+  }
+  .tour-page .section-title { font-size: clamp(26px, 8vw, 40px); line-height: 1.1; }
+  .tour-page .section-eyebrow { font-size: 10px; letter-spacing: 0.16em; }
+  .tour-page .section-desc { font-size: 14px; }
+
+  .tour-page .stats-bar { padding: 28px 20px; gap: 8px; }
+  .tour-page .sb-n { font-size: clamp(22px, 6vw, 28px); }
+  .tour-page .sb-l { font-size: 10px; }
+
+  .tour-page .t-container { padding: 0 20px; }
+
+  .tour-page .tour-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tour-page .tour-tabs::-webkit-scrollbar { display: none; }
+  .tour-page .ttab { white-space: nowrap; min-height: 40px; }
+
+  .tour-page .tour-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .tour-page .tour-date { text-align: left; }
+
+  .tour-page .group-grid { grid-template-columns: 1fr; }
+  .tour-page .gc-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .tour-page .gc-footer .btn-gold-outline {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .tour-page .tnav-cta { padding: 8px 14px; font-size: 11px; }
+  .tour-page .lang-switcher { gap: 2px; }
+  .tour-page .lang-btn { padding: 6px 8px; min-width: 36px; min-height: 36px; }
+
+  .tour-page .nl-row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .tour-page .nl-row input,
+  .tour-page .nl-row button { width: 100%; min-height: 44px; }
+
+  .tour-page .format-card { padding: 32px 22px; }
+  .tour-page .format-price { font-size: 14px; }
+}
+
+/* Modal on phones: pin to bottom, full width, scrollable */
+@media (max-width: 480px) {
+  .tour-detail-modal {
+    padding: 32px 20px 24px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 8px 8px 0 0 !important;
+    max-height: 92vh;
+  }
+  .tdm-title { font-size: 26px; }
+  .tdm-desc { font-size: 14px; }
+  .tdm-progress { margin: 14px 0 8px; }
+  .tdm-footer { gap: 14px; }
+  .tdm-cta { width: 100%; padding: 14px 20px; min-height: 48px; }
+}
