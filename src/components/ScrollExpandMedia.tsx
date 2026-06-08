@@ -164,6 +164,10 @@ const ScrollExpandMedia = ({
               src={bgImageSrc}
               alt=""
               aria-hidden="true"
+              width={1920}
+              height={1080}
+              fetchPriority="high"
+              decoding="async"
               className="w-screen h-screen object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-gray-900 opacity-95" />
@@ -202,6 +206,9 @@ const ScrollExpandMedia = ({
                   <img
                     src={mediaSrc}
                     alt={title || "Luxury property featured by Kings 'n Company"}
+                    width={1200}
+                    height={800}
+                    decoding="async"
                     className="w-full h-full object-cover rounded-xl"
                   />
                   <div
