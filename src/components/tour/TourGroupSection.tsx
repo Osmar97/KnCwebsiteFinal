@@ -24,7 +24,7 @@ export function TourGroupSection({ groupTours, availability, loading, lang, t, o
         <div className="section-eyebrow">Group Tours</div>
         <h2 className="section-title">Curated themed<br /><em>journeys</em></h2>
         <p className="section-desc">
-          Join a curated group of 5–9 investors. We launch the trip when the group fills. Join the waitlist, attend your individual pre-trip call, and arrive ready to decide.
+          Join a curated group of 5–9 investors with shared interests. Preset themes, from coastal to cosmopolitan. We launch the trip when the group fills. Join the waitlist, attend your individual pre-trip call, and arrive ready to decide.
         </p>
         <Reveal>
           <div className="group-grid">
