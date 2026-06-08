@@ -10,6 +10,23 @@ export const TRANSLATIONS = {
       stories: "Stories",
       cta: "Reserve Your Spot"
     },
+    tours_section: {
+      eyebrow: "Private Tours",
+      title_1: "Choose Your",
+      title_2: "Ownership Journey",
+      request_custom: "Request Custom",
+      view_all: "View All Dates →"
+    },
+    tour_modal: {
+      destinations: "Destinations:",
+      next_date: "Next date:",
+      spots_filled: "{filled} of {total} spots filled",
+      remaining: "· {n} remaining",
+      from: "FROM",
+      join_waitlist: "JOIN WAITLIST",
+      close: "Close",
+      sold_out: "SOLD OUT"
+    },
     newsletter: {
       eyebrow: "Stay Close",
       heading_1: "Join the ",
