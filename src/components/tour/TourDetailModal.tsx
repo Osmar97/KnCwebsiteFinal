@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import type { TourRow, AvailabilityRow } from "@/hooks/useTours";
 import { pickLocalized, nextTourDate, formatTourDateRange } from "@/hooks/useTours";
 import type { Language } from "@/pages/TourTranslations";
+import { formatPrice } from "@/lib/formatPrice";
 
 interface Props {
   tour: TourRow | null;
@@ -24,8 +25,6 @@ interface Props {
   };
 }
 
-const CURRENCY_SYMBOL: Record<string, string> = { EUR: "€", USD: "$", GBP: "£" };
-
 export default function TourDetailModal({ tour, availability, lang, open, onOpenChange, onJoinWaitlist, labels }: Props) {
   if (!tour) return null;
 
@@ -35,8 +34,7 @@ export default function TourDetailModal({ tour, availability, lang, open, onOpen
   const filled = avail?.confirmed_count ?? 0;
   const remaining = avail?.remaining ?? Math.max(capacity - filled, 0);
   const pct = capacity > 0 ? Math.min((filled / capacity) * 100, 100) : 0;
-  const symbol = CURRENCY_SYMBOL[tour.currency] || tour.currency;
-  const price = `${symbol}${Number(tour.base_price).toLocaleString()}`;
+  const price = formatPrice(tour.base_price, tour.currency);
 
   const tourRec = tour as unknown as Record<string, unknown>;
   const name = pickLocalized(tourRec, "name", lang);
