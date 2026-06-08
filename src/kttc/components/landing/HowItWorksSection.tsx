@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Users, Crown, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/kttc/components/ui/button";
 
 const cardHover = {
   rest: { scale: 1, y: 0, zIndex: 1 },

@@ -3,8 +3,8 @@ import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 // eslint-disable-next-line import/no-unresolved
 import pdfWorkerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 import { Loader2, FileWarning, ChevronUp, ChevronDown, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { Button } from "@/kttc/components/ui/button";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/kttc/integrations/supabase/client";
 import { Users, DollarSign, MessageSquare, Calendar } from "lucide-react";
 
 interface Stats {

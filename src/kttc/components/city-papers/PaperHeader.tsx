@@ -1,5 +1,5 @@
 import { MapPin, Calendar, FileText } from "lucide-react";
-import kncLogo from "@/assets/knc-logo-gold.png";
+import kncLogo from "@/kttc/assets/knc-logo-gold.png";
 
 interface PaperHeaderProps {
   title: string;

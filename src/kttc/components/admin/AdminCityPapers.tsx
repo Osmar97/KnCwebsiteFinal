@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { useToast } from "@/kttc/hooks/use-toast";
+import { Button } from "@/kttc/components/ui/button";
+import { Input } from "@/kttc/components/ui/input";
+import { Switch } from "@/kttc/components/ui/switch";
+import { Label } from "@/kttc/components/ui/label";
+import { Badge } from "@/kttc/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/kttc/components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/kttc/components/ui/select";
 import { Plus, Trash2, Search, Eye, EyeOff, Upload, X, Loader2, FileText } from "lucide-react";
 
 interface Paper {

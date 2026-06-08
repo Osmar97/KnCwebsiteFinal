@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/components/AuthProvider";
-import { useUserAccess } from "@/hooks/useUserAccess";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { useUserAccess } from "@/kttc/hooks/useUserAccess";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();

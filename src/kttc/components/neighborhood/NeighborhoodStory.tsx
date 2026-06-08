@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Button } from "@/kttc/components/ui/button";
 import {
   ArrowLeft, Heart, MapPin, DollarSign, Users, TreePine, Briefcase, Globe,
   Train, Bus, Bike, Waves, Building, ShoppingCart, Stethoscope, TrendingUp,

@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
 import { MapPin, Heart, ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/kttc/components/ui/button";
 import { toast } from "sonner";
-import NeighborhoodQuiz from "@/components/neighborhood/NeighborhoodQuiz";
-import NeighborhoodCard from "@/components/neighborhood/NeighborhoodCard";
+import NeighborhoodQuiz from "@/kttc/components/neighborhood/NeighborhoodQuiz";
+import NeighborhoodCard from "@/kttc/components/neighborhood/NeighborhoodCard";
 
 interface QuizAnswers {
   goal: string;

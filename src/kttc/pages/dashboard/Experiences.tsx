@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Button } from "@/kttc/components/ui/button";
+import { useToast } from "@/kttc/hooks/use-toast";
 import { Compass, Calendar, MapPin, Users } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 

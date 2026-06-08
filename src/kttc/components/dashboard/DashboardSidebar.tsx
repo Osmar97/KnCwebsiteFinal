@@ -13,9 +13,9 @@ import {
   Shield,
   Settings,
 } from "lucide-react";
-import { NavLink } from "@/components/NavLink";
-import { useAuth } from "@/components/AuthProvider";
-import { useUserAccess } from "@/hooks/useUserAccess";
+import { NavLink } from "@/kttc/components/NavLink";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { useUserAccess } from "@/kttc/hooks/useUserAccess";
 import {
   Sidebar,
   SidebarContent,
@@ -27,8 +27,8 @@ import {
   SidebarMenuItem,
   SidebarFooter,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+} from "@/kttc/components/ui/sidebar";
+import { Button } from "@/kttc/components/ui/button";
 
 const mainItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },

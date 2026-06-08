@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Input } from "@/kttc/components/ui/input";
+import { Button } from "@/kttc/components/ui/button";
+import { Badge } from "@/kttc/components/ui/badge";
+import { Progress } from "@/kttc/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import {
   Search, BookOpen, Play, Heart, Bookmark, Star, Clock,

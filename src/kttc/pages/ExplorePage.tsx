@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Navbar } from "@/components/landing/Navbar";
-import { Footer } from "@/components/landing/Footer";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { Navbar } from "@/kttc/components/landing/Navbar";
+import { Footer } from "@/kttc/components/landing/Footer";
 import { Globe, ArrowRight } from "lucide-react";
 
 interface Country {

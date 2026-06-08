@@ -1,9 +1,9 @@
-import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Button } from "@/kttc/components/ui/button";
 import { Clock, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { getDashboardRedirectPath, useUserAccess } from "@/hooks/useUserAccess";
+import { getDashboardRedirectPath, useUserAccess } from "@/kttc/hooks/useUserAccess";
 
 export default function PendingApproval() {
   const { signOut } = useAuth();

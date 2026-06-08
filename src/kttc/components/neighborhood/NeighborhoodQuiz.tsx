@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/kttc/components/ui/button";
+import { Card } from "@/kttc/components/ui/card";
 import { ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 
 interface QuizAnswers {

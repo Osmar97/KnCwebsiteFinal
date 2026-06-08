@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Button } from "@/kttc/components/ui/button";
+import { Input } from "@/kttc/components/ui/input";
+import { Label } from "@/kttc/components/ui/label";
+import { useToast } from "@/kttc/hooks/use-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/kttc/components/ui/card";
+import { Separator } from "@/kttc/components/ui/separator";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/kttc/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/kttc/components/ui/avatar";
 import { User, Lock, Trash2, Camera } from "lucide-react";
 
 export default function Settings() {

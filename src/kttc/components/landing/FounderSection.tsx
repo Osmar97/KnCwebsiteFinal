@@ -1,5 +1,5 @@
 import { TextReveal, FadeUp, LineReveal } from "./ScrollReveal";
-import founderImg from "@/assets/ismael-founder.png";
+import founderImg from "@/kttc/assets/ismael-founder.png";
 
 export function FounderSection() {
   return (

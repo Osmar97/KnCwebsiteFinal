@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/kttc/components/ui/button";
+import { Input } from "@/kttc/components/ui/input";
 import { Send, Bot, User } from "lucide-react";
 
 type Msg = { role: "user" | "assistant"; content: string };

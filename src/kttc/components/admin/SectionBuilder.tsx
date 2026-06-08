@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/kttc/components/ui/button";
+import { Input } from "@/kttc/components/ui/input";
+import { Textarea } from "@/kttc/components/ui/textarea";
+import { Label } from "@/kttc/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/kttc/components/ui/select";
 import {
   PaperSection,
   SectionType,
@@ -12,7 +12,7 @@ import {
   MetricItem,
   BuyerProfileItem,
   ChecklistItem,
-} from "@/types/cityPaperSections";
+} from "@/kttc/types/cityPaperSections";
 import { GripVertical, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
 interface SectionBuilderProps {

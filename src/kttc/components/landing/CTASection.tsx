@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/kttc/components/ui/button";
 import { TextReveal, FadeUp } from "./ScrollReveal";
 import { Compass, Plane } from "lucide-react";
 import { motion } from "framer-motion";

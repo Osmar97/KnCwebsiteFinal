@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { Button } from "@/kttc/components/ui/button";
+import { Input } from "@/kttc/components/ui/input";
+import { Textarea } from "@/kttc/components/ui/textarea";
+import { Switch } from "@/kttc/components/ui/switch";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Save, X, Sparkles, Loader2 } from "lucide-react";
 import {
@@ -11,7 +11,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/kttc/components/ui/dialog";
 
 interface Neighborhood {
   id: string; name: string; city: string; region: string; country: string;

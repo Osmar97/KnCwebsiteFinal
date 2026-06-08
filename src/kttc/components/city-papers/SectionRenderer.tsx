@@ -8,7 +8,7 @@ import type {
   BuyerProfilesSection,
   ChecklistSection,
   CTASection,
-} from "@/types/cityPaperSections";
+} from "@/kttc/types/cityPaperSections";
 import { Lightbulb, CheckCircle2, XCircle, User, AlertTriangle, Mail, MessageCircle } from "lucide-react";
 
 /* ── Text ── */

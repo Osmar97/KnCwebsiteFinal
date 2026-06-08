@@ -1,4 +1,4 @@
-import kncLogo from "@/assets/knc-logo-gold.png";
+import kncLogo from "@/kttc/assets/knc-logo-gold.png";
 
 export function PaperFooter({ createdAt }: { createdAt: string }) {
   return (

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Navbar } from "@/components/landing/Navbar";
-import { Footer } from "@/components/landing/Footer";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { Navbar } from "@/kttc/components/landing/Navbar";
+import { Footer } from "@/kttc/components/landing/Footer";
 import { MapPin, ArrowRight, Building2, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/kttc/components/ui/button";
 
 interface Country {
   id: string;

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { Button } from "@/kttc/components/ui/button";
+import { useToast } from "@/kttc/hooks/use-toast";
 import { Paperclip, Trash2, Upload, Loader2, FileText, Download } from "lucide-react";
 
 const ACCEPTED = [".pdf", ".docx", ".xlsx", ".zip", ".pptx", ".csv", ".txt"];

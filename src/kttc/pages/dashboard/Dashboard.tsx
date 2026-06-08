@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/components/AuthProvider";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { supabase } from "@/kttc/integrations/supabase/client";
 import { FileText, MapPin, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 

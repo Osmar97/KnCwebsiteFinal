@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/components/AuthProvider";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Toaster as Sonner } from "@/kttc/components/ui/sonner";
+import { Toaster } from "@/kttc/components/ui/toaster";
+import { TooltipProvider } from "@/kttc/components/ui/tooltip";
+import { AuthProvider } from "@/kttc/components/AuthProvider";
+import { ProtectedRoute } from "@/kttc/components/ProtectedRoute";
 import Index from "./pages/Index";
 import PendingApproval from "./pages/PendingApproval";
 import Login from "./pages/Login";

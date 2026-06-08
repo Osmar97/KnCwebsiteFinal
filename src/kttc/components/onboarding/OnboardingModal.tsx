@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Button } from "@/kttc/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 

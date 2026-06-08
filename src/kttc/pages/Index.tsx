@@ -1,13 +1,13 @@
 import { useState, useCallback } from "react";
-import { Navbar } from "@/components/landing/Navbar";
-import { IntroLoader } from "@/components/landing/IntroLoader";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { ProblemSection } from "@/components/landing/ProblemSection";
-import { KTTCWaySection } from "@/components/landing/KTTCWaySection";
-import { PlatformSection } from "@/components/landing/PlatformSection";
-import { FounderSection } from "@/components/landing/FounderSection";
-import { CTASection } from "@/components/landing/CTASection";
-import { Footer } from "@/components/landing/Footer";
+import { Navbar } from "@/kttc/components/landing/Navbar";
+import { IntroLoader } from "@/kttc/components/landing/IntroLoader";
+import { HeroSection } from "@/kttc/components/landing/HeroSection";
+import { ProblemSection } from "@/kttc/components/landing/ProblemSection";
+import { KTTCWaySection } from "@/kttc/components/landing/KTTCWaySection";
+import { PlatformSection } from "@/kttc/components/landing/PlatformSection";
+import { FounderSection } from "@/kttc/components/landing/FounderSection";
+import { CTASection } from "@/kttc/components/landing/CTASection";
+import { Footer } from "@/kttc/components/landing/Footer";
 import { motion } from "framer-motion";
 
 const Index = () => {

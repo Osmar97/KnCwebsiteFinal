@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Button } from "@/kttc/components/ui/button";
+import { Badge } from "@/kttc/components/ui/badge";
+import { useToast } from "@/kttc/hooks/use-toast";
 import {
   ArrowLeft, Bookmark, BookmarkCheck, Check,
   ChevronLeft, ChevronRight, Clock, Lock, Download, FileText,
 } from "lucide-react";
-import { parseVideoEmbed } from "@/lib/videoEmbed";
+import { parseVideoEmbed } from "@/kttc/lib/videoEmbed";
 
 export default function LessonViewer() {
   const { courseId, lessonId } = useParams();

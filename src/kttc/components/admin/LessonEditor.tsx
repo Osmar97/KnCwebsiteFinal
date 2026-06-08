@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { Button } from "@/kttc/components/ui/button";
+import { Input } from "@/kttc/components/ui/input";
+import { Textarea } from "@/kttc/components/ui/textarea";
+import { Label } from "@/kttc/components/ui/label";
+import { Switch } from "@/kttc/components/ui/switch";
+import { Badge } from "@/kttc/components/ui/badge";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
-} from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
+} from "@/kttc/components/ui/dialog";
+import { useToast } from "@/kttc/hooks/use-toast";
 import VideoUploader, { type VideoUploaderValue } from "./VideoUploader";
 import AttachmentManager from "./AttachmentManager";
 import { Save, Loader2 } from "lucide-react";

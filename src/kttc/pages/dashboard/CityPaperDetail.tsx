@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { Button } from "@/kttc/components/ui/button";
 import { ArrowLeft, FileText, MapPin } from "lucide-react";
-import PdfViewer from "@/components/PdfViewer";
+import PdfViewer from "@/kttc/components/PdfViewer";
 
 interface PaperDetail {
   id: string;

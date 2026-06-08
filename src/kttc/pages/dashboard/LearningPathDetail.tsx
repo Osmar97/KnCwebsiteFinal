@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { Button } from "@/kttc/components/ui/button";
+import { Progress } from "@/kttc/components/ui/progress";
+import { Badge } from "@/kttc/components/ui/badge";
+import { useToast } from "@/kttc/hooks/use-toast";
 import { ArrowLeft, BookOpen, Play, Check, GraduationCap } from "lucide-react";
 
 export default function LearningPathDetail() {

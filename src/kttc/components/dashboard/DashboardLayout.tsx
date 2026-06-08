@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/kttc/components/ui/sidebar";
+import { DashboardSidebar } from "@/kttc/components/dashboard/DashboardSidebar";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/AuthProvider";
-import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useAuth } from "@/kttc/components/AuthProvider";
+import { OnboardingModal } from "@/kttc/components/onboarding/OnboardingModal";
 
 export default function DashboardLayout() {
   const { user } = useAuth();

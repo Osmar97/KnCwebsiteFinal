@@ -1,5 +1,5 @@
 import { Heart, ArrowRight, TrendingUp, Shield, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/kttc/components/ui/button";
 
 interface Props {
   neighborhood: {

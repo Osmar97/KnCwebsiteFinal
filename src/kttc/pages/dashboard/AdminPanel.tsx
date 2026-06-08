@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useUserAccess } from "@/hooks/useUserAccess";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/kttc/integrations/supabase/client";
+import { useUserAccess } from "@/kttc/hooks/useUserAccess";
+import { Button } from "@/kttc/components/ui/button";
+import { Input } from "@/kttc/components/ui/input";
+import { useToast } from "@/kttc/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/kttc/components/ui/tabs";
 import { Shield, Search, Check, X, UserX, UserPlus, Trash2, Crown, Ban, Eye } from "lucide-react";
-import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
-import { AdminCityPapers } from "@/components/admin/AdminCityPapers";
-import AdminNeighborhoods from "@/components/admin/AdminNeighborhoods";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AdminAnalytics } from "@/kttc/components/admin/AdminAnalytics";
+import { AdminCityPapers } from "@/kttc/components/admin/AdminCityPapers";
+import AdminNeighborhoods from "@/kttc/components/admin/AdminNeighborhoods";
+import { Badge } from "@/kttc/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/kttc/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/kttc/components/ui/avatar";
 
 /* ── Pending Approvals ── */
 function PendingApprovals() {
