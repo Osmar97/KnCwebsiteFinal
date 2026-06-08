@@ -13,7 +13,7 @@ interface Props {
   availability: Record<string, { remaining?: number; capacity?: number; confirmed_count?: number }>;
   loading: boolean;
   lang: Language;
-  t: (path: string) => string;
+  t: (path: string) => any;
   onJoinWaitlist: () => void;
 }
 
@@ -21,16 +21,14 @@ export function TourGroupSection({ groupTours, availability, loading, lang, t, o
   return (
     <section className="group-section" id="group">
       <div className="t-container">
-        <div className="section-eyebrow">Group Tours</div>
-        <h2 className="section-title">Curated themed<br /><em>journeys</em></h2>
-        <p className="section-desc">
-          Join a curated group of 5–9 investors with shared interests. Preset themes, from coastal to cosmopolitan. We launch the trip when the group fills. Join the waitlist, attend your individual pre-trip call, and arrive ready to decide.
-        </p>
+        <div className="section-eyebrow">{t("group_section.eyebrow")}</div>
+        <h2 className="section-title">{t("group_section.title_1")}<br /><em>{t("group_section.title_2")}</em></h2>
+        <p className="section-desc">{t("group_section.desc")}</p>
         <Reveal>
           <div className="group-grid">
-            {loading && <p style={{ opacity: 0.6 }}>Loading group tours…</p>}
+            {loading && <p style={{ opacity: 0.6 }}>{t("group_section.loading")}</p>}
             {!loading && groupTours.length === 0 && (
-              <p style={{ opacity: 0.6 }}>No group tours announced yet. Check back soon.</p>
+              <p style={{ opacity: 0.6 }}>{t("group_section.empty")}</p>
             )}
             {groupTours.map((tour, idx) => {
               const next = nextTourDate(tour.dates);
@@ -43,10 +41,10 @@ export function TourGroupSection({ groupTours, availability, loading, lang, t, o
               const num = String(idx + 1).padStart(2, "0");
               const destDetail = [tour.destinations?.[0], countryFromFlag(tour.flag)]
                 .filter(Boolean)
-                .join(", ") + (tour.duration_days ? ` · ${tour.duration_days} Days` : "");
+                .join(", ") + (tour.duration_days ? ` · ${String(t("group_section.days")).replace("{n}", String(tour.duration_days))}` : "");
               const fillLabel = cap > 0
-                ? `${filled}/${cap} spots filled`
-                : "Waitlist open";
+                ? String(t("group_section.filled_label")).replace("{filled}", String(filled)).replace("{cap}", String(cap))
+                : t("group_section.waitlist_open");
               return (
                 <div key={tour.id} className="group-card">
                   <div className="gc-num">{num}</div>
@@ -62,14 +60,14 @@ export function TourGroupSection({ groupTours, availability, loading, lang, t, o
                     <div className="wl-fill" style={{ width: `${pct}%` }} />
                   </div>
                   <p className="wl-label">
-                    <strong>{fillLabel}</strong> — join the waitlist to lock your spot
+                    <strong>{fillLabel}</strong> — {t("group_section.join_waitlist_note")}
                   </p>
                   <div className="gc-footer">
                     <div className="gc-price">
-                      {formatPrice(tour.base_price, tour.currency)} <span>/ person</span>
+                      {formatPrice(tour.base_price, tour.currency)} <span>{t("group_section.per_person")}</span>
                     </div>
                     <button className="btn-gold-outline" onClick={onJoinWaitlist}>
-                      {next?.sold_out ? t("tour_modal.sold_out") : "Join Waitlist"}
+                      {next?.sold_out ? t("tour_modal.sold_out") : t("group_section.join_waitlist")}
                     </button>
                   </div>
                 </div>
