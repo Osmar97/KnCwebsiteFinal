@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -66,7 +67,68 @@ serve(async (req) => {
       });
     }
 
-    const subject = `${fullName} - Request private tour`;
+    // Persist the submission to the database for the admin inbox.
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const formType: string = String(data?.formType || "enquiry");
+    let storedId: string | null = null;
+    if (supabaseUrl && serviceKey) {
+      const supabase = createClient(supabaseUrl, serviceKey);
+      const raw = (data?.raw ?? data) as Record<string, unknown>;
+      const arr = (v: unknown) => Array.isArray(v) ? v.map(String) : [];
+      try {
+        if (formType === "private") {
+          const { data: row, error } = await supabase
+            .from("tour_custom_quote_requests")
+            .insert({
+              first_name: String(raw.first_name ?? fullName.split(" ")[0] ?? "Unknown"),
+              last_name: String(raw.last_name ?? fullName.split(" ").slice(1).join(" ") ?? ""),
+              email: String(data.email).slice(0, 320),
+              phone: raw.whatsapp ? String(raw.whatsapp) : null,
+              country: raw.country ? String(raw.country) : null,
+              nationality: raw.nationality ? String(raw.nationality) : null,
+              num_guests: raw.guests ? Number(raw.guests) : null,
+              num_days: raw.days ? Number(raw.days) : null,
+              preferred_dates: [raw.date1, raw.date2].filter(Boolean).map(String).join(" / ") || null,
+              destinations: raw.destination ? [String(raw.destination)] : [],
+              vibes: arr(raw.vibes),
+              hotel_preference: raw.hotel ? String(raw.hotel) : null,
+              services: arr(raw.services),
+              notes: raw.notes_extra ? String(raw.notes_extra) : (data.notes ? String(data.notes) : null),
+              payload: data,
+            })
+            .select("id")
+            .single();
+          if (error) console.error("Insert custom quote failed:", error);
+          else storedId = (row as { id: string }).id;
+        } else if (formType === "waitlist") {
+          const { data: row, error } = await supabase
+            .from("tour_waitlist_requests")
+            .insert({
+              full_name: fullName,
+              email: String(data.email).slice(0, 320),
+              phone: raw.whatsapp ? String(raw.whatsapp) : null,
+              country: raw.country ? String(raw.country) : null,
+              preferred_destinations: raw.destination ? [String(raw.destination)] : [],
+              vibes: arr(raw.vibes),
+              notes: raw.notes_extra ? String(raw.notes_extra) : (data.notes ? String(data.notes) : null),
+              payload: data,
+            })
+            .select("id")
+            .single();
+          if (error) console.error("Insert waitlist failed:", error);
+          else storedId = (row as { id: string }).id;
+        }
+      } catch (dbErr) {
+        console.error("DB persistence error:", dbErr);
+      }
+    }
+
+    const subjectPrefix =
+      formType === "private" ? "Custom Quote Request"
+      : formType === "waitlist" ? "Waitlist Request"
+      : "Request private tour";
+    const subject = `${fullName} - ${subjectPrefix}`;
     const html = buildHtml(data);
 
     const res = await fetch("https://api.resend.com/emails", {
@@ -89,7 +151,7 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, id: storedId }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
