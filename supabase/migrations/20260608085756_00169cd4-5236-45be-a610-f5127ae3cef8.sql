@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.get_tour_availability() TO anon, authenticated;
