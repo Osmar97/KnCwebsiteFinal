@@ -184,6 +184,8 @@ export default function TourPage() {
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
   const [isSubmittingPrivate, setIsSubmittingPrivate] = useState(false);
   const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
+  const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
+  const { tours, availability, loading: toursLoading } = useTours();
 
   const t = (path: string) => {
     const keys = path.split(".");
@@ -254,9 +256,14 @@ export default function TourPage() {
   const openReserveForm = () => setShowPreForm(true);
   const openEnquiryForm = () => setShowEnquiryForm(true);
 
+  const scrollToId = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const filteredTours = activeTab === "all"
-    ? TOUR_CARDS
-    : TOUR_CARDS.filter((c) => c.category === activeTab);
+    ? tours
+    : tours.filter((c) => tourCategoryFilter(c) === activeTab);
 
   const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
 
