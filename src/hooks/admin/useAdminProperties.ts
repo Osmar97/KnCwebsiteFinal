@@ -8,36 +8,28 @@ export function useAdminProperties() {
   return useQuery({
     queryKey: LIST_KEY,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("properties" as any)
-        .select("*")
-        .order("created_at", { ascending: false });
+      const { data, error } = await (supabase as any).rpc("admin_list_properties");
       if (error) throw error;
-      return data as any[];
+      const rows = (data as any[]) ?? [];
+      return rows.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
     },
   });
 }
 
 export async function fetchPropertyById(id: string) {
-  const { data } = await supabase
-    .from("properties" as any)
-    .select("*")
-    .eq("id", id)
-    .single();
-  return data;
+  const { data } = await (supabase as any).rpc("admin_get_property", { _id: id });
+  return Array.isArray(data) ? data[0] : data;
 }
 
 export function useProperty(id: string | undefined) {
   return useQuery({
     queryKey: ["property", id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("properties" as any)
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
+      const { data, error } = await (supabase as any).rpc("admin_get_property", { _id: id });
       if (error) throw error;
-      return data as any;
+      return Array.isArray(data) ? data[0] : data;
     },
     enabled: !!id,
   });
