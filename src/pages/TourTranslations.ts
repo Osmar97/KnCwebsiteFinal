@@ -376,6 +376,23 @@ export const TRANSLATIONS = {
       stories: "Témoignages",
       cta: "Réserver Ma Place"
     },
+    tours_section: {
+      eyebrow: "Tours Privés",
+      title_1: "Choisissez Votre",
+      title_2: "Parcours de Propriété",
+      request_custom: "Demande Personnalisée",
+      view_all: "Voir Toutes les Dates →"
+    },
+    tour_modal: {
+      destinations: "Destinations :",
+      next_date: "Prochaine date :",
+      spots_filled: "{filled} sur {total} places réservées",
+      remaining: "· {n} restantes",
+      from: "À PARTIR DE",
+      join_waitlist: "REJOINDRE LA LISTE",
+      close: "Fermer",
+      sold_out: "COMPLET"
+    },
     newsletter: {
       eyebrow: "Restez Proche",
       heading_1: "Rejoignez le ",
