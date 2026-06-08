@@ -2,13 +2,11 @@ import { Loader2 } from "lucide-react";
 
 interface Props {
   t: (path: string) => string;
-  destinationsCount: number;
-  groupThemesCount: number;
   onReserve: () => void;
   isCheckingOut: boolean;
 }
 
-export function TourHero({ t, destinationsCount, groupThemesCount, onReserve, isCheckingOut }: Props) {
+export function TourHero({ t, onReserve, isCheckingOut }: Props) {
   return (
     <section className="hero-section">
       <div className="hero-grain" />
