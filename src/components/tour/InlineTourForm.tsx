@@ -46,9 +46,9 @@ const PRIVATE_DESTS: SelectOption[] = [
   { value: "custom", label: "Other / Custom region" },
 ];
 const HOTEL_OPTS: SelectOption[] = [
-  { value: "3", label: "3-star (included)" },
-  { value: "4", label: "4-star (+€60/night)" },
-  { value: "5", label: "5-star / Boutique (+€140/night)" },
+  { value: "3", label: "3-star" },
+  { value: "4", label: "4-star" },
+  { value: "5", label: "5-star / Boutique" },
 ];
 const BUDGETS: SelectOption[] = [
   { value: "Under €100,000", label: "Under €100,000" },
@@ -110,10 +110,19 @@ export default function InlineTourForm({ variant, onSubmit, isSubmitting, submit
   const [checks, setChecks] = useState<Record<string, string[]>>({});
   const isPrivate = variant === "private";
 
+  const MAX_VIBES = 3;
+  const [vibeWarning, setVibeWarning] = useState(false);
   const toggleVibe = (name: string) => {
     setVibes((curr) => {
-      if (curr.includes(name)) return curr.filter((v) => v !== name);
-      if (isPrivate && curr.length >= 2) return curr;
+      if (curr.includes(name)) {
+        setVibeWarning(false);
+        return curr.filter((v) => v !== name);
+      }
+      if (isPrivate && curr.length >= MAX_VIBES) {
+        setVibeWarning(true);
+        return curr;
+      }
+      setVibeWarning(false);
       return [...curr, name];
     });
   };
@@ -202,7 +211,14 @@ export default function InlineTourForm({ variant, onSubmit, isSubmitting, submit
           </div>
           <FormSelect name="destination" label="Primary Destination" required options={PRIVATE_DESTS} placeholder="Select destination" />
 
-          <VibeGroup label="Your Vibe (select up to 2)" required vibes={VIBES} selected={vibes} onToggle={toggleVibe} />
+          <VibeGroup
+            label={`Your Vibe (select up to ${MAX_VIBES})`}
+            required
+            vibes={VIBES}
+            selected={vibes}
+            onToggle={toggleVibe}
+            warning={vibeWarning ? `You can select up to ${MAX_VIBES} vibes.` : undefined}
+          />
 
           <CheckGroup label="Types of Properties to Visit" options={PROP_TYPES}
             selected={checks.propertyTypes || []} onToggle={(l) => toggleCheck("propertyTypes", l)} />
@@ -308,7 +324,7 @@ function CheckGroup({ label, options, selected, onToggle }: { label: string; opt
     </div>
   );
 }
-function VibeGroup({ label, required, vibes, selected, onToggle }: { label: string; required?: boolean; vibes: VibeOption[]; selected: string[]; onToggle: (name: string) => void }) {
+function VibeGroup({ label, required, vibes, selected, onToggle, warning }: { label: string; required?: boolean; vibes: VibeOption[]; selected: string[]; onToggle: (name: string) => void; warning?: string }) {
   return (
     <div className="form-group">
       <label>{label} {required && <span className="req">*</span>}</label>
@@ -326,6 +342,7 @@ function VibeGroup({ label, required, vibes, selected, onToggle }: { label: stri
           );
         })}
       </div>
+      {warning && <p className="vibe-warning" role="status">{warning}</p>}
     </div>
   );
 }
