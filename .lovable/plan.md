@@ -1,73 +1,130 @@
 
-This is a large, multi-area change. I'm proposing to deliver it in clear phases so each piece can be reviewed and validated before moving on. Please confirm or adjust before I start.
+## Goal
+Embed the **City Keys Intelligence (KTTC)** app at `/kttc/*` inside this site so it works as a native sub-section — same domain, same React shell, same Supabase project, one login.
 
-## Scope summary
+Good news from the audit: KTTC is the **same stack** as this site (Vite + React 18 + TS + Tailwind 3 + shadcn + react-router-dom v6 + @supabase/supabase-js v2 + @tanstack/react-query v5). No major-version conflicts. Integration is mostly merging code, namespacing styles, and migrating the database.
 
-Three pillars:
-1. **Tour page UX changes** (modal redesign, rename, Request Custom button, vibe limit, hotel prices, dynamic progress bar)
-2. **Backend: DB schema + email + storage** (tours, dates, waitlist, custom quotes, Resend wiring, audit trail)
-3. **Admin CMS for Tours** (create/edit/delete/publish/duplicate/reorder tours, dates, capacity, pricing, waitlist & quote inboxes, analytics)
+---
 
-## Phase 1 — Database & migrations
+## Architecture
 
-New tables (relational, not JSON-blob):
-- `tours` — name, slug, category, short/long description, hero/gallery (storage URLs), destinations[], tags[], duration_days, tour_type, base_price, early_bird_price, premium_price, currency, status (draft/published/archived), sort_order, stripe_price_id (nullable, auto-managed)
-- `tour_dates` — tour_id, start_date, end_date, capacity, sold_out (bool), label (e.g. "NEXT", "HOLIDAY MARKET")
-- `tour_bookings` — minimal: tour_date_id, status (confirmed/cancelled), source (stripe/admin), customer_email, stripe_session_id. Used to compute "X of Y spots filled".
-- `tour_waitlist_requests` — full form payload + status
-- `tour_custom_quote_requests` — full form payload + status
+```text
+src/
+├── App.tsx                          ← host router; adds <Route path="/kttc/*" element={<KttcApp/>} />
+├── pages/, components/ …            ← unchanged host code
+└── kttc/                            ← all KTTC code lives here, isolated
+    ├── KttcApp.tsx                  ← KTTC's own <Routes> tree, no BrowserRouter
+    ├── KttcThemeShell.tsx           ← wraps children in <div className="kttc-root"> for scoped theme
+    ├── pages/                       ← Login, Signup, Dashboard, CityPapers, …
+    ├── components/                  ← AuthProvider (KTTC), ProtectedRoute, landing/, dashboard/, ui/…
+    ├── hooks/useUserAccess.ts
+    ├── styles/kttc.css              ← scoped :root → .kttc-root { … } theme
+    └── lib/supabase.ts              ← re-exports shared @/integrations/supabase/client
+```
 
-RLS: public SELECT on `tours` (status='published') and `tour_dates`; INSERT on waitlist/custom_quote allowed for anon with rate-limit guard; full access for admin via existing `is_admin_user()` SECURITY DEFINER function. `tour_bookings` insert only via service role (edge function).
+**Routing.** Host keeps its `BrowserRouter`. KTTC's `App.tsx` becomes `KttcApp.tsx` — drops its own `BrowserRouter`, exposes `<Routes>` only. All KTTC paths are declared relative (`login`, `dashboard`, `dashboard/city-papers/:id` …) so they resolve under `/kttc/*`. A single host route `<Route path="/kttc/*" element={<KttcApp />} />` mounts the subtree.
 
-Storage: reuse existing `property-images` bucket (or new `tour-images` bucket if you prefer separation — please confirm).
+**Theme isolation.** KTTC ships a dark gold theme that hardcodes `--background`, `--foreground`, `--primary`, sidebar tokens, etc. in `:root` — this would override the host's light theme. We rewrite `src/kttc/styles/kttc.css` to declare the same tokens under `.kttc-root { … }` instead of `:root`. `KttcThemeShell` wraps the whole subtree in that class so the dark theme only applies under `/kttc/*`. Google Fonts (Playfair Display, Inter) load globally — harmless, host already uses similar fonts.
 
-## Phase 2 — Tour page changes
+**Auth (single sign-on).** Because we collapse onto one Supabase project, one login serves both sites. KTTC's `AuthProvider` and `ProtectedRoute` are kept inside `src/kttc/` and use the shared client. A user logged in on the host is automatically logged in on `/kttc/*` and vice-versa.
 
-- Replace hardcoded `TOURS` array in `Tour.tsx` with a `useTours()` hook fetching from Supabase.
-- Rename "Upcoming Tours" → "Private Tours" (all 3 locales).
-- New `TourDetailModal` matching the screenshot exactly: eyebrow category, title, description, pills (duration/type/category), Destinations row, Next date, dynamic progress bar (`confirmed / capacity`), price section, JOIN WAITLIST CTA. Reuse shadcn `Dialog`.
-- Dynamic progress bar: SELECT count from `tour_bookings` WHERE tour_date_id = next_date AND status='confirmed'; computed in `useTours` query.
-- "Request Custom" button on each card → smooth scroll to `#private` section (Design Your Experience).
-- `InlineTourForm` updates: vibe limit 2 → 3 with validation toast; remove hotel price text (keep options).
+**Tailwind.** Host `tailwind.config.ts` content globs already cover `src/**/*` so KTTC components are picked up automatically. We merge KTTC's extra font families (`Playfair Display`, `Inter`) and `sidebar-*` color tokens into the host config. KTTC's `tailwind.config.ts` is discarded.
 
-## Phase 3 — Email + storage submission
+**Vite.** No `base` change needed — same Vite app, same root. We do **not** copy KTTC's `vite.config.ts`.
 
-- Reuse existing `send-tour-enquiry` edge function (which already uses Resend). Extend it to:
-  1. Insert row into `tour_custom_quote_requests` or `tour_waitlist_requests` based on `kind` field
-  2. Send Resend email with all submitted fields + timestamp
-  3. Return `{ id }` for idempotency
-- Frontend: loading/success/error states already exist; add disabled state to prevent double submit; add server-side timestamp.
+---
 
-## Phase 4 — Stripe continuity
+## Database migration (host Supabase)
 
-- `create-stripe-checkout` reads `tour_dates.id` (or tour + date), looks up price from `tours.base_price` (or early-bird if applicable), creates checkout session with dynamic `price_data` (no need for pre-created Stripe products).
-- `stripe-tour-webhook` already exists — extend it to insert a `tour_bookings` row on successful payment so progress bars update automatically.
+The host Supabase project gains the KTTC schema. No name collisions detected with existing host tables (`posts`, `properties`, `tours`, `tour_bookings`, …).
 
-## Phase 5 — Admin CMS
+Migration adds, in one file:
 
-New admin route `/admin/tours` (guarded by existing `is_admin_user()` check, same pattern as `AdminProperties`):
-- List with filters (status), reorder via drag-or-arrow buttons (sort_order)
-- Create/Edit form (basic info, images upload to bucket, destinations multi-input, tags, duration, type)
-- Dates manager (add/edit/delete dates, capacity, sold-out toggle)
-- Pricing manager (base / early-bird / premium / currency)
-- Duplicate / Archive / Publish-Unpublish / Delete buttons
-- Waitlist inbox & Custom Quote inbox (table view, status update, export CSV)
-- Analytics card row: total/active/draft tours, total bookings, waitlist count, quote count
+- **Enum** `app_role` (`'admin' | 'moderator' | 'user'`).
+- **Function** `public.has_role(_role app_role, _user_id uuid)` (security definer, used by RLS).
+- **Tables** (with `GRANT`s + `ENABLE RLS` + policies for each):
+  `profiles`, `user_roles`, `countries`, `cities`, `neighborhoods`, `neighborhood_details`, `neighborhood_stats`, `partners`, `city_papers`, `experiences`, `bookings`, `consultations`, `learning_paths`, `path_courses`, `courses`, `modules`, `lessons`, `lesson_attachments`, `lesson_bookmarks`, `lesson_progress`, `video_watch_history`, `user_lesson_activity`, `course_enrollments`, `course_favorites`, `course_purchases`, `course_resources`, `quizzes`, `quiz_questions`, `quiz_answers`, `user_quiz_attempts`, `user_quiz_answers`, `deal_calculators`, `resources`, `webinars`, `posts_kttc`, `comments_kttc`, `likes_kttc`, `user_shortlists`.
+- **Views**: `partners_public`, `public_user_profiles`, `quiz_answers_public`.
+- **Trigger** to auto-insert a `profiles` row on `auth.users` signup (`status='pending'`).
+- **Storage bucket** `avatars` (public).
 
-Add link to admin nav.
+> Naming note: KTTC's `posts`/`comments`/`likes` collide with host's existing `posts`. We rename the KTTC ones to `posts_kttc`/`comments_kttc`/`likes_kttc` and update the few KTTC files that reference them. Conflict matrix shows no other collisions.
 
-## Phase 6 — Cleanup & verification
+> User migration: since the old KTTC Supabase is a different project, existing KTTC users cannot be silently brought over (auth.users hashes can't be moved between projects via SQL). New users sign up fresh on the merged site; if you have an existing KTTC user list to import, share the CSV and we'll script invites in a follow-up.
 
-- Remove hardcoded `TOURS`, `GROUP_TOURS` arrays from `Tour.tsx`
-- All copy stays in `TourTranslations.ts` (only the dynamic tour content comes from DB; static page chrome stays translated)
-- TypeScript strict, no `any`, RLS verified, mobile checked
+---
 
-## Open questions before I start
+## Edge functions
 
-1. **Storage bucket**: reuse `property-images` or create new `tour-images`? I recommend new `tour-images` for clarity.
-2. **Tour content & translations**: should `tours.name/description/etc.` be single-language (English) for now, or multilingual columns (`name_en`, `name_pt`, `name_fr`)? Multilingual roughly doubles admin-form complexity.
-3. **Seeding**: should I migrate the current 6 hardcoded tours into the DB as a seed migration, or do you want to recreate them yourself via the admin UI once it's live?
-4. **Admin auth**: keep the existing email-allowlist (`is_admin_user()` checks `ismael@/joey@kingsncompany.com`) or move to a proper `user_roles` table now? The latter is more secure long-term but is a bigger change.
-5. **Delivery order**: do you want it all in one big batch, or shipped in phases (Phase 1+2+3 first so the public site works, then Phase 5 admin CMS)?
+Copied into `supabase/functions/` under KTTC-prefixed names to avoid any collisions:
 
-Please answer these (especially 2, 3, 4, 5) and I'll proceed.
+| Original | New name | Notes |
+|---|---|---|
+| `ai-chat` | `kttc-ai-chat` | Uses existing `LOVABLE_API_KEY` already in host secrets. |
+| `create-checkout` | `kttc-create-checkout` | Uses existing `STRIPE_SECRET_KEY`. Switch `SUPABASE_PUBLISHABLE_KEY` → `SUPABASE_ANON_KEY` (already present). |
+| `stripe-webhook` | `kttc-stripe-webhook` | **Add real signature verification** using existing `STRIPE_WEBHOOK_SECRET`. |
+| `delete-account` | `kttc-delete-account` | |
+| `admin-delete-user` | `kttc-admin-delete-user` | |
+
+All required secrets already exist on the host project — no new secrets to add.
+
+---
+
+## Frontend tasks
+
+1. Copy KTTC `src/` into `src/kttc/`, drop its `main.tsx`, `index.html`, `vite.config.ts`, `tailwind.config.ts`, `tsconfig*`, `package.json` (deps merged into host).
+2. Replace KTTC's `supabase/client.ts` with a thin re-export of `@/integrations/supabase/client` so there's a single client instance.
+3. Convert `App.tsx` → `KttcApp.tsx`:
+   - Remove `BrowserRouter`, `QueryClientProvider` (host already provides one), and the inner `Toaster`/`Sonner` (host already mounts these).
+   - Keep KTTC's `AuthProvider` (so KTTC's `useAuth`/`useUserAccess` continue to work — they wrap, not replace, the shared supabase client).
+   - Wrap the route tree in `<KttcThemeShell>`.
+4. Update every KTTC `<Link>`/`navigate(...)` from `/login`, `/dashboard/...` to relative or `/kttc/...`. (Most can be left as relative paths — react-router resolves them under the mounted `/kttc/*`.)
+5. Update KTTC files that referenced `posts`/`comments`/`likes` to use `posts_kttc`/`comments_kttc`/`likes_kttc`.
+6. Host mount in `src/App.tsx`:
+   ```tsx
+   <Route path="/kttc/*" element={<KttcApp />} />
+   ```
+7. Add a nav entry in the host's `Navigation.tsx` (and footer if applicable) linking to `/kttc`. Optional dropdown items for `/kttc/explore` and `/kttc/dashboard`.
+8. Merge dependencies into host `package.json`: `framer-motion`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`. Everything else (Radix, react-hook-form, zod, recharts, embla, sonner, pdfjs-dist, react-query, RR6, supabase-js) is already installed.
+
+---
+
+## SEO
+
+- Add `/kttc`, `/kttc/explore`, `/kttc/login`, `/kttc/signup` to `public/sitemap.xml`. Dynamic `/kttc/explore/:country/:city` URLs added once you confirm you want them indexable.
+- Add a `<title>` and meta description for the KTTC landing page using the same `<Helmet>`-less pattern this site already uses (`document.title` + meta tag updates in the page component).
+- KTTC's protected dashboard routes (`/kttc/dashboard/*`) are left out of the sitemap and a `noindex` meta is added on the `ProtectedRoute` wrapper.
+
+---
+
+## Responsive / cross-device
+
+KTTC is already fully responsive (Tailwind + shadcn). The wrapper does not change layout. We'll spot-check `/kttc`, `/kttc/explore`, `/kttc/login`, `/kttc/dashboard` at mobile, tablet, desktop after integration.
+
+---
+
+## Verification
+
+- TypeScript clean (`tsc --noEmit` runs automatically).
+- Manually navigate `/`, `/services`, `/kttc`, `/kttc/login`, `/kttc/signup` → submit signup → land on `/kttc/pending`.
+- Set `profiles.status='active'` for the test user → `/kttc/dashboard` loads with sidebar.
+- Switch from `/kttc/dashboard` to `/services` and back — session persists, host theme returns to light, KTTC stays dark.
+- Stripe checkout from `/kttc/dashboard/experiences` redirects back correctly.
+
+---
+
+## What I will NOT change
+
+- Host site's design tokens, routes, or auth.
+- Host's existing tables (`posts`, `tours`, `properties`, …).
+- KTTC's visual design — kept identical to its current dark gold theme, just scoped.
+
+---
+
+## Open items I'd like you to confirm before I start (optional — defaults shown)
+
+1. **KTTC nav entry label** → default: "City Keys" linking to `/kttc`.
+2. **Sub-path** is `/kttc` exactly (case-sensitive). OK?
+3. **Existing KTTC users**: re-register on the merged site, or share an export for batch invites later?
+
+If you're good with the defaults, just say "go" and I'll switch to build mode and execute.
