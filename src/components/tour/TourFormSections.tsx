@@ -5,7 +5,7 @@ interface Props {
   variant: "private" | "waitlist";
   isSubmitting: boolean;
   submitted: boolean;
-  onSubmit: (payload: unknown) => void;
+  onSubmit: (payload: Record<string, unknown>) => Promise<void> | void;
 }
 
 export function PrivateTourSection({ variant, isSubmitting, submitted, onSubmit }: Props) {
@@ -18,7 +18,6 @@ export function PrivateTourSection({ variant, isSubmitting, submitted, onSubmit 
           Tell us what you're looking for. We'll review your submission and send a tailored quote within 48 hours, along with availability for your first consultation call.
         </p>
         <Reveal>
-          {/* @ts-expect-error existing InlineTourForm typing */}
           <InlineTourForm
             variant={variant}
             isSubmitting={isSubmitting}
@@ -41,7 +40,6 @@ export function WaitlistSection({ variant, isSubmitting, submitted, onSubmit }: 
           Whether you're joining a group trip or considering a private tour, this form gives us everything we need to find the right experience for you. We'll be in touch within 5 business days.
         </p>
         <Reveal>
-          {/* @ts-expect-error existing InlineTourForm typing */}
           <InlineTourForm
             variant={variant}
             isSubmitting={isSubmitting}
