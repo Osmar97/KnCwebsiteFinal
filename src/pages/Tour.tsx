@@ -125,8 +125,6 @@ export default function TourPage() {
       <TourTopNav lang={lang} setLang={setLang} t={t} onReserve={openReserveForm} isCheckingOut={isCheckingOut} />
       <TourHero
         t={t}
-        destinationsCount={derivedDestinations.length}
-        groupThemesCount={groupTours.length}
         onReserve={openReserveForm}
         isCheckingOut={isCheckingOut}
       />
