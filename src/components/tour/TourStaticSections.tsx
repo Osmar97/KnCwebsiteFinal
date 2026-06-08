@@ -59,7 +59,7 @@ export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurren
             <a href="#group" className="format-card">
               <span className="format-label">Themed Itineraries</span>
               <h3>Group Tour</h3>
-              <p>Join a curated group of 5–9 investors with a shared vibe. Ten preset themes, from coastal to cosmopolitan. We launch the trip when the group fills.</p>
+              <p>Join a curated group of 5–9 investors with shared interests. Preset themes, from coastal to cosmopolitan. We launch the trip when the group fills.</p>
               <div className="format-meta">
                 <div className="fmeta-item"><span className="fmeta-dot" />3 or 5 days</div>
                 <div className="fmeta-item"><span className="fmeta-dot" />5–9 participants</div>
