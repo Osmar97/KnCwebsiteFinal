@@ -257,9 +257,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit((data) => {
-        saveMutation.mutate(data);
-      })} className="container mx-auto px-4 space-y-6">
+      <form onSubmit={handleSubmit(submitSave)} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel</h2>
@@ -1134,72 +1132,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <Button type="button" variant="outline" onClick={onClose} className="px-8">
             Cancelar
           </Button>
-          <Button 
+          <Button
             type="button"
-            onClick={() => {
-              const formData = watch();
-              
-              const propertyData = {
-                title: formData.title || "",
-                property_type: formData.property_type || "",
-                city: formData.city || "",
-                location: formData.location || "",
-                street_number: formData.street_number || null,
-                no_street_number: formData.no_street_number || false,
-                block: formData.block || null,
-                door: formData.door || null,
-                urbanization_name: formData.urbanization_name || null,
-                price: Number(formData.price) || 0,
-                operation_sale: formData.operation_sale !== undefined ? formData.operation_sale : true,
-                operation_rent: formData.operation_rent || false,
-                transaction_type: formData.transaction_type || "Comprar",
-                condition: formData.condition || "",
-                construction_area: Number(formData.construction_area) || 0,
-                private_area: Number(formData.private_area) || 0,
-                lot_area: Number(formData.lot_area) || null,
-                building_year: Number(formData.building_year) || null,
-                heating_type: formData.heating_type || null,
-                energy_class: formData.energy_class || null,
-                orientation_north: formData.orientation_north || false,
-                orientation_south: formData.orientation_south || false,
-                orientation_east: formData.orientation_east || false,
-                orientation_west: formData.orientation_west || false,
-                built_in_wardrobes: formData.built_in_wardrobes || false,
-                air_conditioning: formData.air_conditioning || false,
-                balcony_terrace: formData.balcony_terrace || false,
-                parking: formData.parking || false,
-                storage: formData.storage || false,
-                pool: formData.pool || false,
-                garden: formData.garden || false,
-                elevator: formData.elevator || false,
-                adapted_house: formData.adapted_house || false,
-                luxury_house: formData.luxury_house || false,
-                sea_view: formData.sea_view || false,
-                bathrooms: formData.bathrooms ? Number(formData.bathrooms) : null,
-                bedrooms: formData.bedrooms || "",
-                total_floors: formData.total_floors ? Number(formData.total_floors) : null,
-                description: formData.description || "",
-                video_url: formData.video_url || null,
-                floor_plan_url: formData.floor_plan_url || null,
-                virtual_tour_url: formData.virtual_tour_url || null,
-                status: formData.status || "active",
-                featured: formData.featured || false,
-                internal_reference: formData.internal_reference || null,
-                private_notes: formData.private_notes || null,
-                notes_visibility: formData.notes_visibility || null,
-                agent_captador: formData.agent_captador || null,
-                agent_comercializador: formData.agent_comercializador || null,
-                // Apartment-specific fields
-                floor: formData.floor || null,
-                is_top_floor: formData.is_top_floor || false,
-                penthouse: formData.penthouse || false,
-                t0: formData.t0 || false,
-                duplex: formData.duplex || false,
-              };
-
-              saveMutation.mutate(propertyData as PropertyFormData);
-            }}
-            disabled={saveMutation.isPending} 
+            onClick={() => submitSave(watch() as PropertyFormData)}
+            disabled={saveMutation.isPending}
             className="px-8"
           >
             {saveMutation.isPending ? (
