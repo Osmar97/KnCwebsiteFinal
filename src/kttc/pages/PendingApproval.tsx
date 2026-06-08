@@ -18,7 +18,7 @@ export default function PendingApproval() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/login", { replace: true });
+    navigate("/kttc/login", { replace: true });
   };
 
   return (

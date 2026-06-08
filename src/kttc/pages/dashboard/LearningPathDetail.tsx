@@ -61,7 +61,7 @@ export default function LearningPathDetail() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard/courses")} className="mb-6 text-muted-foreground">
+      <Button variant="ghost" size="sm" onClick={() => navigate("/kttc/dashboard/courses")} className="mb-6 text-muted-foreground">
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Courses
       </Button>
 

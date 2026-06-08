@@ -32,17 +32,17 @@ export function Navbar() {
             </a>
           ))}
           <Link
-            to="/explore"
+            to="/kttc/explore"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             Explore
           </Link>
-          <Link to="/login">
+          <Link to="/kttc/login">
             <Button variant="outline" size="sm" className="border-border text-foreground">
               Log In
             </Button>
           </Link>
-          <Link to="/signup">
+          <Link to="/kttc/signup">
             <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
               Join Now
             </Button>
@@ -69,17 +69,17 @@ export function Navbar() {
             </a>
           ))}
           <Link
-            to="/explore"
+            to="/kttc/explore"
             className="block py-3 text-sm text-muted-foreground"
             onClick={() => setOpen(false)}
           >
             Explore
           </Link>
           <div className="mt-4 flex flex-col gap-3">
-            <Link to="/login">
+            <Link to="/kttc/login">
               <Button variant="outline" className="w-full border-border">Log In</Button>
             </Link>
-            <Link to="/signup">
+            <Link to="/kttc/signup">
               <Button className="w-full bg-primary text-primary-foreground">Join Now</Button>
             </Link>
           </div>

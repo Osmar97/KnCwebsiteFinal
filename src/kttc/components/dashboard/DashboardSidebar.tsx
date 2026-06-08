@@ -116,7 +116,7 @@ export function DashboardSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink
-                      to="/dashboard/admin"
+                      to="/kttc/dashboard/admin"
                       className="hover:bg-sidebar-accent"
                       activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
                     >
@@ -128,7 +128,7 @@ export function DashboardSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink
-                      to="/dashboard/admin-courses"
+                      to="/kttc/dashboard/admin-courses"
                       className="hover:bg-sidebar-accent"
                       activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
                     >
@@ -148,7 +148,7 @@ export function DashboardSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <NavLink
-                to="/dashboard/settings"
+                to="/kttc/dashboard/settings"
                 className="hover:bg-sidebar-accent"
                 activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
               >

@@ -92,7 +92,7 @@ export default function CityPage() {
       <section className="py-24 md:py-32">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-            <Link to="/explore" className="hover:text-primary">Explore</Link>
+            <Link to="/kttc/explore" className="hover:text-primary">Explore</Link>
             <span>/</span>
             <Link to={`/explore/${country.slug}`} className="hover:text-primary">{country.name}</Link>
             <span>/</span>
@@ -108,7 +108,7 @@ export default function CityPage() {
 
           <div className="mt-8 flex gap-4">
             <Button asChild className="bg-primary text-primary-foreground">
-              <Link to="/signup">Access Full Intel</Link>
+              <Link to="/kttc/signup">Access Full Intel</Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to={`/explore/${country.slug}`}>
@@ -182,7 +182,7 @@ export default function CityPage() {
               Want full access to neighborhood data, city papers, and deal calculators?
             </p>
             <Button asChild size="sm" className="mt-4 bg-primary text-primary-foreground">
-              <Link to="/signup">Join KTTC</Link>
+              <Link to="/kttc/signup">Join KTTC</Link>
             </Button>
           </div>
         </div>

@@ -57,7 +57,7 @@ export default function CityPaperDetail() {
     <div className="mx-auto max-w-3xl text-center py-24">
       <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
       <p className="mt-4 text-muted-foreground">Paper not found.</p>
-      <Button variant="ghost" className="mt-4" onClick={() => navigate("/dashboard/city-papers")}>
+      <Button variant="ghost" className="mt-4" onClick={() => navigate("/kttc/dashboard/city-papers")}>
         <ArrowLeft className="h-4 w-4 mr-2" /> Back to Papers
       </Button>
     </div>
@@ -66,7 +66,7 @@ export default function CityPaperDetail() {
   return (
     <div className="w-full">
       <div className="mx-auto max-w-6xl">
-        <Button variant="ghost" size="sm" className="mb-6 text-muted-foreground" onClick={() => navigate("/dashboard/city-papers")}>
+        <Button variant="ghost" size="sm" className="mb-6 text-muted-foreground" onClick={() => navigate("/kttc/dashboard/city-papers")}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back to Papers
         </Button>
 

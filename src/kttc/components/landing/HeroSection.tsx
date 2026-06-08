@@ -68,7 +68,7 @@ export function HeroSection() {
         {/* CTAs */}
         <FadeUp delay={0.7}>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link to="/signup">
+            <Link to="/kttc/signup">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 text-base">
                 Get Started
               </Button>

@@ -122,7 +122,7 @@ export default function CourseDetail() {
     return (
       <div className="text-center py-24">
         <p className="text-muted-foreground">Course not found.</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate("/dashboard/courses")}>
+        <Button variant="outline" className="mt-4" onClick={() => navigate("/kttc/dashboard/courses")}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Courses
         </Button>
       </div>
@@ -131,7 +131,7 @@ export default function CourseDetail() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard/courses")} className="mb-6 text-muted-foreground">
+      <Button variant="ghost" size="sm" onClick={() => navigate("/kttc/dashboard/courses")} className="mb-6 text-muted-foreground">
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Courses
       </Button>
 

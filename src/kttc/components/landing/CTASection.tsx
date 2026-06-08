@@ -43,7 +43,7 @@ export function CTASection() {
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
                 Get immediate access to the platform, playbooks, and partner directory. 7-day free trial.
               </p>
-              <Link to="/signup" className="mt-6">
+              <Link to="/kttc/signup" className="mt-6">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 px-8">
                   Start Free Trial
                 </Button>

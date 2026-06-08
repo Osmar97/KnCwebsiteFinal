@@ -31,7 +31,7 @@ export function Footer() {
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Company</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li><a href="#about" className="hover:text-foreground transition-colors">About</a></li>
-            <li><Link to="/login" className="hover:text-foreground transition-colors">Login</Link></li>
+            <li><Link to="/kttc/login" className="hover:text-foreground transition-colors">Login</Link></li>
             <li><a href="mailto:contact@keystothecity.com" className="hover:text-foreground transition-colors">Contact</a></li>
           </ul>
         </div>

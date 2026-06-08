@@ -44,7 +44,7 @@ export default function ForgotPassword() {
           </Button>
         </form>
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          <Link to="/login" className="text-primary hover:underline">Back to login</Link>
+          <Link to="/kttc/login" className="text-primary hover:underline">Back to login</Link>
         </p>
       </div>
     </div>

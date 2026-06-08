@@ -29,7 +29,7 @@ export default function ResetPassword() {
       toast({ variant: "destructive", title: "Error", description: error.message });
     } else {
       toast({ title: "Password updated", description: "You can now sign in with your new password." });
-      navigate("/login");
+      navigate("/kttc/login");
     }
   };
 

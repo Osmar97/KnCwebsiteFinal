@@ -18,7 +18,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   // No user at all
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/kttc/login" replace />;
   }
 
   // User exists but status not yet fetched
@@ -31,12 +31,12 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (isAdmin && location.pathname === "/dashboard") {
-    return <Navigate to="/dashboard/admin" replace />;
+    return <Navigate to="/kttc/dashboard/admin" replace />;
   }
 
   // Admin access always wins over profile approval status.
   if (!isAdmin && status !== "active") {
-    return <Navigate to="/pending" replace />;
+    return <Navigate to="/kttc/pending" replace />;
   }
 
   return <>{children}</>;

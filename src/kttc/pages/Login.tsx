@@ -26,7 +26,7 @@ export default function Login() {
       // Let ProtectedRoute resolve the correct destination once the session
       // has fully propagated. Avoids a race where RLS-protected role/profile
       // queries return empty before the auth token is attached.
-      navigate("/dashboard", { replace: true });
+      navigate("/kttc/dashboard", { replace: true });
     }
   };
 
@@ -55,7 +55,7 @@ export default function Login() {
           <div>
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+              <Link to="/kttc/forgot-password" className="text-xs text-primary hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -79,7 +79,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-primary hover:underline">
+          <Link to="/kttc/signup" className="text-primary hover:underline">
             Sign up
           </Link>
         </p>

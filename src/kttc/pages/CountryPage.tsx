@@ -62,7 +62,7 @@ export default function CountryPage() {
         <div className="flex items-center justify-center py-32">
           <div className="text-center">
             <h1 className="font-serif text-3xl text-foreground">Country not found</h1>
-            <Link to="/explore" className="mt-4 inline-block text-primary hover:underline">Browse all destinations</Link>
+            <Link to="/kttc/explore" className="mt-4 inline-block text-primary hover:underline">Browse all destinations</Link>
           </div>
         </div>
         <Footer />
@@ -87,7 +87,7 @@ export default function CountryPage() {
       <section className="relative py-24 md:py-32">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex items-center gap-2 text-primary text-sm mb-4">
-            <Link to="/explore" className="hover:underline">Explore</Link>
+            <Link to="/kttc/explore" className="hover:underline">Explore</Link>
             <span>/</span>
             <span>{country.name}</span>
           </div>
@@ -101,7 +101,7 @@ export default function CountryPage() {
           </p>
           <div className="mt-8 flex gap-4">
             <Button asChild className="bg-primary text-primary-foreground">
-              <Link to="/signup">Join KTTC</Link>
+              <Link to="/kttc/signup">Join KTTC</Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="#cities">Explore Cities</Link>
@@ -180,7 +180,7 @@ export default function CountryPage() {
             deal calculators, and curated investment experiences.
           </p>
           <Button asChild size="lg" className="mt-8 bg-primary text-primary-foreground">
-            <Link to="/signup">Get Started</Link>
+            <Link to="/kttc/signup">Get Started</Link>
           </Button>
         </div>
       </section>
