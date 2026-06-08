@@ -6,6 +6,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const sanitize = (v: unknown, max: number): string =>
+  typeof v === "string" ? v.replace(/[\u0000-\u001F\u007F]/g, " ").trim().slice(0, max) : "";
+
 interface CalendarEventRequest {
   summary: string;
   description: string;
@@ -102,20 +107,33 @@ const handler = async (req: Request): Promise<Response> => {
       checkOnly = false
     }: CalendarEventRequest = await req.json();
 
+    // Validate and sanitize all caller-provided fields before contacting Google.
+    const cleanSummary = sanitize(summary, 200);
+    const cleanDescription = sanitize(description, 2000);
+    const cleanAttendeeName = sanitize(attendeeName, 100);
+    const cleanAttendeeEmail = sanitize(attendeeEmail, 255);
+    const startDateParsed = new Date(startDateTime);
+    const now = Date.now();
+    const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+    if (
+      !cleanSummary ||
+      !cleanAttendeeName ||
+      !EMAIL_RE.test(cleanAttendeeEmail) ||
+      Number.isNaN(startDateParsed.getTime()) ||
+      startDateParsed.getTime() < now - 60_000 ||
+      startDateParsed.getTime() > now + oneYearMs
+    ) {
+      return new Response(
+        JSON.stringify({ error: "Invalid booking payload" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } },
+      );
+    }
+
     if (checkOnly) {
       console.log("=== AVAILABILITY CHECK ===");
     } else {
       console.log("=== ACTUAL BOOKING REQUEST ===");
     }
-
-    console.log("Processing calendar request:", {
-      summary,
-      description,
-      startDateTime,
-      attendeeEmail,
-      attendeeName,
-      checkOnly
-    });
 
     // Get a valid access token (use cached if available, refresh if needed)
     const accessToken = await getValidAccessToken();
@@ -124,7 +142,7 @@ const handler = async (req: Request): Promise<Response> => {
     const checkCalendarIds = Deno.env.get("GOOGLE_CALENDAR_CHECK_IDS");
 
     // Create start and end times for the booking (20 minute duration)
-    const startDate = new Date(startDateTime);
+    const startDate = startDateParsed;
     const endDate = new Date(startDate.getTime() + 20 * 60 * 1000); // Add 20 minutes
 
     // Parse the calendar IDs to check (comma-separated)
@@ -305,8 +323,8 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Creating event on primary calendar:", primaryCalendarId);
 
     const eventData = {
-      summary,
-      description,
+      summary: cleanSummary,
+      description: cleanDescription,
       start: {
         dateTime: startDate.toISOString(),
         timeZone: "Europe/Lisbon"
@@ -317,8 +335,8 @@ const handler = async (req: Request): Promise<Response> => {
       },
       attendees: [
         {
-          email: attendeeEmail,
-          displayName: attendeeName,
+          email: cleanAttendeeEmail,
+          displayName: cleanAttendeeName,
           responseStatus: "needsAction"
         }
       ],

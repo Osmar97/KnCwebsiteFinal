@@ -8,10 +8,20 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') as string, {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
+const ALLOWED_ORIGINS = [
+  'https://kingsncompany.com',
+  'https://www.kingsncompany.com',
+  'https://kings-website-copycat-project.lovable.app',
+];
+
 const handler = async (req: Request): Promise<Response> => {
   try {
     const reqBody = await req.json();
     const { origin, preTourData } = reqBody;
+
+    const safeOrigin = typeof origin === 'string' && ALLOWED_ORIGINS.includes(origin)
+      ? origin
+      : ALLOWED_ORIGINS[0];
 
     // Flatten + truncate metadata (Stripe limits: 50 keys, 500 chars per value)
     const metadata: Record<string, string> = {};
@@ -41,8 +51,8 @@ const handler = async (req: Request): Promise<Response> => {
       ],
       mode: 'payment',
       metadata,
-      success_url: `${origin || 'http://localhost:5173'}/tour?success=true`,
-      cancel_url: `${origin || 'http://localhost:5173'}/tour?canceled=true`,
+      success_url: `${safeOrigin}/tour?success=true`,
+      cancel_url: `${safeOrigin}/tour?canceled=true`,
     });
 
     return new Response(
