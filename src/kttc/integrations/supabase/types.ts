@@ -156,7 +156,7 @@ export type Database = {
           },
         ]
       }
-      comments: {
+      comments_kttc: {
         Row: {
           content: string
           created_at: string
@@ -798,7 +798,7 @@ export type Database = {
           },
         ]
       }
-      likes: {
+      likes_kttc: {
         Row: {
           id: string
           post_id: string
@@ -1183,7 +1183,7 @@ export type Database = {
           },
         ]
       }
-      posts: {
+      posts_kttc: {
         Row: {
           category: string
           city_id: string | null
