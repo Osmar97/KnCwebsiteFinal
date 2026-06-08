@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") as string, {
   apiVersion: "2023-10-16",
@@ -90,6 +91,34 @@ const handler = async (req: Request): Promise<Response> => {
   const amount = session.amount_total
     ? `${(session.amount_total / 100).toFixed(2)} ${(session.currency || "eur").toUpperCase()}`
     : "N/A";
+
+  // Best-effort: if the checkout session carried a tour_date_id, record the
+  // confirmed booking so the public progress bar updates automatically.
+  const tourDateId = metadata.tour_date_id;
+  if (tourDateId) {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (supabaseUrl && serviceKey) {
+      try {
+        const supabase = createClient(supabaseUrl, serviceKey);
+        const { error } = await supabase.from("tour_bookings").insert({
+          tour_date_id: tourDateId,
+          status: "confirmed",
+          customer_email: session.customer_email || metadata.email || null,
+          customer_name: fullName,
+          stripe_session_id: session.id,
+          amount_paid: session.amount_total ? session.amount_total / 100 : null,
+          currency: (session.currency || "eur").toUpperCase(),
+          source: "stripe",
+        });
+        if (error && !String(error.message).includes("duplicate")) {
+          console.error("Booking insert failed:", error);
+        }
+      } catch (err) {
+        console.error("Booking insert exception:", err);
+      }
+    }
+  }
 
   const subject = `POT - ${fullName} - payment`;
   const html = buildEmailHtml(metadata, amount, session.id);
