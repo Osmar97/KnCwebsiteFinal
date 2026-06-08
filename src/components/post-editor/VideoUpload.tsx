@@ -38,15 +38,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
       }
 
       try {
-        console.log("Video Upload - Admin check:", { 
-          isAdminLoggedIn, 
-          hasSupabaseUser: !!supabaseUser,
-          userId: supabaseUser?.id,
-          userEmail: supabaseUser?.email
-        });
-        
         if (!isAdminLoggedIn || !supabaseUser) {
-          console.log("No authenticated admin user found for video upload");
           toast({
             title: "Authentication Required",
             description: "Please log in as admin to upload videos.",
@@ -63,10 +55,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
 
         // Create a file path that includes the user ID for RLS policy
         const fileName = `${supabaseUser.id}/${Date.now()}_${sanitizedFileName}`;
-        console.log("Uploading video with sanitized path:", fileName);
-        console.log("User ID:", supabaseUser.id);
-        console.log("User email:", supabaseUser.email);
-        
+
         const { data, error } = await supabase.storage
           .from('videos')
           .upload(fileName, file, {
@@ -84,13 +73,9 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
           continue;
         }
 
-        console.log("Video upload successful:", data);
-
         const { data: { publicUrl } } = supabase.storage
           .from('videos')
           .getPublicUrl(data.path);
-
-        console.log("Video Public URL:", publicUrl);
 
         onVideoUrlsChange([...videoUrls, publicUrl]);
 

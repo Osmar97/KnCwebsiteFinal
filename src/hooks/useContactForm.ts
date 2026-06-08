@@ -18,17 +18,13 @@ export const useContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      console.log("Submitting contact form:", formData);
-
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+      const { error } = await supabase.functions.invoke('send-contact-email', {
         body: formData
       });
 
       if (error) {
         throw error;
       }
-
-      console.log("Email sent successfully:", data);
 
       toast({
         title: "Message Sent Successfully",
@@ -38,7 +34,7 @@ export const useContactForm = () => {
       // Reset form and call success callback
       setFormData({ name: "", email: "", subject: "", message: "" });
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error sending email:", error);
       toast({
         title: "Failed to Send Message",

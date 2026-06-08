@@ -29,7 +29,6 @@ export const VideoDisplay = ({ videoUrls }: VideoDisplayProps) => {
   };
 
   const handleVideoLoadStart = (index: number) => {
-    console.log(`Video ${index} load started`);
     setVideoErrors(prev => {
       const newErrors = { ...prev };
       delete newErrors[index];
@@ -37,8 +36,8 @@ export const VideoDisplay = ({ videoUrls }: VideoDisplayProps) => {
     });
   };
 
-  const handleVideoCanPlay = (index: number) => {
-    console.log(`Video ${index} can play`);
+  const handleVideoCanPlay = (_index: number) => {
+    // no-op: kept as a hook for future analytics
   };
 
   const handleVideoDownload = (videoUrl: string) => {

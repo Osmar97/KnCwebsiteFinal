@@ -38,15 +38,7 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
       }
 
       try {
-        console.log("PDF Upload - Admin check:", { 
-          isAdminLoggedIn, 
-          hasSupabaseUser: !!supabaseUser,
-          userId: supabaseUser?.id,
-          userEmail: supabaseUser?.email
-        });
-        
         if (!isAdminLoggedIn || !supabaseUser) {
-          console.log("No authenticated admin user found for PDF upload");
           toast({
             title: "Authentication Required",
             description: "Please log in as admin to upload PDFs.",
@@ -63,10 +55,7 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
 
         // Create a file path that includes the user ID for RLS policy
         const fileName = `${supabaseUser.id}/${Date.now()}_${sanitizedFileName}`;
-        console.log("Uploading PDF with sanitized path:", fileName);
-        console.log("User ID:", supabaseUser.id);
-        console.log("User email:", supabaseUser.email);
-        
+
         const { data, error } = await supabase.storage
           .from('pdfs')
           .upload(fileName, file, {
@@ -84,13 +73,9 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
           continue;
         }
 
-        console.log("PDF upload successful:", data);
-
         const { data: { publicUrl } } = supabase.storage
           .from('pdfs')
           .getPublicUrl(data.path);
-
-        console.log("PDF Public URL:", publicUrl);
 
         onPdfUrlsChange([...pdfUrls, publicUrl]);
 

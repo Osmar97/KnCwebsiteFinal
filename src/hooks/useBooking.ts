@@ -18,9 +18,6 @@ export const useBooking = () => {
 
   const createCalendarEvent = async (bookingData: BookingData) => {
     try {
-      console.log("=== BOOKING PROCESS STARTED ===");
-      console.log("Creating calendar event with data:", bookingData);
-
       const startDateTime = new Date(
         bookingData.selectedDate.getFullYear(),
         bookingData.selectedDate.getMonth(),
@@ -28,8 +25,6 @@ export const useBooking = () => {
         parseInt(bookingData.selectedTime.split(':')[0]),
         parseInt(bookingData.selectedTime.split(':')[1])
       ).toISOString();
-
-      console.log("Calculated start date time:", startDateTime);
 
       const description = `Phone: ${bookingData.phone}\nEmail: ${bookingData.email}`;
 
@@ -42,13 +37,9 @@ export const useBooking = () => {
         checkOnly: false // This is actual booking, not just checking
       };
 
-      console.log("Sending request to create-calendar-event with payload:", requestPayload);
-
       const { data, error } = await supabase.functions.invoke('create-calendar-event', {
         body: requestPayload
       });
-
-      console.log("Response from create-calendar-event:", { data, error });
 
       if (error) {
         console.error("Error from Supabase function:", error);
@@ -60,33 +51,26 @@ export const useBooking = () => {
         throw new Error(data.error || "Unknown error occurred");
       }
 
-      console.log("=== BOOKING SUCCESSFUL ===");
-      console.log("Calendar event created successfully:", data);
       return data;
-    } catch (error: any) {
-      console.error("=== BOOKING FAILED ===");
+    } catch (error) {
       console.error("Error creating calendar event:", error);
       throw error;
     }
   };
 
   const submitBooking = async (bookingData: BookingData) => {
-    console.log("=== SUBMIT BOOKING CALLED ===");
-    console.log("Booking data received:", bookingData);
-    
     setIsSubmitting(true);
 
     try {
       await createCalendarEvent(bookingData);
 
-      console.log("Booking completed successfully, showing success toast");
       toast({
         title: "Discovery Call Booked!",
         description: "Your call has been scheduled and you'll receive a calendar invitation shortly.",
       });
 
       return true;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error in submitBooking:", error);
       toast({
         title: "Booking Failed",
@@ -96,7 +80,6 @@ export const useBooking = () => {
       return false;
     } finally {
       setIsSubmitting(false);
-      console.log("=== BOOKING PROCESS ENDED ===");
     }
   };
 
