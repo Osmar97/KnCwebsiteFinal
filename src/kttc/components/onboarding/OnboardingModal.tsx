@@ -99,7 +99,7 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
       if (selections.target_country_id) updateData.target_country_id = selections.target_country_id;
       if (selections.target_city_id) updateData.target_city_id = selections.target_city_id;
 
-      await supabase.from("profiles").update(updateData).eq("id", user?.id);
+      await supabase.from("profiles").update(updateData as never).eq("id", user?.id);
       setLoading(false);
       onComplete();
       return;
