@@ -29,20 +29,6 @@ export function TourHero({ t, destinationsCount, groupThemesCount, onReserve, is
           <a href="#group" className="btn-outline">Join a Group Tour</a>
         </div>
       </div>
-      <div className="hero-stats">
-        <div className="h-stat">
-          <span className="h-stat-n">{destinationsCount || "—"}</span>
-          <span className="h-stat-l">Destinations</span>
-        </div>
-        <div className="h-stat">
-          <span className="h-stat-n">{groupThemesCount || "—"}</span>
-          <span className="h-stat-l">Group Themes</span>
-        </div>
-        <div className="h-stat">
-          <span className="h-stat-n">1–10</span>
-          <span className="h-stat-l">Days, Private</span>
-        </div>
-      </div>
     </section>
   );
 }
