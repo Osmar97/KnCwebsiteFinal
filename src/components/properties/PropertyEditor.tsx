@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,12 +10,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, X, Minus, ArrowLeft, ArrowRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
-import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import { ADMIN_PROFILES } from "@/lib/adminConfig";
+import { usePropertyMediaUploads } from "@/hooks/properties/usePropertyMediaUploads";
+import { usePropertyDescriptions } from "@/hooks/properties/usePropertyDescriptions";
+import { buildPropertyPayload, useSaveProperty } from "@/hooks/properties/useSaveProperty";
 
 interface PropertyEditorProps {
   property?: any;
@@ -25,7 +24,6 @@ interface PropertyEditorProps {
 }
 
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
-  const navigate = useNavigate();
   const { supabaseUser } = useAdmin();
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -34,27 +32,49 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   });
 
   const propertyType = watch("property_type");
-  const [descriptions, setDescriptions] = useState<Record<string, string>>(() => {
-    if (property?.descriptions && typeof property.descriptions === 'object') {
-      return property.descriptions;
-    }
-    return { pt: property?.description || "" };
-  });
-  const [currentLang, setCurrentLang] = useState("pt");
-  const [additionalLangs, setAdditionalLangs] = useState<string[]>([]);
+  const initialDescriptions: Record<string, string> =
+    property?.descriptions && typeof property.descriptions === "object"
+      ? property.descriptions
+      : { pt: property?.description || "" };
+  const initialAdditionalLangs =
+    property?.descriptions && typeof property.descriptions === "object"
+      ? Object.keys(property.descriptions).filter((l) => l !== "pt")
+      : [];
+
+  const {
+    descriptions, setDescriptions,
+    currentLang, setCurrentLang,
+    additionalLangs, setAdditionalLangs,
+    isTranslating, isImproving,
+    handleAddLanguage, handleImproveText,
+  } = usePropertyDescriptions({ initialDescriptions, initialAdditionalLangs });
+
   const [bedroomCount, setBedroomCount] = useState(property?.bedrooms ? parseInt(property.bedrooms) : 0);
   const [floorCount, setFloorCount] = useState(property?.floors || 0);
   const [bathroomCount, setBathroomCount] = useState(property?.bathrooms || 0);
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [isImproving, setIsImproving] = useState(false);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [floorPlanUrls, setFloorPlanUrls] = useState<string[]>([]);
-  const [videoUrls, setVideoUrls] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const {
+    imageUrls, setImageUrls,
+    floorPlanUrls, setFloorPlanUrls,
+    videoUrls, setVideoUrls,
+    uploading,
+    draggedIndex,
+    handleImageUpload,
+    handleFloorPlanUpload,
+    handleVideoUpload,
+    moveImage,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+  } = usePropertyMediaUploads({
+    images: property?.images ?? [],
+    floorPlans: property?.floor_plans ?? [],
+    videos: property?.video_urls ?? [],
+    userId: supabaseUser?.id ?? null,
+  });
 
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   // Reset form when property data changes or on mount
   useEffect(() => {
@@ -203,327 +223,21 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   
   const { verifyAddress, isVerifying } = useGeocoding();
 
-  const saveMutation = useMutation({
-    mutationFn: async (data: PropertyFormData): Promise<string> => {
-      const propertyData = {
-        title: data.title || "",
-        property_type: data.property_type || "",
-        city: data.city || "",
-        location: data.location || "",
-        street_number: data.street_number || null,
-        no_street_number: data.no_street_number || false,
-        block: data.block || null,
-        door: data.door || null,
-        urbanization_name: data.urbanization_name || null,
-        price: Number(data.price) || 0,
-        operation_sale: data.operation_sale !== undefined ? data.operation_sale : true,
-        operation_rent: data.operation_rent || false,
-        transaction_type: data.transaction_type || "Comprar",
-        condition: data.condition || "",
-        construction_area: Number(data.construction_area) || null,
-        private_area: Number(data.private_area) || null,
-        lot_area: Number(data.lot_area) || null,
-        building_year: Number(data.building_year) || null,
-        heating_type: data.heating_type || null,
-        energy_class: data.energy_class || null,
-        orientation_north: data.orientation_north || false,
-        orientation_south: data.orientation_south || false,
-        orientation_east: data.orientation_east || false,
-        orientation_west: data.orientation_west || false,
-        built_in_wardrobes: data.built_in_wardrobes || false,
-        air_conditioning: data.air_conditioning || false,
-        balcony_terrace: data.balcony_terrace || false,
-        parking: data.parking || false,
-        storage: data.storage || false,
-        pool: data.pool || false,
-        garden: data.garden || false,
-        elevator: data.elevator || false,
-        adapted_house: data.adapted_house || false,
-        luxury_house: data.luxury_house || false,
-        sea_view: data.sea_view || false,
-        images: imageUrls,
-        floor_plans: floorPlanUrls,
-        bedrooms: bedroomCount.toString(),
-        bathrooms: bathroomCount || null,
-        total_floors: data.total_floors ? Number(data.total_floors) : null,
-        description: descriptions.pt || descriptions.en || "",
-        descriptions: descriptions,
-        video_url: data.video_url || null,
-        floor_plan_url: data.floor_plan_url || null,
-        virtual_tour_url: data.virtual_tour_url || null,
-        status: "active",
-        featured: data.featured || false,
-        internal_reference: data.internal_reference || null,
-        private_notes: data.private_notes || null,
-        notes_visibility: data.notes_visibility || null,
-        // Apartment-specific fields
-        floor: data.floor ? parseInt(data.floor) : null,
-        is_top_floor: data.is_top_floor || false,
-        penthouse: data.penthouse || false,
-        t0: data.t0 || false,
-        duplex: data.duplex || false,
-        // Agent fields
-        agent_captador: data.agent_captador || null,
-        agent_comercializador: data.agent_comercializador || null,
-      };
-
-      if (property) {
-        const { error } = await supabase
-          .from("properties" as any)
-          .update(propertyData)
-          .eq("id", property.id);
-        if (error) {
-          throw error;
-        }
-        return property.id as string;
-      } else {
-        const { data: newProperty, error } = await supabase
-          .from("properties" as any)
-          .insert([propertyData])
-          .select()
-          .single();
-
-        if (error) throw error;
-        return (newProperty as any).id as string;
-      }
-    },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
-      
-      toast({ 
-        title: "Imóvel guardado com sucesso",
-        description: property ? "O imóvel foi atualizado" : "Novo imóvel criado"
-      });
-      
-      // Always redirect to property management page after save
-      onClose();
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Erro ao guardar imóvel", 
-        description: error?.message || "Por favor, tente novamente",
-        variant: "destructive" 
-      });
-    },
+  const saveMutation = useSaveProperty({
+    existingId: property?.id ?? null,
+    onSuccess: onClose,
   });
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    setUploading(true);
-    const newImageUrls: string[] = [];
-
-    try {
-      for (const file of Array.from(files)) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const { error } = await supabase.storage
-          .from("property-images")
-          .upload(fileName, file);
-
-        if (error) {
-          toast({ 
-            title: "Erro ao carregar imagem", 
-            description: error.message,
-            variant: "destructive" 
-          });
-        } else {
-          const { data: urlData } = supabase.storage
-            .from("property-images")
-            .getPublicUrl(fileName);
-          newImageUrls.push(urlData.publicUrl);
-        }
-      }
-
-      if (newImageUrls.length > 0) {
-        setImageUrls([...imageUrls, ...newImageUrls]);
-        toast({ 
-          title: "Imagens carregadas com sucesso",
-          description: `${newImageUrls.length} imagem(ns) adicionada(s)`
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      toast({ 
-        title: "Erro ao carregar imagens", 
-        variant: "destructive" 
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const moveImage = (index: number, direction: "left" | "right") => {
-    const newIndex = direction === "left" ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= imageUrls.length) return;
-    
-    const newImageUrls = [...imageUrls];
-    [newImageUrls[index], newImageUrls[newIndex]] = [newImageUrls[newIndex], newImageUrls[index]];
-    setImageUrls(newImageUrls);
-  };
-
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = "move";
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === dropIndex) return;
-
-    const newImageUrls = [...imageUrls];
-    const draggedItem = newImageUrls[draggedIndex];
-    newImageUrls.splice(draggedIndex, 1);
-    newImageUrls.splice(dropIndex, 0, draggedItem);
-    
-    setImageUrls(newImageUrls);
-    setDraggedIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
-  };
-
-  const handleFloorPlanUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    setUploading(true);
-    const newFloorPlanUrls: string[] = [];
-
-    try {
-      for (const file of Array.from(files)) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const { error } = await supabase.storage
-          .from("property-images")
-          .upload(fileName, file);
-
-        if (error) {
-          toast({ 
-            title: "Erro ao carregar planta", 
-            description: error.message,
-            variant: "destructive" 
-          });
-        } else {
-          const { data: urlData } = supabase.storage
-            .from("property-images")
-            .getPublicUrl(fileName);
-          newFloorPlanUrls.push(urlData.publicUrl);
-        }
-      }
-
-      if (newFloorPlanUrls.length > 0) {
-        setFloorPlanUrls([...floorPlanUrls, ...newFloorPlanUrls]);
-        toast({ 
-          title: "Plantas carregadas com sucesso",
-          description: `${newFloorPlanUrls.length} planta(s) adicionada(s)`
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      toast({ 
-        title: "Erro ao carregar plantas", 
-        variant: "destructive" 
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    if (!supabaseUser?.id) {
-      toast({ title: "Erro: Usuário não autenticado", variant: "destructive" });
-      return;
-    }
-
-    setUploading(true);
-    const newVideoUrls: string[] = [];
-
-    for (const file of Array.from(files)) {
-      const timestamp = Date.now();
-      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const fileName = `${supabaseUser.id}/${timestamp}_${sanitizedName}`;
-      
-      const { error } = await supabase.storage
-        .from("videos")
-        .upload(fileName, file);
-
-      if (error) {
-        console.error("Video upload error:", error);
-        toast({ title: "Erro ao carregar vídeo", description: error.message, variant: "destructive" });
-      } else {
-        const { data: urlData } = supabase.storage.from("videos").getPublicUrl(fileName);
-        newVideoUrls.push(urlData.publicUrl);
-      }
-    }
-
-    setVideoUrls([...videoUrls, ...newVideoUrls]);
-    setUploading(false);
-  };
-
-  const handleAddLanguage = async (lang: string) => {
-    if (additionalLangs.includes(lang)) return;
-    
-    setIsTranslating(true);
-    try {
-      // Translate from the current language if it has content
-      const sourceText = descriptions[currentLang];
-      if (sourceText && sourceText.trim()) {
-        const { data, error } = await supabase.functions.invoke("translate-text", {
-          body: { text: sourceText, targetLang: lang },
-        });
-
-        if (error) throw error;
-
-        setDescriptions({ ...descriptions, [lang]: data.translatedText });
-        toast({ title: "Tradução concluída" });
-      } else {
-        // Add empty language field if no source text
-        setDescriptions({ ...descriptions, [lang]: "" });
-        toast({ title: "Idioma adicionado sem tradução", description: "Não há texto para traduzir" });
-      }
-      
-      setAdditionalLangs([...additionalLangs, lang]);
-      setCurrentLang(lang);
-    } catch (error) {
-      console.error(error);
-      toast({ title: "Erro na tradução", variant: "destructive" });
-      // Add the language anyway with the English description or empty
-      setDescriptions({ ...descriptions, [lang]: descriptions.en || "" });
-      setAdditionalLangs([...additionalLangs, lang]);
-      setCurrentLang(lang);
-    } finally {
-      setIsTranslating(false);
-    }
-  };
-
-  const handleImproveText = async () => {
-    setIsImproving(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("improve-text", {
-        body: { text: descriptions[currentLang], language: currentLang },
-      });
-
-      if (error) throw error;
-
-      setDescriptions({ ...descriptions, [currentLang]: data.improvedText });
-      toast({ title: "Texto melhorado com sucesso" });
-    } catch (error) {
-      console.error(error);
-      toast({ title: "Erro ao melhorar texto", variant: "destructive" });
-    } finally {
-      setIsImproving(false);
-    }
+  const submitSave = (data: PropertyFormData) => {
+    saveMutation.mutate(
+      buildPropertyPayload(data, {
+        images: imageUrls,
+        floorPlans: floorPlanUrls,
+        bedrooms: bedroomCount,
+        bathrooms: bathroomCount,
+        descriptions,
+      }),
+    );
   };
 
   const handleVerifyAddress = async () => {
@@ -543,9 +257,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit((data) => {
-        saveMutation.mutate(data);
-      })} className="container mx-auto px-4 space-y-6">
+      <form onSubmit={handleSubmit(submitSave)} className="container mx-auto px-4 space-y-6">
         {/* Property Type Section */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Tipo de imóvel</h2>
@@ -1420,72 +1132,10 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           <Button type="button" variant="outline" onClick={onClose} className="px-8">
             Cancelar
           </Button>
-          <Button 
+          <Button
             type="button"
-            onClick={() => {
-              const formData = watch();
-              
-              const propertyData = {
-                title: formData.title || "",
-                property_type: formData.property_type || "",
-                city: formData.city || "",
-                location: formData.location || "",
-                street_number: formData.street_number || null,
-                no_street_number: formData.no_street_number || false,
-                block: formData.block || null,
-                door: formData.door || null,
-                urbanization_name: formData.urbanization_name || null,
-                price: Number(formData.price) || 0,
-                operation_sale: formData.operation_sale !== undefined ? formData.operation_sale : true,
-                operation_rent: formData.operation_rent || false,
-                transaction_type: formData.transaction_type || "Comprar",
-                condition: formData.condition || "",
-                construction_area: Number(formData.construction_area) || 0,
-                private_area: Number(formData.private_area) || 0,
-                lot_area: Number(formData.lot_area) || null,
-                building_year: Number(formData.building_year) || null,
-                heating_type: formData.heating_type || null,
-                energy_class: formData.energy_class || null,
-                orientation_north: formData.orientation_north || false,
-                orientation_south: formData.orientation_south || false,
-                orientation_east: formData.orientation_east || false,
-                orientation_west: formData.orientation_west || false,
-                built_in_wardrobes: formData.built_in_wardrobes || false,
-                air_conditioning: formData.air_conditioning || false,
-                balcony_terrace: formData.balcony_terrace || false,
-                parking: formData.parking || false,
-                storage: formData.storage || false,
-                pool: formData.pool || false,
-                garden: formData.garden || false,
-                elevator: formData.elevator || false,
-                adapted_house: formData.adapted_house || false,
-                luxury_house: formData.luxury_house || false,
-                sea_view: formData.sea_view || false,
-                bathrooms: formData.bathrooms ? Number(formData.bathrooms) : null,
-                bedrooms: formData.bedrooms || "",
-                total_floors: formData.total_floors ? Number(formData.total_floors) : null,
-                description: formData.description || "",
-                video_url: formData.video_url || null,
-                floor_plan_url: formData.floor_plan_url || null,
-                virtual_tour_url: formData.virtual_tour_url || null,
-                status: formData.status || "active",
-                featured: formData.featured || false,
-                internal_reference: formData.internal_reference || null,
-                private_notes: formData.private_notes || null,
-                notes_visibility: formData.notes_visibility || null,
-                agent_captador: formData.agent_captador || null,
-                agent_comercializador: formData.agent_comercializador || null,
-                // Apartment-specific fields
-                floor: formData.floor || null,
-                is_top_floor: formData.is_top_floor || false,
-                penthouse: formData.penthouse || false,
-                t0: formData.t0 || false,
-                duplex: formData.duplex || false,
-              };
-
-              saveMutation.mutate(propertyData as PropertyFormData);
-            }}
-            disabled={saveMutation.isPending} 
+            onClick={() => submitSave(watch() as PropertyFormData)}
+            disabled={saveMutation.isPending}
             className="px-8"
           >
             {saveMutation.isPending ? (
