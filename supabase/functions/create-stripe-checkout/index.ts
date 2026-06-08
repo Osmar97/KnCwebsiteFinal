@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
 import { withRateLimit, corsHeaders } from "../_shared/rate-limiter.ts";
+import { TOUR_RESERVE_PRICE_CENTS } from "../_shared/tour-config.ts";
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') as string, {
   apiVersion: '2023-10-16',
@@ -33,7 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
               name: 'Property Ownership Tour',
               description: 'All-inclusive of hotel, meals, sessions, tours, and consultation. (Includes €1,000 deposit)',
             },
-            unit_amount: 350000, // €3,500 in cents
+            unit_amount: TOUR_RESERVE_PRICE_CENTS,
           },
           quantity: 1,
         },
