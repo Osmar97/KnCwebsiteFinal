@@ -21,8 +21,8 @@ export function AdminAnalytics() {
       const [profiles, bookings, posts, comments] = await Promise.all([
         supabase.from("profiles").select("email,created_at", { count: "exact" }).order("created_at", { ascending: false }).limit(10),
         supabase.from("bookings").select("id,payment_status,booking_status,created_at", { count: "exact" }).order("created_at", { ascending: false }).limit(10),
-        supabase.from("posts").select("id", { count: "exact" }),
-        supabase.from("comments").select("id", { count: "exact" }),
+        supabase.from("posts_kttc").select("id", { count: "exact" }),
+        supabase.from("comments_kttc").select("id", { count: "exact" }),
       ]);
 
       const paidCount = bookings.data?.filter((b) => b.payment_status === "paid").length ?? 0;

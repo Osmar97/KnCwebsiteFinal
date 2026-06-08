@@ -78,7 +78,7 @@ export default function Community() {
 
   const fetchPosts = async () => {
     const { data } = await supabase
-      .from("posts")
+      .from("posts_kttc")
       .select("id, user_id, title, content, category, created_at, updated_at, likes(id, user_id), comments(id, user_id, content, created_at, updated_at)")
       .eq("category", activeCategory)
       .order("created_at", { ascending: false });
@@ -134,7 +134,7 @@ export default function Community() {
 
   const handlePost = async () => {
     if (!newTitle.trim() || !newContent.trim()) return;
-    const { error } = await supabase.from("posts").insert({
+    const { error } = await supabase.from("posts_kttc").insert({
       user_id: user!.id,
       title: newTitle,
       content: newContent,
@@ -153,16 +153,16 @@ export default function Community() {
     const post = posts.find((p) => p.id === postId);
     const alreadyLiked = post?.likes.some((l) => l.user_id === user?.id);
     if (alreadyLiked) {
-      await supabase.from("likes").delete().eq("post_id", postId).eq("user_id", user!.id);
+      await supabase.from("likes_kttc").delete().eq("post_id", postId).eq("user_id", user!.id);
     } else {
-      await supabase.from("likes").insert({ post_id: postId, user_id: user!.id });
+      await supabase.from("likes_kttc").insert({ post_id: postId, user_id: user!.id });
     }
   };
 
   const handleComment = async (postId: string) => {
     const content = commentInputs[postId]?.trim();
     if (!content) return;
-    const { error } = await supabase.from("comments").insert({ post_id: postId, user_id: user!.id, content });
+    const { error } = await supabase.from("comments_kttc").insert({ post_id: postId, user_id: user!.id, content });
     if (error) {
       toast({ variant: "destructive", title: "Couldn't post comment", description: error.message });
       return;
@@ -193,7 +193,7 @@ export default function Community() {
       }))
     );
     const { error } = await supabase
-      .from("comments")
+      .from("comments_kttc")
       .update({ content })
       .eq("id", commentId)
       .eq("user_id", user!.id);
@@ -214,7 +214,7 @@ export default function Community() {
     );
     setDeletingCommentId(null);
     const { error } = await supabase
-      .from("comments")
+      .from("comments_kttc")
       .delete()
       .eq("id", id)
       .eq("user_id", user!.id);
@@ -255,7 +255,7 @@ export default function Community() {
     }
     setSavingPost(true);
     const { error } = await supabase
-      .from("posts")
+      .from("posts_kttc")
       .update({ title, content, category: editPostCategory })
       .eq("id", editingPost.id)
       .eq("user_id", user!.id);
@@ -284,7 +284,7 @@ export default function Community() {
     setPosts((prev) => prev.filter((p) => p.id !== id));
     setDeletingPostId(null);
     const { error } = await supabase
-      .from("posts")
+      .from("posts_kttc")
       .delete()
       .eq("id", id)
       .eq("user_id", user!.id);

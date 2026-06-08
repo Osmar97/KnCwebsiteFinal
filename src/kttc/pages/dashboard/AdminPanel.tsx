@@ -265,7 +265,7 @@ function CommunityModeration() {
 
   const fetchPosts = async () => {
     const { data } = await supabase
-      .from("posts")
+      .from("posts_kttc")
       .select("id, title, content, category, created_at, user_id, profiles(full_name, email), comments(id, content, user_id, created_at, profiles(full_name))")
       .order("created_at", { ascending: false })
       .limit(100);
@@ -276,13 +276,13 @@ function CommunityModeration() {
   useEffect(() => { fetchPosts(); }, []);
 
   const deletePost = async (id: string) => {
-    await supabase.from("posts").delete().eq("id", id);
+    await supabase.from("posts_kttc").delete().eq("id", id);
     toast({ title: "Post deleted" });
     fetchPosts();
   };
 
   const deleteComment = async (id: string) => {
-    await supabase.from("comments").delete().eq("id", id);
+    await supabase.from("comments_kttc").delete().eq("id", id);
     toast({ title: "Comment deleted" });
     fetchPosts();
   };
