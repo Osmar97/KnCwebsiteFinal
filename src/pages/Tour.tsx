@@ -19,6 +19,7 @@ import {
   HOW_STEPS,
   TESTIMONIALS,
   INCLUDES,
+  EMAIL_CONTACT,
 } from "@/components/tour/tour-data";
 import { useTourSubmissions } from "@/hooks/useTourSubmissions";
 
@@ -48,11 +49,11 @@ export default function TourPage() {
     return obj || path;
   };
 
-  const onReserveSubmit = async (data: PreTourFormData) => {
+  const onReserveSubmit = async (data: PreTourFormData): Promise<void> => {
     const ok = await handleCheckout(data);
     if (ok) setShowPreForm(false);
   };
-  const onEnquirySubmit = async (data: PreTourFormData) => {
+  const onEnquirySubmit = async (data: PreTourFormData): Promise<void> => {
     const ok = await handleEnquiry(data);
     if (ok) setShowEnquiryForm(false);
   };
