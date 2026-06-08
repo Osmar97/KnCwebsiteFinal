@@ -222,6 +222,58 @@ export default function TourPage() {
     ? tours
     : tours.filter((c) => tourCategoryFilter(c) === activeTab);
 
+  // Cheapest published prices, used to render the "From X" lines on the
+  // "Two ways to explore" cards. Falls back to the cheapest tour of any type
+  // when one of the categories is not yet seeded.
+  const fallbackMin = tours.length
+    ? Math.min(...tours.map((t) => Number(t.base_price) || Infinity))
+    : null;
+  const cheapestGroup = tours
+    .filter((t) => t.tour_type === "group")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const cheapestPrivate = tours
+    .filter((t) => t.tour_type === "private")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const defaultCurrency = tours[0]?.currency || "EUR";
+  const groupFromPrice =
+    cheapestGroup ?? fallbackMin ?? null;
+  const privateFromPrice =
+    cheapestPrivate ?? fallbackMin ?? null;
+
+  // Group-tour cards are now sourced from the database (tour_type === 'group').
+  const groupTours = tours.filter((t) => t.tour_type === "group");
+
+  // Destinations are derived from published tours. We deduplicate by the
+  // primary destination + country so the section auto-updates whenever a new
+  // tour is published from the admin dashboard.
+  const derivedDestinations = (() => {
+    const seen = new Set<string>();
+    const out: { key: string; bgClass: string; country: string; name: string; detail: string }[] = [];
+    tours.forEach((t) => {
+      const primary = t.destinations?.[0];
+      if (!primary) return;
+      const country = countryFromFlag(t.flag);
+      const key = `${country}::${primary}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const rest = (t.destinations || []).slice(1).join(" · ");
+      out.push({
+        key,
+        bgClass: destBgClassFor(t.hero_image, t.flag),
+        country,
+        name: primary,
+        detail: rest || country,
+      });
+    });
+    return out;
+  })();
+
   const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
 
   return (
