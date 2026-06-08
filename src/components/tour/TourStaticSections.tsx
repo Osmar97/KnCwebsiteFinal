@@ -5,17 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 
 type T = (path: string) => string;
 
-export function StatsBar() {
-  return (
-    <div className="stats-bar">
-      <div className="sb"><div className="sb-n">47+</div><div className="sb-l">Investors Hosted</div></div>
-      <div className="sb"><div className="sb-n">2</div><div className="sb-l">Countries</div></div>
-      <div className="sb"><div className="sb-n">{formatPriceShort(260000, "EUR")}</div><div className="sb-l">Avg Deal Size</div></div>
-      <div className="sb"><div className="sb-n">100%</div><div className="sb-l">Guided End-to-End</div></div>
-    </div>
-  );
-}
-
 export function IncludesSection() {
   return (
     <section className="includes-section">
