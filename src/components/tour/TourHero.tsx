@@ -2,13 +2,11 @@ import { Loader2 } from "lucide-react";
 
 interface Props {
   t: (path: string) => string;
-  destinationsCount: number;
-  groupThemesCount: number;
   onReserve: () => void;
   isCheckingOut: boolean;
 }
 
-export function TourHero({ t, destinationsCount, groupThemesCount, onReserve, isCheckingOut }: Props) {
+export function TourHero({ t, onReserve, isCheckingOut }: Props) {
   return (
     <section className="hero-section">
       <div className="hero-grain" />
@@ -27,20 +25,6 @@ export function TourHero({ t, destinationsCount, groupThemesCount, onReserve, is
             {isCheckingOut ? "Processing..." : "Book Private Tour"}
           </button>
           <a href="#group" className="btn-outline">Join a Group Tour</a>
-        </div>
-      </div>
-      <div className="hero-stats">
-        <div className="h-stat">
-          <span className="h-stat-n">{destinationsCount || "—"}</span>
-          <span className="h-stat-l">Destinations</span>
-        </div>
-        <div className="h-stat">
-          <span className="h-stat-n">{groupThemesCount || "—"}</span>
-          <span className="h-stat-l">Group Themes</span>
-        </div>
-        <div className="h-stat">
-          <span className="h-stat-n">1–10</span>
-          <span className="h-stat-l">Days, Private</span>
         </div>
       </div>
     </section>
