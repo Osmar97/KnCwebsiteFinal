@@ -9,14 +9,20 @@ serve(async (req) => {
 
   const signature = req.headers.get("stripe-signature");
   const body = await req.text();
+  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
 
   let event: Stripe.Event;
   try {
-    // In production, verify with webhook signing secret
-    // For now, construct without verification for simplicity
-    event = JSON.parse(body) as Stripe.Event;
+    if (webhookSecret && signature) {
+      event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
+    } else {
+      // Fallback for local/dev when STRIPE_WEBHOOK_SECRET is not set.
+      // In production STRIPE_WEBHOOK_SECRET MUST be configured.
+      console.warn("STRIPE_WEBHOOK_SECRET missing — skipping signature verification");
+      event = JSON.parse(body) as Stripe.Event;
+    }
   } catch (err) {
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
+    return new Response(`Webhook Error: ${(err as Error).message}`, { status: 400 });
   }
 
   const supabase = createClient(
