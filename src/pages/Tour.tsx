@@ -744,6 +744,28 @@ export default function TourPage() {
         isSubmitting={isSendingEnquiry}
         mode="enquiry"
       />
+      <TourDetailModal
+        tour={selectedTour}
+        availability={availability}
+        lang={lang}
+        open={selectedTour !== null}
+        onOpenChange={(o) => { if (!o) setSelectedTour(null); }}
+        onJoinWaitlist={() => {
+          setSelectedTour(null);
+          setTimeout(() => scrollToId("waitlist"), 80);
+        }}
+        labels={{
+          destinations: t("tour_modal.destinations"),
+          nextDate: t("tour_modal.next_date"),
+          spotsFilled: (f, total) => String(t("tour_modal.spots_filled")).replace("{filled}", String(f)).replace("{total}", String(total)),
+          remaining: (n) => String(t("tour_modal.remaining")).replace("{n}", String(n)),
+          from: t("tour_modal.from"),
+          perPerson: "per person",
+          joinWaitlist: t("tour_modal.join_waitlist"),
+          close: t("tour_modal.close"),
+          soldOut: t("tour_modal.sold_out"),
+        }}
+      />
     </div>
   );
 }
