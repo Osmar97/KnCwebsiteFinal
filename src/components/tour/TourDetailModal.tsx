@@ -38,8 +38,9 @@ export default function TourDetailModal({ tour, availability, lang, open, onOpen
   const symbol = CURRENCY_SYMBOL[tour.currency] || tour.currency;
   const price = `${symbol}${Number(tour.base_price).toLocaleString()}`;
 
-  const name = pickLocalized(tour, "name", lang);
-  const description = pickLocalized(tour, "description", lang) || pickLocalized(tour, "short_desc", lang);
+  const tourRec = tour as unknown as Record<string, unknown>;
+  const name = pickLocalized(tourRec, "name", lang);
+  const description = pickLocalized(tourRec, "description", lang) || pickLocalized(tourRec, "short_desc", lang);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
