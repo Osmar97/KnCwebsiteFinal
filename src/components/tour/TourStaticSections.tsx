@@ -17,7 +17,6 @@ export function IncludesSection() {
               <div key={item.title} className="include-card">
                 <span className="include-icon">{item.icon}</span>
                 <div className="include-title">{item.title}</div>
-                <p className="include-desc">{item.desc}</p>
               </div>
             ))}
           </div>
