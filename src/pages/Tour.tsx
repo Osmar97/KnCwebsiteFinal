@@ -129,8 +129,9 @@ export default function TourPage() {
         isCheckingOut={isCheckingOut}
       />
 
-      <IncludesSection />
+      <IncludesSection t={t} />
       <TwoWaysSection
+        t={t}
         privateFromPrice={privateFromPrice}
         groupFromPrice={groupFromPrice}
         defaultCurrency={defaultCurrency}
@@ -146,8 +147,8 @@ export default function TourPage() {
         onSelectTour={setSelectedTour}
         onRequestCustom={() => scrollToId("private")}
       />
-      <DestinationsSection destinations={derivedDestinations} loading={toursLoading} />
-      <HowItWorksSection />
+      <DestinationsSection destinations={derivedDestinations} loading={toursLoading} t={t} />
+      <HowItWorksSection t={t} />
       <TourGroupSection
         groupTours={groupTours}
         availability={availability}
@@ -156,18 +157,20 @@ export default function TourPage() {
         t={t}
         onJoinWaitlist={openEnquiryForm}
       />
-      <TestimonialsSection />
+      <TestimonialsSection t={t} />
       <PrivateTourSection
         variant="private"
         isSubmitting={isSubmittingPrivate}
         submitted={privateSubmitted}
         onSubmit={(payload) => submitInlineForm(payload, setIsSubmittingPrivate, setPrivateSubmitted)}
+        t={t}
       />
       <WaitlistSection
         variant="waitlist"
         isSubmitting={isSubmittingWaitlist}
         submitted={waitlistSubmitted}
         onSubmit={(payload) => submitInlineForm(payload, setIsSubmittingWaitlist, setWaitlistSubmitted)}
+        t={t}
       />
       <NewsletterSection t={t} />
       <TourFooter t={t} />
@@ -177,6 +180,7 @@ export default function TourPage() {
         onOpenChange={setShowPreForm}
         onSubmit={onReserveSubmit}
         isSubmitting={isCheckingOut}
+        t={t}
       />
       <PreTourFormModal
         open={showEnquiryForm}
@@ -184,6 +188,7 @@ export default function TourPage() {
         onSubmit={onEnquirySubmit}
         isSubmitting={isSendingEnquiry}
         mode="enquiry"
+        t={t}
       />
       <TourDetailModal
         tour={selectedTour}
@@ -201,10 +206,11 @@ export default function TourPage() {
           spotsFilled: (f, total) => String(t("tour_modal.spots_filled")).replace("{filled}", String(f)).replace("{total}", String(total)),
           remaining: (n) => String(t("tour_modal.remaining")).replace("{n}", String(n)),
           from: t("tour_modal.from"),
-          perPerson: "per person",
+          perPerson: t("tour_modal.per_person"),
           joinWaitlist: t("tour_modal.join_waitlist"),
           close: t("tour_modal.close"),
           soldOut: t("tour_modal.sold_out"),
+          days: (n) => String(t("tour_modal.days")).replace("{n}", String(n)),
         }}
       />
     </div>
