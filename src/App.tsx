@@ -30,6 +30,7 @@ import AdminTours from "./pages/AdminTours";
 import AdminBookings from "./pages/AdminBookings";
 import AdminWaitlist from "./pages/AdminWaitlist";
 import AdminQuotes from "./pages/AdminQuotes";
+import KttcApp from "./kttc/KttcApp";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -90,6 +91,7 @@ const App = () => (
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/POT" element={<TourPage />} />
               <Route path="/tour" element={<Navigate to="/POT" replace />} />
+              <Route path="/kttc/*" element={<KttcApp />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
