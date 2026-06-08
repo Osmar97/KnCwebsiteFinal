@@ -22,6 +22,7 @@ interface Props {
     joinWaitlist: string;
     close: string;
     soldOut: string;
+    days: (n: number) => string;
   };
 }
 
@@ -57,7 +58,7 @@ export default function TourDetailModal({ tour, availability, lang, open, onOpen
         <p className="tdm-desc">{description}</p>
 
         <div className="tdm-pills">
-          <span className="tdm-pill">{tour.duration_days} DAYS</span>
+          <span className="tdm-pill">{labels.days(tour.duration_days)}</span>
           {tour.tags.slice(0, 3).map((t) => (
             <span key={t} className="tdm-pill">{t.toUpperCase()}</span>
           ))}

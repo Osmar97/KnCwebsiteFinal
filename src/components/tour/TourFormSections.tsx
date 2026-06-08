@@ -1,28 +1,30 @@
 import { Reveal } from "@/components/tour/Reveal";
 import InlineTourForm from "@/components/tour/InlineTourForm";
 
+type T = (path: string) => any;
+
 interface Props {
   variant: "private" | "waitlist";
   isSubmitting: boolean;
   submitted: boolean;
   onSubmit: (payload: Record<string, unknown>) => Promise<void> | void;
+  t: T;
 }
 
-export function PrivateTourSection({ variant, isSubmitting, submitted, onSubmit }: Props) {
+export function PrivateTourSection({ variant, isSubmitting, submitted, onSubmit, t }: Props) {
   return (
     <section className="form-section" id="private">
       <div className="t-container">
-        <div className="section-eyebrow">Private Tour</div>
-        <h2 className="section-title">Design your<br /><em>experience</em></h2>
-        <p className="section-desc">
-          Tell us what you're looking for. We'll review your submission and send a tailored quote within 48 hours, along with availability for your first consultation call.
-        </p>
+        <div className="section-eyebrow">{t("private_section.eyebrow")}</div>
+        <h2 className="section-title">{t("private_section.title_1")}<br /><em>{t("private_section.title_2")}</em></h2>
+        <p className="section-desc">{t("private_section.desc")}</p>
         <Reveal>
           <InlineTourForm
             variant={variant}
             isSubmitting={isSubmitting}
             submitted={submitted}
             onSubmit={onSubmit}
+            t={t}
           />
         </Reveal>
       </div>
@@ -30,21 +32,20 @@ export function PrivateTourSection({ variant, isSubmitting, submitted, onSubmit 
   );
 }
 
-export function WaitlistSection({ variant, isSubmitting, submitted, onSubmit }: Props) {
+export function WaitlistSection({ variant, isSubmitting, submitted, onSubmit, t }: Props) {
   return (
     <section className="form-section dark" id="waitlist">
       <div className="t-container">
-        <div className="section-eyebrow">Join the Waitlist</div>
-        <h2 className="section-title">Tell us where<br /><em>you want to go</em></h2>
-        <p className="section-desc">
-          Whether you're joining a group trip or considering a private tour, this form gives us everything we need to find the right experience for you. We'll be in touch within 5 business days.
-        </p>
+        <div className="section-eyebrow">{t("waitlist_section.eyebrow")}</div>
+        <h2 className="section-title">{t("waitlist_section.title_1")}<br /><em>{t("waitlist_section.title_2")}</em></h2>
+        <p className="section-desc">{t("waitlist_section.desc")}</p>
         <Reveal>
           <InlineTourForm
             variant={variant}
             isSubmitting={isSubmitting}
             submitted={submitted}
             onSubmit={onSubmit}
+            t={t}
           />
         </Reveal>
       </div>

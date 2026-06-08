@@ -1,22 +1,23 @@
 import { Reveal } from "@/components/tour/Reveal";
-import { HOW_STEPS, INCLUDES, TESTIMONIALS } from "@/components/tour/tour-data";
+import { INCLUDES, TESTIMONIALS } from "@/components/tour/tour-data";
 import { formatPrice } from "@/lib/formatPrice";
 import { useToast } from "@/hooks/use-toast";
 
-type T = (path: string) => string;
+type T = (path: string) => any;
 
-export function IncludesSection() {
+export function IncludesSection({ t }: { t: T }) {
+  const items = (t("includes_section.items") as Array<{ title: string }>) || [];
   return (
     <section className="includes-section">
       <div className="t-container">
-        <div className="section-eyebrow">Every Tour</div>
-        <h2 className="section-title">What comes<br /><em>standard</em></h2>
+        <div className="section-eyebrow">{t("includes_section.eyebrow")}</div>
+        <h2 className="section-title">{t("includes_section.title_1")}<br /><em>{t("includes_section.title_2")}</em></h2>
         <Reveal>
           <div className="includes-grid">
-            {INCLUDES.map((item) => (
-              <div key={item.title} className="include-card">
+            {INCLUDES.map((item, i) => (
+              <div key={i} className="include-card">
                 <span className="include-icon">{item.icon}</span>
-                <div className="include-title">{item.title}</div>
+                <div className="include-title">{items[i]?.title ?? item.title}</div>
               </div>
             ))}
           </div>
@@ -30,46 +31,49 @@ interface TwoWaysProps {
   privateFromPrice: number | null;
   groupFromPrice: number | null;
   defaultCurrency: string;
+  t: T;
 }
-export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurrency }: TwoWaysProps) {
+export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurrency, t }: TwoWaysProps) {
+  const priv = t("two_ways.private");
+  const grp = t("two_ways.group");
+  const privMeta = (priv.meta as string[]) || [];
+  const grpMeta = (grp.meta as string[]) || [];
   return (
     <section className="tour-types" id="overview">
       <div className="t-container">
-        <div className="section-eyebrow light">Choose Your Format</div>
-        <h2 className="section-title light">Two ways to<br /><em>explore</em></h2>
+        <div className="section-eyebrow light">{t("two_ways.eyebrow")}</div>
+        <h2 className="section-title light">{t("two_ways.title_1")}<br /><em>{t("two_ways.title_2")}</em></h2>
         <Reveal>
           <div className="tour-format-grid">
             <a href="#private" className="format-card">
-              <span className="format-label">Fully Customized</span>
-              <h3>Private Tour</h3>
-              <p>Built entirely around your goals, timeline, and preferred vibe. You choose where, how long, what services you need, and what type of properties you want to see.</p>
+              <span className="format-label">{priv.label}</span>
+              <h3>{priv.title}</h3>
+              <p>{priv.desc}</p>
               <div className="format-meta">
-                <div className="fmeta-item"><span className="fmeta-dot" />1 to 10 days</div>
-                <div className="fmeta-item"><span className="fmeta-dot" />Portugal or Cabo Verde</div>
-                <div className="fmeta-item"><span className="fmeta-dot" />Up to 4 people</div>
-                <div className="fmeta-item"><span className="fmeta-dot" />Add lawyer, mortgage, accountant</div>
+                {privMeta.map((m, i) => (
+                  <div key={i} className="fmeta-item"><span className="fmeta-dot" />{m}</div>
+                ))}
               </div>
               <div className="format-price">
                 {privateFromPrice !== null
-                  ? `From ${formatPrice(privateFromPrice, defaultCurrency)} / person`
-                  : "Custom pricing on enquiry"}
+                  ? String(priv.from).replace("{price}", formatPrice(privateFromPrice, defaultCurrency))
+                  : priv.custom}
               </div>
               <div className="format-arrow">→</div>
             </a>
             <a href="#group" className="format-card">
-              <span className="format-label">Themed Itineraries</span>
-              <h3>Group Tour</h3>
-              <p>Join a curated group of 5–9 investors with shared interests. Preset themes, from coastal to cosmopolitan. We launch the trip when the group fills.</p>
+              <span className="format-label">{grp.label}</span>
+              <h3>{grp.title}</h3>
+              <p>{grp.desc}</p>
               <div className="format-meta">
-                <div className="fmeta-item"><span className="fmeta-dot" />3 or 5 days</div>
-                <div className="fmeta-item"><span className="fmeta-dot" />5–9 participants</div>
-                <div className="fmeta-item"><span className="fmeta-dot" />10 preset themes</div>
-                <div className="fmeta-item"><span className="fmeta-dot" />Pre-trip 1-on-1 call included</div>
+                {grpMeta.map((m, i) => (
+                  <div key={i} className="fmeta-item"><span className="fmeta-dot" />{m}</div>
+                ))}
               </div>
               <div className="format-price">
                 {groupFromPrice !== null
-                  ? `From ${formatPrice(groupFromPrice, defaultCurrency)} / person`
-                  : "Pricing announced soon"}
+                  ? String(grp.from).replace("{price}", formatPrice(groupFromPrice, defaultCurrency))
+                  : grp.soon}
               </div>
               <div className="format-arrow">→</div>
             </a>
@@ -83,17 +87,18 @@ export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurren
 interface DestinationsProps {
   destinations: { key: string; bgClass: string; country: string; name: string; detail: string }[];
   loading: boolean;
+  t: T;
 }
-export function DestinationsSection({ destinations, loading }: DestinationsProps) {
+export function DestinationsSection({ destinations, loading, t }: DestinationsProps) {
   return (
     <section className="dest-section" id="destinations">
       <div className="t-container">
-        <div className="section-eyebrow">Where We Go</div>
-        <h2 className="section-title">Two countries.<br /><em>Endless opportunity.</em></h2>
+        <div className="section-eyebrow">{t("destinations_section.eyebrow")}</div>
+        <h2 className="section-title">{t("destinations_section.title_1")}<br /><em>{t("destinations_section.title_2")}</em></h2>
         <Reveal>
           <div className="dest-grid">
             {destinations.length === 0 && !loading && (
-              <p style={{ opacity: 0.6 }}>Destinations will appear here when tours are published.</p>
+              <p style={{ opacity: 0.6 }}>{t("destinations_section.empty")}</p>
             )}
             {destinations.map((d) => (
               <div key={d.key} className="dest-card">
@@ -113,31 +118,33 @@ export function DestinationsSection({ destinations, loading }: DestinationsProps
   );
 }
 
-export function HowItWorksSection() {
+export function HowItWorksSection({ t }: { t: T }) {
+  const steps = (t("how_section.steps") as Array<{ title: string; body: string }>) || [];
+  const reportTags = (t("how_section.report_tags") as string[]) || [];
   return (
     <div className="how-section" id="how">
       <div className="how-sticky">
-        <div className="how-eyebrow">The KnC Process</div>
-        <h2>From Inquiry<br />to <em>Keys in Hand.</em></h2>
-        <p>We built a proven system so diaspora investors never navigate a foreign property market alone. Bilingual. Transparent. Built for you.</p>
+        <div className="how-eyebrow">{t("how_section.eyebrow")}</div>
+        <h2>{t("how_section.title_1")}<br />{t("how_section.title_2")}<em>{t("how_section.title_3")}</em></h2>
+        <p>{t("how_section.intro")}</p>
         <div className="report-card">
-          <div className="report-card-head">Lisbon</div>
+          <div className="report-card-head">{t("how_section.report_head")}</div>
           <div className="report-card-body">
-            <h3>Sample Post-Tour Report</h3>
-            <p>Estrela district · 3 properties reviewed · July 2026 tour cohort</p>
+            <h3>{t("how_section.report_title")}</h3>
+            <p>{t("how_section.report_meta")}</p>
             <div className="report-tags">
-              {["NIF Guide", "CPCV Template", "Yield Calc", "Solicitor Contacts", "Tax Summary"].map((tag) => (
-                <span key={tag} className="report-tag">{tag}</span>
+              {reportTags.map((tag, i) => (
+                <span key={i} className="report-tag">{tag}</span>
               ))}
             </div>
           </div>
         </div>
       </div>
       <div>
-        {HOW_STEPS.map((step, i) => (
-          <Reveal key={step.num} delay={i * 0.08}>
+        {steps.map((step, i) => (
+          <Reveal key={i} delay={i * 0.08}>
             <div className="how-step">
-              <div className="hs-n">{step.num}</div>
+              <div className="hs-n">{String(i + 1).padStart(2, "0")}</div>
               <div className="hs-b">
                 <h4>{step.title}</h4>
                 <p>{step.body}</p>
@@ -150,23 +157,24 @@ export function HowItWorksSection() {
   );
 }
 
-export function TestimonialsSection() {
+export function TestimonialsSection({ t }: { t: T }) {
+  const items = (t("testimonials_section.items") as Array<{ text: string; origin: string }>) || [];
   return (
     <section className="test-section" id="testimonials">
       <div className="t-container">
-        <div className="section-eyebrow">From Our Travellers</div>
-        <h2 className="section-title">Real Investors.<br /><em>Real Results.</em></h2>
+        <div className="section-eyebrow">{t("testimonials_section.eyebrow")}</div>
+        <h2 className="section-title">{t("testimonials_section.title_1")}<br /><em>{t("testimonials_section.title_2")}</em></h2>
         <Reveal>
           <div className="test-grid">
-            {TESTIMONIALS.map((test) => (
+            {TESTIMONIALS.map((test, i) => (
               <div key={test.initials} className="test-card">
                 <div className="tq">"</div>
-                <p className="tt">{test.text}</p>
+                <p className="tt">{items[i]?.text ?? test.text}</p>
                 <div className="ta">
                   <div className={`ta-av ${test.avClass}`}>{test.initials}</div>
                   <div>
                     <div className="ta-name">{test.name}</div>
-                    <div className="ta-orig">{test.origin}</div>
+                    <div className="ta-orig">{items[i]?.origin ?? test.origin}</div>
                   </div>
                 </div>
               </div>
@@ -197,7 +205,7 @@ export function NewsletterSection({ t }: { t: T }) {
               e.preventDefault();
               const input = (e.currentTarget.elements.namedItem("email") as HTMLInputElement);
               if (input?.value) {
-                toast({ title: "Thank you", description: "You're on the list." });
+                toast({ title: t("newsletter.success_title"), description: t("newsletter.success_desc") });
                 input.value = "";
               }
             }}

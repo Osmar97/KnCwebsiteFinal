@@ -16,7 +16,7 @@ interface Props {
   activeTab: string;
   setActiveTab: (k: string) => void;
   lang: Language;
-  t: (path: string) => string;
+  t: (path: string) => any;
   onSelectTour: (tour: TourRow) => void;
   onRequestCustom: () => void;
 }
@@ -42,10 +42,10 @@ export function TourFeaturedTours({
         </div>
         <div className="tour-tabs">
           {[
-            { key: "all", label: "All Tours" },
-            { key: "portugal", label: "Portugal" },
-            { key: "cabo-verde", label: "Cabo Verde" },
-            { key: "combined", label: "Combined" },
+            { key: "all", label: t("tours_section.tabs.all") },
+            { key: "portugal", label: t("tours_section.tabs.portugal") },
+            { key: "cabo-verde", label: t("tours_section.tabs.cabo_verde") },
+            { key: "combined", label: t("tours_section.tabs.combined") },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -57,22 +57,22 @@ export function TourFeaturedTours({
           ))}
         </div>
         <div className="tours-grid">
-          {loading && <p style={{ opacity: 0.6 }}>Loading tours…</p>}
+          {loading && <p style={{ opacity: 0.6 }}>{t("tours_section.loading")}</p>}
           {!loading && filteredTours.length === 0 && (
-            <p style={{ opacity: 0.6 }}>No tours available right now. Check back soon.</p>
+            <p style={{ opacity: 0.6 }}>{t("tours_section.empty")}</p>
           )}
           {filteredTours.map((card, i) => {
             const next = nextTourDate(card.dates);
             const avail = next ? availability[next.id] : undefined;
             const remaining = avail?.remaining ?? next?.capacity ?? 0;
             const cap = avail?.capacity ?? next?.capacity ?? 0;
-            const spotsText = !next ? "Coming soon"
-              : next.sold_out ? "Sold out"
-              : remaining <= 3 ? `${remaining} spots left`
-              : `${remaining} spots`;
+            const spotsText = !next ? t("tours_section.card.coming_soon")
+              : next.sold_out ? t("tours_section.card.sold_out")
+              : remaining <= 3 ? String(t("tours_section.card.spots_left")).replace("{n}", String(remaining))
+              : String(t("tours_section.card.spots")).replace("{n}", String(remaining));
             const spotsFew = next ? (next.sold_out || remaining <= 3) : false;
             const price = formatPrice(card.base_price, card.currency);
-            const dateLabel = next ? formatTourDateRange(next, localeMap[lang]) : "TBA";
+            const dateLabel = next ? formatTourDateRange(next, localeMap[lang]) : t("tours_section.card.tba");
             const cardRec = card as unknown as Record<string, unknown>;
             const name = pickLocalized(cardRec, "name", lang);
             const shortDesc = pickLocalized(cardRec, "short_desc", lang);
@@ -92,18 +92,18 @@ export function TourFeaturedTours({
                     <div className="tour-title">{name}</div>
                     <p className="tour-desc">{shortDesc}</p>
                     <div className="tour-meta">
-                      <span className="tour-pill">{card.duration_days} Days</span>
-                      {cap > 0 && <span className="tour-pill">{cap} Participants</span>}
+                      <span className="tour-pill">{String(t("tours_section.card.days")).replace("{n}", String(card.duration_days))}</span>
+                      {cap > 0 && <span className="tour-pill">{String(t("tours_section.card.participants")).replace("{n}", String(cap))}</span>}
                       {card.tags[0] && <span className="tour-pill">{card.tags[0]}</span>}
                     </div>
                     <div className="tour-footer">
                       <div className="tour-price">
                         <strong>{price}</strong>
-                        per person
+                        {t("tours_section.card.per_person")}
                       </div>
                       <div className="tour-date">
                         {dateLabel}
-                        <span>NEXT</span>
+                        <span>{t("tours_section.card.next")}</span>
                       </div>
                     </div>
                     <button
