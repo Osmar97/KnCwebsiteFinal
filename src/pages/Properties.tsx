@@ -16,9 +16,8 @@ const Properties = () => {
     queryKey: ["properties", sortBy],
     queryFn: async () => {
       let query = supabase
-        .from("properties" as any)
-        .select("*")
-        .eq("status", "active") as any;
+        .from("properties_public" as any)
+        .select("*") as any;
 
       // Apply sorting
       if (sortBy === "price_asc") query = query.order("price", { ascending: true });
