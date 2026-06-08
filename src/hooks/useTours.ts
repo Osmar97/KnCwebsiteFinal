@@ -44,14 +44,13 @@ export interface AvailabilityRow {
   remaining: number;
 }
 
-export function pickLocalized<T extends Record<string, unknown>>(
-  row: T,
+export function pickLocalized(
+  row: Record<string, unknown>,
   field: string,
   lang: Language,
 ): string {
-  const key = `${field}_${lang}` as keyof T;
-  const fallback = `${field}_en` as keyof T;
-  return String(row[key] || row[fallback] || "");
+  const value = row[`${field}_${lang}`] ?? row[`${field}_en`];
+  return value ? String(value) : "";
 }
 
 export function formatTourDateRange(d: TourDateRow, locale = "en-GB"): string {
