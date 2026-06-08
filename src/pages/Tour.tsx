@@ -10,10 +10,9 @@ import PreTourFormModal, { PreTourFormData } from "@/components/tour/PreTourForm
 import InlineTourForm from "@/components/tour/InlineTourForm";
 import TourDetailModal from "@/components/tour/TourDetailModal";
 import { useTours, pickLocalized, nextTourDate, formatTourDateRange, type TourRow } from "@/hooks/useTours";
+import { formatPrice, formatPriceShort } from "@/lib/formatPrice";
 
 // ── STATIC DATA ─────────────────────────────────────────────────────────────
-
-const CURRENCY_SYMBOL: Record<string, string> = { EUR: "€", USD: "$", GBP: "£" };
 
 function tourCategoryFilter(t: TourRow): "portugal" | "cabo-verde" | "combined" {
   const flag = t.flag || "";
@@ -22,55 +21,20 @@ function tourCategoryFilter(t: TourRow): "portugal" | "cabo-verde" | "combined" 
   return "combined";
 }
 
-interface GroupTourData {
-  num: string;
-  theme: string;
-  name: string;
-  dest: string;
-  tags: string[];
-  waitlistPct: number;
-  waitlistLabel: string;
-  price: string;
+function countryFromFlag(flag: string | null): string {
+  if (flag === "🇵🇹") return "Portugal";
+  if (flag === "🇨🇻") return "Cabo Verde";
+  return "Portugal · Cabo Verde";
 }
 
-const GROUP_TOURS: GroupTourData[] = [
-  {
-    num: "01", theme: "Coastal Lifestyle",
-    name: "The Sun & Yield Tour",
-    dest: "Algarve, Portugal · 5 Days",
-    tags: ["Pool Views", "Rental Yield", "Beach Access"],
-    waitlistPct: 78,
-    waitlistLabel: "7/9 spots filled",
-    price: "850€",
-  },
-  {
-    num: "02", theme: "Capital Growth",
-    name: "The Lisbon Ascent",
-    dest: "Lisbon, Portugal · 5 Days",
-    tags: ["Emerging Hoods", "Long-Term Holds", "Legal Day"],
-    waitlistPct: 56,
-    waitlistLabel: "5/9 spots filled",
-    price: "790€",
-  },
-  {
-    num: "03", theme: "First-Time Buyer",
-    name: "The Entry Point",
-    dest: "Porto, Portugal · 3 Days",
-    tags: ["Under €200K", "Beginner-Friendly", "High ROI"],
-    waitlistPct: 44,
-    waitlistLabel: "4/9 spots filled",
-    price: "590€",
-  },
-  {
-    num: "04", theme: "Diaspora Pioneer",
-    name: "The Cabo Verde Opener",
-    dest: "Praia + Mindelo, Cabo Verde · 5 Days",
-    tags: ["Pre-Market", "Diaspora Focus", "Cultural Immersion"],
-    waitlistPct: 33,
-    waitlistLabel: "3/9 spots filled",
-    price: "690€",
-  },
-];
+/** Maps a tour's hero_image (e.g. "ti-lisbon") to its destination bg class. */
+function destBgClassFor(heroImage: string | null, flag: string | null): string {
+  if (heroImage?.startsWith("ti-")) {
+    return `db-${heroImage.slice(3)}`;
+  }
+  if (flag === "🇨🇻") return "db-cv";
+  return "db-lisbon";
+}
 
 const HOW_STEPS = [
   {
@@ -119,13 +83,6 @@ const TESTIMONIALS = [
     name: "David S.",
     origin: "Toronto, CA · Algarve Property Owner",
   },
-];
-
-const DESTINATIONS = [
-  { bgClass: "db-lisbon", country: "Portugal", name: "Lisbon", detail: "Estrela · Mouraria · Alcântara · Marvila · Belém" },
-  { bgClass: "db-porto", country: "Portugal", name: "Porto", detail: "Bonfim · Paranhos · Cedofeita" },
-  { bgClass: "db-algarve", country: "Portugal", name: "Algarve", detail: "Lagos · Portimão · Silves · Tavira" },
-  { bgClass: "db-cv", country: "Cabo Verde", name: "Santiago + Sal", detail: "Praia · Mindelo · Sal Island" },
 ];
 
 // ── UTILITY COMPONENTS ───────────────────────────────────────────────────────
