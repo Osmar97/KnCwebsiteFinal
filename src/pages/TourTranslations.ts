@@ -10,6 +10,23 @@ export const TRANSLATIONS = {
       stories: "Stories",
       cta: "Reserve Your Spot"
     },
+    tours_section: {
+      eyebrow: "Private Tours",
+      title_1: "Choose Your",
+      title_2: "Ownership Journey",
+      request_custom: "Request Custom",
+      view_all: "View All Dates →"
+    },
+    tour_modal: {
+      destinations: "Destinations:",
+      next_date: "Next date:",
+      spots_filled: "{filled} of {total} spots filled",
+      remaining: "· {n} remaining",
+      from: "FROM",
+      join_waitlist: "JOIN WAITLIST",
+      close: "Close",
+      sold_out: "SOLD OUT"
+    },
     newsletter: {
       eyebrow: "Stay Close",
       heading_1: "Join the ",
@@ -176,6 +193,23 @@ export const TRANSLATIONS = {
       stories: "Histórias",
       cta: "Reservar Lugar"
     },
+    tours_section: {
+      eyebrow: "Tours Privados",
+      title_1: "Escolha a Sua",
+      title_2: "Jornada de Propriedade",
+      request_custom: "Pedido Personalizado",
+      view_all: "Ver Todas as Datas →"
+    },
+    tour_modal: {
+      destinations: "Destinos:",
+      next_date: "Próxima data:",
+      spots_filled: "{filled} de {total} lugares preenchidos",
+      remaining: "· {n} restantes",
+      from: "DESDE",
+      join_waitlist: "ENTRAR NA LISTA",
+      close: "Fechar",
+      sold_out: "ESGOTADO"
+    },
     newsletter: {
       eyebrow: "Mantenha-se Próximo",
       heading_1: "Junte-se ao ",
@@ -341,6 +375,23 @@ export const TRANSLATIONS = {
       how: "Comment Ça Marche",
       stories: "Témoignages",
       cta: "Réserver Ma Place"
+    },
+    tours_section: {
+      eyebrow: "Tours Privés",
+      title_1: "Choisissez Votre",
+      title_2: "Parcours de Propriété",
+      request_custom: "Demande Personnalisée",
+      view_all: "Voir Toutes les Dates →"
+    },
+    tour_modal: {
+      destinations: "Destinations :",
+      next_date: "Prochaine date :",
+      spots_filled: "{filled} sur {total} places réservées",
+      remaining: "· {n} restantes",
+      from: "À PARTIR DE",
+      join_waitlist: "REJOINDRE LA LISTE",
+      close: "Fermer",
+      sold_out: "COMPLET"
     },
     newsletter: {
       eyebrow: "Restez Proche",

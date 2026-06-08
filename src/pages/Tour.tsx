@@ -8,124 +8,19 @@ import { TRANSLATIONS, Language } from "./TourTranslations";
 import "./Tour.css";
 import PreTourFormModal, { PreTourFormData } from "@/components/tour/PreTourFormModal";
 import InlineTourForm from "@/components/tour/InlineTourForm";
+import TourDetailModal from "@/components/tour/TourDetailModal";
+import { useTours, pickLocalized, nextTourDate, formatTourDateRange, type TourRow } from "@/hooks/useTours";
 
 // ── STATIC DATA ─────────────────────────────────────────────────────────────
 
-interface TourCardData {
-  id: string;
-  category: "portugal" | "cabo-verde" | "combined";
-  imgClass: string;
-  badge?: string;
-  badgeGold?: boolean;
-  flag: string;
-  spotsText: string;
-  spotsFew?: boolean;
-  location: string;
-  title: string;
-  desc: string;
-  pills: string[];
-  price: string;
-  date: string;
-  dateNote: string;
-}
+const CURRENCY_SYMBOL: Record<string, string> = { EUR: "€", USD: "$", GBP: "£" };
 
-const TOUR_CARDS: TourCardData[] = [
-  {
-    id: "lisbon-core",
-    category: "portugal",
-    imgClass: "ti-lisbon",
-    badge: "GROUP",
-    flag: "🇵🇹",
-    spotsText: "4 spots left",
-    spotsFew: true,
-    location: "Portugal · Lisbon",
-    title: "The Lisbon Core",
-    desc: "Five days across Estrela, Mouraria, Alcântara and Marvila. Solicitor day included.",
-    pills: ["5 Days", "6–9 Participants", "Solicitor Day"],
-    price: "€790",
-    date: "12–16 Sept",
-    dateNote: "per person",
-  },
-  {
-    id: "porto-rise",
-    category: "portugal",
-    imgClass: "ti-porto",
-    badge: "GROUP",
-    flag: "🇵🇹",
-    spotsText: "6 spots",
-    location: "Portugal · Porto",
-    title: "The Porto Rise",
-    desc: "Bonfim, Paranhos, Cedofeita — Porto's emerging neighbourhoods before they peak.",
-    pills: ["3 Days", "5–9 Participants", "Investor Breakfast"],
-    price: "€590",
-    date: "10–12 Oct",
-    dateNote: "per person",
-  },
-  {
-    id: "algarve-coast",
-    category: "portugal",
-    imgClass: "ti-algarve",
-    badge: "FEATURED",
-    badgeGold: true,
-    flag: "🇵🇹",
-    spotsText: "2 spots left",
-    spotsFew: true,
-    location: "Portugal · Algarve",
-    title: "The Algarve Coast",
-    desc: "Lagos, Portimão, Silves and Tavira. Sun, yield, and long-term appreciation.",
-    pills: ["5 Days", "Pool & Sea Views", "Rental Yield Focus"],
-    price: "€850",
-    date: "3–7 Nov",
-    dateNote: "per person",
-  },
-  {
-    id: "praia-ground",
-    category: "cabo-verde",
-    imgClass: "ti-praia",
-    badge: "GROUP",
-    flag: "🇨🇻",
-    spotsText: "7 spots",
-    location: "Cabo Verde · Praia",
-    title: "Praia Ground Zero",
-    desc: "Santiago Island's capital. Understand the emerging market before the wave arrives.",
-    pills: ["3 Days", "Pre-Market Focus", "Local Contacts"],
-    price: "€690",
-    date: "18–20 Oct",
-    dateNote: "per person",
-  },
-  {
-    id: "mindelo-culture",
-    category: "cabo-verde",
-    imgClass: "ti-mindelo",
-    badge: "GROUP",
-    flag: "🇨🇻",
-    spotsText: "5 spots",
-    location: "Cabo Verde · São Vicente",
-    title: "Mindelo & The Culture",
-    desc: "São Vicente's creative capital. Boutique buys, arts district, and the hospitality market.",
-    pills: ["3 Days", "Culture Focus", "Boutique Buys"],
-    price: "€690",
-    date: "22–24 Nov",
-    dateNote: "per person",
-  },
-  {
-    id: "dual-market",
-    category: "combined",
-    imgClass: "ti-combined",
-    badge: "EXCLUSIVE",
-    badgeGold: true,
-    flag: "🌍",
-    spotsText: "3 spots left",
-    spotsFew: true,
-    location: "Portugal + Cabo Verde",
-    title: "The Dual Market",
-    desc: "Lisbon then Praia. Two markets, two strategies, one transformative trip.",
-    pills: ["10 Days", "Max 4 Participants", "Both Countries"],
-    price: "€2,100",
-    date: "Oct–Nov",
-    dateNote: "per person",
-  },
-];
+function tourCategoryFilter(t: TourRow): "portugal" | "cabo-verde" | "combined" {
+  const flag = t.flag || "";
+  if (flag === "🇵🇹") return "portugal";
+  if (flag === "🇨🇻") return "cabo-verde";
+  return "combined";
+}
 
 interface GroupTourData {
   num: string;
@@ -289,6 +184,8 @@ export default function TourPage() {
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
   const [isSubmittingPrivate, setIsSubmittingPrivate] = useState(false);
   const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
+  const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
+  const { tours, availability, loading: toursLoading } = useTours();
 
   const t = (path: string) => {
     const keys = path.split(".");
@@ -359,9 +256,14 @@ export default function TourPage() {
   const openReserveForm = () => setShowPreForm(true);
   const openEnquiryForm = () => setShowEnquiryForm(true);
 
+  const scrollToId = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const filteredTours = activeTab === "all"
-    ? TOUR_CARDS
-    : TOUR_CARDS.filter((c) => c.category === activeTab);
+    ? tours
+    : tours.filter((c) => tourCategoryFilter(c) === activeTab);
 
   const EMAIL_CONTACT = "mailto:services@kingsncompany.com";
 
@@ -503,10 +405,10 @@ export default function TourPage() {
         <div className="t-container">
           <div className="tours-header">
             <div>
-              <div className="section-eyebrow">Upcoming Tours</div>
-              <h2 className="section-title">Choose Your<br /><em>Ownership Journey</em></h2>
+              <div className="section-eyebrow">{t("tours_section.eyebrow")}</div>
+              <h2 className="section-title">{t("tours_section.title_1")}<br /><em>{t("tours_section.title_2")}</em></h2>
             </div>
-            <a href="#group" className="see-all">View All Dates →</a>
+            <a href="#group" className="see-all">{t("tours_section.view_all")}</a>
           </div>
           <div className="tour-tabs">
             {[
@@ -525,37 +427,68 @@ export default function TourPage() {
             ))}
           </div>
           <div className="tours-grid">
-            {filteredTours.map((card, i) => (
-              <Reveal key={card.id} delay={i * 0.05}>
-                <div className="tour-card" onClick={openEnquiryForm} role="button" tabIndex={0}
-                  onKeyDown={(e) => e.key === "Enter" && openEnquiryForm()}>
-                  <div className="tour-img">
-                    <div className={`tour-img-inner ${card.imgClass}`} />
-                    {card.badge && <div className={`tour-badge ${card.badgeGold ? "gold" : ""}`}>{card.badge}</div>}
-                    <div className="tour-flag">{card.flag}</div>
-                    <div className={`tour-spots ${card.spotsFew ? "few" : ""}`}>{card.spotsText}</div>
-                  </div>
-                  <div className="tour-body">
-                    <div className="tour-loc">{card.location}</div>
-                    <div className="tour-title">{card.title}</div>
-                    <p className="tour-desc">{card.desc}</p>
-                    <div className="tour-meta">
-                      {card.pills.map((p) => <span key={p} className="tour-pill">{p}</span>)}
+            {toursLoading && <p style={{ opacity: 0.6 }}>Loading tours…</p>}
+            {!toursLoading && filteredTours.length === 0 && (
+              <p style={{ opacity: 0.6 }}>No tours available right now. Check back soon.</p>
+            )}
+            {filteredTours.map((card, i) => {
+              const next = nextTourDate(card.dates);
+              const avail = next ? availability[next.id] : undefined;
+              const remaining = avail?.remaining ?? next?.capacity ?? 0;
+              const cap = avail?.capacity ?? next?.capacity ?? 0;
+              const spotsText = !next ? "Coming soon"
+                : next.sold_out ? "Sold out"
+                : remaining <= 3 ? `${remaining} spots left`
+                : `${remaining} spots`;
+              const spotsFew = next ? (next.sold_out || remaining <= 3) : false;
+              const symbol = CURRENCY_SYMBOL[card.currency] || card.currency;
+              const price = `${symbol}${Number(card.base_price).toLocaleString()}`;
+              const dateLabel = next ? formatTourDateRange(next, lang === "en" ? "en-GB" : lang === "pt" ? "pt-PT" : "fr-FR") : "TBA";
+              const cardRec = card as unknown as Record<string, unknown>;
+              const name = pickLocalized(cardRec, "name", lang);
+              const shortDesc = pickLocalized(cardRec, "short_desc", lang);
+              const openModal = () => setSelectedTour(card);
+              return (
+                <Reveal key={card.id} delay={i * 0.05}>
+                  <div className="tour-card" onClick={openModal} role="button" tabIndex={0}
+                    onKeyDown={(e) => e.key === "Enter" && openModal()}>
+                    <div className="tour-img">
+                      <div className={`tour-img-inner ${card.hero_image || ""}`} />
+                      {card.badge && <div className={`tour-badge ${card.badge_variant === "gold" ? "gold" : ""}`}>{card.badge}</div>}
+                      {card.flag && <div className="tour-flag">{card.flag}</div>}
+                      <div className={`tour-spots ${spotsFew ? "few" : ""}`}>{spotsText}</div>
                     </div>
-                    <div className="tour-footer">
-                      <div className="tour-price">
-                        <strong>{card.price}</strong>
-                        {card.dateNote}
+                    <div className="tour-body">
+                      <div className="tour-loc">{card.destinations.slice(0, 2).join(" · ")}</div>
+                      <div className="tour-title">{name}</div>
+                      <p className="tour-desc">{shortDesc}</p>
+                      <div className="tour-meta">
+                        <span className="tour-pill">{card.duration_days} Days</span>
+                        {cap > 0 && <span className="tour-pill">{cap} Participants</span>}
+                        {card.tags[0] && <span className="tour-pill">{card.tags[0]}</span>}
                       </div>
-                      <div className="tour-date">
-                        {card.date}
-                        <span>{card.dateNote}</span>
+                      <div className="tour-footer">
+                        <div className="tour-price">
+                          <strong>{price}</strong>
+                          per person
+                        </div>
+                        <div className="tour-date">
+                          {dateLabel}
+                          <span>NEXT</span>
+                        </div>
                       </div>
+                      <button
+                        type="button"
+                        className="tour-request-custom"
+                        onClick={(e) => { e.stopPropagation(); scrollToId("private"); }}
+                      >
+                        {t("tours_section.request_custom")}
+                      </button>
                     </div>
                   </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -810,6 +743,28 @@ export default function TourPage() {
         onSubmit={(data) => handleEnquiry(data)}
         isSubmitting={isSendingEnquiry}
         mode="enquiry"
+      />
+      <TourDetailModal
+        tour={selectedTour}
+        availability={availability}
+        lang={lang}
+        open={selectedTour !== null}
+        onOpenChange={(o) => { if (!o) setSelectedTour(null); }}
+        onJoinWaitlist={() => {
+          setSelectedTour(null);
+          setTimeout(() => scrollToId("waitlist"), 80);
+        }}
+        labels={{
+          destinations: t("tour_modal.destinations"),
+          nextDate: t("tour_modal.next_date"),
+          spotsFilled: (f, total) => String(t("tour_modal.spots_filled")).replace("{filled}", String(f)).replace("{total}", String(total)),
+          remaining: (n) => String(t("tour_modal.remaining")).replace("{n}", String(n)),
+          from: t("tour_modal.from"),
+          perPerson: "per person",
+          joinWaitlist: t("tour_modal.join_waitlist"),
+          close: t("tour_modal.close"),
+          soldOut: t("tour_modal.sold_out"),
+        }}
       />
     </div>
   );
