@@ -22,11 +22,6 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-// Shared password for the admin allowlist. Real auth happens against Supabase
-// after this gate — the password just prevents accidental access to the sign-up
-// flow below. Rotate by changing both this value and the Supabase user password.
-const SHARED_ADMIN_PASSWORD = "Myqdeq-zejka7-sirjyf";
-
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes
 
@@ -87,7 +82,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     if (isLocked) return false;
 
     const profile = findAdminProfile(email);
-    if (!profile || password !== SHARED_ADMIN_PASSWORD) {
+    if (!profile) {
       setLoginAttempts(prev => prev + 1);
       if (loginAttempts + 1 >= MAX_ATTEMPTS) {
         setLockoutTime(Date.now() + LOCKOUT_DURATION);
@@ -96,7 +91,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      // First try to sign in
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -113,36 +107,6 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
         });
         setLoginAttempts(0);
         return true;
-      }
-
-      // If sign in fails due to user not found or email not confirmed, try sign up
-      if (signInError && (
-        signInError.message.includes('Invalid login credentials') || 
-        signInError.message.includes('Email not confirmed')
-      )) {
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: {
-              confirmed_at: new Date().toISOString() // Try to auto-confirm
-            }
-          }
-        });
-
-        if (signUpData?.user && !signUpError) {
-          setSupabaseUser(signUpData.user);
-          setIsAdminLoggedIn(true);
-          setAdminUser({
-            id: signUpData.user.id,
-            email: signUpData.user.email!,
-            name: profile.name,
-            title: profile.title,
-          });
-          setLoginAttempts(0);
-          return true;
-        }
       }
     } catch (error) {
       console.error("Login error:", error);
