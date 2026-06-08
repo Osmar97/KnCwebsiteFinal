@@ -17,6 +17,7 @@ import { propertySchema, PropertyFormData } from "@/schemas/propertySchema";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
+import { ADMIN_PROFILES } from "@/lib/adminConfig";
 
 interface PropertyEditorProps {
   property?: any;

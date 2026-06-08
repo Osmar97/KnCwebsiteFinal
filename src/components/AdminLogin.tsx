@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { LogIn, LogOut, Shield } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
+import { findAdminProfile } from "@/lib/adminConfig";
 
 export const AdminLogin = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,14 +83,8 @@ export const AdminLogin = () => {
   };
 
   if (isAdminLoggedIn && adminUser && supabaseUser) {
-    // Determine which profile image to use based on email
-    const emailLower =
-      (supabaseUser?.email || adminUser?.email || "").toLowerCase().trim();
-    const isIsmael = emailLower === "ismael@kingsncompany.com";
-
-    const profileSrc = isIsmael
-      ? "/lovable-uploads/ismaPerfil.JPG"
-      : "/lovable-uploads/1_Simbolo_Dourado.png";
+    const profile = findAdminProfile(supabaseUser?.email || adminUser?.email);
+    const profileSrc = profile?.avatar ?? "/lovable-uploads/1_Simbolo_Dourado.png";
 
     return (
       <div className="flex items-center gap-3">
