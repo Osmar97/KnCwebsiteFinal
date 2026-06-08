@@ -287,11 +287,354 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_bookings: {
+        Row: {
+          amount_paid: number | null
+          created_at: string
+          currency: string | null
+          customer_email: string | null
+          customer_name: string | null
+          id: string
+          source: string
+          status: string
+          stripe_session_id: string | null
+          tour_date_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          source?: string
+          status?: string
+          stripe_session_id?: string | null
+          tour_date_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          source?: string
+          status?: string
+          stripe_session_id?: string | null
+          tour_date_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_bookings_tour_date_id_fkey"
+            columns: ["tour_date_id"]
+            isOneToOne: false
+            referencedRelation: "tour_date_availability"
+            referencedColumns: ["tour_date_id"]
+          },
+          {
+            foreignKeyName: "tour_bookings_tour_date_id_fkey"
+            columns: ["tour_date_id"]
+            isOneToOne: false
+            referencedRelation: "tour_dates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_custom_quote_requests: {
+        Row: {
+          country: string | null
+          created_at: string
+          destinations: string[]
+          email: string
+          first_name: string
+          hotel_preference: string | null
+          id: string
+          last_name: string
+          nationality: string | null
+          notes: string | null
+          num_days: number | null
+          num_guests: number | null
+          payload: Json
+          phone: string | null
+          preferred_dates: string | null
+          services: string[]
+          status: string
+          updated_at: string
+          vibes: string[]
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          destinations?: string[]
+          email: string
+          first_name: string
+          hotel_preference?: string | null
+          id?: string
+          last_name: string
+          nationality?: string | null
+          notes?: string | null
+          num_days?: number | null
+          num_guests?: number | null
+          payload?: Json
+          phone?: string | null
+          preferred_dates?: string | null
+          services?: string[]
+          status?: string
+          updated_at?: string
+          vibes?: string[]
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          destinations?: string[]
+          email?: string
+          first_name?: string
+          hotel_preference?: string | null
+          id?: string
+          last_name?: string
+          nationality?: string | null
+          notes?: string | null
+          num_days?: number | null
+          num_guests?: number | null
+          payload?: Json
+          phone?: string | null
+          preferred_dates?: string | null
+          services?: string[]
+          status?: string
+          updated_at?: string
+          vibes?: string[]
+        }
+        Relationships: []
+      }
+      tour_dates: {
+        Row: {
+          capacity: number
+          created_at: string
+          end_date: string
+          id: string
+          label: string | null
+          sold_out: boolean
+          start_date: string
+          tour_id: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number
+          created_at?: string
+          end_date: string
+          id?: string
+          label?: string | null
+          sold_out?: boolean
+          start_date: string
+          tour_id: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          end_date?: string
+          id?: string
+          label?: string | null
+          sold_out?: boolean
+          start_date?: string
+          tour_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_dates_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_waitlist_requests: {
+        Row: {
+          country: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          notes: string | null
+          payload: Json
+          phone: string | null
+          preferred_destinations: string[]
+          status: string
+          tour_id: string | null
+          updated_at: string
+          vibes: string[]
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          notes?: string | null
+          payload?: Json
+          phone?: string | null
+          preferred_destinations?: string[]
+          status?: string
+          tour_id?: string | null
+          updated_at?: string
+          vibes?: string[]
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          notes?: string | null
+          payload?: Json
+          phone?: string | null
+          preferred_destinations?: string[]
+          status?: string
+          tour_id?: string | null
+          updated_at?: string
+          vibes?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_waitlist_requests_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tours: {
+        Row: {
+          badge: string | null
+          badge_variant: string | null
+          base_price: number
+          category: string
+          created_at: string
+          currency: string
+          description_en: string
+          description_fr: string
+          description_pt: string
+          destinations: string[]
+          duration_days: number
+          early_bird_price: number | null
+          flag: string | null
+          gallery: string[]
+          hero_image: string | null
+          id: string
+          name_en: string
+          name_fr: string
+          name_pt: string
+          premium_price: number | null
+          short_desc_en: string
+          short_desc_fr: string
+          short_desc_pt: string
+          slug: string
+          sort_order: number
+          status: string
+          tags: string[]
+          tour_type: string
+          updated_at: string
+        }
+        Insert: {
+          badge?: string | null
+          badge_variant?: string | null
+          base_price?: number
+          category?: string
+          created_at?: string
+          currency?: string
+          description_en?: string
+          description_fr?: string
+          description_pt?: string
+          destinations?: string[]
+          duration_days?: number
+          early_bird_price?: number | null
+          flag?: string | null
+          gallery?: string[]
+          hero_image?: string | null
+          id?: string
+          name_en?: string
+          name_fr?: string
+          name_pt?: string
+          premium_price?: number | null
+          short_desc_en?: string
+          short_desc_fr?: string
+          short_desc_pt?: string
+          slug: string
+          sort_order?: number
+          status?: string
+          tags?: string[]
+          tour_type?: string
+          updated_at?: string
+        }
+        Update: {
+          badge?: string | null
+          badge_variant?: string | null
+          base_price?: number
+          category?: string
+          created_at?: string
+          currency?: string
+          description_en?: string
+          description_fr?: string
+          description_pt?: string
+          destinations?: string[]
+          duration_days?: number
+          early_bird_price?: number | null
+          flag?: string | null
+          gallery?: string[]
+          hero_image?: string | null
+          id?: string
+          name_en?: string
+          name_fr?: string
+          name_pt?: string
+          premium_price?: number | null
+          short_desc_en?: string
+          short_desc_fr?: string
+          short_desc_pt?: string
+          slug?: string
+          sort_order?: number
+          status?: string
+          tags?: string[]
+          tour_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      tour_date_availability: {
+        Row: {
+          capacity: number | null
+          confirmed_count: number | null
+          remaining: number | null
+          tour_date_id: string | null
+          tour_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_dates_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      get_tour_availability: {
+        Args: never
+        Returns: {
+          capacity: number
+          confirmed_count: number
+          remaining: number
+          tour_date_id: string
+          tour_id: string
+        }[]
+      }
       is_admin_user: { Args: never; Returns: boolean }
     }
     Enums: {
