@@ -162,7 +162,6 @@ export const Navigation = () => {
     { name: "ABOUT", href: "/about" },
     { name: "SERVICES", href: "/services" },
     { name: "TOURS", href: "/POT" },
-    { name: "CITY KEYS", href: "/kttc" },
     { name: "OUR APPROACH", href: "/our-approach" },
     { name: "CONTACT", href: "/contact" }
   ];
