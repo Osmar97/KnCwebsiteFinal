@@ -1,64 +1,45 @@
-# Private Tour — "Design your Experience" rebuild
 
-Rebuild the `#group` section on `/POT` to match the attached `tour-booking-flow.jsx` design as an **inline 4-step flow** (Experience → Dates → Your Details → Confirm & Pay), DB-driven, with Stripe Checkout (redirect) for the 30% deposit and Resend confirmation, fully translated (EN / PT / FR via AI translate).
+## Scope (per your answers)
 
-## What changes
+- Keep everything; remove nothing (no deletion of quote requests, clarity slots, destinations, etc.).
+- Add admin management UIs so all values shown on the public Private Tour flow become database-driven and editable.
 
-### 1. Database (one migration)
+## Schema changes (one migration)
 
-New tables (all `service_role` writes only; `anon` + `authenticated` read where flagged active):
+1. Add columns to `tour_destinations`:
+   - `min_guests INT NOT NULL DEFAULT 1`
+   - `max_guests INT NOT NULL DEFAULT 10`
+2. New singleton table `private_tour_settings`:
+   - `id` (fixed `true` boolean PK so only one row), `min_days`, `max_days`, `default_currency`, `deposit_ratio` (numeric, default 0.30), `promo_label`, `promo_discount_pct`, timestamps
+   - Public `SELECT`; admin-only writes via `is_admin_user()`.
+3. RLS already exists for `tour_destinations`, `tour_addons`, `tour_dates`, `tour_clarity_call_slots` — verify admin write policies exist; add the few that are missing.
 
-- `tour_destinations` — `slug`, `flag`, `min_days`, `max_days`, `base_price_per_day_per_person numeric`, `currency`, `sort_order`, `active`, `label_en/pt/fr`, `desc_en/pt/fr`.
-- `tour_addons` — `slug`, `icon`, `price numeric`, `is_complimentary bool`, `sort_order`, `active`, `label_en/pt/fr`, `desc_en/pt/fr`, `note_en/pt/fr` (e.g. "Complimentary").
-- `tour_included_items` — `sort_order`, `text_en/pt/fr`.
-- `tour_clarity_call_slots` — `slot_at timestamptz`, `is_available bool` (filtered by `> now()`); seeded from a script later or via admin. Available dates for the step "Dates" reuse the existing **`tour_dates`** table (filtered by status='published' + future + `get_tour_availability`).
-- Extend `tour_custom_quote_requests` (already exists) with `start_tour_date_id uuid null`, `extras_slugs text[]`, `deposit_amount numeric`, `total_amount numeric`, `stripe_session_id text`, `payment_status text default 'pending'`, `clarity_call_slot_id uuid null`.
+## New admin pages (added to Admin Dashboard + sidebar)
 
-Each new public table gets `GRANT SELECT TO anon, authenticated` (active rows only via RLS) + `GRANT ALL TO service_role`, RLS enabled, plus `updated_at` trigger.
+Located under `/admin/private-tour/*`, each a list + inline editor following the pattern of `AdminTours.tsx`:
 
-Seed data inserted via `supabase--insert` so the section renders out of the box with the three destinations, eight add-ons, and nine included items from the attached file (translated EN/PT/FR via the existing `translate-text` edge function).
+- **Duration & Pricing** (`/admin/private-tour/settings`) — edits the singleton: global min/max days, default currency, deposit ratio, promo fields.
+- **Destinations** (`/admin/private-tour/destinations`) — CRUD on `tour_destinations` including per-destination `min_guests`, `max_guests`, `base_price_per_day_per_person`, `currency`, flag, translations, sort, active toggle.
+- **Add-Ons** (`/admin/private-tour/addons`) — CRUD on `tour_addons`: price, complimentary flag, currency, translations, sort, active toggle.
+- **Available Dates** (`/admin/private-tour/dates`) — CRUD on `tour_dates`: start/end, capacity, sold-out toggle, label. (Already used by both group tours and the private flow.)
+- **Included Items** (`/admin/private-tour/included`) — small CRUD on `tour_included_items` so the "What's included" list is also editable.
 
-### 2. Edge functions
+A new `AdminDashboard` card group "Private Tour" links to all five.
 
-- `create-private-tour-checkout` (new) — accepts `{ request_id, deposit_amount, customer_email, customer_name, tour_summary }`, creates Stripe Checkout session in `mode: 'payment'`, success/cancel URLs back to `/POT?booking=success|cancelled`, returns `{ url }`. Persists `stripe_session_id` on the request.
-- Extend existing `stripe-tour-webhook` to mark `tour_custom_quote_requests.payment_status='paid'` on `checkout.session.completed` matching `stripe_session_id`, and trigger Resend confirmation.
-- Reuse `send-tour-enquiry` for the initial "Reserve my spot" submit (request received email + admin notification). Pass new fields (destination, days, persons, extras, dates, total, deposit).
+## Frontend wiring
 
-### 3. Frontend
+- Extend `usePrivateTourConfig` to also load the `private_tour_settings` row.
+- Replace the hardcoded `PRIVATE_TOUR_DEPOSIT_RATIO` fallback in `usePrivateTourBooking` with the value from settings (kept as fallback constant if fetch fails).
+- `PrivateTourBookingFlow` already reads days/persons ranges and price from the destination row — switch the global day range and currency formatting to read from settings, and the persons slider min/max to read from the selected destination's new `min_guests`/`max_guests`.
 
-- New `src/hooks/usePrivateTourConfig.ts` — single React Query hook that fetches destinations, addons, included items, future `tour_dates` (with availability), and clarity-call slots in parallel.
-- Replace `InlineTourForm.tsx` with a new `PrivateTourBookingFlow.tsx` rendered inside the existing `#group` section in `TourGroupSection.tsx` (keep the section's outer heading "PRIVATE TOUR / Design your Experience" — the attached page-level H1 is replaced by the existing section H1 to preserve page hierarchy).
-- Composition (1:1 with the attached file, Tailwind + design tokens, not inline styles):
-  - `Steps` indicator (4 steps, gold/black/border tokens).
-  - **Step 0 Experience**: destination grid (3 cards), duration range slider + day chips, persons stepper (1–10), add-ons grid (2-col, single-col on mobile), "Always included" list, live `PriceSummary`.
-  - **Step 1 Dates**: grid of future `tour_dates` (label = start date + computed end based on selected `days`), "None of these work?" CTA → opens Step 3 clarity-call panel. Compact `PriceSummary`.
-  - **Step 2 Details**: name, email, WhatsApp, nationality, budget, message; full `PriceSummary`.
-  - **Step 3 Confirm**: full summary card + `PriceSummary` + cancellation policy note.
-  - **Post-submit screen**: two choices — "Pay deposit now" (calls `create-private-tour-checkout`, redirects to Stripe) or "Book a clarity call" (picks a `tour_clarity_call_slots` row, writes back to request, success toast). WhatsApp / email footer.
-- Design tokens added to `index.css` & `tailwind.config.ts`: `--tour-gold`, `--tour-gold-light`, `--tour-near-black`, `--tour-surface`, `--tour-surface-2`, `--tour-border`, `--tour-border-gold`, `--tour-text`, `--tour-muted`. No hex literals in components.
-- Responsive: destination/addons/dates grids collapse to 1 col below `md`; persons row wraps; price summary stays full-width below content on mobile (already implicit).
-- Validation: per-step `canProceed` gating, button disabled state, inline required marks; budget free-text; message textarea max 2000 chars.
-- All copy goes through `tour-translations/{en,pt,fr}.ts` under a new `private_tour_flow.*` namespace; auto-translated via `translate-text` for PT/FR strings I author in EN.
+## Out of scope (per your "don't remove anything")
 
-### 4. Files
+- `tour_custom_quote_requests`, `tour_clarity_call_slots`, AdminQuotes, send-tour-enquiry, Stripe checkout — all untouched.
+- `tour_destinations` is kept and admin-managed.
 
-- **New**: `src/components/tour/PrivateTourBookingFlow.tsx`, `src/components/tour/private-tour/Steps.tsx`, `PriceSummary.tsx`, `StepExperience.tsx`, `StepDates.tsx`, `StepDetails.tsx`, `StepConfirm.tsx`, `PostSubmitPanel.tsx`, `src/hooks/usePrivateTourConfig.ts`, `supabase/functions/create-private-tour-checkout/index.ts`.
-- **Edited**: `src/components/tour/TourGroupSection.tsx` (mount new flow inside existing section), `src/components/tour/InlineTourForm.tsx` (deleted or reduced to thin shim if any other caller — verify), `src/pages/tour-translations/{en,pt,fr}.ts`, `src/pages/Tour.css`, `tailwind.config.ts`, `index.css`, `supabase/functions/stripe-tour-webhook/index.ts`, `supabase/functions/send-tour-enquiry/index.ts`.
-- **Migration**: one timestamped file creating the four new tables + seeds via follow-up inserts.
+## Technical notes
 
-### 5. Verification
-
-- Migration applies clean; `tour_destinations`/`tour_addons`/`tour_included_items` selectable as `anon`.
-- Section renders 4 steps; navigation respects `canProceed`.
-- Price recomputes live (base × days × persons + extras × persons; deposit = round(0.3 × total)).
-- "Reserve my spot" writes `tour_custom_quote_requests` row + sends Resend emails.
-- "Pay deposit" redirects to Stripe Checkout; webhook flips `payment_status` to paid and emails confirmation.
-- Lang switch updates every label/placeholder/button; no hardcoded EN strings remain.
-- Tablet + mobile: cards stack, stepper readable, slider full-width, no overflow.
-- `bun run build` passes with zero TS errors.
-
-## Out of scope
-
-- Inline Stripe Elements (explicitly chosen Checkout redirect).
-- Admin UI for managing destinations/add-ons/included items/call slots (seeded via SQL for now; can come next).
-- Migrating existing `InlineTourForm` callers other than the `#group` section (verified single use).
+- Singleton settings table uses `id BOOLEAN PRIMARY KEY DEFAULT true CHECK (id)` so upsert is trivial.
+- All new tables/columns include `service_role` GRANTs and the standard `anon SELECT` / `authenticated SELECT` so the public flow continues working.
+- Admin write policies use existing `public.is_admin_user()`.
+- New admin pages registered in `src/App.tsx` routes alongside the other `/admin/*` entries.
