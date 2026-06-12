@@ -64,13 +64,19 @@ export function TourFeaturedTours({
           {filteredTours.map((card, i) => {
             const next = nextTourDate(card.dates);
             const avail = next ? availability[next.id] : undefined;
-            const remaining = avail?.remaining ?? next?.capacity ?? 0;
             const cap = avail?.capacity ?? next?.capacity ?? 0;
+            const filled = avail?.confirmed_count ?? 0;
+            const remaining = avail?.remaining ?? Math.max(cap - filled, 0);
+            const pct = cap > 0 ? Math.min((filled / cap) * 100, 100) : 0;
             const spotsText = !next ? t("tours_section.card.coming_soon")
               : next.sold_out ? t("tours_section.card.sold_out")
               : remaining <= 3 ? String(t("tours_section.card.spots_left")).replace("{n}", String(remaining))
               : String(t("tours_section.card.spots")).replace("{n}", String(remaining));
             const spotsFew = next ? (next.sold_out || remaining <= 3) : false;
+            const filledText = String(t("tour_modal.spots_filled"))
+              .replace("{filled}", String(filled))
+              .replace("{total}", String(cap));
+            const remainingText = String(t("tour_modal.remaining")).replace("{n}", String(remaining));
             const price = formatPrice(card.base_price, card.currency);
             const dateLabel = next ? formatTourDateRange(next, localeMap[lang]) : t("tours_section.card.tba");
             const cardRec = card as unknown as Record<string, unknown>;
@@ -96,6 +102,23 @@ export function TourFeaturedTours({
                       {cap > 0 && <span className="tour-pill">{String(t("tours_section.card.participants")).replace("{n}", String(cap))}</span>}
                       {card.tags[0] && <span className="tour-pill">{card.tags[0]}</span>}
                     </div>
+                    {next && cap > 0 && (
+                      <div className="tour-card-availability">
+                        <div
+                          className="tour-card-progress"
+                          role="progressbar"
+                          aria-valuenow={filled}
+                          aria-valuemin={0}
+                          aria-valuemax={cap}
+                          aria-label={filledText}
+                        >
+                          <div className="tour-card-progress-fill" style={{ width: `${pct}%` }} />
+                        </div>
+                        <p className="tour-card-progress-text">
+                          {filledText} <span className="tour-card-progress-remaining">{remainingText}</span>
+                        </p>
+                      </div>
+                    )}
                     <div className="tour-footer">
                       <div className="tour-price">
                         <strong>{price}</strong>
