@@ -450,11 +450,11 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
 
           <Label>{tt(t, "private_tour_flow.exp.persons", "Number of people")}</Label>
           <div className="ptf-persons-row">
-            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.max(1, persons - 1))}>−</button>
+            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.max(destination.min_guests ?? 1, persons - 1))}>−</button>
             <span className="ptf-persons-value">{persons}</span>
-            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.min(10, persons + 1))}>+</button>
+            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.min(destination.max_guests ?? 10, persons + 1))}>+</button>
             <span className="ptf-mini-muted">
-              {persons === 1 ? tt(t, "private_tour_flow.person", "person") : tt(t, "private_tour_flow.persons", "people")} ({tt(t, "private_tour_flow.max_group", "max 10 per group")})
+              {persons === 1 ? tt(t, "private_tour_flow.person", "person") : tt(t, "private_tour_flow.persons", "people")} (max {destination.max_guests ?? 10} per group)
             </span>
           </div>
 
