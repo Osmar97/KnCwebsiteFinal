@@ -1662,6 +1662,72 @@ export type Database = {
         }
         Relationships: []
       }
+      tour_addons: {
+        Row: {
+          active: boolean
+          created_at: string
+          currency: string
+          desc_en: string
+          desc_fr: string
+          desc_pt: string
+          icon: string
+          id: string
+          is_complimentary: boolean
+          label_en: string
+          label_fr: string
+          label_pt: string
+          note_en: string
+          note_fr: string
+          note_pt: string
+          price: number
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          desc_en?: string
+          desc_fr?: string
+          desc_pt?: string
+          icon?: string
+          id?: string
+          is_complimentary?: boolean
+          label_en: string
+          label_fr?: string
+          label_pt?: string
+          note_en?: string
+          note_fr?: string
+          note_pt?: string
+          price?: number
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          desc_en?: string
+          desc_fr?: string
+          desc_pt?: string
+          icon?: string
+          id?: string
+          is_complimentary?: boolean
+          label_en?: string
+          label_fr?: string
+          label_pt?: string
+          note_en?: string
+          note_fr?: string
+          note_pt?: string
+          price?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tour_bookings: {
         Row: {
           amount_paid: number | null
@@ -1716,12 +1782,48 @@ export type Database = {
           },
         ]
       }
+      tour_clarity_call_slots: {
+        Row: {
+          booked_by_request_id: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          is_available: boolean
+          slot_at: string
+          updated_at: string
+        }
+        Insert: {
+          booked_by_request_id?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          is_available?: boolean
+          slot_at: string
+          updated_at?: string
+        }
+        Update: {
+          booked_by_request_id?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          is_available?: boolean
+          slot_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tour_custom_quote_requests: {
         Row: {
+          budget: string | null
+          clarity_call_slot_id: string | null
           country: string | null
           created_at: string
+          currency: string
+          deposit_amount: number | null
+          destination_slug: string | null
           destinations: string[]
           email: string
+          extras_slugs: string[]
           first_name: string
           hotel_preference: string | null
           id: string
@@ -1731,18 +1833,28 @@ export type Database = {
           num_days: number | null
           num_guests: number | null
           payload: Json
+          payment_status: string
           phone: string | null
           preferred_dates: string | null
           services: string[]
+          start_tour_date_id: string | null
           status: string
+          stripe_session_id: string | null
+          total_amount: number | null
           updated_at: string
           vibes: string[]
         }
         Insert: {
+          budget?: string | null
+          clarity_call_slot_id?: string | null
           country?: string | null
           created_at?: string
+          currency?: string
+          deposit_amount?: number | null
+          destination_slug?: string | null
           destinations?: string[]
           email: string
+          extras_slugs?: string[]
           first_name: string
           hotel_preference?: string | null
           id?: string
@@ -1752,18 +1864,28 @@ export type Database = {
           num_days?: number | null
           num_guests?: number | null
           payload?: Json
+          payment_status?: string
           phone?: string | null
           preferred_dates?: string | null
           services?: string[]
+          start_tour_date_id?: string | null
           status?: string
+          stripe_session_id?: string | null
+          total_amount?: number | null
           updated_at?: string
           vibes?: string[]
         }
         Update: {
+          budget?: string | null
+          clarity_call_slot_id?: string | null
           country?: string | null
           created_at?: string
+          currency?: string
+          deposit_amount?: number | null
+          destination_slug?: string | null
           destinations?: string[]
           email?: string
+          extras_slugs?: string[]
           first_name?: string
           hotel_preference?: string | null
           id?: string
@@ -1773,14 +1895,40 @@ export type Database = {
           num_days?: number | null
           num_guests?: number | null
           payload?: Json
+          payment_status?: string
           phone?: string | null
           preferred_dates?: string | null
           services?: string[]
+          start_tour_date_id?: string | null
           status?: string
+          stripe_session_id?: string | null
+          total_amount?: number | null
           updated_at?: string
           vibes?: string[]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tour_custom_quote_requests_clarity_call_slot_id_fkey"
+            columns: ["clarity_call_slot_id"]
+            isOneToOne: false
+            referencedRelation: "tour_clarity_call_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tour_custom_quote_requests_start_tour_date_id_fkey"
+            columns: ["start_tour_date_id"]
+            isOneToOne: false
+            referencedRelation: "tour_date_availability"
+            referencedColumns: ["tour_date_id"]
+          },
+          {
+            foreignKeyName: "tour_custom_quote_requests_start_tour_date_id_fkey"
+            columns: ["start_tour_date_id"]
+            isOneToOne: false
+            referencedRelation: "tour_dates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tour_dates: {
         Row: {
@@ -1825,6 +1973,99 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tour_destinations: {
+        Row: {
+          active: boolean
+          base_price_per_day_per_person: number
+          created_at: string
+          currency: string
+          desc_en: string
+          desc_fr: string
+          desc_pt: string
+          flag: string
+          id: string
+          label_en: string
+          label_fr: string
+          label_pt: string
+          max_days: number
+          min_days: number
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          base_price_per_day_per_person?: number
+          created_at?: string
+          currency?: string
+          desc_en?: string
+          desc_fr?: string
+          desc_pt?: string
+          flag?: string
+          id?: string
+          label_en: string
+          label_fr?: string
+          label_pt?: string
+          max_days?: number
+          min_days?: number
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          base_price_per_day_per_person?: number
+          created_at?: string
+          currency?: string
+          desc_en?: string
+          desc_fr?: string
+          desc_pt?: string
+          flag?: string
+          id?: string
+          label_en?: string
+          label_fr?: string
+          label_pt?: string
+          max_days?: number
+          min_days?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tour_included_items: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          sort_order: number
+          text_en: string
+          text_fr: string
+          text_pt: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          sort_order?: number
+          text_en: string
+          text_fr?: string
+          text_pt?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          sort_order?: number
+          text_en?: string
+          text_fr?: string
+          text_pt?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       tour_waitlist_requests: {
         Row: {
