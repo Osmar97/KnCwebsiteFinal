@@ -1210,3 +1210,306 @@
   .tdm-footer { gap: 14px; }
   .tdm-cta { width: 100%; padding: 14px 20px; min-height: 48px; }
 }
+
+/* ── PRIVATE TOUR BOOKING FLOW ─────────────────────────────────────────── */
+.tour-page .ptf-root {
+  --ptf-gold: #B8952A;
+  --ptf-gold-light: #D4AE50;
+  --ptf-near-black: #0C0C0C;
+  --ptf-surface: #111111;
+  --ptf-surface-2: #1A1A1A;
+  --ptf-border: #2A2A2A;
+  --ptf-border-gold: #3A3218;
+  --ptf-text: #E8E0D0;
+  --ptf-muted: #777068;
+  background: var(--ptf-near-black);
+  color: var(--ptf-text);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  padding: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--ptf-border);
+}
+.tour-page .ptf-loading { background: var(--cream); padding: 60px; text-align: center; color: var(--muted); }
+.tour-page .ptf-error { background: #fee; color: #a00; padding: 18px; border-radius: 6px; }
+
+/* Steps */
+.tour-page .ptf-steps { display: flex; align-items: center; gap: 0; margin-bottom: 32px; }
+.tour-page .ptf-step { display: flex; align-items: center; }
+.tour-page .ptf-step.ptf-step-flex { flex: 1; }
+.tour-page .ptf-step-marker { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.tour-page .ptf-step-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--ptf-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--ptf-muted); flex-shrink: 0;
+  background: transparent;
+}
+.tour-page .ptf-step-circle.is-active { border-color: var(--ptf-gold); color: var(--ptf-gold); }
+.tour-page .ptf-step-circle.is-done { background: var(--ptf-gold); border-color: var(--ptf-gold); color: #000; }
+.tour-page .ptf-step-label {
+  font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--ptf-muted); white-space: nowrap;
+}
+.tour-page .ptf-step-label.is-active { color: var(--ptf-gold); }
+.tour-page .ptf-step-label.is-done { color: var(--ptf-gold-light); }
+.tour-page .ptf-step-line { flex: 1; height: 1px; background: var(--ptf-border); margin: 0 8px 22px; }
+.tour-page .ptf-step-line.is-done { background: var(--ptf-gold); }
+
+/* Typography */
+.tour-page .ptf-h2 {
+  font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--ptf-text);
+  margin: 0 0 6px; font-weight: 500;
+}
+.tour-page .ptf-sub { color: var(--ptf-muted); font-size: 13px; margin: 0 0 28px; }
+.tour-page .ptf-sub-small { color: var(--ptf-muted); font-size: 12px; margin: 0 0 24px; }
+.tour-page .ptf-label {
+  font-size: 10px; letter-spacing: 2px; color: var(--ptf-gold);
+  text-transform: uppercase; margin-bottom: 10px; font-weight: 500;
+}
+.tour-page .ptf-label-muted { color: var(--ptf-muted); font-weight: 300; font-size: 11px; letter-spacing: 0; }
+.tour-page .ptf-mini-muted { font-size: 11px; color: var(--ptf-muted); }
+.tour-page .ptf-mini-eyebrow {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ptf-muted); margin-bottom: 6px;
+}
+.tour-page .ptf-mini-eyebrow.is-active { color: var(--ptf-gold); }
+.tour-page .ptf-eyebrow {
+  font-size: 10px; letter-spacing: 2px; color: var(--ptf-gold);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.tour-page .ptf-strong-gold { color: var(--ptf-gold-light); font-weight: 500; }
+
+/* Cards */
+.tour-page .ptf-card {
+  background: var(--ptf-surface-2);
+  border: 1.5px solid var(--ptf-border);
+  border-radius: 6px; padding: 16px 12px;
+  cursor: pointer; text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+  color: var(--ptf-text); font-family: inherit;
+}
+.tour-page .ptf-card:hover:not(:disabled) { border-color: var(--ptf-gold-light); }
+.tour-page .ptf-card.is-active {
+  background: var(--ptf-border-gold);
+  border-color: var(--ptf-gold);
+}
+.tour-page .ptf-card:disabled { opacity: 0.4; cursor: not-allowed; }
+.tour-page .ptf-card-title { font-size: 13px; color: var(--ptf-text); font-weight: 500; margin-bottom: 3px; }
+.tour-page .ptf-card-desc { font-size: 11px; color: var(--ptf-muted); line-height: 1.5; }
+
+.tour-page .ptf-flag { font-size: 22px; margin-bottom: 6px; }
+.tour-page .ptf-dest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
+
+/* Duration */
+.tour-page .ptf-duration-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.tour-page .ptf-range { flex: 1; accent-color: var(--ptf-gold); }
+.tour-page .ptf-day-chips { display: flex; gap: 6px; margin-bottom: 28px; flex-wrap: wrap; }
+.tour-page .ptf-chip {
+  background: var(--ptf-surface-2); color: var(--ptf-muted);
+  border: 1px solid var(--ptf-border); border-radius: 4px;
+  padding: 4px 12px; cursor: pointer; font-size: 12px;
+  font-family: 'Montserrat', sans-serif;
+}
+.tour-page .ptf-chip.is-active { background: var(--ptf-gold); color: #000; border-color: var(--ptf-gold); }
+
+/* Persons */
+.tour-page .ptf-persons-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+.tour-page .ptf-counter {
+  width: 36px; height: 36px; border-radius: 4px;
+  background: var(--ptf-surface-2); border: 1px solid var(--ptf-border);
+  color: var(--ptf-text); cursor: pointer; font-size: 16px;
+}
+.tour-page .ptf-counter:hover { border-color: var(--ptf-gold); }
+.tour-page .ptf-persons-value {
+  font-size: 24px; color: var(--ptf-text); font-family: 'Cormorant Garamond', serif;
+  min-width: 40px; text-align: center;
+}
+
+/* Addons */
+.tour-page .ptf-addons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+.tour-page .ptf-addon { padding: 14px; }
+.tour-page .ptf-addon-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.tour-page .ptf-addon-icon { font-size: 18px; }
+.tour-page .ptf-addon-price { font-size: 12px; color: var(--ptf-muted); font-weight: 500; }
+.tour-page .ptf-addon-price.is-active { color: var(--ptf-gold); }
+
+/* Included */
+.tour-page .ptf-included {
+  background: var(--ptf-surface-2); border: 1px solid var(--ptf-border);
+  border-radius: 6px; padding: 20px; margin-bottom: 28px;
+}
+.tour-page .ptf-included-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tour-page .ptf-included-item { display: flex; gap: 8px; align-items: flex-start; font-size: 11px; color: var(--ptf-muted); line-height: 1.5; }
+.tour-page .ptf-included-check { color: var(--ptf-gold); font-size: 10px; margin-top: 3px; flex-shrink: 0; }
+
+/* Price summary */
+.tour-page .ptf-price-summary {
+  background: var(--ptf-surface); border: 1px solid var(--ptf-border-gold);
+  border-radius: 6px; padding: 24px;
+}
+.tour-page .ptf-price-summary.is-compact { padding: 16px; }
+.tour-page .ptf-price-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1A1A1A; gap: 12px; }
+.tour-page .ptf-price-muted { font-size: 12px; color: var(--ptf-muted); }
+.tour-page .ptf-price-value { font-size: 13px; color: var(--ptf-text); white-space: nowrap; }
+.tour-page .ptf-price-gold { font-size: 13px; color: var(--ptf-gold-light); white-space: nowrap; }
+.tour-page .ptf-price-total { display: flex; justify-content: space-between; padding: 12px 0 6px; margin-top: 4px; align-items: baseline; }
+.tour-page .ptf-price-total > span:first-child { font-size: 13px; font-weight: 500; color: var(--ptf-text); }
+.tour-page .ptf-price-total-amount { font-size: 18px; color: var(--ptf-gold); font-family: 'Cormorant Garamond', serif; }
+.tour-page .ptf-price-deposit { border-top: 1px solid var(--ptf-border); margin-top: 8px; padding-top: 12px; }
+.tour-page .ptf-price-note {
+  margin-top: 16px; padding: 10px 12px; background: #0A0A0A; border-radius: 4px;
+  font-size: 11px; color: var(--ptf-muted); line-height: 1.6;
+}
+
+/* Dates */
+.tour-page .ptf-dates-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 28px; }
+.tour-page .ptf-date-card { padding: 16px; }
+.tour-page .ptf-date-main { font-size: 14px; color: var(--ptf-text); margin-bottom: 4px; }
+.tour-page .ptf-callout {
+  background: var(--ptf-surface); border: 1px solid var(--ptf-border);
+  border-radius: 6px; padding: 16px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.tour-page .ptf-callout-icon { font-size: 20px; }
+.tour-page .ptf-callout-text { flex: 1; min-width: 200px; }
+.tour-page .ptf-callout-title { font-size: 12px; color: var(--ptf-text); margin-bottom: 2px; }
+.tour-page .ptf-callout-btn {
+  background: none; border: 1px solid var(--ptf-gold); color: var(--ptf-gold);
+  padding: 8px 16px; border-radius: 4px; font-size: 11px; letter-spacing: 1px;
+  text-transform: uppercase; text-decoration: none; white-space: nowrap;
+  font-family: 'Montserrat', sans-serif;
+}
+.tour-page .ptf-callout-btn:hover { background: var(--ptf-gold); color: #000; }
+.tour-page .ptf-mt-24 { margin-top: 24px; }
+
+/* Form */
+.tour-page .ptf-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tour-page .ptf-form-full { grid-column: 1 / -1; }
+.tour-page .ptf-input,
+.tour-page .ptf-textarea {
+  width: 100%; background: var(--ptf-surface-2); border: 1px solid var(--ptf-border);
+  color: var(--ptf-text); padding: 10px 12px; border-radius: 4px;
+  font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: 13px; line-height: 1.6;
+}
+.tour-page .ptf-textarea { resize: vertical; min-height: 100px; }
+.tour-page .ptf-input:focus, .tour-page .ptf-textarea:focus { outline: 1px solid var(--ptf-gold); border-color: var(--ptf-gold); }
+
+/* Summary card */
+.tour-page .ptf-summary-card {
+  background: var(--ptf-surface-2); border: 1px solid var(--ptf-border);
+  border-radius: 6px; padding: 24px; margin-bottom: 24px;
+}
+.tour-page .ptf-summary-row { display: flex; justify-content: space-between; padding: 6px 0; gap: 12px; }
+.tour-page .ptf-summary-label { font-size: 12px; color: var(--ptf-muted); }
+.tour-page .ptf-summary-value { font-size: 13px; color: var(--ptf-text); text-align: right; }
+.tour-page .ptf-policy {
+  margin-top: 24px; padding: 16px 20px; background: #0A0A0A; border-radius: 6px;
+  font-size: 12px; color: var(--ptf-muted); line-height: 1.7;
+}
+
+/* Nav */
+.tour-page .ptf-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--ptf-border); gap: 12px;
+}
+.tour-page .ptf-back {
+  background: none; border: 1px solid var(--ptf-border); color: var(--ptf-muted);
+  padding: 12px 24px; border-radius: 4px; cursor: pointer;
+  font-size: 12px; letter-spacing: 1px; font-family: 'Montserrat', sans-serif;
+}
+.tour-page .ptf-back:hover { border-color: var(--ptf-gold); color: var(--ptf-gold); }
+.tour-page .ptf-cta {
+  background: var(--ptf-gold); color: #000; border: none;
+  padding: 14px 32px; border-radius: 4px; cursor: pointer;
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px;
+}
+.tour-page .ptf-cta:disabled { background: #2A2A2A; color: var(--ptf-muted); cursor: not-allowed; }
+.tour-page .ptf-cta-gold:hover:not(:disabled) { background: var(--ptf-gold-light); }
+.tour-page .ptf-cta-spinner { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Post-submit */
+.tour-page .ptf-postsubmit { max-width: 680px; margin: 0 auto; }
+.tour-page .ptf-postsubmit-head { text-align: center; margin-bottom: 32px; }
+.tour-page .ptf-check-icon { font-size: 36px; margin-bottom: 16px; color: var(--ptf-gold); }
+.tour-page .ptf-postsubmit-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--ptf-text);
+  margin: 0 0 10px; font-weight: 500;
+}
+.tour-page .ptf-postsubmit-sub { color: var(--ptf-muted); font-size: 14px; line-height: 1.7; max-width: 500px; margin: 0 auto; }
+.tour-page .ptf-recap {
+  background: var(--ptf-surface); border: 1px solid var(--ptf-border-gold);
+  border-radius: 6px; padding: 20px; margin-bottom: 28px;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.tour-page .ptf-recap-right { text-align: right; }
+.tour-page .ptf-recap-title { font-size: 18px; font-family: 'Cormorant Garamond', serif; color: var(--ptf-text); }
+.tour-page .ptf-recap-sub { font-size: 13px; color: var(--ptf-muted); margin-top: 4px; }
+.tour-page .ptf-recap-deposit { font-size: 28px; font-family: 'Cormorant Garamond', serif; color: var(--ptf-gold); }
+
+.tour-page .ptf-choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.tour-page .ptf-choice {
+  background: var(--ptf-surface-2); border: 1.5px solid var(--ptf-border);
+  border-radius: 6px; padding: 28px 20px; cursor: pointer; text-align: center;
+  color: var(--ptf-text); font-family: inherit;
+}
+.tour-page .ptf-choice:hover { border-color: var(--ptf-gold); }
+.tour-page .ptf-choice-gold { background: var(--ptf-gold); border-color: var(--ptf-gold); color: #000; }
+.tour-page .ptf-choice-gold:hover { background: var(--ptf-gold-light); }
+.tour-page .ptf-choice-icon { font-size: 28px; margin-bottom: 10px; }
+.tour-page .ptf-choice-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; margin-bottom: 6px; }
+.tour-page .ptf-choice-gold .ptf-choice-title { color: #000; }
+.tour-page .ptf-choice-desc { font-size: 12px; line-height: 1.5; color: var(--ptf-muted); }
+.tour-page .ptf-choice-gold .ptf-choice-desc { color: #5A4A1A; }
+
+.tour-page .ptf-pay-panel,
+.tour-page .ptf-call-panel {
+  background: var(--ptf-surface); border: 1px solid var(--ptf-border-gold);
+  border-radius: 6px; padding: 28px; margin-bottom: 24px;
+}
+.tour-page .ptf-pay-copy { font-size: 13px; color: var(--ptf-muted); margin: 8px 0 20px; line-height: 1.6; }
+.tour-page .ptf-pay-fineprint { font-size: 10px; color: var(--ptf-muted); text-align: center; margin-top: 10px; }
+.tour-page .ptf-call-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+.tour-page .ptf-slot-btn {
+  background: var(--ptf-surface-2); border: 1.5px solid var(--ptf-border);
+  border-radius: 4px; padding: 10px 14px; cursor: pointer;
+  font-size: 12px; color: var(--ptf-text); text-align: left;
+  font-family: 'Montserrat', sans-serif;
+}
+.tour-page .ptf-slot-btn.is-active { background: var(--ptf-border-gold); border-color: var(--ptf-gold); color: var(--ptf-gold); }
+.tour-page .ptf-back-link {
+  background: none; border: none; color: var(--ptf-muted);
+  font-size: 11px; cursor: pointer; margin-top: 10px;
+  display: block; width: 100%; text-align: center;
+}
+.tour-page .ptf-back-link:hover { color: var(--ptf-gold); }
+.tour-page .ptf-contact-strip {
+  text-align: center; padding: 20px 0; border-top: 1px solid var(--ptf-border);
+}
+.tour-page .ptf-contact-strip p { font-size: 12px; color: var(--ptf-muted); margin: 0 0 6px; }
+.tour-page .ptf-contact-strip a { font-size: 13px; color: var(--ptf-gold); text-decoration: none; }
+.tour-page .ptf-dot { color: var(--ptf-border); margin: 0 10px; }
+
+/* Responsive */
+@media (max-width: 820px) {
+  .tour-page .ptf-root { padding: 24px 18px; }
+  .tour-page .ptf-dest-grid { grid-template-columns: 1fr; }
+  .tour-page .ptf-addons-grid { grid-template-columns: 1fr; }
+  .tour-page .ptf-dates-grid { grid-template-columns: 1fr; }
+  .tour-page .ptf-form-grid { grid-template-columns: 1fr; }
+  .tour-page .ptf-included-grid { grid-template-columns: 1fr; }
+  .tour-page .ptf-choice-grid { grid-template-columns: 1fr; }
+  .tour-page .ptf-call-grid { grid-template-columns: 1fr; }
+  .tour-page .ptf-step-label { display: none; }
+  .tour-page .ptf-recap { flex-direction: column; }
+  .tour-page .ptf-recap-right { text-align: left; }
+}
+@media (max-width: 480px) {
+  .tour-page .ptf-h2 { font-size: 22px; }
+  .tour-page .ptf-cta { padding: 14px 18px; font-size: 11px; letter-spacing: 1.4px; width: 100%; }
+  .tour-page .ptf-back { width: 100%; }
+  .tour-page .ptf-nav { flex-direction: column-reverse; }
+}
