@@ -7,6 +7,9 @@
  */
 export const TOUR_RESERVE_PRICE_EUR = 3500;
 
+/** Deposit ratio for private/custom tour bookings (30%). */
+export const PRIVATE_TOUR_DEPOSIT_RATIO = 0.3;
+
 /** Locale-aware price for hero/CTA strings (no currency symbol). */
 export const formatTourReservePrice = (
   locale: "en" | "pt" | "fr" = "en",
