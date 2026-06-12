@@ -208,10 +208,12 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
     setIsSubmitting(true);
     try {
       const [first_name, ...rest] = name.trim().split(/\s+/);
-      const last_name = rest.join(" ");
-      const { data, error } = await supabase
+      const last_name = rest.join(" ") || "—";
+      const newRequestId = crypto.randomUUID();
+      const { error } = await supabase
         .from("tour_custom_quote_requests")
         .insert({
+          id: newRequestId,
           first_name,
           last_name,
           email,
@@ -239,11 +241,9 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
             total: totalPrice, deposit,
             budget, notes: message, nationality,
           },
-        })
-        .select("id")
-        .single();
+        });
       if (error) throw error;
-      setRequestId(data.id);
+      setRequestId(newRequestId);
 
       // Send Resend enquiry email (best-effort).
       try {
