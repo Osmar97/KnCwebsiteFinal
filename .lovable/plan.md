@@ -1,73 +1,64 @@
+# Private Tour — "Design your Experience" rebuild
 
-This is a large, multi-area change. I'm proposing to deliver it in clear phases so each piece can be reviewed and validated before moving on. Please confirm or adjust before I start.
+Rebuild the `#group` section on `/POT` to match the attached `tour-booking-flow.jsx` design as an **inline 4-step flow** (Experience → Dates → Your Details → Confirm & Pay), DB-driven, with Stripe Checkout (redirect) for the 30% deposit and Resend confirmation, fully translated (EN / PT / FR via AI translate).
 
-## Scope summary
+## What changes
 
-Three pillars:
-1. **Tour page UX changes** (modal redesign, rename, Request Custom button, vibe limit, hotel prices, dynamic progress bar)
-2. **Backend: DB schema + email + storage** (tours, dates, waitlist, custom quotes, Resend wiring, audit trail)
-3. **Admin CMS for Tours** (create/edit/delete/publish/duplicate/reorder tours, dates, capacity, pricing, waitlist & quote inboxes, analytics)
+### 1. Database (one migration)
 
-## Phase 1 — Database & migrations
+New tables (all `service_role` writes only; `anon` + `authenticated` read where flagged active):
 
-New tables (relational, not JSON-blob):
-- `tours` — name, slug, category, short/long description, hero/gallery (storage URLs), destinations[], tags[], duration_days, tour_type, base_price, early_bird_price, premium_price, currency, status (draft/published/archived), sort_order, stripe_price_id (nullable, auto-managed)
-- `tour_dates` — tour_id, start_date, end_date, capacity, sold_out (bool), label (e.g. "NEXT", "HOLIDAY MARKET")
-- `tour_bookings` — minimal: tour_date_id, status (confirmed/cancelled), source (stripe/admin), customer_email, stripe_session_id. Used to compute "X of Y spots filled".
-- `tour_waitlist_requests` — full form payload + status
-- `tour_custom_quote_requests` — full form payload + status
+- `tour_destinations` — `slug`, `flag`, `min_days`, `max_days`, `base_price_per_day_per_person numeric`, `currency`, `sort_order`, `active`, `label_en/pt/fr`, `desc_en/pt/fr`.
+- `tour_addons` — `slug`, `icon`, `price numeric`, `is_complimentary bool`, `sort_order`, `active`, `label_en/pt/fr`, `desc_en/pt/fr`, `note_en/pt/fr` (e.g. "Complimentary").
+- `tour_included_items` — `sort_order`, `text_en/pt/fr`.
+- `tour_clarity_call_slots` — `slot_at timestamptz`, `is_available bool` (filtered by `> now()`); seeded from a script later or via admin. Available dates for the step "Dates" reuse the existing **`tour_dates`** table (filtered by status='published' + future + `get_tour_availability`).
+- Extend `tour_custom_quote_requests` (already exists) with `start_tour_date_id uuid null`, `extras_slugs text[]`, `deposit_amount numeric`, `total_amount numeric`, `stripe_session_id text`, `payment_status text default 'pending'`, `clarity_call_slot_id uuid null`.
 
-RLS: public SELECT on `tours` (status='published') and `tour_dates`; INSERT on waitlist/custom_quote allowed for anon with rate-limit guard; full access for admin via existing `is_admin_user()` SECURITY DEFINER function. `tour_bookings` insert only via service role (edge function).
+Each new public table gets `GRANT SELECT TO anon, authenticated` (active rows only via RLS) + `GRANT ALL TO service_role`, RLS enabled, plus `updated_at` trigger.
 
-Storage: reuse existing `property-images` bucket (or new `tour-images` bucket if you prefer separation — please confirm).
+Seed data inserted via `supabase--insert` so the section renders out of the box with the three destinations, eight add-ons, and nine included items from the attached file (translated EN/PT/FR via the existing `translate-text` edge function).
 
-## Phase 2 — Tour page changes
+### 2. Edge functions
 
-- Replace hardcoded `TOURS` array in `Tour.tsx` with a `useTours()` hook fetching from Supabase.
-- Rename "Upcoming Tours" → "Private Tours" (all 3 locales).
-- New `TourDetailModal` matching the screenshot exactly: eyebrow category, title, description, pills (duration/type/category), Destinations row, Next date, dynamic progress bar (`confirmed / capacity`), price section, JOIN WAITLIST CTA. Reuse shadcn `Dialog`.
-- Dynamic progress bar: SELECT count from `tour_bookings` WHERE tour_date_id = next_date AND status='confirmed'; computed in `useTours` query.
-- "Request Custom" button on each card → smooth scroll to `#private` section (Design Your Experience).
-- `InlineTourForm` updates: vibe limit 2 → 3 with validation toast; remove hotel price text (keep options).
+- `create-private-tour-checkout` (new) — accepts `{ request_id, deposit_amount, customer_email, customer_name, tour_summary }`, creates Stripe Checkout session in `mode: 'payment'`, success/cancel URLs back to `/POT?booking=success|cancelled`, returns `{ url }`. Persists `stripe_session_id` on the request.
+- Extend existing `stripe-tour-webhook` to mark `tour_custom_quote_requests.payment_status='paid'` on `checkout.session.completed` matching `stripe_session_id`, and trigger Resend confirmation.
+- Reuse `send-tour-enquiry` for the initial "Reserve my spot" submit (request received email + admin notification). Pass new fields (destination, days, persons, extras, dates, total, deposit).
 
-## Phase 3 — Email + storage submission
+### 3. Frontend
 
-- Reuse existing `send-tour-enquiry` edge function (which already uses Resend). Extend it to:
-  1. Insert row into `tour_custom_quote_requests` or `tour_waitlist_requests` based on `kind` field
-  2. Send Resend email with all submitted fields + timestamp
-  3. Return `{ id }` for idempotency
-- Frontend: loading/success/error states already exist; add disabled state to prevent double submit; add server-side timestamp.
+- New `src/hooks/usePrivateTourConfig.ts` — single React Query hook that fetches destinations, addons, included items, future `tour_dates` (with availability), and clarity-call slots in parallel.
+- Replace `InlineTourForm.tsx` with a new `PrivateTourBookingFlow.tsx` rendered inside the existing `#group` section in `TourGroupSection.tsx` (keep the section's outer heading "PRIVATE TOUR / Design your Experience" — the attached page-level H1 is replaced by the existing section H1 to preserve page hierarchy).
+- Composition (1:1 with the attached file, Tailwind + design tokens, not inline styles):
+  - `Steps` indicator (4 steps, gold/black/border tokens).
+  - **Step 0 Experience**: destination grid (3 cards), duration range slider + day chips, persons stepper (1–10), add-ons grid (2-col, single-col on mobile), "Always included" list, live `PriceSummary`.
+  - **Step 1 Dates**: grid of future `tour_dates` (label = start date + computed end based on selected `days`), "None of these work?" CTA → opens Step 3 clarity-call panel. Compact `PriceSummary`.
+  - **Step 2 Details**: name, email, WhatsApp, nationality, budget, message; full `PriceSummary`.
+  - **Step 3 Confirm**: full summary card + `PriceSummary` + cancellation policy note.
+  - **Post-submit screen**: two choices — "Pay deposit now" (calls `create-private-tour-checkout`, redirects to Stripe) or "Book a clarity call" (picks a `tour_clarity_call_slots` row, writes back to request, success toast). WhatsApp / email footer.
+- Design tokens added to `index.css` & `tailwind.config.ts`: `--tour-gold`, `--tour-gold-light`, `--tour-near-black`, `--tour-surface`, `--tour-surface-2`, `--tour-border`, `--tour-border-gold`, `--tour-text`, `--tour-muted`. No hex literals in components.
+- Responsive: destination/addons/dates grids collapse to 1 col below `md`; persons row wraps; price summary stays full-width below content on mobile (already implicit).
+- Validation: per-step `canProceed` gating, button disabled state, inline required marks; budget free-text; message textarea max 2000 chars.
+- All copy goes through `tour-translations/{en,pt,fr}.ts` under a new `private_tour_flow.*` namespace; auto-translated via `translate-text` for PT/FR strings I author in EN.
 
-## Phase 4 — Stripe continuity
+### 4. Files
 
-- `create-stripe-checkout` reads `tour_dates.id` (or tour + date), looks up price from `tours.base_price` (or early-bird if applicable), creates checkout session with dynamic `price_data` (no need for pre-created Stripe products).
-- `stripe-tour-webhook` already exists — extend it to insert a `tour_bookings` row on successful payment so progress bars update automatically.
+- **New**: `src/components/tour/PrivateTourBookingFlow.tsx`, `src/components/tour/private-tour/Steps.tsx`, `PriceSummary.tsx`, `StepExperience.tsx`, `StepDates.tsx`, `StepDetails.tsx`, `StepConfirm.tsx`, `PostSubmitPanel.tsx`, `src/hooks/usePrivateTourConfig.ts`, `supabase/functions/create-private-tour-checkout/index.ts`.
+- **Edited**: `src/components/tour/TourGroupSection.tsx` (mount new flow inside existing section), `src/components/tour/InlineTourForm.tsx` (deleted or reduced to thin shim if any other caller — verify), `src/pages/tour-translations/{en,pt,fr}.ts`, `src/pages/Tour.css`, `tailwind.config.ts`, `index.css`, `supabase/functions/stripe-tour-webhook/index.ts`, `supabase/functions/send-tour-enquiry/index.ts`.
+- **Migration**: one timestamped file creating the four new tables + seeds via follow-up inserts.
 
-## Phase 5 — Admin CMS
+### 5. Verification
 
-New admin route `/admin/tours` (guarded by existing `is_admin_user()` check, same pattern as `AdminProperties`):
-- List with filters (status), reorder via drag-or-arrow buttons (sort_order)
-- Create/Edit form (basic info, images upload to bucket, destinations multi-input, tags, duration, type)
-- Dates manager (add/edit/delete dates, capacity, sold-out toggle)
-- Pricing manager (base / early-bird / premium / currency)
-- Duplicate / Archive / Publish-Unpublish / Delete buttons
-- Waitlist inbox & Custom Quote inbox (table view, status update, export CSV)
-- Analytics card row: total/active/draft tours, total bookings, waitlist count, quote count
+- Migration applies clean; `tour_destinations`/`tour_addons`/`tour_included_items` selectable as `anon`.
+- Section renders 4 steps; navigation respects `canProceed`.
+- Price recomputes live (base × days × persons + extras × persons; deposit = round(0.3 × total)).
+- "Reserve my spot" writes `tour_custom_quote_requests` row + sends Resend emails.
+- "Pay deposit" redirects to Stripe Checkout; webhook flips `payment_status` to paid and emails confirmation.
+- Lang switch updates every label/placeholder/button; no hardcoded EN strings remain.
+- Tablet + mobile: cards stack, stepper readable, slider full-width, no overflow.
+- `bun run build` passes with zero TS errors.
 
-Add link to admin nav.
+## Out of scope
 
-## Phase 6 — Cleanup & verification
-
-- Remove hardcoded `TOURS`, `GROUP_TOURS` arrays from `Tour.tsx`
-- All copy stays in `TourTranslations.ts` (only the dynamic tour content comes from DB; static page chrome stays translated)
-- TypeScript strict, no `any`, RLS verified, mobile checked
-
-## Open questions before I start
-
-1. **Storage bucket**: reuse `property-images` or create new `tour-images`? I recommend new `tour-images` for clarity.
-2. **Tour content & translations**: should `tours.name/description/etc.` be single-language (English) for now, or multilingual columns (`name_en`, `name_pt`, `name_fr`)? Multilingual roughly doubles admin-form complexity.
-3. **Seeding**: should I migrate the current 6 hardcoded tours into the DB as a seed migration, or do you want to recreate them yourself via the admin UI once it's live?
-4. **Admin auth**: keep the existing email-allowlist (`is_admin_user()` checks `ismael@/joey@kingsncompany.com`) or move to a proper `user_roles` table now? The latter is more secure long-term but is a bigger change.
-5. **Delivery order**: do you want it all in one big batch, or shipped in phases (Phase 1+2+3 first so the public site works, then Phase 5 admin CMS)?
-
-Please answer these (especially 2, 3, 4, 5) and I'll proceed.
+- Inline Stripe Elements (explicitly chosen Checkout redirect).
+- Admin UI for managing destinations/add-ons/included items/call slots (seeded via SQL for now; can come next).
+- Migrating existing `InlineTourForm` callers other than the `#group` section (verified single use).
