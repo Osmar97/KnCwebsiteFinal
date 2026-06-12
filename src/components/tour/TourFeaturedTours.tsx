@@ -76,7 +76,6 @@ export function TourFeaturedTours({
             const filledText = String(t("tour_modal.spots_filled"))
               .replace("{filled}", String(filled))
               .replace("{total}", String(cap));
-            const remainingText = String(t("tour_modal.remaining")).replace("{n}", String(remaining));
             const price = formatPrice(card.base_price, card.currency);
             const dateLabel = next ? formatTourDateRange(next, localeMap[lang]) : t("tours_section.card.tba");
             const cardRec = card as unknown as Record<string, unknown>;
