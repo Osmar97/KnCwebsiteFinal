@@ -517,6 +517,8 @@
 .tour-page .db-porto   { background: linear-gradient(150deg, #C8B090 0%, #9A7E58 40%, #6A5238 100%); }
 .tour-page .db-algarve { background: linear-gradient(150deg, #D8C89A 0%, #B8A272 30%, #4878A8 80%, #3060A0 100%); }
 .tour-page .db-cv      { background: linear-gradient(150deg, #A0C0D8 0%, #5890B8 40%, #E0C880 80%, #C8A860 100%); }
+.tour-page .db-praia   { background: linear-gradient(150deg, #E8D8B0 0%, #C89858 40%, #8A5838 100%); }
+.tour-page .db-mindelo { background: linear-gradient(150deg, #B8D0E0 0%, #6A98C0 40%, #2A4868 100%); }
 
 .tour-page .dest-ov {
   position: absolute; inset: 0;
