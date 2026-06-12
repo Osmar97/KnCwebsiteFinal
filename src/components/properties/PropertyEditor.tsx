@@ -17,9 +17,12 @@ import { ADMIN_PROFILES } from "@/lib/adminConfig";
 import { usePropertyMediaUploads } from "@/hooks/properties/usePropertyMediaUploads";
 import { usePropertyDescriptions } from "@/hooks/properties/usePropertyDescriptions";
 import { buildPropertyPayload, useSaveProperty } from "@/hooks/properties/useSaveProperty";
+import type { Tables } from "@/integrations/supabase/types";
+
+type PropertyRow = Tables<"properties">;
 
 interface PropertyEditorProps {
-  property?: any;
+  property?: PropertyRow;
   onClose: () => void;
 }
 
@@ -28,8 +31,8 @@ interface PropertyEditorProps {
  * existing property and when creating a new one — kept in one place so a new
  * column only has to be added once.
  */
-function getPropertyDefaultValues(property?: any): PropertyFormData {
-  const p = property ?? {};
+function getPropertyDefaultValues(property?: PropertyRow): PropertyFormData {
+  const p = (property ?? {}) as Partial<PropertyRow>;
   return {
     title: p.title || "",
     location: p.location || "",
