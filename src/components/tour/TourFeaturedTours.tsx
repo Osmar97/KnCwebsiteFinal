@@ -76,7 +76,6 @@ export function TourFeaturedTours({
             const filledText = String(t("tour_modal.spots_filled"))
               .replace("{filled}", String(filled))
               .replace("{total}", String(cap));
-            const remainingText = String(t("tour_modal.remaining")).replace("{n}", String(remaining));
             const price = formatPrice(card.base_price, card.currency);
             const dateLabel = next ? formatTourDateRange(next, localeMap[lang]) : t("tours_section.card.tba");
             const cardRec = card as unknown as Record<string, unknown>;
@@ -91,7 +90,26 @@ export function TourFeaturedTours({
                     <div className={`tour-img-inner ${card.hero_image || ""}`} />
                     {card.badge && <div className={`tour-badge ${card.badge_variant === "gold" ? "gold" : ""}`}>{card.badge}</div>}
                     {card.flag && <div className="tour-flag">{card.flag}</div>}
-                    <div className={`tour-spots ${spotsFew ? "few" : ""}`}>{spotsText}</div>
+                    {next && cap > 0 ? (
+                      <div className={`tour-img-availability ${spotsFew ? "few" : ""}`}>
+                        <div
+                          className="tour-img-progress"
+                          role="progressbar"
+                          aria-valuenow={filled}
+                          aria-valuemin={0}
+                          aria-valuemax={cap}
+                          aria-label={filledText}
+                        >
+                          <div className="tour-img-progress-fill" style={{ width: `${pct}%` }} />
+                        </div>
+                        <div className="tour-img-progress-text">
+                          <span className="tour-img-progress-count">{remaining} / {cap}</span>
+                          <span className="tour-img-progress-label">{spotsText}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className={`tour-spots ${spotsFew ? "few" : ""}`}>{spotsText}</div>
+                    )}
                   </div>
                   <div className="tour-body">
                     <div className="tour-loc">{card.destinations.slice(0, 2).join(" · ")}</div>
@@ -102,23 +120,6 @@ export function TourFeaturedTours({
                       {cap > 0 && <span className="tour-pill">{String(t("tours_section.card.participants")).replace("{n}", String(cap))}</span>}
                       {card.tags[0] && <span className="tour-pill">{card.tags[0]}</span>}
                     </div>
-                    {next && cap > 0 && (
-                      <div className="tour-card-availability">
-                        <div
-                          className="tour-card-progress"
-                          role="progressbar"
-                          aria-valuenow={filled}
-                          aria-valuemin={0}
-                          aria-valuemax={cap}
-                          aria-label={filledText}
-                        >
-                          <div className="tour-card-progress-fill" style={{ width: `${pct}%` }} />
-                        </div>
-                        <p className="tour-card-progress-text">
-                          {filledText} <span className="tour-card-progress-remaining">{remainingText}</span>
-                        </p>
-                      </div>
-                    )}
                     <div className="tour-footer">
                       <div className="tour-price">
                         <strong>{price}</strong>

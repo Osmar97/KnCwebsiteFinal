@@ -421,6 +421,47 @@
   letter-spacing: 0.1em; padding: 6px 12px;
 }
 .tour-page .tour-spots.few { background: rgba(133,117,78,0.9); }
+
+/* In-image availability overlay */
+.tour-page .tour-img-availability {
+  position: absolute;
+  left: 16px; right: 16px; bottom: 14px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(26,23,20,0.0) 0%, rgba(26,23,20,0.55) 30%, rgba(26,23,20,0.82) 100%);
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+  color: var(--white);
+  display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+}
+.tour-page .tour-img-progress {
+  height: 5px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.tour-page .tour-img-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b89968 0%, #d4b888 100%);
+  transition: width 0.4s ease;
+}
+.tour-page .tour-img-availability.few .tour-img-progress-fill {
+  background: linear-gradient(90deg, #c9a05a 0%, #e6c98a 100%);
+}
+.tour-page .tour-img-progress-text {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px;
+}
+.tour-page .tour-img-progress-count {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px; font-weight: 600; letter-spacing: 0.04em;
+  color: #f3e6c8;
+}
+.tour-page .tour-img-progress-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgba(255,255,255,0.88);
+}
+
 .tour-page .tour-body { padding: 24px; }
 .tour-page .tour-loc {
   font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
