@@ -54,14 +54,11 @@ const PropertyDetail = () => {
   };
 
   const handleContactSubmit = (e: React.FormEvent) => {
-    // Compose the property-inquiry subject + body and push them into the hook's
-    // formData (`subject`/`message`) right before delegating to its submit.
-    setContactField("subject", `Property Inquiry: ${property?.title || "Property"}`);
-    setContactField(
-      "message",
-      `Phone: ${phone}\n\nProperty: ${property?.title}\nLocation: ${property?.location}, ${property?.city}\nPrice: ${formatPrice(property?.price || 0)}€\n\n${contactForm.message}`,
-    );
-    submitContactForm(e, () => setPhone(""));
+    // Build a property-inquiry payload that overrides `subject`/`message` so the
+    // email carries the property context regardless of what's in the textarea.
+    const subject = `Property Inquiry: ${property?.title || "Property"}`;
+    const message = `Phone: ${phone}\n\nProperty: ${property?.title}\nLocation: ${property?.location}, ${property?.city}\nPrice: ${formatPrice(property?.price || 0)}€\n\n${contactForm.message}`;
+    submitContactForm(e, () => setPhone(""), { subject, message });
   };
 
   if (isLoading) return <div>Loading...</div>;
