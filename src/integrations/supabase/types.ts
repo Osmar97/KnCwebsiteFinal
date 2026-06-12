@@ -2885,6 +2885,28 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      create_custom_quote_request: {
+        Args: {
+          _budget?: string
+          _currency?: string
+          _deposit_amount?: number
+          _destination_slug?: string
+          _destinations?: string[]
+          _email: string
+          _extras_slugs?: string[]
+          _first_name: string
+          _last_name: string
+          _nationality?: string
+          _notes?: string
+          _num_days?: number
+          _num_guests?: number
+          _payload?: Json
+          _phone?: string
+          _start_tour_date_id?: string
+          _total_amount?: number
+        }
+        Returns: string
+      }
       get_tour_availability: {
         Args: never
         Returns: {
