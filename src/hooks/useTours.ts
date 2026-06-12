@@ -84,14 +84,20 @@ export function useTours() {
     (async () => {
       try {
         setLoading(true);
-        const [{ data: toursData, error: tErr }, { data: datesData, error: dErr }, { data: availData, error: aErr }] = await Promise.all([
+        const [toursRes, datesRes, availRes] = await Promise.all([
           supabase.from("tours").select("*").eq("status", "published").order("sort_order", { ascending: true }),
           supabase.from("tour_dates").select("*").order("start_date", { ascending: true }),
           supabase.rpc("get_tour_availability"),
         ]);
+        const { data: toursData, error: tErr } = toursRes;
+        const { data: datesData, error: dErr } = datesRes;
+        const { data: availData, error: aErr } = availRes;
         if (tErr) throw tErr;
         if (dErr) throw dErr;
-        if (aErr) throw aErr;
+        if (aErr) {
+          // Availability is non-critical for rendering tour cards publicly.
+          console.warn("get_tour_availability failed; rendering without live counts:", aErr);
+        }
         if (cancelled) return;
         const datesByTour: Record<string, TourDateRow[]> = {};
         (datesData ?? []).forEach((d) => {
