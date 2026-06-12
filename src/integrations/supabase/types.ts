@@ -1242,6 +1242,42 @@ export type Database = {
           },
         ]
       }
+      private_tour_settings: {
+        Row: {
+          created_at: string
+          default_currency: string
+          deposit_ratio: number
+          id: boolean
+          max_days: number
+          min_days: number
+          promo_discount_pct: number | null
+          promo_label: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_currency?: string
+          deposit_ratio?: number
+          id?: boolean
+          max_days?: number
+          min_days?: number
+          promo_discount_pct?: number | null
+          promo_label?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_currency?: string
+          deposit_ratio?: number
+          id?: boolean
+          max_days?: number
+          min_days?: number
+          promo_discount_pct?: number | null
+          promo_label?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1986,7 +2022,9 @@ export type Database = {
           label_fr: string
           label_pt: string
           max_days: number
+          max_guests: number
           min_days: number
+          min_guests: number
           slug: string
           sort_order: number
           updated_at: string
@@ -2005,7 +2043,9 @@ export type Database = {
           label_fr?: string
           label_pt?: string
           max_days?: number
+          max_guests?: number
           min_days?: number
+          min_guests?: number
           slug: string
           sort_order?: number
           updated_at?: string
@@ -2024,7 +2064,9 @@ export type Database = {
           label_fr?: string
           label_pt?: string
           max_days?: number
+          max_guests?: number
           min_days?: number
+          min_guests?: number
           slug?: string
           sort_order?: number
           updated_at?: string

@@ -184,13 +184,16 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
     [cfg.tourDates, startDateId],
   );
 
+  const promoPct = cfg.settings?.promo_discount_pct ?? 0;
   const totalPrice = useMemo(() => {
     if (!destination) return 0;
     const base = Number(destination.base_price_per_day_per_person) * days * persons;
     const extras = selectedAddons.reduce((s, a) => s + Number(a.price) * persons, 0);
-    return base + extras;
-  }, [destination, days, persons, selectedAddons]);
-  const deposit = computeDeposit(totalPrice);
+    const subtotal = base + extras;
+    return promoPct ? Math.round(subtotal * (1 - promoPct / 100)) : subtotal;
+  }, [destination, days, persons, selectedAddons, promoPct]);
+  const depositRatio = cfg.settings?.deposit_ratio ?? 0.3;
+  const deposit = Math.round(totalPrice * depositRatio);
 
   const { isSubmitting, isRedirecting, isBookingCall, reserve, payDeposit, bookCall } =
     usePrivateTourBooking({
@@ -447,11 +450,11 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
 
           <Label>{tt(t, "private_tour_flow.exp.persons", "Number of people")}</Label>
           <div className="ptf-persons-row">
-            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.max(1, persons - 1))}>−</button>
+            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.max(destination.min_guests ?? 1, persons - 1))}>−</button>
             <span className="ptf-persons-value">{persons}</span>
-            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.min(10, persons + 1))}>+</button>
+            <button type="button" className="ptf-counter" onClick={() => setPersons(Math.min(destination.max_guests ?? 10, persons + 1))}>+</button>
             <span className="ptf-mini-muted">
-              {persons === 1 ? tt(t, "private_tour_flow.person", "person") : tt(t, "private_tour_flow.persons", "people")} ({tt(t, "private_tour_flow.max_group", "max 10 per group")})
+              {persons === 1 ? tt(t, "private_tour_flow.person", "person") : tt(t, "private_tour_flow.persons", "people")} (max {destination.max_guests ?? 10} per group)
             </span>
           </div>
 
