@@ -8,6 +8,8 @@ export interface DestinationRow {
   flag: string;
   min_days: number;
   max_days: number;
+  min_guests: number;
+  max_guests: number;
   base_price_per_day_per_person: number;
   currency: string;
   sort_order: number;
