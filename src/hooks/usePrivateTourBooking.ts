@@ -76,27 +76,26 @@ export function usePrivateTourBooking(messages: BookingMessages) {
       const [first_name, ...rest] = name.trim().split(/\s+/);
       const last_name = rest.join(" ") || "—";
 
-      const { data: inserted, error } = await supabase
-        .from("tour_custom_quote_requests")
-        .insert({
-          first_name,
-          last_name,
-          email,
-          phone,
-          nationality: nationality || null,
-          num_guests: persons,
-          num_days: days,
-          destinations: [destination.label_en],
-          destination_slug: destination.slug,
-          start_tour_date_id: startDate.id,
-          extras_slugs: selectedAddonSlugs,
-          budget: budget || null,
-          notes: message || null,
-          total_amount: totalPrice,
-          deposit_amount: deposit,
-          currency: destination.currency || "EUR",
-          status: "new",
-          payload: {
+      const { data: newRequestId, error } = await supabase.rpc(
+        "create_custom_quote_request",
+        {
+          _first_name: first_name,
+          _last_name: last_name,
+          _email: email,
+          _phone: phone,
+          _nationality: nationality || null,
+          _num_guests: persons,
+          _num_days: days,
+          _destinations: [destination.label_en],
+          _destination_slug: destination.slug,
+          _start_tour_date_id: startDate.id,
+          _extras_slugs: selectedAddonSlugs,
+          _budget: budget || null,
+          _notes: message || null,
+          _total_amount: totalPrice,
+          _deposit_amount: deposit,
+          _currency: destination.currency || "EUR",
+          _payload: {
             destination: destination.label_en,
             destination_slug: destination.slug,
             days, persons,
@@ -105,11 +104,10 @@ export function usePrivateTourBooking(messages: BookingMessages) {
             total: totalPrice, deposit,
             budget, notes: message, nationality,
           },
-        })
-        .select("id")
-        .single();
+        },
+      );
       if (error) throw error;
-      const newRequestId = inserted.id;
+      if (!newRequestId) throw new Error("Failed to create quote request");
 
       // Best-effort enquiry email — failure must not block the user.
       try {
