@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
 import type { Language } from "@/pages/TourTranslations";
 import {
   usePrivateTourConfig,
@@ -11,6 +9,8 @@ import {
   type AvailableTourDateRow,
   type ClarityCallSlotRow,
 } from "@/hooks/usePrivateTourConfig";
+import { usePrivateTourBooking, computeDeposit } from "@/hooks/usePrivateTourBooking";
+import { PRIVATE_TOUR_DEPOSIT_RATIO } from "@/lib/tourConfig";
 
 type T = (path: string) => any;
 
@@ -87,7 +87,7 @@ function PriceSummary({ destination, days, persons, selectedAddons, compact, t }
   const baseTotal = baseRate * days * persons;
   const extrasTotal = selectedAddons.reduce((s, a) => s + Number(a.price) * persons, 0);
   const total = baseTotal + extrasTotal;
-  const deposit = Math.round(total * 0.3);
+  const deposit = computeDeposit(total);
   const balance = total - deposit;
 
   const personWord = persons === 1
@@ -157,9 +157,6 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [paymentChoice, setPaymentChoice] = useState<"pay" | "call" | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isBookingCall, setIsBookingCall] = useState(false);
 
   const [destinationSlug, setDestinationSlug] = useState<string>("");
   const [days, setDays] = useState(3);
@@ -194,7 +191,16 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
     const extras = selectedAddons.reduce((s, a) => s + Number(a.price) * persons, 0);
     return base + extras;
   }, [destination, days, persons, selectedAddons]);
-  const deposit = Math.round(totalPrice * 0.3);
+  const deposit = computeDeposit(totalPrice);
+
+  const { isSubmitting, isRedirecting, isBookingCall, reserve, payDeposit, bookCall } =
+    usePrivateTourBooking({
+      submitFailedTitle: tt(t, "private_tour_flow.toast_submit_failed_title", "Could not submit"),
+      paymentFailedTitle: tt(t, "private_tour_flow.toast_payment_failed_title", "Payment unavailable"),
+      callBookedTitle: tt(t, "private_tour_flow.toast_call_booked_title", "Call requested"),
+      callBookedDesc: tt(t, "private_tour_flow.toast_call_booked_desc", "We'll confirm by email shortly."),
+      callFailedTitle: tt(t, "private_tour_flow.toast_call_failed_title", "Could not book call"),
+    });
 
   const stepLabels = [
     tt(t, "private_tour_flow.steps.experience", "Experience"),
@@ -218,150 +224,32 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
 
   const handleReserve = async () => {
     if (!destination || !startDate || !name || !email || !phone) return;
-    setIsSubmitting(true);
-    try {
-      const [first_name, ...rest] = name.trim().split(/\s+/);
-      const last_name = rest.join(" ") || "—";
-      const newRequestId = crypto.randomUUID();
-      const { error } = await supabase
-        .from("tour_custom_quote_requests")
-        .insert({
-          id: newRequestId,
-          first_name,
-          last_name,
-          email,
-          phone,
-          nationality: nationality || null,
-          num_guests: persons,
-          num_days: days,
-          destinations: [destination.label_en],
-          destination_slug: destination.slug,
-          start_tour_date_id: startDate.id,
-          extras_slugs: selectedAddonSlugs,
-          services: selectedAddonSlugs,
-          budget: budget || null,
-          notes: message || null,
-          total_amount: totalPrice,
-          deposit_amount: deposit,
-          currency: destination.currency || "EUR",
-          status: "new",
-          payload: {
-            destination: destination.label_en,
-            destination_slug: destination.slug,
-            days, persons,
-            start_date: startDate.start_date,
-            extras: selectedAddonSlugs,
-            total: totalPrice, deposit,
-            budget, notes: message, nationality,
-          },
-        });
-      if (error) throw error;
+    const newRequestId = await reserve({
+      destination, startDate, selectedAddons, selectedAddonSlugs,
+      days, persons, name, email, phone, nationality, budget, message,
+      totalPrice, deposit,
+      formatLongDate: (iso) => formatLongDate(iso, "en"),
+      fmtEur,
+    });
+    if (newRequestId) {
       setRequestId(newRequestId);
-
-      // Send Resend enquiry email (best-effort).
-      try {
-        await supabase.functions.invoke("send-tour-enquiry", {
-          body: {
-            fullName: name,
-            email,
-            whatsapp: phone,
-            formType: "private",
-            notes: [
-              `Destination: ${destination.label_en}`,
-              `Duration: ${days} days`,
-              `Persons: ${persons}`,
-              `Start date: ${formatLongDate(startDate.start_date, "en")}`,
-              `Total: ${fmtEur(totalPrice)}`,
-              `Deposit (30%): ${fmtEur(deposit)}`,
-              selectedAddons.length ? `Add-ons: ${selectedAddons.map((a) => a.label_en).join(", ")}` : "",
-              budget ? `Budget: ${budget}` : "",
-              nationality ? `Nationality: ${nationality}` : "",
-              message ? `Notes: ${message}` : "",
-            ].filter(Boolean).join("\n"),
-            raw: {
-              first_name, last_name,
-              destination: destination.label_en,
-              days: String(days), guests: String(persons),
-              nationality, budget,
-              services: selectedAddonSlugs,
-              notes_extra: message,
-            },
-          },
-        });
-      } catch (e) {
-        console.warn("send-tour-enquiry failed (non-blocking):", e);
-      }
-
       setSubmitted(true);
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: tt(t, "private_tour_flow.toast_submit_failed_title", "Could not submit"),
-        description: (err as Error).message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   const handlePayDeposit = async () => {
     if (!requestId || !destination) return;
-    setIsRedirecting(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-private-tour-checkout", {
-        body: {
-          requestId,
-          depositAmount: deposit,
-          totalAmount: totalPrice,
-          currency: destination.currency || "EUR",
-          customerEmail: email,
-          customerName: name,
-          destinationLabel: destination.label_en,
-          days, persons,
-          startDateLabel: startDate ? formatLongDate(startDate.start_date, "en") : "",
-          origin: window.location.origin,
-        },
-      });
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (err) {
-      setIsRedirecting(false);
-      toast({
-        title: tt(t, "private_tour_flow.toast_payment_failed_title", "Payment unavailable"),
-        description: (err as Error).message,
-        variant: "destructive",
-      });
-    }
+    await payDeposit({
+      requestId, destination, startDate,
+      days, persons, totalPrice, deposit, name, email,
+      formatLongDate: (iso) => formatLongDate(iso, "en"),
+    });
   };
 
   const handleBookCall = async () => {
     if (!requestId || !callSlotId) return;
-    setIsBookingCall(true);
-    try {
-      const { error } = await supabase
-        .from("tour_custom_quote_requests")
-        .update({ clarity_call_slot_id: callSlotId, status: "call_requested" })
-        .eq("id", requestId);
-      if (error) throw error;
-      toast({
-        title: tt(t, "private_tour_flow.toast_call_booked_title", "Call requested"),
-        description: tt(t, "private_tour_flow.toast_call_booked_desc", "We'll confirm by email shortly."),
-      });
-      setPaymentChoice(null);
-    } catch (err) {
-      toast({
-        title: tt(t, "private_tour_flow.toast_call_failed_title", "Could not book call"),
-        description: (err as Error).message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsBookingCall(false);
-    }
+    const ok = await bookCall(requestId, callSlotId);
+    if (ok) setPaymentChoice(null);
   };
 
   if (cfg.loading) {
