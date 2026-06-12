@@ -75,12 +75,10 @@ export function usePrivateTourBooking(messages: BookingMessages) {
     try {
       const [first_name, ...rest] = name.trim().split(/\s+/);
       const last_name = rest.join(" ") || "—";
-      const newRequestId = crypto.randomUUID();
 
-      const { error } = await supabase
+      const { data: inserted, error } = await supabase
         .from("tour_custom_quote_requests")
         .insert({
-          id: newRequestId,
           first_name,
           last_name,
           email,
@@ -92,7 +90,6 @@ export function usePrivateTourBooking(messages: BookingMessages) {
           destination_slug: destination.slug,
           start_tour_date_id: startDate.id,
           extras_slugs: selectedAddonSlugs,
-          services: selectedAddonSlugs,
           budget: budget || null,
           notes: message || null,
           total_amount: totalPrice,
@@ -108,8 +105,11 @@ export function usePrivateTourBooking(messages: BookingMessages) {
             total: totalPrice, deposit,
             budget, notes: message, nationality,
           },
-        });
+        })
+        .select("id")
+        .single();
       if (error) throw error;
+      const newRequestId = inserted.id;
 
       // Best-effort enquiry email — failure must not block the user.
       try {
@@ -136,7 +136,7 @@ export function usePrivateTourBooking(messages: BookingMessages) {
               destination: destination.label_en,
               days: String(days), guests: String(persons),
               nationality, budget,
-              services: selectedAddonSlugs,
+              extras: selectedAddonSlugs,
               notes_extra: message,
             },
           },
