@@ -34,9 +34,7 @@ export default function TourPage() {
   const [showPreForm, setShowPreForm] = useState(false);
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
-  const [privateSubmitted, setPrivateSubmitted] = useState(false);
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
-  const [isSubmittingPrivate, setIsSubmittingPrivate] = useState(false);
   const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
   const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
   const { tours, availability, loading: toursLoading } = useTours();
