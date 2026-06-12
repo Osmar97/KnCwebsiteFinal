@@ -10,7 +10,6 @@ import {
   type ClarityCallSlotRow,
 } from "@/hooks/usePrivateTourConfig";
 import { usePrivateTourBooking, computeDeposit } from "@/hooks/usePrivateTourBooking";
-import { PRIVATE_TOUR_DEPOSIT_RATIO } from "@/lib/tourConfig";
 
 type T = (path: string) => any;
 
