@@ -23,6 +23,73 @@ interface PropertyEditorProps {
   onClose: () => void;
 }
 
+/**
+ * Single source of truth for RHF default values. Used both when opening an
+ * existing property and when creating a new one — kept in one place so a new
+ * column only has to be added once.
+ */
+function getPropertyDefaultValues(property?: any): PropertyFormData {
+  const p = property ?? {};
+  return {
+    title: p.title || "",
+    location: p.location || "",
+    city: p.city || "",
+    street_number: p.street_number ?? "",
+    no_street_number: p.no_street_number ?? false,
+    block: p.block ?? "",
+    door: p.door ?? "",
+    urbanization_name: p.urbanization_name ?? "",
+    transaction_type: p.transaction_type || "Comprar",
+    property_type: p.property_type || "",
+    price: p.price || 0,
+    operation_sale: p.operation_sale !== undefined ? p.operation_sale : true,
+    operation_rent: p.operation_rent || false,
+    condition: p.condition || "",
+    construction_area: p.construction_area || 0,
+    private_area: p.private_area || 0,
+    lot_area: p.lot_area || 0,
+    building_year: p.building_year || 0,
+    heating_type: p.heating_type || "",
+    energy_class: p.energy_class || "",
+    orientation_north: p.orientation_north ?? false,
+    orientation_south: p.orientation_south ?? false,
+    orientation_east: p.orientation_east ?? false,
+    orientation_west: p.orientation_west ?? false,
+    built_in_wardrobes: p.built_in_wardrobes ?? false,
+    air_conditioning: p.air_conditioning ?? false,
+    balcony_terrace: p.balcony_terrace ?? false,
+    parking: p.parking ?? false,
+    storage: p.storage ?? false,
+    pool: p.pool ?? false,
+    garden: p.garden ?? false,
+    elevator: p.elevator ?? false,
+    adapted_house: p.adapted_house ?? false,
+    luxury_house: p.luxury_house ?? false,
+    sea_view: p.sea_view ?? false,
+    floor: p.floor?.toString() || "",
+    total_floors: p.total_floors || 0,
+    is_top_floor: p.is_top_floor ?? false,
+    penthouse: p.penthouse ?? false,
+    t0: p.t0 ?? false,
+    duplex: p.duplex ?? false,
+    bathrooms: p.bathrooms || 0,
+    bedrooms: p.bedrooms || "",
+    description: p.description || "",
+    video_url: p.video_url || "",
+    floor_plan_url: p.floor_plan_url || "",
+    virtual_tour_url: p.virtual_tour_url || "",
+    status: p.status || "active",
+    featured: p.featured || false,
+    internal_reference: p.internal_reference || "",
+    private_notes: p.private_notes || "",
+    notes_visibility: p.notes_visibility || "",
+    agent_captador: p.agent_captador || "",
+    agent_comercializador: p.agent_comercializador || "",
+    // passthrough field — house typology radio.
+    house_subtype: p.house_subtype || "moradia_banda",
+  } as PropertyFormData;
+}
+
 const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   const { supabaseUser } = useAdmin();
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<PropertyFormData>({
@@ -78,67 +145,9 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
   // Reset form when property data changes or on mount
   useEffect(() => {
-    if (property) {
-      const formValues = {
-        title: property.title || "",
-        location: property.location || "",
-        city: property.city || "",
-        street_number: property.street_number ?? "",
-        no_street_number: property.no_street_number ?? false,
-        block: property.block ?? "",
-        door: property.door ?? "",
-        urbanization_name: property.urbanization_name ?? "",
-        transaction_type: property.transaction_type || "Comprar",
-        property_type: property.property_type || "",
-        price: property.price || 0,
-        operation_sale: property.operation_sale !== undefined ? property.operation_sale : true,
-        operation_rent: property.operation_rent || false,
-        condition: property.condition || "",
-        construction_area: property.construction_area || 0,
-        private_area: property.private_area || 0,
-        lot_area: property.lot_area || 0,
-        building_year: property.building_year || 0,
-        heating_type: property.heating_type || "",
-        energy_class: property.energy_class || "",
-        orientation_north: property.orientation_north ?? false,
-        orientation_south: property.orientation_south ?? false,
-        orientation_east: property.orientation_east ?? false,
-        orientation_west: property.orientation_west ?? false,
-        built_in_wardrobes: property.built_in_wardrobes ?? false,
-        air_conditioning: property.air_conditioning ?? false,
-        balcony_terrace: property.balcony_terrace ?? false,
-        parking: property.parking ?? false,
-        storage: property.storage ?? false,
-        pool: property.pool ?? false,
-        garden: property.garden ?? false,
-        elevator: property.elevator ?? false,
-        adapted_house: property.adapted_house ?? false,
-        luxury_house: property.luxury_house ?? false,
-        sea_view: property.sea_view ?? false,
-        floor: property.floor?.toString() || "",
-        total_floors: property.total_floors || 0,
-        is_top_floor: property.is_top_floor ?? false,
-        penthouse: property.penthouse ?? false,
-        t0: property.t0 ?? false,
-        duplex: property.duplex ?? false,
-        bathrooms: property.bathrooms || 0,
-        bedrooms: property.bedrooms || "",
-        description: property.description || "",
-        video_url: property.video_url || "",
-        floor_plan_url: property.floor_plan_url || "",
-        virtual_tour_url: property.virtual_tour_url || "",
-        status: property.status || "active",
-        featured: property.featured || false,
-        internal_reference: property.internal_reference || "",
-        private_notes: property.private_notes || "",
-        notes_visibility: property.notes_visibility || "",
-        agent_captador: property.agent_captador || "",
-        agent_comercializador: property.agent_comercializador || "",
-      };
+    reset(getPropertyDefaultValues(property), { keepDefaultValues: false });
 
-      // Force reset with new values
-      reset(formValues, { keepDefaultValues: false });
-      
+    if (property) {
       // Also update related state
       if (property.descriptions && typeof property.descriptions === 'object') {
         setDescriptions(property.descriptions);
@@ -155,63 +164,7 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
       setFloorPlanUrls(property.floor_plans || []);
       setVideoUrls(property.video_urls || []);
     } else {
-      // New property - reset to empty form
-      reset({
-        title: "",
-        location: "",
-        city: "",
-        street_number: "",
-        no_street_number: false,
-        block: "",
-        door: "",
-        urbanization_name: "",
-        transaction_type: "Comprar",
-        property_type: "",
-        price: 0,
-        operation_sale: true,
-        operation_rent: false,
-        condition: "",
-        construction_area: 0,
-        private_area: 0,
-        lot_area: 0,
-        building_year: 0,
-        heating_type: "",
-        energy_class: "",
-        orientation_north: false,
-        orientation_south: false,
-        orientation_east: false,
-        orientation_west: false,
-        built_in_wardrobes: false,
-        air_conditioning: false,
-        balcony_terrace: false,
-        parking: false,
-        storage: false,
-        pool: false,
-        garden: false,
-        elevator: false,
-        adapted_house: false,
-        luxury_house: false,
-        sea_view: false,
-        floor: "",
-        total_floors: 0,
-        is_top_floor: false,
-        penthouse: false,
-        t0: false,
-        duplex: false,
-        bathrooms: 0,
-        bedrooms: "",
-        description: "",
-        video_url: "",
-        floor_plan_url: "",
-        virtual_tour_url: "",
-        status: "active",
-        featured: false,
-        internal_reference: "",
-        private_notes: "",
-        notes_visibility: "",
-        agent_captador: "",
-        agent_comercializador: "",
-      });
+      // New property
       setDescriptions({ pt: "", en: "" });
       setBedroomCount(0);
       setBathroomCount(0);
@@ -404,7 +357,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
           {propertyType === "Casa / Moradia" && (
             <>
               <h2 className="text-xl font-semibold mb-4 mt-8">Tipologia</h2>
-              <RadioGroup defaultValue="moradia_banda" className="space-y-2 mb-6">
+              <RadioGroup
+                value={watch("house_subtype" as any) ? String(watch("house_subtype" as any)) : "moradia_banda"}
+                onValueChange={(value) => setValue("house_subtype" as any, value)}
+                className="space-y-2 mb-6"
+              >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="moradia_banda" id="moradia_banda" />
                   <label htmlFor="moradia_banda" className="text-sm cursor-pointer">Moradia em banda</label>
