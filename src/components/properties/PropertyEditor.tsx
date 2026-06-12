@@ -19,7 +19,18 @@ import { usePropertyDescriptions } from "@/hooks/properties/usePropertyDescripti
 import { buildPropertyPayload, useSaveProperty } from "@/hooks/properties/useSaveProperty";
 import type { Tables } from "@/integrations/supabase/types";
 
-type PropertyRow = Tables<"properties">;
+/**
+ * The editor accepts a property row from Supabase plus a few legacy/extension
+ * fields that aren't (yet) part of the generated `properties` schema. Keeping
+ * them here documents the actual shape the form expects without resorting to
+ * `any`.
+ */
+type PropertyRow = Tables<"properties"> & {
+  house_subtype?: string;
+  floors?: number;
+  video_urls?: string[];
+  descriptions?: Record<string, string> | null;
+};
 
 interface PropertyEditorProps {
   property?: PropertyRow;
@@ -102,14 +113,12 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
   });
 
   const propertyType = watch("property_type");
-  const initialDescriptions: Record<string, string> =
-    property?.descriptions && typeof property.descriptions === "object"
-      ? property.descriptions
-      : { pt: property?.description || "" };
-  const initialAdditionalLangs =
-    property?.descriptions && typeof property.descriptions === "object"
-      ? Object.keys(property.descriptions).filter((l) => l !== "pt")
-      : [];
+  const descObj =
+    property?.descriptions && typeof property.descriptions === "object" && !Array.isArray(property.descriptions)
+      ? (property.descriptions as Record<string, string>)
+      : null;
+  const initialDescriptions: Record<string, string> = descObj ?? { pt: property?.description || "" };
+  const initialAdditionalLangs = descObj ? Object.keys(descObj).filter((l) => l !== "pt") : [];
 
   const {
     descriptions, setDescriptions,
@@ -152,10 +161,11 @@ const PropertyEditor = ({ property, onClose }: PropertyEditorProps) => {
 
     if (property) {
       // Also update related state
-      if (property.descriptions && typeof property.descriptions === 'object') {
-        setDescriptions(property.descriptions);
-        // Set additional languages based on what's in descriptions
-        const langs = Object.keys(property.descriptions).filter(lang => lang !== 'pt');
+      const d = property.descriptions;
+      if (d && typeof d === 'object' && !Array.isArray(d)) {
+        const dMap = d as Record<string, string>;
+        setDescriptions(dMap);
+        const langs = Object.keys(dMap).filter(lang => lang !== 'pt');
         setAdditionalLangs(langs);
       } else {
         setDescriptions({ pt: property.description || "" });
