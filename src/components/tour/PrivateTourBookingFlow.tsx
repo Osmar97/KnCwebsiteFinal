@@ -749,7 +749,7 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
   );
 
   return (
-    <div className="ptf-root">
+    <div className="ptf-root" ref={rootRef}>
       <Steps current={step} labels={stepLabels} />
 
       <div>
