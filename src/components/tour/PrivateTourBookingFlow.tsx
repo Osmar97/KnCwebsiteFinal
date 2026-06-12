@@ -646,7 +646,7 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
           <div className="ptf-callout-title">{tt(t, "private_tour_flow.dates.cta_title", "None of these work?")}</div>
           <div className="ptf-card-desc">{tt(t, "private_tour_flow.dates.cta_desc", "Book a free 15-min clarity call and we'll find a date that fits. No commitment required.")}</div>
         </div>
-        <a href="https://wa.me/351967333803" target="_blank" rel="noreferrer" className="ptf-callout-btn">
+        <a href="https://kingsncompany.setmore.com" target="_blank" rel="noreferrer" className="ptf-callout-btn">
           {tt(t, "private_tour_flow.dates.book_call", "Book a call")}
         </a>
       </div>
