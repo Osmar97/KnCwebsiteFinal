@@ -81,23 +81,34 @@ export function useTours() {
 
   useEffect(() => {
     let cancelled = false;
+
+    const fetchAvailability = async () => {
+      const { data, error: aErr } = await supabase.rpc("get_tour_availability");
+      if (aErr) {
+        console.warn("get_tour_availability failed:", aErr);
+        return;
+      }
+      if (cancelled) return;
+      const map: Record<string, AvailabilityRow> = {};
+      (data ?? []).forEach((row) => {
+        const r = row as AvailabilityRow;
+        map[r.tour_date_id] = r;
+      });
+      setAvailability(map);
+    };
+
     (async () => {
       try {
         setLoading(true);
-        const [toursRes, datesRes, availRes] = await Promise.all([
+        const [toursRes, datesRes] = await Promise.all([
           supabase.from("tours").select("*").eq("status", "published").order("sort_order", { ascending: true }),
           supabase.from("tour_dates").select("*").order("start_date", { ascending: true }),
-          supabase.rpc("get_tour_availability"),
+          fetchAvailability(),
         ]);
         const { data: toursData, error: tErr } = toursRes;
         const { data: datesData, error: dErr } = datesRes;
-        const { data: availData, error: aErr } = availRes;
         if (tErr) throw tErr;
         if (dErr) throw dErr;
-        if (aErr) {
-          // Availability is non-critical for rendering tour cards publicly.
-          console.warn("get_tour_availability failed; rendering without live counts:", aErr);
-        }
         if (cancelled) return;
         const datesByTour: Record<string, TourDateRow[]> = {};
         (datesData ?? []).forEach((d) => {
@@ -109,13 +120,7 @@ export function useTours() {
           ...(t as unknown as TourRow),
           dates: datesByTour[(t as { id: string }).id] || [],
         }));
-        const availMap: Record<string, AvailabilityRow> = {};
-        (availData ?? []).forEach((row) => {
-          const r = row as AvailabilityRow;
-          availMap[r.tour_date_id] = r;
-        });
         setTours(combined);
-        setAvailability(availMap);
       } catch (err) {
         console.error("useTours load failed:", err);
         if (!cancelled) setError((err as Error).message);
@@ -123,7 +128,30 @@ export function useTours() {
         if (!cancelled) setLoading(false);
       }
     })();
-    return () => { cancelled = true; };
+
+    // Live updates: refetch availability when bookings or dates change.
+    const channel = supabase
+      .channel("tour-availability")
+      .on("postgres_changes", { event: "*", schema: "public", table: "tour_bookings" }, () => {
+        fetchAvailability();
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "tour_dates" }, () => {
+        fetchAvailability();
+      })
+      .subscribe();
+
+    // Fallback polling so values stay fresh even without realtime delivery
+    // (anon clients may not receive tour_bookings events due to RLS).
+    const interval = window.setInterval(fetchAvailability, 30000);
+    const onFocus = () => fetchAvailability();
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+    };
   }, []);
 
   return { tours, availability, loading, error };
