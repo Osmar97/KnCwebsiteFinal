@@ -141,6 +141,19 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
   const cfg = usePrivateTourConfig();
 
   const [step, setStep] = useState(0);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const isFirstStepRender = useRef(true);
+  useEffect(() => {
+    if (isFirstStepRender.current) {
+      isFirstStepRender.current = false;
+      return;
+    }
+    const el = rootRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const top = window.scrollY + rect.top - 96;
+    window.scrollTo({ top, behavior: "smooth" });
+  }, [step]);
   const [submitted, setSubmitted] = useState(false);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [paymentChoice, setPaymentChoice] = useState<"pay" | "call" | null>(null);
