@@ -1,5 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { CALENDAR_SLOT_DURATION_MS } from "../_shared/tour-config.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -92,6 +93,76 @@ const getValidAccessToken = async (): Promise<string> => {
   return tokenInfo.access_token;
 };
 
+/**
+ * Wraps a Google Calendar API call so that a 401 transparently triggers a
+ * cache flush + token refresh and a single retry. Returns the final `Response`.
+ */
+const withTokenRetry = async (
+  doFetch: (token: string) => Promise<Response>,
+): Promise<Response> => {
+  const token = await getValidAccessToken();
+  const response = await doFetch(token);
+  if (response.status !== 401) return response;
+
+  console.log("401 from Google — clearing token cache and retrying once...");
+  tokenCache = null;
+  const newToken = await getValidAccessToken();
+  return doFetch(newToken);
+};
+
+interface BusyInterval { start: string; end: string }
+
+/** Returns the list of busy intervals for a single calendar in [start, end]. */
+const fetchBusyTimes = async (
+  calendarId: string,
+  startDate: Date,
+  endDate: Date,
+): Promise<BusyInterval[]> => {
+  const response = await withTokenRetry((token) =>
+    fetch("https://www.googleapis.com/calendar/v3/freeBusy", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        timeMin: startDate.toISOString(),
+        timeMax: endDate.toISOString(),
+        items: [{ id: calendarId }],
+      }),
+    }),
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`Error checking calendar ${calendarId}:`, response.status, errorText);
+    throw new Error(`Error checking calendar availability: ${response.status} - ${errorText}`);
+  }
+
+  const freeBusyData = await response.json();
+  return freeBusyData.calendars[calendarId]?.busy ?? [];
+};
+
+/** Returns the first conflicting interval, or null if the slot is free. */
+const findConflict = (
+  busyTimes: BusyInterval[],
+  startDate: Date,
+  endDate: Date,
+): BusyInterval | null => {
+  for (const busyTime of busyTimes) {
+    const busyStart = new Date(busyTime.start);
+    const busyEnd = new Date(busyTime.end);
+    if (startDate < busyEnd && endDate > busyStart) return busyTime;
+  }
+  return null;
+};
+
+const unavailableResponse = () =>
+  new Response(
+    JSON.stringify({ success: false, available: false, message: "Time slot is not available" }),
+    { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } },
+  );
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -129,171 +200,37 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    if (checkOnly) {
-      console.log("=== AVAILABILITY CHECK ===");
-    } else {
-      console.log("=== ACTUAL BOOKING REQUEST ===");
-    }
+    console.log(checkOnly ? "=== AVAILABILITY CHECK ===" : "=== ACTUAL BOOKING REQUEST ===");
 
-    // Get a valid access token (use cached if available, refresh if needed)
-    const accessToken = await getValidAccessToken();
-    
     const primaryCalendarId = Deno.env.get("GOOGLE_CALENDAR_ID") || "primary";
     const checkCalendarIds = Deno.env.get("GOOGLE_CALENDAR_CHECK_IDS");
 
-    // Create start and end times for the booking (20 minute duration)
+    // Booking slot window (constant duration shared with the rest of the app).
     const startDate = startDateParsed;
-    const endDate = new Date(startDate.getTime() + 20 * 60 * 1000); // Add 20 minutes
+    const endDate = new Date(startDate.getTime() + CALENDAR_SLOT_DURATION_MS);
 
-    // Parse the calendar IDs to check (comma-separated)
     const calendarsToCheck = checkCalendarIds ? checkCalendarIds.split(',').map(id => id.trim()) : [];
-    
+
     console.log("Checking availability across calendars:", calendarsToCheck);
     console.log("Requested time slot:", {
       start: startDate.toISOString(),
       end: endDate.toISOString()
     });
 
-    // Check availability across all specified calendars
+    // Check availability across all specified calendars (any overlap blocks).
     for (const calendarId of calendarsToCheck) {
       console.log(`Checking calendar: ${calendarId}`);
-      
-      // Check for conflicts in the exact time window
-      const freeBusyResponse = await fetch(
-        `https://www.googleapis.com/calendar/v3/freeBusy`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            timeMin: startDate.toISOString(),
-            timeMax: endDate.toISOString(),
-            items: [{ id: calendarId }]
-          })
-        }
-      );
-
-      if (!freeBusyResponse.ok) {
-        const errorText = await freeBusyResponse.text();
-        console.error(`Error checking calendar ${calendarId}:`, freeBusyResponse.status, errorText);
-        
-        if (freeBusyResponse.status === 401) {
-          // Clear cache and try once more with fresh token
-          console.log("Token seems invalid, clearing cache and retrying...");
-          tokenCache = null;
-          const newAccessToken = await getValidAccessToken();
-          
-          const retryResponse = await fetch(
-            `https://www.googleapis.com/calendar/v3/freeBusy`,
-            {
-              method: "POST",
-              headers: {
-                "Authorization": `Bearer ${newAccessToken}`,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                timeMin: startDate.toISOString(),
-                timeMax: endDate.toISOString(),
-                items: [{ id: calendarId }]
-              })
-            }
-          );
-          
-          if (!retryResponse.ok) {
-            const retryErrorText = await retryResponse.text();
-            throw new Error(`Authentication failed even after token refresh. Please check that your Google OAuth credentials and refresh token are valid. Error: ${retryResponse.status} - ${retryErrorText}`);
-          }
-          
-          const freeBusyData = await retryResponse.json();
-          const busyTimes = freeBusyData.calendars[calendarId]?.busy || [];
-          console.log(`Calendar ${calendarId} busy times (after retry):`, busyTimes);
-          
-          // Check for overlaps with retry response
-          for (const busyTime of busyTimes) {
-            const busyStart = new Date(busyTime.start);
-            const busyEnd = new Date(busyTime.end);
-            
-            const hasOverlap = startDate < busyEnd && endDate > busyStart;
-            
-            if (hasOverlap) {
-              console.log(`Found conflict in calendar ${calendarId}:`, {
-                busyPeriod: { start: busyStart.toISOString(), end: busyEnd.toISOString() },
-                requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() }
-              });
-              
-              if (checkOnly) {
-                console.log("Returning unavailable for availability check");
-                return new Response(
-                  JSON.stringify({
-                    success: false,
-                    available: false,
-                    message: "Time slot is not available"
-                  }),
-                  {
-                    status: 200,
-                    headers: {
-                      "Content-Type": "application/json",
-                      ...corsHeaders
-                    }
-                  }
-                );
-              }
-              
-              console.log("Blocking actual booking due to conflict");
-              throw new Error(`Time slot is not available. There is a conflict with an existing appointment.`);
-            }
-          }
-          
-          continue; // Continue to next calendar
-        }
-        
-        throw new Error(`Error checking calendar availability: ${freeBusyResponse.status} - ${errorText}`);
-      }
-
-      const freeBusyData = await freeBusyResponse.json();
-      const busyTimes = freeBusyData.calendars[calendarId]?.busy || [];
-
+      const busyTimes = await fetchBusyTimes(calendarId, startDate, endDate);
       console.log(`Calendar ${calendarId} busy times:`, busyTimes);
 
-      // Check for any overlaps - ANY overlap should block the slot
-      for (const busyTime of busyTimes) {
-        const busyStart = new Date(busyTime.start);
-        const busyEnd = new Date(busyTime.end);
-        
-        // Check if there's any overlap between the requested slot and the busy time
-        const hasOverlap = startDate < busyEnd && endDate > busyStart;
-        
-        if (hasOverlap) {
-          console.log(`Found conflict in calendar ${calendarId}:`, {
-            busyPeriod: { start: busyStart.toISOString(), end: busyEnd.toISOString() },
-            requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() }
-          });
-          
-          // If this is just an availability check, return that it's not available
-          if (checkOnly) {
-            console.log("Returning unavailable for availability check");
-            return new Response(
-              JSON.stringify({
-                success: false,
-                available: false,
-                message: "Time slot is not available"
-              }),
-              {
-                status: 200,
-                headers: {
-                  "Content-Type": "application/json",
-                  ...corsHeaders
-                }
-              }
-            );
-          }
-          
-          // If this is an actual booking attempt, throw an error
-          console.log("Blocking actual booking due to conflict");
-          throw new Error(`Time slot is not available. There is a conflict with an existing appointment.`);
-        }
+      const conflict = findConflict(busyTimes, startDate, endDate);
+      if (conflict) {
+        console.log(`Found conflict in calendar ${calendarId}:`, {
+          busyPeriod: { start: conflict.start, end: conflict.end },
+          requestedSlot: { start: startDate.toISOString(), end: endDate.toISOString() },
+        });
+        if (checkOnly) return unavailableResponse();
+        throw new Error("Time slot is not available. There is a conflict with an existing appointment.");
       }
     }
 
@@ -301,7 +238,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     // If this is just an availability check, return success
     if (checkOnly) {
-      console.log("Returning available for availability check");
       return new Response(
         JSON.stringify({
           success: true,
@@ -359,67 +295,23 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Event data to be created:", eventData);
 
-    const response = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${primaryCalendarId}/events?conferenceDataVersion=1`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`,
-          "Content-Type": "application/json"
+    const response = await withTokenRetry((token) =>
+      fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${primaryCalendarId}/events?conferenceDataVersion=1`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
         },
-        body: JSON.stringify(eventData)
-      }
+      ),
     );
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Google Calendar API error:", response.status, errorText);
-      
-      // If it's an auth error, try once more with fresh token
-      if (response.status === 401) {
-        console.log("Auth error on event creation, trying with fresh token...");
-        tokenCache = null;
-        const newAccessToken = await getValidAccessToken();
-        
-        const retryResponse = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/${primaryCalendarId}/events?conferenceDataVersion=1`,
-          {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${newAccessToken}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(eventData)
-          }
-        );
-        
-        if (!retryResponse.ok) {
-          const retryErrorText = await retryResponse.text();
-          throw new Error(`Google Calendar API error after retry: ${retryResponse.status} - ${retryErrorText}`);
-        }
-        
-        const event = await retryResponse.json();
-        console.log("=== CALENDAR EVENT CREATED SUCCESSFULLY (after retry) ===");
-        console.log("Created event:", event);
-
-        return new Response(
-          JSON.stringify({
-            success: true,
-            eventId: event.id,
-            eventLink: event.htmlLink,
-            meetingLink: event.conferenceData?.entryPoints?.[0]?.uri,
-            message: "Event created successfully after checking availability across all calendars"
-          }),
-          {
-            status: 200,
-            headers: {
-              "Content-Type": "application/json",
-              ...corsHeaders
-            }
-          }
-        );
-      }
-      
       throw new Error(`Google Calendar API error: ${response.status} - ${errorText}`);
     }
 

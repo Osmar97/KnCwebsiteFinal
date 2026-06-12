@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useProperty, useDeleteProperty } from "@/hooks/admin/useAdminProperties";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -11,8 +10,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useAdmin } from "@/contexts/AdminContext";
-import { useToast } from "@/hooks/use-toast";
 import { formatPrice } from "@/lib/formatters";
+import { useContactForm } from "@/hooks/useContactForm";
 import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
 import FloorPlanViewer from "@/components/properties/FloorPlanViewer";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -23,19 +22,18 @@ const PropertyDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isAdminLoggedIn } = useAdmin();
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("photos");
   const [selectedLang, setSelectedLang] = useState("en");
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryStartIndex, setGalleryStartIndex] = useState(0);
-  const [contactForm, setContactForm] = useState({
-    email: "",
-    name: "",
-    phone: "",
-    message: ""
-  });
-  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
+  const [phone, setPhone] = useState("");
+  const {
+    formData: contactForm,
+    isSubmitting: isSubmittingContact,
+    handleInputChange: setContactField,
+    handleSubmit: submitContactForm,
+  } = useContactForm();
 
   const { data: property, isLoading } = useProperty(id);
   const deleteMutation = useDeleteProperty({
@@ -53,39 +51,12 @@ const PropertyDetail = () => {
     navigate(`/admin/properties?edit=${id}`);
   };
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmittingContact(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
-        body: {
-          name: contactForm.name,
-          email: contactForm.email,
-          phone: contactForm.phone,
-          subject: `Property Inquiry: ${property?.title || 'Property'}`,
-          message: `Phone: ${contactForm.phone}\n\nProperty: ${property?.title}\nLocation: ${property?.location}, ${property?.city}\nPrice: ${formatPrice(property?.price || 0)}€\n\n${contactForm.message}`,
-        }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Message Sent Successfully",
-        description: "Thank you for your interest! We'll contact you soon.",
-      });
-
-      setContactForm({ email: "", name: "", phone: "", message: "" });
-    } catch (error: any) {
-      console.error("Error sending contact email:", error);
-      toast({
-        title: "Failed to Send Message",
-        description: "Please try again or call us directly.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmittingContact(false);
-    }
+  const handleContactSubmit = (e: React.FormEvent) => {
+    // Build a property-inquiry payload that overrides `subject`/`message` so the
+    // email carries the property context regardless of what's in the textarea.
+    const subject = `Property Inquiry: ${property?.title || "Property"}`;
+    const message = `Phone: ${phone}\n\nProperty: ${property?.title}\nLocation: ${property?.location}, ${property?.city}\nPrice: ${formatPrice(property?.price || 0)}€\n\n${contactForm.message}`;
+    submitContactForm(e, () => setPhone(""), { subject, message });
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -333,7 +304,7 @@ const PropertyDetail = () => {
                   placeholder="Email *" 
                   required 
                   value={contactForm.email}
-                  onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                  onChange={(e) => setContactField("email", e.target.value)}
                   className="bg-black border-gray-800 text-white placeholder:text-gray-500 min-h-[44px]" 
                 />
                 <Input 
@@ -341,22 +312,22 @@ const PropertyDetail = () => {
                   placeholder="Name *" 
                   required 
                   value={contactForm.name}
-                  onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                  onChange={(e) => setContactField("name", e.target.value)}
                   className="bg-black border-gray-800 text-white placeholder:text-gray-500 min-h-[44px]" 
                 />
                 <Input 
                   type="tel" 
                   placeholder="Phone *" 
                   required 
-                  value={contactForm.phone}
-                  onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="bg-black border-gray-800 text-white placeholder:text-gray-500 min-h-[44px]" 
                 />
                 <Textarea 
                   placeholder="Message" 
                   rows={4} 
                   value={contactForm.message}
-                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                  onChange={(e) => setContactField("message", e.target.value)}
                   className="bg-black border-gray-800 text-white placeholder:text-gray-500" 
                 />
                 <Button 

@@ -13,13 +13,18 @@ export const useContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent, onSuccess?: () => void) => {
+  const handleSubmit = async (
+    e: React.FormEvent,
+    onSuccess?: () => void,
+    overrides?: Partial<typeof formData>,
+  ) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      const payload = { ...formData, ...overrides };
       const { error } = await supabase.functions.invoke('send-contact-email', {
-        body: formData
+        body: payload,
       });
 
       if (error) {
