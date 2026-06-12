@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { useAdmin } from "@/contexts/AdminContext";
 import { AdminLogin } from "@/components/AdminLogin";
-import { LayoutDashboard, Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, LogOut } from "lucide-react";
+import { LayoutDashboard, Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, LogOut, Settings, Globe, PackagePlus, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,11 @@ const NAV = [
   { to: "/admin/bookings", label: "Bookings", icon: Calendar },
   { to: "/admin/waitlist", label: "Waitlist", icon: ClipboardList },
   { to: "/admin/quotes", label: "Custom Quotes", icon: Sparkles },
+  { to: "/admin/private-tour/settings", label: "PT · Settings", icon: Settings },
+  { to: "/admin/private-tour/destinations", label: "PT · Destinations", icon: Globe },
+  { to: "/admin/private-tour/addons", label: "PT · Add-Ons", icon: PackagePlus },
+  { to: "/admin/private-tour/dates", label: "PT · Dates", icon: Calendar },
+  { to: "/admin/private-tour/included", label: "PT · Included", icon: ListChecks },
 ];
 
 interface Props {
