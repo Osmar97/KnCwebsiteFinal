@@ -4,9 +4,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+export interface PropertyFilterState {
+  transactionType: "Comprar" | "Arrendar";
+  minPrice: string;
+  maxPrice: string;
+  minSize: string;
+  maxSize: string;
+  propertyTypes: string[];
+  bedrooms: string;
+  bathrooms: string;
+  condition: string;
+  features: string[];
+}
+
 interface PropertyFiltersProps {
-  filters: any;
-  setFilters: (filters: any) => void;
+  filters: PropertyFilterState;
+  setFilters: (filters: PropertyFilterState) => void;
 }
 
 const PropertyFilters = ({ filters, setFilters }: PropertyFiltersProps) => {

@@ -94,7 +94,7 @@ serve(async (req) => {
               destinations: raw.destination ? [String(raw.destination)] : [],
               vibes: arr(raw.vibes),
               hotel_preference: raw.hotel ? String(raw.hotel) : null,
-              services: arr(raw.services),
+              extras_slugs: arr(raw.extras ?? raw.services),
               notes: raw.notes_extra ? String(raw.notes_extra) : (data.notes ? String(data.notes) : null),
               payload: data,
             })

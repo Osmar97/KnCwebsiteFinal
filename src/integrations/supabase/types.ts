@@ -1836,7 +1836,6 @@ export type Database = {
           payment_status: string
           phone: string | null
           preferred_dates: string | null
-          services: string[]
           start_tour_date_id: string | null
           status: string
           stripe_session_id: string | null
@@ -1867,7 +1866,6 @@ export type Database = {
           payment_status?: string
           phone?: string | null
           preferred_dates?: string | null
-          services?: string[]
           start_tour_date_id?: string | null
           status?: string
           stripe_session_id?: string | null
@@ -1898,7 +1896,6 @@ export type Database = {
           payment_status?: string
           phone?: string | null
           preferred_dates?: string | null
-          services?: string[]
           start_tour_date_id?: string | null
           status?: string
           stripe_session_id?: string | null

@@ -27,7 +27,7 @@ const AdminQuotes = () => {
                   </div>
                   {r.destinations?.length > 0 && <p className="text-xs text-gray-400 mt-2">Destinations: <span className="text-gray-200">{r.destinations.join(", ")}</span></p>}
                   {r.vibes?.length > 0 && <p className="text-xs text-gray-400">Vibes: <span className="text-gray-200">{r.vibes.join(", ")}</span></p>}
-                  {r.services?.length > 0 && <p className="text-xs text-gray-400">Services: <span className="text-gray-200">{r.services.join(", ")}</span></p>}
+                  {r.extras_slugs?.length > 0 && <p className="text-xs text-gray-400">Add-ons: <span className="text-gray-200">{r.extras_slugs.join(", ")}</span></p>}
                   {r.notes && <p className="text-sm text-gray-300 mt-2 whitespace-pre-wrap">{r.notes}</p>}
                 </div>
                 <select value={r.status} onChange={(e) => updateStatus.mutate({ id: r.id, status: e.target.value })}
