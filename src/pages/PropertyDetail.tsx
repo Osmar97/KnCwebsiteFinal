@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useAdmin } from "@/contexts/AdminContext";
-import { useToast } from "@/hooks/use-toast";
 import { formatPrice } from "@/lib/formatters";
 import { useContactForm } from "@/hooks/useContactForm";
 import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
@@ -23,7 +22,6 @@ const PropertyDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isAdminLoggedIn } = useAdmin();
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("photos");
   const [selectedLang, setSelectedLang] = useState("en");
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
