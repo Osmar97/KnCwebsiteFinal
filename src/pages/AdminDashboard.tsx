@@ -1,6 +1,6 @@
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Link } from "react-router-dom";
-import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, CheckCircle2, FileEdit } from "lucide-react";
+import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, CheckCircle2, FileEdit, Settings, Globe, PackagePlus, ListChecks } from "lucide-react";
 import { useAdminCounts } from "@/hooks/admin/useAdminCounts";
 import type { UseQueryResult } from "@tanstack/react-query";
 
@@ -42,6 +42,15 @@ const AdminDashboard = () => {
         <Stat label="Waitlist Requests" value={n(waitlist)} icon={ClipboardList} to="/admin/waitlist" />
         <Stat label="Custom Quote Requests" value={n(quotes)} icon={Sparkles} to="/admin/quotes" />
         <Stat label="Assets Library" value="Manage" icon={FileBox} to="/admin/assets" />
+      </div>
+
+      <h2 className="text-lg font-semibold text-gold mt-10 mb-3">Private Tour Configuration</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+        <Stat label="PT · Settings" value="Edit" icon={Settings} to="/admin/private-tour/settings" />
+        <Stat label="PT · Destinations" value="Manage" icon={Globe} to="/admin/private-tour/destinations" />
+        <Stat label="PT · Add-Ons" value="Manage" icon={PackagePlus} to="/admin/private-tour/addons" />
+        <Stat label="PT · Dates" value="Manage" icon={Calendar} to="/admin/private-tour/dates" />
+        <Stat label="PT · Included" value="Manage" icon={ListChecks} to="/admin/private-tour/included" />
       </div>
 
       <div className="mt-8 grid md:grid-cols-2 gap-4">
