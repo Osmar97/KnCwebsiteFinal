@@ -1,5 +1,7 @@
 import { Reveal } from "@/components/tour/Reveal";
 import InlineTourForm from "@/components/tour/InlineTourForm";
+import PrivateTourBookingFlow from "@/components/tour/PrivateTourBookingFlow";
+import type { Language } from "@/pages/TourTranslations";
 
 type T = (path: string) => any;
 
@@ -11,7 +13,12 @@ interface Props {
   t: T;
 }
 
-export function PrivateTourSection({ variant, isSubmitting, submitted, onSubmit, t }: Props) {
+interface PrivateProps {
+  t: T;
+  lang: Language;
+}
+
+export function PrivateTourSection({ t, lang }: PrivateProps) {
   return (
     <section className="form-section" id="private">
       <div className="t-container">
@@ -19,13 +26,7 @@ export function PrivateTourSection({ variant, isSubmitting, submitted, onSubmit,
         <h2 className="section-title">{t("private_section.title_1")}<br /><em>{t("private_section.title_2")}</em></h2>
         <p className="section-desc">{t("private_section.desc")}</p>
         <Reveal>
-          <InlineTourForm
-            variant={variant}
-            isSubmitting={isSubmitting}
-            submitted={submitted}
-            onSubmit={onSubmit}
-            t={t}
-          />
+          <PrivateTourBookingFlow t={t} lang={lang} />
         </Reveal>
       </div>
     </section>

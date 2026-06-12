@@ -34,9 +34,7 @@ export default function TourPage() {
   const [showPreForm, setShowPreForm] = useState(false);
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
-  const [privateSubmitted, setPrivateSubmitted] = useState(false);
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
-  const [isSubmittingPrivate, setIsSubmittingPrivate] = useState(false);
   const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
   const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
   const { tours, availability, loading: toursLoading } = useTours();
@@ -158,13 +156,7 @@ export default function TourPage() {
         onJoinWaitlist={openEnquiryForm}
       />
       <TestimonialsSection t={t} />
-      <PrivateTourSection
-        variant="private"
-        isSubmitting={isSubmittingPrivate}
-        submitted={privateSubmitted}
-        onSubmit={(payload) => submitInlineForm(payload, setIsSubmittingPrivate, setPrivateSubmitted)}
-        t={t}
-      />
+      <PrivateTourSection t={t} lang={lang} />
       <WaitlistSection
         variant="waitlist"
         isSubmitting={isSubmittingWaitlist}
