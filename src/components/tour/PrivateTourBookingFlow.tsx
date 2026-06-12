@@ -184,13 +184,16 @@ export default function PrivateTourBookingFlow({ t, lang }: Props) {
     [cfg.tourDates, startDateId],
   );
 
+  const promoPct = cfg.settings?.promo_discount_pct ?? 0;
   const totalPrice = useMemo(() => {
     if (!destination) return 0;
     const base = Number(destination.base_price_per_day_per_person) * days * persons;
     const extras = selectedAddons.reduce((s, a) => s + Number(a.price) * persons, 0);
-    return base + extras;
-  }, [destination, days, persons, selectedAddons]);
-  const deposit = computeDeposit(totalPrice);
+    const subtotal = base + extras;
+    return promoPct ? Math.round(subtotal * (1 - promoPct / 100)) : subtotal;
+  }, [destination, days, persons, selectedAddons, promoPct]);
+  const depositRatio = cfg.settings?.deposit_ratio ?? 0.3;
+  const deposit = Math.round(totalPrice * depositRatio);
 
   const { isSubmitting, isRedirecting, isBookingCall, reserve, payDeposit, bookCall } =
     usePrivateTourBooking({
