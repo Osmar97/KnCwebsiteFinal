@@ -158,13 +158,7 @@ export default function TourPage() {
         onJoinWaitlist={openEnquiryForm}
       />
       <TestimonialsSection t={t} />
-      <PrivateTourSection
-        variant="private"
-        isSubmitting={isSubmittingPrivate}
-        submitted={privateSubmitted}
-        onSubmit={(payload) => submitInlineForm(payload, setIsSubmittingPrivate, setPrivateSubmitted)}
-        t={t}
-      />
+      <PrivateTourSection t={t} lang={lang} />
       <WaitlistSection
         variant="waitlist"
         isSubmitting={isSubmittingWaitlist}
