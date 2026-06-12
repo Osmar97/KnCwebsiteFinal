@@ -30,6 +30,11 @@ import AdminTours from "./pages/AdminTours";
 import AdminBookings from "./pages/AdminBookings";
 import AdminWaitlist from "./pages/AdminWaitlist";
 import AdminQuotes from "./pages/AdminQuotes";
+import AdminPrivateTourSettings from "./pages/AdminPrivateTourSettings";
+import AdminPrivateTourDestinations from "./pages/AdminPrivateTourDestinations";
+import AdminPrivateTourAddons from "./pages/AdminPrivateTourAddons";
+import AdminPrivateTourDates from "./pages/AdminPrivateTourDates";
+import AdminPrivateTourIncluded from "./pages/AdminPrivateTourIncluded";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +89,11 @@ const App = () => (
               <Route path="/admin/bookings" element={<AdminBookings />} />
               <Route path="/admin/waitlist" element={<AdminWaitlist />} />
               <Route path="/admin/quotes" element={<AdminQuotes />} />
+              <Route path="/admin/private-tour/settings" element={<AdminPrivateTourSettings />} />
+              <Route path="/admin/private-tour/destinations" element={<AdminPrivateTourDestinations />} />
+              <Route path="/admin/private-tour/addons" element={<AdminPrivateTourAddons />} />
+              <Route path="/admin/private-tour/dates" element={<AdminPrivateTourDates />} />
+              <Route path="/admin/private-tour/included" element={<AdminPrivateTourIncluded />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
