@@ -924,6 +924,7 @@
   .tour-page .tours-grid { grid-template-columns: 1fr 1fr; }
   .tour-page .dest-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
   .tour-page .dest-card:first-child { grid-row: auto; }
+  .tour-page .dest-card { height: 300px; }
   .tour-page .how-section { grid-template-columns: 1fr; gap: 48px; }
   .tour-page .how-sticky { position: static; }
   .tour-page .test-grid { grid-template-columns: 1fr 1fr; }
