@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { ADMIN_PROFILES, findAdminProfile } from "@/lib/adminConfig";
+import { getCurrentSession, signInWithPassword, signOutCurrentUser, subscribeAuthChanges } from "@/data/adminAuth";
 
 interface AdminUser {
   id: string;
@@ -34,7 +34,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const session = await getCurrentSession();
       if (session?.user) {
         setSupabaseUser(session.user);
         const profile = findAdminProfile(session.user.email);
@@ -52,8 +52,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
 
     checkAuth();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const subscription = subscribeAuthChanges((_event, session) => {
       if (session?.user) {
         setSupabaseUser(session.user);
         const profile = findAdminProfile(session.user.email);
@@ -91,10 +90,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data: signInData, error: signInError } = await signInWithPassword(email, password);
 
       if (signInData?.user && !signInError) {
         setSupabaseUser(signInData.user);
@@ -120,7 +116,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    await signOutCurrentUser();
     setIsAdminLoggedIn(false);
     setAdminUser(null);
     setSupabaseUser(null);

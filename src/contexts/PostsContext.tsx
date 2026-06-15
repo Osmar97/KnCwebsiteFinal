@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { listPosts, createPostRecord, updatePostRecord, deletePostRecord } from "@/data/posts";
 
 export interface Post {
   id: string;
@@ -35,13 +35,8 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setPosts((data || []) as Post[]);
+      const data = await listPosts();
+      setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
       toast({
@@ -60,15 +55,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
   const addPost = async (title: string, content: string, images: string[], pdfUrls: string[], videoUrls: string[], category: "article" | "resource"): Promise<boolean> => {
     try {
-      const { data, error } = await supabase
-        .from("posts")
-        .insert([{ title, content, images, pdf_urls: pdfUrls, video_urls: videoUrls, category }])
-        .select();
-
-      if (error) throw error;
-
-      if (data && data[0]) {
-        setPosts(prev => [data[0] as Post, ...prev]);
+      const created = await createPostRecord({ title, content, images, pdf_urls: pdfUrls, video_urls: videoUrls, category });
+      if (created) {
+        setPosts(prev => [created, ...prev]);
         return true;
       }
       return false;
@@ -80,16 +69,9 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
   const updatePost = async (id: string, title: string, content: string, images: string[], pdfUrls: string[], videoUrls: string[], category: "article" | "resource"): Promise<boolean> => {
     try {
-      const { data, error } = await supabase
-        .from("posts")
-        .update({ title, content, images, pdf_urls: pdfUrls, video_urls: videoUrls, category, updated_at: new Date().toISOString() })
-        .eq("id", id)
-        .select();
-
-      if (error) throw error;
-
-      if (data && data[0]) {
-        setPosts(prev => prev.map(post => post.id === id ? data[0] as Post : post));
+      const updated = await updatePostRecord(id, { title, content, images, pdf_urls: pdfUrls, video_urls: videoUrls, category });
+      if (updated) {
+        setPosts(prev => prev.map(post => post.id === id ? updated : post));
         return true;
       }
       return false;
@@ -101,13 +83,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
 
   const deletePost = async (id: string): Promise<boolean> => {
     try {
-      const { error } = await supabase
-        .from("posts")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
-
+      await deletePostRecord(id);
       setPosts(prev => prev.filter(post => post.id !== id));
       return true;
     } catch (error) {

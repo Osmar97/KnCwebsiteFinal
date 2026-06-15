@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Trash2, Save } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { fetchTourDestinationsAdmin, upsertTourDestination, deleteTourDestination } from "@/data/privateTour";
 
 type Row = {
   id?: string;
@@ -37,11 +37,14 @@ const AdminPrivateTourDestinations = () => {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("tour_destinations")
-      .select("*").order("sort_order", { ascending: true });
-    if (error) toast({ title: "Load failed", description: error.message, variant: "destructive" });
-    setRows((data ?? []) as any);
-    setLoading(false);
+    try {
+      const data = await fetchTourDestinationsAdmin();
+      setRows(data as any);
+    } catch (error: any) {
+      toast({ title: "Load failed", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => { load(); }, []);
 
@@ -49,23 +52,25 @@ const AdminPrivateTourDestinations = () => {
     setRows((r) => r.map((row, idx) => (idx === i ? { ...row, ...patch } : row)));
 
   const save = async (row: Row) => {
-    const { id, ...rest } = row;
-    const payload: any = { ...rest };
-    const q = id
-      ? supabase.from("tour_destinations").update(payload).eq("id", id)
-      : supabase.from("tour_destinations").insert(payload);
-    const { error } = await q;
-    if (error) return toast({ title: "Save failed", description: error.message, variant: "destructive" });
-    toast({ title: "Saved" });
-    load();
+    try {
+      await upsertTourDestination(row as any);
+      toast({ title: "Saved" });
+      load();
+    } catch (error: any) {
+      toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    }
   };
 
   const remove = async (row: Row) => {
     if (!row.id) return setRows((r) => r.filter((x) => x !== row));
     if (!confirm(`Delete destination "${row.label_en}"?`)) return;
-    const { error } = await supabase.from("tour_destinations").delete().eq("id", row.id);
-    if (error) toast({ title: "Delete failed", description: error.message, variant: "destructive" });
-    else { toast({ title: "Deleted" }); load(); }
+    try {
+      await deleteTourDestination(row.id);
+      toast({ title: "Deleted" });
+      load();
+    } catch (error: any) {
+      toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    }
   };
 
   return (

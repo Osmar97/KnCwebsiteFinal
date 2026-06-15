@@ -1,19 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { formatPrice } from "@/lib/formatPrice";
+import { fetchTourBookings } from "@/data/privateTour";
 
 const AdminBookings = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-bookings"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tour_bookings")
-        .select("*, tour_dates(start_date, end_date, tours(name_en, slug))")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as any[];
-    },
+    queryFn: () => fetchTourBookings() as Promise<any[]>,
   });
 
   return (

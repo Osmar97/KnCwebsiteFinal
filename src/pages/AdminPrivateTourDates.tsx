@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Trash2, Save } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { fetchAdminTourList, fetchUpcomingTourDates, upsertTourDate, deleteTourDate } from "@/data/privateTour";
 
 type Tour = { id: string; name_en: string };
 type Row = {
@@ -27,15 +27,15 @@ const AdminPrivateTourDates = () => {
 
   const load = async () => {
     setLoading(true);
-    const todayIso = new Date().toISOString().slice(0, 10);
-    const [{ data: t }, { data: d, error }] = await Promise.all([
-      supabase.from("tours").select("id,name_en").order("name_en"),
-      supabase.from("tour_dates").select("*").gte("start_date", todayIso).order("start_date"),
-    ]);
-    if (error) toast({ title: "Load failed", description: error.message, variant: "destructive" });
-    setTours((t ?? []) as any);
-    setRows((d ?? []) as any);
-    setLoading(false);
+    try {
+      const [t, d] = await Promise.all([fetchAdminTourList(), fetchUpcomingTourDates()]);
+      setTours(t as any);
+      setRows(d as any);
+    } catch (error: any) {
+      toast({ title: "Load failed", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => { load(); }, []);
 
@@ -44,21 +44,25 @@ const AdminPrivateTourDates = () => {
   const save = async (row: Row) => {
     if (!row.tour_id) return toast({ title: "Pick a tour first", variant: "destructive" });
     if (!row.start_date || !row.end_date) return toast({ title: "Start & end dates required", variant: "destructive" });
-    const { id, ...rest } = row;
-    const q = id
-      ? supabase.from("tour_dates").update(rest as any).eq("id", id)
-      : supabase.from("tour_dates").insert(rest as any);
-    const { error } = await q;
-    if (error) toast({ title: "Save failed", description: error.message, variant: "destructive" });
-    else { toast({ title: "Saved" }); load(); }
+    try {
+      await upsertTourDate(row as any);
+      toast({ title: "Saved" });
+      load();
+    } catch (error: any) {
+      toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    }
   };
 
   const remove = async (row: Row) => {
     if (!row.id) return setRows((r) => r.filter((x) => x !== row));
     if (!confirm("Delete this date?")) return;
-    const { error } = await supabase.from("tour_dates").delete().eq("id", row.id);
-    if (error) toast({ title: "Delete failed", description: error.message, variant: "destructive" });
-    else { toast({ title: "Deleted" }); load(); }
+    try {
+      await deleteTourDate(row.id);
+      toast({ title: "Deleted" });
+      load();
+    } catch (error: any) {
+      toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    }
   };
 
   const tourName = (id: string) => tours.find((t) => t.id === id)?.name_en ?? "—";
