@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useAdminTour } from "@/hooks/admin/useAdminTours";
+import { uploadTourImage, saveTourRecord, syncTourDateRows } from "@/data/tours";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -79,12 +79,7 @@ const TourEditor = ({ tourId, onClose }: Props) => {
 
   const uploadImage = async (file: File): Promise<string> => {
     if (!supabaseUser) throw new Error("Not authenticated");
-    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const path = `tours/${supabaseUser.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const { error } = await supabase.storage.from("property-images").upload(path, file, { upsert: false, contentType: file.type });
-    if (error) throw error;
-    const { data } = supabase.storage.from("property-images").getPublicUrl(path);
-    return data.publicUrl;
+    return uploadTourImage(file, supabaseUser.id);
   };
 
   const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,34 +130,8 @@ const TourEditor = ({ tourId, onClose }: Props) => {
         tags: form.tags ?? [],
         gallery: form.gallery ?? [],
       };
-      let savedId = tourId;
-      if (tourId) {
-        const { error } = await supabase.from("tours").update(payload).eq("id", tourId);
-        if (error) throw error;
-      } else {
-        const { data, error } = await supabase.from("tours").insert(payload).select("id").single();
-        if (error) throw error;
-        savedId = data.id;
-      }
-      // Sync dates
-      for (const d of dates) {
-        if (d._delete && d.id) {
-          const { error } = await supabase.from("tour_dates").delete().eq("id", d.id);
-          if (error) throw error;
-        } else if (d._isNew) {
-          const { error } = await supabase.from("tour_dates").insert({
-            tour_id: savedId, start_date: d.start_date, end_date: d.end_date,
-            capacity: Number(d.capacity) || 0, sold_out: !!d.sold_out, label: d.label || null,
-          });
-          if (error) throw error;
-        } else if (d.id) {
-          const { error } = await supabase.from("tour_dates").update({
-            start_date: d.start_date, end_date: d.end_date,
-            capacity: Number(d.capacity) || 0, sold_out: !!d.sold_out, label: d.label || null,
-          }).eq("id", d.id);
-          if (error) throw error;
-        }
-      }
+      const savedId = await saveTourRecord(tourId, payload);
+      await syncTourDateRows(savedId, dates);
       return savedId;
     },
     onSuccess: () => {

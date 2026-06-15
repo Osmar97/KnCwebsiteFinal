@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Trash2, Save } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { fetchTourAddons, upsertTourAddon, deleteTourAddon } from "@/data/privateTour";
 
 type Row = {
   id?: string;
@@ -33,31 +33,39 @@ const AdminPrivateTourAddons = () => {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("tour_addons").select("*").order("sort_order", { ascending: true });
-    if (error) toast({ title: "Load failed", description: error.message, variant: "destructive" });
-    setRows((data ?? []) as any);
-    setLoading(false);
+    try {
+      const data = await fetchTourAddons();
+      setRows(data as any);
+    } catch (error: any) {
+      toast({ title: "Load failed", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => { load(); }, []);
 
   const update = (i: number, p: Partial<Row>) => setRows((r) => r.map((row, idx) => idx === i ? { ...row, ...p } : row));
 
   const save = async (row: Row) => {
-    const { id, ...rest } = row;
-    const q = id
-      ? supabase.from("tour_addons").update(rest as any).eq("id", id)
-      : supabase.from("tour_addons").insert(rest as any);
-    const { error } = await q;
-    if (error) toast({ title: "Save failed", description: error.message, variant: "destructive" });
-    else { toast({ title: "Saved" }); load(); }
+    try {
+      await upsertTourAddon(row as any);
+      toast({ title: "Saved" });
+      load();
+    } catch (error: any) {
+      toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    }
   };
 
   const remove = async (row: Row) => {
     if (!row.id) return setRows((r) => r.filter((x) => x !== row));
     if (!confirm(`Delete "${row.label_en}"?`)) return;
-    const { error } = await supabase.from("tour_addons").delete().eq("id", row.id);
-    if (error) toast({ title: "Delete failed", description: error.message, variant: "destructive" });
-    else { toast({ title: "Deleted" }); load(); }
+    try {
+      await deleteTourAddon(row.id);
+      toast({ title: "Deleted" });
+      load();
+    } catch (error: any) {
+      toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    }
   };
 
   return (

@@ -3,17 +3,8 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-
-interface Settings {
-  min_days: number;
-  max_days: number;
-  default_currency: string;
-  deposit_ratio: number;
-  promo_label: string | null;
-  promo_discount_pct: number | null;
-}
+import { fetchPrivateTourSettings, savePrivateTourSettings, type PrivateTourSettings as Settings } from "@/data/privateTour";
 
 const DEFAULTS: Settings = {
   min_days: 3, max_days: 14, default_currency: "EUR",
@@ -27,27 +18,32 @@ const AdminPrivateTourSettings = () => {
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase
-        .from("private_tour_settings")
-        .select("*").eq("id", true).maybeSingle();
-      if (error) toast({ title: "Load failed", description: error.message, variant: "destructive" });
-      if (data) setS({
-        min_days: data.min_days, max_days: data.max_days,
-        default_currency: data.default_currency,
-        deposit_ratio: Number(data.deposit_ratio),
-        promo_label: data.promo_label, promo_discount_pct: data.promo_discount_pct as number | null,
-      });
-      setLoading(false);
+      try {
+        const data = await fetchPrivateTourSettings();
+        if (data) setS({
+          min_days: data.min_days, max_days: data.max_days,
+          default_currency: data.default_currency,
+          deposit_ratio: Number(data.deposit_ratio),
+          promo_label: data.promo_label, promo_discount_pct: data.promo_discount_pct as number | null,
+        });
+      } catch (error: any) {
+        toast({ title: "Load failed", description: error.message, variant: "destructive" });
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
   const save = async () => {
     setSaving(true);
-    const { error } = await supabase.from("private_tour_settings")
-      .upsert({ id: true, ...s }, { onConflict: "id" });
-    setSaving(false);
-    if (error) toast({ title: "Save failed", description: error.message, variant: "destructive" });
-    else toast({ title: "Settings saved" });
+    try {
+      await savePrivateTourSettings(s);
+      toast({ title: "Settings saved" });
+    } catch (error: any) {
+      toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
