@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import type { User } from "@supabase/supabase-js";
 import { ADMIN_PROFILES, findAdminProfile } from "@/lib/adminConfig";
 import { getCurrentSession, signInWithPassword, signOutCurrentUser, subscribeAuthChanges } from "@/data/adminAuth";
+import { logger } from "@/lib/logger";
 
 interface AdminUser {
   id: string;
@@ -105,7 +106,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
         return true;
       }
     } catch (error) {
-      console.error("Login error:", error);
+      logger.error("Login error:", error);
     }
 
     setLoginAttempts(prev => prev + 1);

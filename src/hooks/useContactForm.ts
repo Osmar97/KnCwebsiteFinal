@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const useContactForm = () => {
   const [formData, setFormData] = useState({
@@ -40,7 +41,7 @@ export const useContactForm = () => {
       setFormData({ name: "", email: "", subject: "", message: "" });
       onSuccess?.();
     } catch (error) {
-      console.error("Error sending email:", error);
+      logger.error("Error sending email:", error);
       toast({
         title: "Failed to Send Message",
         description: "There was an error sending your message. Please try again.",

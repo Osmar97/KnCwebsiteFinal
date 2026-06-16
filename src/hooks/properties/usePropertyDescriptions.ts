@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
 
 interface Init {
   initialDescriptions?: Record<string, string>;
@@ -41,7 +42,7 @@ export function usePropertyDescriptions(init: Init = {}) {
       setAdditionalLangs((p) => [...p, lang]);
       setCurrentLang(lang);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       toast({ title: "Erro na tradução", variant: "destructive" });
       setDescriptions((d) => ({ ...d, [lang]: d.en || "" }));
       setAdditionalLangs((p) => [...p, lang]);
@@ -61,7 +62,7 @@ export function usePropertyDescriptions(init: Init = {}) {
       setDescriptions((d) => ({ ...d, [currentLang]: data.improvedText }));
       toast({ title: "Texto melhorado com sucesso" });
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       toast({ title: "Erro ao melhorar texto", variant: "destructive" });
     } finally {
       setIsImproving(false);

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { PRIVATE_TOUR_DEPOSIT_RATIO } from "@/lib/tourConfig";
 import type { AddonRow, DestinationRow, AvailableTourDateRow } from "@/hooks/usePrivateTourConfig";
+import { logger } from "@/lib/logger";
 
 export { PRIVATE_TOUR_DEPOSIT_RATIO };
 
@@ -140,12 +141,12 @@ export function usePrivateTourBooking(messages: BookingMessages) {
           },
         });
       } catch (e) {
-        console.warn("send-tour-enquiry failed (non-blocking):", e);
+        logger.warn("send-tour-enquiry failed (non-blocking):", e);
       }
 
       return newRequestId;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       toast({
         title: messages.submitFailedTitle,
         description: (err as Error).message,

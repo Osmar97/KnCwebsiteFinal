@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Language } from "@/pages/TourTranslations";
+import { logger } from "@/lib/logger";
 
 export interface DestinationRow {
   id: string;
@@ -124,7 +125,7 @@ export function usePrivateTourConfig(): PrivateTourConfig {
           error: null,
         });
       } catch (err) {
-        console.error("usePrivateTourConfig failed:", err);
+        logger.error("usePrivateTourConfig failed:", err);
         if (!cancelled) {
           setState((s) => ({ ...s, loading: false, error: (err as Error).message }));
         }

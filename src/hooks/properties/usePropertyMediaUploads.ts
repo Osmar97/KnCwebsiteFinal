@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
 
 interface Init {
   images?: string[];
@@ -46,7 +47,7 @@ export function usePropertyMediaUploads(init: Init = {}) {
         toast({ title: "Imagens carregadas com sucesso", description: `${next.length} imagem(ns) adicionada(s)` });
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       toast({ title: "Erro ao carregar imagens", variant: "destructive" });
     } finally {
       setUploading(false);
@@ -75,7 +76,7 @@ export function usePropertyMediaUploads(init: Init = {}) {
         toast({ title: "Plantas carregadas com sucesso", description: `${next.length} planta(s) adicionada(s)` });
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       toast({ title: "Erro ao carregar plantas", variant: "destructive" });
     } finally {
       setUploading(false);
@@ -97,7 +98,7 @@ export function usePropertyMediaUploads(init: Init = {}) {
       const fileName = `${init.userId}/${timestamp}_${sanitizedName}`;
       const { error } = await supabase.storage.from("videos").upload(fileName, file);
       if (error) {
-        console.error("Video upload error:", error);
+        logger.error("Video upload error:", error);
         toast({ title: "Erro ao carregar vídeo", description: error.message, variant: "destructive" });
       } else {
         const { data } = supabase.storage.from("videos").getPublicUrl(fileName);
