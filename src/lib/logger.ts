@@ -1,4 +1,3 @@
-import { logger } from "@/lib/logger";
 /**
  * Minimal logger that no-ops in production builds.
  * Use instead of `console.*` to avoid noisy production output and PII leaks.
@@ -7,18 +6,18 @@ const isDev = import.meta.env.DEV;
 
 export const logger = {
   log: (...args: unknown[]) => {
-    if (isDev) logger.log(...args);
+    if (isDev) console.log(...args);
   },
   info: (...args: unknown[]) => {
-    if (isDev) logger.info(...args);
+    if (isDev) console.info(...args);
   },
   warn: (...args: unknown[]) => {
-    if (isDev) logger.warn(...args);
+    if (isDev) console.warn(...args);
   },
   error: (...args: unknown[]) => {
-    if (isDev) logger.error(...args);
+    if (isDev) console.error(...args);
   },
   debug: (...args: unknown[]) => {
-    if (isDev) logger.debug(...args);
+    if (isDev) console.debug(...args);
   },
 };
