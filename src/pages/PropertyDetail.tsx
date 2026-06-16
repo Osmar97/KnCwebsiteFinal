@@ -3,20 +3,19 @@ import { useProperty, useDeleteProperty } from "@/hooks/admin/useAdminProperties
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Heart, Video, Image as ImageIcon, Home, Pencil, Trash2, FileText } from "lucide-react";
+import { ArrowLeft, Video, Image as ImageIcon, Home, Pencil, Trash2, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useAdmin } from "@/contexts/AdminContext";
 import { formatPrice } from "@/lib/formatters";
-import { useContactForm } from "@/hooks/useContactForm";
 import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
 import FloorPlanViewer from "@/components/properties/FloorPlanViewer";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { FullscreenGallery } from "@/components/properties/FullscreenGallery";
+import { PropertyContactSidebar } from "@/components/properties/PropertyContactSidebar";
+import { PropertyInformation } from "@/components/properties/PropertyInformation";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -27,13 +26,6 @@ const PropertyDetail = () => {
   const [isFloorPlanModalOpen, setIsFloorPlanModalOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryStartIndex, setGalleryStartIndex] = useState(0);
-  const [phone, setPhone] = useState("");
-  const {
-    formData: contactForm,
-    isSubmitting: isSubmittingContact,
-    handleInputChange: setContactField,
-    handleSubmit: submitContactForm,
-  } = useContactForm();
 
   const { data: property, isLoading } = useProperty(id);
   const deleteMutation = useDeleteProperty({
@@ -49,14 +41,6 @@ const PropertyDetail = () => {
 
   const handleEdit = () => {
     navigate(`/admin/properties?edit=${id}`);
-  };
-
-  const handleContactSubmit = (e: React.FormEvent) => {
-    // Build a property-inquiry payload that overrides `subject`/`message` so the
-    // email carries the property context regardless of what's in the textarea.
-    const subject = `Property Inquiry: ${property?.title || "Property"}`;
-    const message = `Phone: ${phone}\n\nProperty: ${property?.title}\nLocation: ${property?.location}, ${property?.city}\nPrice: ${formatPrice(property?.price || 0)}€\n\n${contactForm.message}`;
-    submitContactForm(e, () => setPhone(""), { subject, message });
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -230,119 +214,34 @@ const PropertyDetail = () => {
 
             <Separator className="my-6 sm:my-8 bg-gray-800" />
 
-            {/* Information */}
-            <div className="mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gold">Information</h2>
-              
-              {/* Areas */}
-              <div className="mb-6">
-                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-white">Areas</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {property.private_area && (
-                    <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
-                      <div className="text-xl sm:text-2xl font-bold text-gold">{property.private_area}m²</div>
-                      <div className="text-xs sm:text-sm text-gray-400">Liveable Area</div>
-                    </div>
-                  )}
-                  {property.construction_area && (
-                    <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
-                      <div className="text-xl sm:text-2xl font-bold text-gold">{property.construction_area}m²</div>
-                      <div className="text-xs sm:text-sm text-gray-400">Gross Construction Area</div>
-                    </div>
-                  )}
-                  {property.lot_area && (
-                    <div className="bg-gray-900 border border-gray-800 p-4 rounded-lg text-center">
-                      <div className="text-xl sm:text-2xl font-bold text-gold">{property.lot_area}m²</div>
-                      <div className="text-xs sm:text-sm text-gray-400">Land Area</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Divisions */}
-              {divisions.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-white">Rooms</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {divisions.map((division: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center border-b border-gray-800 py-2">
-                        <span className="text-xs sm:text-sm text-gray-300">{division.name}</span>
-                        <span className="text-xs sm:text-sm text-gray-400">{division.area}m²</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Features */}
-              <div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-white">Features</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-300">
-                  {property.air_conditioning && <div className="text-xs sm:text-sm">✓ Air conditioning</div>}
-                  {property.built_in_wardrobes && <div className="text-xs sm:text-sm">✓ Built-in wardrobes</div>}
-                  {property.elevator && <div className="text-xs sm:text-sm">✓ Lift</div>}
-                  {property.balcony_terrace && <div className="text-xs sm:text-sm">✓ Balcony & terrace</div>}
-                  {property.parking && <div className="text-xs sm:text-sm">✓ Parking space</div>}
-                  {property.garden && <div className="text-xs sm:text-sm">✓ Garden</div>}
-                  {property.pool && <div className="text-xs sm:text-sm">✓ Swimming pool</div>}
-                  {property.storage && <div className="text-xs sm:text-sm">✓ Storage room</div>}
-                  {property.adapted_house && <div className="text-xs sm:text-sm">✓ Adapted house</div>}
-                  {property.sea_view && <div className="text-xs sm:text-sm">✓ Sea view</div>}
-                </div>
-              </div>
-            </div>
+            <PropertyInformation
+              privateArea={property.private_area}
+              constructionArea={property.construction_area}
+              lotArea={property.lot_area}
+              divisions={divisions}
+              features={{
+                air_conditioning: property.air_conditioning,
+                built_in_wardrobes: property.built_in_wardrobes,
+                elevator: property.elevator,
+                balcony_terrace: property.balcony_terrace,
+                parking: property.parking,
+                garden: property.garden,
+                pool: property.pool,
+                storage: property.storage,
+                adapted_house: property.adapted_house,
+                sea_view: property.sea_view,
+              }}
+            />
           </div>
 
           {/* Contact Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 sm:p-6 lg:sticky lg:top-24">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gold">Would you like to know more?</h3>
-              
-              <form onSubmit={handleContactSubmit} className="space-y-4">
-                <Input 
-                  type="email" 
-                  placeholder="Email *" 
-                  required 
-                  value={contactForm.email}
-                  onChange={(e) => setContactField("email", e.target.value)}
-                  className="bg-black border-gray-800 text-white placeholder:text-gray-500 min-h-[44px]" 
-                />
-                <Input 
-                  type="text" 
-                  placeholder="Name *" 
-                  required 
-                  value={contactForm.name}
-                  onChange={(e) => setContactField("name", e.target.value)}
-                  className="bg-black border-gray-800 text-white placeholder:text-gray-500 min-h-[44px]" 
-                />
-                <Input 
-                  type="tel" 
-                  placeholder="Phone *" 
-                  required 
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="bg-black border-gray-800 text-white placeholder:text-gray-500 min-h-[44px]" 
-                />
-                <Textarea 
-                  placeholder="Message" 
-                  rows={4} 
-                  value={contactForm.message}
-                  onChange={(e) => setContactField("message", e.target.value)}
-                  className="bg-black border-gray-800 text-white placeholder:text-gray-500" 
-                />
-                <Button 
-                  type="submit" 
-                  disabled={isSubmittingContact}
-                  className="w-full bg-gold text-black hover:bg-gold-light disabled:opacity-50 min-h-[44px]"
-                >
-                  {isSubmittingContact ? "Sending..." : "Contact us"}
-                </Button>
-              </form>
-
-              <p className="text-xs text-gray-500 mt-4">
-                By requesting information, you agree to our Privacy Policy and Terms of Service.
-              </p>
-            </div>
+            <PropertyContactSidebar
+              propertyTitle={property.title}
+              propertyLocation={property.location}
+              propertyCity={property.city}
+              propertyPrice={property.price}
+            />
           </div>
         </div>
       </div>
