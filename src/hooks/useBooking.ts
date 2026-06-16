@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface BookingData {
   name: string;
@@ -42,18 +43,18 @@ export const useBooking = () => {
       });
 
       if (error) {
-        console.error("Error from Supabase function:", error);
+        logger.error("Error from Supabase function:", error);
         throw error;
       }
 
       if (data && !data.success) {
-        console.error("Function returned unsuccessful response:", data);
+        logger.error("Function returned unsuccessful response:", data);
         throw new Error(data.error || "Unknown error occurred");
       }
 
       return data;
     } catch (error) {
-      console.error("Error creating calendar event:", error);
+      logger.error("Error creating calendar event:", error);
       throw error;
     }
   };
@@ -71,7 +72,7 @@ export const useBooking = () => {
 
       return true;
     } catch (error) {
-      console.error("Error in submitBooking:", error);
+      logger.error("Error in submitBooking:", error);
       toast({
         title: "Booking Failed",
         description: "There was an error scheduling your call. Please try again or contact us directly.",

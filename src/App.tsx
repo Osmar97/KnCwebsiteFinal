@@ -22,19 +22,19 @@ import FreeResources from "./pages/FreeResources";
 import InvestingInPortugalForAmericans from "./pages/InvestingInPortugalForAmericans";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
-import AdminProperties from "./pages/AdminProperties";
-import AdminAssets from "./pages/AdminAssets";
+import AdminProperties from "./pages/admin/AdminProperties";
+import AdminAssets from "./pages/admin/AdminAssets";
 import TourPage from "./pages/Tour";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminTours from "./pages/AdminTours";
-import AdminBookings from "./pages/AdminBookings";
-import AdminWaitlist from "./pages/AdminWaitlist";
-import AdminQuotes from "./pages/AdminQuotes";
-import AdminPrivateTourSettings from "./pages/AdminPrivateTourSettings";
-import AdminPrivateTourDestinations from "./pages/AdminPrivateTourDestinations";
-import AdminPrivateTourAddons from "./pages/AdminPrivateTourAddons";
-import AdminPrivateTourDates from "./pages/AdminPrivateTourDates";
-import AdminPrivateTourIncluded from "./pages/AdminPrivateTourIncluded";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminTours from "./pages/admin/AdminTours";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminWaitlist from "./pages/admin/AdminWaitlist";
+import AdminQuotes from "./pages/admin/AdminQuotes";
+import AdminPrivateTourSettings from "./pages/admin/AdminPrivateTourSettings";
+import AdminPrivateTourDestinations from "./pages/admin/AdminPrivateTourDestinations";
+import AdminPrivateTourAddons from "./pages/admin/AdminPrivateTourAddons";
+import AdminPrivateTourDates from "./pages/admin/AdminPrivateTourDates";
+import AdminPrivateTourIncluded from "./pages/admin/AdminPrivateTourIncluded";
 
 const queryClient = new QueryClient({
   defaultOptions: {

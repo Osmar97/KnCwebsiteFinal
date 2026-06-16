@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Language } from "@/pages/TourTranslations";
+import { logger } from "@/lib/logger";
 
 export interface TourDateRow {
   id: string;
@@ -85,7 +86,7 @@ export function useTours() {
     const fetchAvailability = async () => {
       const { data, error: aErr } = await supabase.rpc("get_tour_availability");
       if (aErr) {
-        console.warn("get_tour_availability failed:", aErr);
+        logger.warn("get_tour_availability failed:", aErr);
         return;
       }
       if (cancelled) return;
@@ -122,7 +123,7 @@ export function useTours() {
         }));
         setTours(combined);
       } catch (err) {
-        console.error("useTours load failed:", err);
+        logger.error("useTours load failed:", err);
         if (!cancelled) setError((err as Error).message);
       } finally {
         if (!cancelled) setLoading(false);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { PreTourFormData } from "@/components/tour/PreTourFormModal";
+import { logger } from "@/lib/logger";
 
 /**
  * Encapsulates all submission flows used on the public Tour page:
@@ -27,7 +28,7 @@ export function useTourSubmissions() {
       }
       throw new Error("No checkout URL returned");
     } catch (error) {
-      console.error("Checkout error:", error);
+      logger.error("Checkout error:", error);
       toast({
         title: "Checkout failed",
         description: "There was a problem initiating your checkout. Please try again or contact us.",
@@ -50,7 +51,7 @@ export function useTourSubmissions() {
       });
       return true;
     } catch (error) {
-      console.error("Enquiry error:", error);
+      logger.error("Enquiry error:", error);
       toast({
         title: "Something went wrong",
         description: "We couldn't send your request. Please try again or contact us directly.",
@@ -74,7 +75,7 @@ export function useTourSubmissions() {
       setSubmitted(true);
       toast({ title: "Request received", description: "Thank you — we'll be in touch shortly." });
     } catch (err) {
-      console.error("Inline form error:", err);
+      logger.error("Inline form error:", err);
       toast({
         title: "Something went wrong",
         description: "We couldn't send your request. Please try again or contact us directly.",

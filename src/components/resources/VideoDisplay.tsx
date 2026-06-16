@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Play, AlertCircle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { logger } from "@/lib/logger";
 
 interface VideoDisplayProps {
   videoUrls: string[];
@@ -11,7 +12,7 @@ export const VideoDisplay = ({ videoUrls }: VideoDisplayProps) => {
   const [videoErrors, setVideoErrors] = useState<{ [key: number]: string }>({});
 
   const handleVideoError = (index: number, error: any) => {
-    console.error(`Video ${index} error:`, error);
+    logger.error(`Video ${index} error:`, error);
     const videoUrl = videoUrls[index];
     const fileExtension = videoUrl?.split('.').pop()?.toLowerCase();
     

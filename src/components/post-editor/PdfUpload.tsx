@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/contexts/AdminContext";
+import { logger } from "@/lib/logger";
 
 interface PdfUploadProps {
   pdfUrls: string[];
@@ -64,7 +65,7 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
           });
 
         if (error) {
-          console.error("Storage upload error:", error);
+          logger.error("Storage upload error:", error);
           toast({
             title: "Upload Error",
             description: `Failed to upload PDF: ${error.message}`,
@@ -84,7 +85,7 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
           description: "PDF uploaded successfully.",
         });
       } catch (error) {
-        console.error("Error uploading PDF:", error);
+        logger.error("Error uploading PDF:", error);
         toast({
           title: "Upload Error",
           description: "Failed to upload PDF. Please try again.",

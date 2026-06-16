@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useToast } from "./use-toast";
+import { logger } from "@/lib/logger";
 
 export const useGeocoding = () => {
   const [isVerifying, setIsVerifying] = useState(false);
@@ -44,7 +45,7 @@ export const useGeocoding = () => {
         return null;
       }
     } catch (error) {
-      console.error("Geocoding error:", error);
+      logger.error("Geocoding error:", error);
       toast({
         title: "Erro ao verificar morada",
         description: "Tente novamente mais tarde",

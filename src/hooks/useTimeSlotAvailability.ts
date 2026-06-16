@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface TimeSlotAvailability {
   [time: string]: boolean;
@@ -67,7 +68,7 @@ export const useTimeSlotAvailability = (selectedDate: Date | undefined) => {
 
         setAvailability(availabilityMap);
       } catch (error) {
-        console.error("Error checking availability:", error);
+        logger.error("Error checking availability:", error);
         // If there's an error, assume all slots are unavailable as a safe fallback
         const timeSlots = [];
         for (let hour = 14; hour < 20; hour++) {

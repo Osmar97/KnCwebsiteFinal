@@ -7,24 +7,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, Trash2, Upload, X, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
+import { Field } from "./tour-editor/Field";
+import { TourDatesTab, type DateRow } from "./tour-editor/TourDatesTab";
+import { TourMediaTab } from "./tour-editor/TourMediaTab";
 
 interface Props {
   tourId: string | null;
   onClose: () => void;
-}
-
-interface DateRow {
-  id?: string;
-  start_date: string;
-  end_date: string;
-  capacity: number;
-  sold_out: boolean;
-  label: string | null;
-  _isNew?: boolean;
-  _delete?: boolean;
 }
 
 const empty = {
@@ -247,73 +238,19 @@ const TourEditor = ({ tourId, onClose }: Props) => {
         </TabsContent>
 
         <TabsContent value="dates" className="mt-5 space-y-3">
-          {dates.filter((d) => !d._delete).length === 0 && (
-            <p className="text-sm text-gray-400">No dates yet. Add one below.</p>
-          )}
-          {dates.map((d, i) => d._delete ? null : (
-            <div key={d.id ?? `new-${i}`} className="bg-gray-950 border border-gray-800 rounded-lg p-3 grid grid-cols-2 md:grid-cols-6 gap-2 items-end">
-              <Field label="Start">
-                <Input type="date" value={d.start_date} onChange={(e) => setDates((p) => p.map((x, idx) => idx === i ? { ...x, start_date: e.target.value } : x))} className="bg-black border-gray-800 text-white" />
-              </Field>
-              <Field label="End">
-                <Input type="date" value={d.end_date} onChange={(e) => setDates((p) => p.map((x, idx) => idx === i ? { ...x, end_date: e.target.value } : x))} className="bg-black border-gray-800 text-white" />
-              </Field>
-              <Field label="Capacity">
-                <Input type="number" min={0} value={d.capacity} onChange={(e) => setDates((p) => p.map((x, idx) => idx === i ? { ...x, capacity: Number(e.target.value) } : x))} className="bg-black border-gray-800 text-white" />
-              </Field>
-              <Field label="Label">
-                <Input value={d.label ?? ""} onChange={(e) => setDates((p) => p.map((x, idx) => idx === i ? { ...x, label: e.target.value } : x))} className="bg-black border-gray-800 text-white" />
-              </Field>
-              <label className="flex items-center gap-2 text-sm text-gray-300 mt-5">
-                <input type="checkbox" checked={d.sold_out} onChange={(e) => setDates((p) => p.map((x, idx) => idx === i ? { ...x, sold_out: e.target.checked } : x))} />
-                Sold out
-              </label>
-              <Button variant="outline" size="sm" onClick={() => setDates((p) => p.map((x, idx) => idx === i ? { ...x, _delete: true } : x))}
-                className="border-red-500 text-red-400 hover:bg-red-500 hover:text-white min-h-[40px]">
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </div>
-          ))}
-          <Button variant="outline" onClick={() => setDates((p) => [...p, { start_date: "", end_date: "", capacity: 10, sold_out: false, label: "", _isNew: true }])}
-            className="border-gold text-gold hover:bg-gold hover:text-black min-h-[44px]">
-            <Plus className="w-4 h-4 mr-1" /> Add date
-          </Button>
+          <TourDatesTab dates={dates} setDates={setDates} />
         </TabsContent>
 
-        <TabsContent value="media" className="mt-5 space-y-5">
-          <div>
-            <Label className="text-sm text-gray-300">Hero image</Label>
-            <div className="mt-2 flex items-center gap-3 flex-wrap">
-              {form.hero_image ? (
-                <div className="relative w-48 h-32 rounded overflow-hidden border border-gray-800">
-                  <img src={form.hero_image} alt="hero" className="w-full h-full object-cover" />
-                  <button onClick={() => update("hero_image", null)} className="absolute top-1 right-1 bg-black/70 rounded-full p-1"><X className="w-3 h-3 text-white" /></button>
-                </div>
-              ) : (
-                <div className="w-48 h-32 border border-dashed border-gray-800 rounded flex items-center justify-center text-gray-500 text-xs">No hero image</div>
-              )}
-              <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gold text-gold hover:bg-gold hover:text-black min-h-[44px]">
-                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload
-                <input type="file" accept="image/*" className="hidden" onChange={handleHeroUpload} />
-              </label>
-            </div>
-          </div>
-
-          <div>
-            <Label className="text-sm text-gray-300">Gallery</Label>
-            <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-              {(form.gallery ?? []).map((url: string, i: number) => (
-                <div key={i} className="relative aspect-video rounded overflow-hidden border border-gray-800">
-                  <img src={url} alt="" className="w-full h-full object-cover" />
-                  <button onClick={() => update("gallery", form.gallery.filter((_: string, idx: number) => idx !== i))} className="absolute top-1 right-1 bg-black/70 rounded-full p-1"><X className="w-3 h-3 text-white" /></button>
-                </div>
-              ))}
-              <label className="cursor-pointer aspect-video flex items-center justify-center gap-2 border border-dashed border-gold/60 rounded text-gold text-sm hover:bg-gold/5">
-                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />} Add
-                <input type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryUpload} />
-              </label>
-            </div>
-          </div>
+        <TabsContent value="media" className="mt-5">
+          <TourMediaTab
+            heroImage={form.hero_image}
+            gallery={form.gallery ?? []}
+            uploading={uploading}
+            onHeroUpload={handleHeroUpload}
+            onGalleryUpload={handleGalleryUpload}
+            onClearHero={() => update("hero_image", null)}
+            onRemoveGalleryItem={(i) => update("gallery", (form.gallery ?? []).filter((_: string, idx: number) => idx !== i))}
+          />
         </TabsContent>
 
         <TabsContent value="taxonomy" className="mt-5 space-y-4">
@@ -328,13 +265,5 @@ const TourEditor = ({ tourId, onClose }: Props) => {
     </div>
   );
 };
-
-const Field = ({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) => (
-  <div className="space-y-1">
-    <Label className="text-xs uppercase tracking-wider text-gray-400">{label}</Label>
-    {children}
-    {hint && <p className="text-[11px] text-gray-500">{hint}</p>}
-  </div>
-);
 
 export default TourEditor;

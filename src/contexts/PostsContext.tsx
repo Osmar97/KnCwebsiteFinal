@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { listPosts, createPostRecord, updatePostRecord, deletePostRecord } from "@/data/posts";
+import { logger } from "@/lib/logger";
 
 export interface Post {
   id: string;
@@ -38,7 +39,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       const data = await listPosts();
       setPosts(data);
     } catch (error) {
-      console.error("Error fetching posts:", error);
+      logger.error("Error fetching posts:", error);
       toast({
         title: "Error",
         description: "Failed to load posts",
@@ -62,7 +63,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       }
       return false;
     } catch (error) {
-      console.error("Error adding post:", error);
+      logger.error("Error adding post:", error);
       return false;
     }
   };
@@ -76,7 +77,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       }
       return false;
     } catch (error) {
-      console.error("Error updating post:", error);
+      logger.error("Error updating post:", error);
       return false;
     }
   };
@@ -87,7 +88,7 @@ export const PostsProvider = ({ children }: { children: ReactNode }) => {
       setPosts(prev => prev.filter(post => post.id !== id));
       return true;
     } catch (error) {
-      console.error("Error deleting post:", error);
+      logger.error("Error deleting post:", error);
       return false;
     }
   };

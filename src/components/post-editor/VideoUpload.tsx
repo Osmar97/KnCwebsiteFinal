@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/contexts/AdminContext";
+import { logger } from "@/lib/logger";
 
 interface VideoUploadProps {
   videoUrls: string[];
@@ -64,7 +65,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
           });
 
         if (error) {
-          console.error("Storage upload error:", error);
+          logger.error("Storage upload error:", error);
           toast({
             title: "Upload Error",
             description: `Failed to upload video: ${error.message}`,
@@ -84,7 +85,7 @@ export const VideoUpload = ({ videoUrls, onVideoUrlsChange }: VideoUploadProps) 
           description: "Video uploaded successfully.",
         });
       } catch (error) {
-        console.error("Error uploading video:", error);
+        logger.error("Error uploading video:", error);
         toast({
           title: "Upload Error",
           description: "Failed to upload video. Please try again.",
