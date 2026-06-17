@@ -50,27 +50,6 @@ export const HOW_STEPS = [
   },
 ];
 
-export const TESTIMONIALS = [
-  {
-    initials: "MJ", avClass: "av1",
-    text: "I came on the Lisbon tour in March not sure if I was ready. By day 3 I had a solicitor and a property I loved. I signed the CPCV six weeks later. Kings 'n Company made it real.",
-    name: "Marcus J.",
-    origin: "Atlanta, GA · Lisbon Property Owner",
-  },
-  {
-    initials: "AF", avClass: "av2",
-    text: "The dual-market tour changed how I see my money. I bought in Praia and I'm now under offer in Porto. Ismael and the team know every corner of both markets and it shows.",
-    name: "Amina F.",
-    origin: "London, UK · Porto & Praia Investor",
-  },
-  {
-    initials: "DS", avClass: "av3",
-    text: "As a first-time buyer abroad the legal side terrified me. Having the solicitor day built into the tour and getting that written report after made me feel protected the whole way through.",
-    name: "David S.",
-    origin: "Toronto, CA · Algarve Property Owner",
-  },
-];
-
 export const INCLUDES = [
   { icon: "🛎", title: "Hotel Included", desc: "3-star accommodation, upgraded tiers available. Negotiated group rates ensure quality without overpaying." },
   { icon: "🚐", title: "Private Transport", desc: "Dedicated driver between all property visits, neighbourhoods, and activities. No taxis, no confusion." },

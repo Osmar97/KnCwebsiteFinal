@@ -1,12 +1,10 @@
-import { Loader2 } from "lucide-react";
+import { TourHeroCTAButtons } from "@/components/tour/TourHeroCTA";
 
 interface Props {
   t: (path: string) => any;
-  onReserve: () => void;
-  isCheckingOut: boolean;
 }
 
-export function TourHero({ t, onReserve, isCheckingOut }: Props) {
+export function TourHero({ t }: Props) {
   return (
     <section className="hero-section">
       <div className="hero-grain" />
@@ -19,13 +17,7 @@ export function TourHero({ t, onReserve, isCheckingOut }: Props) {
           {t("hero.h1_line3")}
         </h1>
         <p className="hero-sub">{t("hero.sub")}</p>
-        <div className="hero-ctas">
-          <button onClick={onReserve} disabled={isCheckingOut} className="btn-primary">
-            {isCheckingOut && <Loader2 size={14} className="animate-spin" />}
-            {isCheckingOut ? t("hero.processing") : t("hero.cta_book_private")}
-          </button>
-          <a href="#group" className="btn-outline">{t("hero.cta_join_group")}</a>
-        </div>
+        <TourHeroCTAButtons t={t} />
       </div>
     </section>
   );

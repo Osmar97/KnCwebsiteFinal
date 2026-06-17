@@ -7,11 +7,9 @@ interface Props {
   lang: Language;
   setLang: (l: Language) => void;
   t: (path: string) => string;
-  onReserve: () => void;
-  isCheckingOut: boolean;
 }
 
-export function TourTopNav({ lang, setLang, t, onReserve, isCheckingOut }: Props) {
+export function TourTopNav({ lang, setLang, t }: Props) {
   const navigate = useNavigate();
   return (
     <nav className="tnav">
@@ -32,13 +30,9 @@ export function TourTopNav({ lang, setLang, t, onReserve, isCheckingOut }: Props
         <li><a href="#tours">{t("nav.tours")}</a></li>
         <li><a href="#destinations">{t("nav.destinations")}</a></li>
         <li><a href="#how">{t("nav.how")}</a></li>
-        <li><a href="#testimonials">{t("nav.stories")}</a></li>
       </ul>
       <div className="tnav-right">
         <LanguageSwitcher current={lang} onChange={setLang} />
-        <button className="tnav-cta" onClick={onReserve} disabled={isCheckingOut}>
-          {t("nav.cta")}
-        </button>
       </div>
     </nav>
   );
