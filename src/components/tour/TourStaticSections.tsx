@@ -1,6 +1,5 @@
 import { Reveal } from "@/components/tour/Reveal";
-import { INCLUDES, TESTIMONIALS } from "@/components/tour/tour-data";
-import { formatPrice } from "@/lib/formatPrice";
+import { INCLUDES } from "@/components/tour/tour-data";
 import { useToast } from "@/hooks/use-toast";
 
 type T = (path: string) => any;
@@ -20,63 +19,6 @@ export function IncludesSection({ t }: { t: T }) {
                 <div className="include-title">{items[i]?.title ?? item.title}</div>
               </div>
             ))}
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-interface TwoWaysProps {
-  privateFromPrice: number | null;
-  groupFromPrice: number | null;
-  defaultCurrency: string;
-  t: T;
-}
-export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurrency, t }: TwoWaysProps) {
-  const priv = t("two_ways.private");
-  const grp = t("two_ways.group");
-  const privMeta = (priv.meta as string[]) || [];
-  const grpMeta = (grp.meta as string[]) || [];
-  return (
-    <section className="tour-types" id="overview">
-      <div className="t-container">
-        <div className="section-eyebrow light">{t("two_ways.eyebrow")}</div>
-        <h2 className="section-title light">{t("two_ways.title_1")}<br /><em>{t("two_ways.title_2")}</em></h2>
-        <Reveal>
-          <div className="tour-format-grid">
-            <a href="#private" className="format-card">
-              <span className="format-label">{priv.label}</span>
-              <h3>{priv.title}</h3>
-              <p>{priv.desc}</p>
-              <div className="format-meta">
-                {privMeta.map((m, i) => (
-                  <div key={i} className="fmeta-item"><span className="fmeta-dot" />{m}</div>
-                ))}
-              </div>
-              <div className="format-price">
-                {privateFromPrice !== null
-                  ? String(priv.from).replace("{price}", formatPrice(privateFromPrice, defaultCurrency))
-                  : priv.custom}
-              </div>
-              <div className="format-arrow">→</div>
-            </a>
-            <a href="#group" className="format-card">
-              <span className="format-label">{grp.label}</span>
-              <h3>{grp.title}</h3>
-              <p>{grp.desc}</p>
-              <div className="format-meta">
-                {grpMeta.map((m, i) => (
-                  <div key={i} className="fmeta-item"><span className="fmeta-dot" />{m}</div>
-                ))}
-              </div>
-              <div className="format-price">
-                {groupFromPrice !== null
-                  ? String(grp.from).replace("{price}", formatPrice(groupFromPrice, defaultCurrency))
-                  : grp.soon}
-              </div>
-              <div className="format-arrow">→</div>
-            </a>
           </div>
         </Reveal>
       </div>
@@ -154,35 +96,6 @@ export function HowItWorksSection({ t }: { t: T }) {
         ))}
       </div>
     </div>
-  );
-}
-
-export function TestimonialsSection({ t }: { t: T }) {
-  const items = (t("testimonials_section.items") as Array<{ text: string; origin: string }>) || [];
-  return (
-    <section className="test-section" id="testimonials">
-      <div className="t-container">
-        <div className="section-eyebrow">{t("testimonials_section.eyebrow")}</div>
-        <h2 className="section-title">{t("testimonials_section.title_1")}<br /><em>{t("testimonials_section.title_2")}</em></h2>
-        <Reveal>
-          <div className="test-grid">
-            {TESTIMONIALS.map((test, i) => (
-              <div key={test.initials} className="test-card">
-                <div className="tq">"</div>
-                <p className="tt">{items[i]?.text ?? test.text}</p>
-                <div className="ta">
-                  <div className={`ta-av ${test.avClass}`}>{test.initials}</div>
-                  <div>
-                    <div className="ta-name">{test.name}</div>
-                    <div className="ta-orig">{items[i]?.origin ?? test.origin}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </div>
-    </section>
   );
 }
 

@@ -36,8 +36,7 @@ export default function TourPage() {
   const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
   const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
   const { tours, availability, loading: toursLoading } = useTours();
-  const { isCheckingOut, isSendingEnquiry, handleCheckout, handleEnquiry, submitInlineForm } =
-    useTourSubmissions();
+  const { isSendingEnquiry, handleEnquiry, submitInlineForm } = useTourSubmissions();
 
   const t = (path: string) => {
     const keys = path.split(".");
