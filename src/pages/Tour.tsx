@@ -15,15 +15,14 @@ import {
 import { useTourSubmissions } from "@/hooks/useTourSubmissions";
 import {
   IncludesSection,
-  TwoWaysSection,
   DestinationsSection,
   HowItWorksSection,
-  TestimonialsSection,
   NewsletterSection,
 } from "@/components/tour/TourStaticSections";
 import { TourFeaturedTours } from "@/components/tour/TourFeaturedTours";
 import { TourGroupSection } from "@/components/tour/TourGroupSection";
 import { PrivateTourSection, WaitlistSection } from "@/components/tour/TourFormSections";
+import { TourCTASection } from "@/components/tour/TourHeroCTA";
 
 // ── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
@@ -31,7 +30,6 @@ export default function TourPage() {
   useScrollToTop();
 
   const [lang, setLang] = useState<Language>("en");
-  const [showPreForm, setShowPreForm] = useState(false);
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
@@ -48,16 +46,11 @@ export default function TourPage() {
     return obj || path;
   };
 
-  const onReserveSubmit = async (data: PreTourFormData): Promise<void> => {
-    const ok = await handleCheckout(data);
-    if (ok) setShowPreForm(false);
-  };
   const onEnquirySubmit = async (data: PreTourFormData): Promise<void> => {
     const ok = await handleEnquiry(data);
     if (ok) setShowEnquiryForm(false);
   };
 
-  const openReserveForm = () => setShowPreForm(true);
   const openEnquiryForm = () => setShowEnquiryForm(true);
 
   const scrollToId = (id: string) => {
@@ -65,36 +58,16 @@ export default function TourPage() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // Cheapest published prices, used to render the "From X" lines on the
-  // "Two ways to explore" cards. Falls back to the cheapest tour of any type
-  // when one of the categories is not yet seeded.
-  const fallbackMin = tours.length
-    ? Math.min(...tours.map((t) => Number(t.base_price) || Infinity))
-    : null;
-  const cheapestGroup = tours
-    .filter((t) => t.tour_type === "group")
-    .reduce<number | null>((min, t) => {
-      const p = Number(t.base_price);
-      return Number.isFinite(p) && (min === null || p < min) ? p : min;
-    }, null);
-  const cheapestPrivate = tours
-    .filter((t) => t.tour_type === "private")
-    .reduce<number | null>((min, t) => {
-      const p = Number(t.base_price);
-      return Number.isFinite(p) && (min === null || p < min) ? p : min;
-    }, null);
-  const defaultCurrency = tours[0]?.currency || "EUR";
-  const groupFromPrice =
-    cheapestGroup ?? fallbackMin ?? null;
-  const privateFromPrice =
-    cheapestPrivate ?? fallbackMin ?? null;
-
   // Group-tour cards are now sourced from the database (tour_type === 'group').
   const groupTours = tours.filter((t) => t.tour_type === "group");
 
   // Destinations are derived from published tours. We deduplicate by the
   // primary destination + country so the section auto-updates whenever a new
   // tour is published from the admin dashboard.
+  // Public Tours page surfaces only the two supported markets: Portugal and Cabo Verde.
+  // We pick the first published tour we see for each country so the cards always render
+  // with a real hero image while keeping the public list strictly limited.
+  const PUBLIC_COUNTRIES = ["Portugal", "Cabo Verde"] as const;
   const derivedDestinations = (() => {
     const seen = new Set<string>();
     const out: { key: string; bgClass: string; country: string; name: string; detail: string }[] = [];
@@ -102,15 +75,15 @@ export default function TourPage() {
       const primary = t.destinations?.[0];
       if (!primary) return;
       const country = countryFromFlag(t.flag);
-      const key = `${country}::${primary}`;
-      if (seen.has(key)) return;
-      seen.add(key);
+      if (!PUBLIC_COUNTRIES.includes(country as typeof PUBLIC_COUNTRIES[number])) return;
+      if (seen.has(country)) return;
+      seen.add(country);
       const rest = (t.destinations || []).slice(1).join(" · ");
       out.push({
-        key,
+        key: country,
         bgClass: destBgClassFor(t.hero_image, t.flag),
         country,
-        name: primary,
+        name: country,
         detail: rest || country,
       });
     });
@@ -120,20 +93,9 @@ export default function TourPage() {
   return (
     <div className="tour-page">
 
-      <TourTopNav lang={lang} setLang={setLang} t={t} onReserve={openReserveForm} isCheckingOut={isCheckingOut} />
-      <TourHero
-        t={t}
-        onReserve={openReserveForm}
-        isCheckingOut={isCheckingOut}
-      />
+      <TourTopNav lang={lang} setLang={setLang} t={t} />
+      <TourHero t={t} />
 
-      <IncludesSection t={t} />
-      <TwoWaysSection
-        t={t}
-        privateFromPrice={privateFromPrice}
-        groupFromPrice={groupFromPrice}
-        defaultCurrency={defaultCurrency}
-      />
       <TourFeaturedTours
         tours={tours}
         availability={availability}
@@ -146,6 +108,7 @@ export default function TourPage() {
         onRequestCustom={() => scrollToId("private")}
       />
       <DestinationsSection destinations={derivedDestinations} loading={toursLoading} t={t} />
+      <TourCTASection t={t} />
       <HowItWorksSection t={t} />
       <TourGroupSection
         groupTours={groupTours}
@@ -155,7 +118,6 @@ export default function TourPage() {
         t={t}
         onJoinWaitlist={openEnquiryForm}
       />
-      <TestimonialsSection t={t} />
       <PrivateTourSection t={t} lang={lang} />
       <WaitlistSection
         variant="waitlist"
@@ -164,16 +126,11 @@ export default function TourPage() {
         onSubmit={(payload) => submitInlineForm(payload, setIsSubmittingWaitlist, setWaitlistSubmitted)}
         t={t}
       />
+      <IncludesSection t={t} />
+      <TourCTASection t={t} />
       <NewsletterSection t={t} />
       <TourFooter t={t} />
 
-      <PreTourFormModal
-        open={showPreForm}
-        onOpenChange={setShowPreForm}
-        onSubmit={onReserveSubmit}
-        isSubmitting={isCheckingOut}
-        t={t}
-      />
       <PreTourFormModal
         open={showEnquiryForm}
         onOpenChange={setShowEnquiryForm}
