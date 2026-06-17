@@ -30,7 +30,6 @@ export function TourTopNav({ lang, setLang, t }: Props) {
         <li><a href="#tours">{t("nav.tours")}</a></li>
         <li><a href="#destinations">{t("nav.destinations")}</a></li>
         <li><a href="#how">{t("nav.how")}</a></li>
-        <li><a href="#testimonials">{t("nav.stories")}</a></li>
       </ul>
       <div className="tnav-right">
         <LanguageSwitcher current={lang} onChange={setLang} />
