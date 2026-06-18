@@ -68,6 +68,28 @@ export async function fetchTourDestinationsAdmin() {
   return data ?? [];
 }
 
+export async function fetchPublicWhereWeGoDestinations() {
+  const { data, error } = await supabase
+    .from("tour_destinations")
+    .select("id, slug, flag, label_en, label_pt, label_fr, desc_en, desc_pt, desc_fr, region, card_image_url, hero_image_url, sort_order, active, archived")
+    .eq("active", true)
+    .eq("archived", false)
+    .order("sort_order", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function uploadDestinationImage(file: File): Promise<string> {
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `tour-destinations/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage
+    .from("property-images")
+    .upload(path, file, { upsert: false, contentType: file.type });
+  if (error) throw error;
+  const { data } = supabase.storage.from("property-images").getPublicUrl(path);
+  return data.publicUrl;
+}
+
 export async function upsertTourDestination(row: { id?: string } & Record<string, unknown>) {
   const { id, ...rest } = row;
   const { error } = id
