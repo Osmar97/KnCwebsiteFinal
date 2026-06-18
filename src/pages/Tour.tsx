@@ -115,7 +115,7 @@ export default function TourPage() {
         loading={toursLoading}
         lang={lang}
         t={t}
-        onJoinWaitlist={openEnquiryForm}
+        onJoinWaitlist={() => scrollToId("waitlist")}
       />
       <PrivateTourSection t={t} lang={lang} />
       <WaitlistSection
