@@ -27,7 +27,14 @@ export function IncludesSection({ t }: { t: T }) {
 }
 
 interface DestinationsProps {
-  destinations: { key: string; bgClass: string; country: string; name: string; detail: string }[];
+  destinations: {
+    key: string;
+    country: string;
+    name: string;
+    detail: string;
+    imageUrl: string | null;
+    bgClass?: string;
+  }[];
   loading: boolean;
   t: T;
 }
@@ -44,7 +51,14 @@ export function DestinationsSection({ destinations, loading, t }: DestinationsPr
             )}
             {destinations.map((d) => (
               <div key={d.key} className="dest-card">
-                <div className={`dest-bg-inner ${d.bgClass}`} />
+                {d.imageUrl ? (
+                  <div
+                    className="dest-bg-inner dest-bg-image"
+                    style={{ backgroundImage: `url(${d.imageUrl})` }}
+                  />
+                ) : (
+                  <div className={`dest-bg-inner ${d.bgClass ?? ""}`} />
+                )}
                 <div className="dest-ov" />
                 <div className="dest-cnt">
                   <div className="dest-ctry">{d.country}</div>
