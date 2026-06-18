@@ -62,25 +62,12 @@ export function DestinationsSection({ destinations, loading, t }: DestinationsPr
 
 export function HowItWorksSection({ t }: { t: T }) {
   const steps = (t("how_section.steps") as Array<{ title: string; body: string }>) || [];
-  const reportTags = (t("how_section.report_tags") as string[]) || [];
   return (
     <div className="how-section" id="how">
       <div className="how-sticky">
         <div className="how-eyebrow">{t("how_section.eyebrow")}</div>
         <h2>{t("how_section.title_1")}<br />{t("how_section.title_2")}<em>{t("how_section.title_3")}</em></h2>
         <p>{t("how_section.intro")}</p>
-        <div className="report-card">
-          <div className="report-card-head">{t("how_section.report_head")}</div>
-          <div className="report-card-body">
-            <h3>{t("how_section.report_title")}</h3>
-            <p>{t("how_section.report_meta")}</p>
-            <div className="report-tags">
-              {reportTags.map((tag, i) => (
-                <span key={i} className="report-tag">{tag}</span>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
       <div>
         {steps.map((step, i) => (
