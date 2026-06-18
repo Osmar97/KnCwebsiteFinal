@@ -96,7 +96,7 @@ export function usePrivateTourConfig(): PrivateTourConfig {
       try {
         const todayIso = new Date().toISOString().slice(0, 10);
         const [destRes, addonRes, incRes, slotRes, dateRes, settingsRes] = await Promise.all([
-          supabase.from("tour_destinations").select("*").eq("active", true).eq("archived", false).order("sort_order", { ascending: true }),
+          supabase.from("tour_destinations").select("*").eq("active", true).order("sort_order", { ascending: true }),
           supabase.from("tour_addons").select("*").eq("active", true).order("sort_order", { ascending: true }),
           supabase.from("tour_included_items").select("*").eq("active", true).order("sort_order", { ascending: true }),
           supabase.from("tour_clarity_call_slots").select("*").eq("is_available", true).gt("slot_at", new Date().toISOString()).order("slot_at", { ascending: true }).limit(20),

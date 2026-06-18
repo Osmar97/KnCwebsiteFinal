@@ -8,8 +8,11 @@ import { useTours, type TourRow } from "@/hooks/useTours";
 import { TourTopNav } from "@/components/tour/TourTopNav";
 import { TourHero } from "@/components/tour/TourHero";
 import { TourFooter } from "@/components/tour/TourFooter";
+import {
+  countryFromFlag,
+  destBgClassFor,
+} from "@/components/tour/tour-data";
 import { useTourSubmissions } from "@/hooks/useTourSubmissions";
-import { useWhereWeGoDestinations } from "@/hooks/useWhereWeGoDestinations";
 import {
   IncludesSection,
   DestinationsSection,
@@ -34,7 +37,6 @@ export default function TourPage() {
   const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
   const { tours, availability, loading: toursLoading } = useTours();
   const { isSendingEnquiry, handleEnquiry, submitInlineForm } = useTourSubmissions();
-  const { destinations: dbDestinations, loading: destinationsLoading } = useWhereWeGoDestinations();
 
   const t = (path: string) => {
     const keys = path.split(".");
@@ -58,21 +60,34 @@ export default function TourPage() {
   // Group-tour cards are now sourced from the database (tour_type === 'group').
   const groupTours = tours.filter((t) => t.tour_type === "group");
 
-  // WHERE WE GO cards are fully admin-managed via the tour_destinations table.
-  const labelFor = (d: typeof dbDestinations[number]) =>
-    (lang === "pt" && d.label_pt) || (lang === "fr" && d.label_fr) || d.label_en;
-  const descFor = (d: typeof dbDestinations[number]) =>
-    (lang === "pt" && d.desc_pt) || (lang === "fr" && d.desc_fr) || d.desc_en || "";
-  const whereWeGoCards = dbDestinations.map((d) => {
-    const name = labelFor(d);
-    return {
-      key: d.id,
-      country: `${d.flag ? `${d.flag} ` : ""}${name}`.trim(),
-      name,
-      detail: d.region || descFor(d),
-      imageUrl: d.card_image_url || d.hero_image_url,
-    };
-  });
+  // Destinations are derived from published tours. We deduplicate by the
+  // primary destination + country so the section auto-updates whenever a new
+  // tour is published from the admin dashboard.
+  // Public Tours page surfaces only the two supported markets: Portugal and Cabo Verde.
+  // We pick the first published tour we see for each country so the cards always render
+  // with a real hero image while keeping the public list strictly limited.
+  const PUBLIC_COUNTRIES = ["Portugal", "Cabo Verde"] as const;
+  const derivedDestinations = (() => {
+    const seen = new Set<string>();
+    const out: { key: string; bgClass: string; country: string; name: string; detail: string }[] = [];
+    tours.forEach((t) => {
+      const primary = t.destinations?.[0];
+      if (!primary) return;
+      const country = countryFromFlag(t.flag);
+      if (!PUBLIC_COUNTRIES.includes(country as typeof PUBLIC_COUNTRIES[number])) return;
+      if (seen.has(country)) return;
+      seen.add(country);
+      const rest = (t.destinations || []).slice(1).join(" · ");
+      out.push({
+        key: country,
+        bgClass: destBgClassFor(t.hero_image, t.flag),
+        country,
+        name: country,
+        detail: rest || country,
+      });
+    });
+    return out;
+  })();
 
   return (
     <div className="tour-page">
@@ -91,7 +106,7 @@ export default function TourPage() {
         onSelectTour={setSelectedTour}
         onRequestCustom={() => scrollToId("private")}
       />
-      <DestinationsSection destinations={whereWeGoCards} loading={destinationsLoading} t={t} />
+      <DestinationsSection destinations={derivedDestinations} loading={toursLoading} t={t} />
       <TourCTASection t={t} />
       <HowItWorksSection t={t} />
       <TourGroupSection
