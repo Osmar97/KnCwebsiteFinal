@@ -128,8 +128,8 @@ const AdminPrivateTourDestinations = () => {
 
   return (
     <AdminLayout
-      title="Private Tour · Destinations"
-      description="Manage destinations shown in the WHERE WE GO section and the booking flow."
+      title="Destinations · Where We Go"
+      description="Manage the destinations shown in the public WHERE WE GO section and the private-tour booking flow."
       actions={
         <Button onClick={() => setRows((r) => [...r, blank()])} className="bg-gold hover:bg-gold-dark text-black">
           <Plus className="w-4 h-4 mr-1" /> New destination
