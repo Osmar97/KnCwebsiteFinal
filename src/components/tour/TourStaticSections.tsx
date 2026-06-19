@@ -82,6 +82,7 @@ export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurren
   );
 }
 
+interface DestinationsProps {
   destinations: { key: string; bgClass: string; country: string; name: string; detail: string }[];
   loading: boolean;
   t: T;
