@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/tour/Reveal";
 import { INCLUDES } from "@/components/tour/tour-data";
+import { formatPrice } from "@/lib/formatPrice";
 import { useToast } from "@/hooks/use-toast";
 
 type T = (path: string) => any;
