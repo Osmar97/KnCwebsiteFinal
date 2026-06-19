@@ -134,14 +134,6 @@ export default function TourPage() {
       <DestinationsSection destinations={derivedDestinations} loading={toursLoading} t={t} />
       <TourCTASection t={t} />
       <HowItWorksSection t={t} />
-      <TourGroupSection
-        groupTours={groupTours}
-        availability={availability}
-        loading={toursLoading}
-        lang={lang}
-        t={t}
-        onJoinWaitlist={() => scrollToId("waitlist")}
-      />
       <PrivateTourSection t={t} lang={lang} />
       <WaitlistSection
         variant="waitlist"
