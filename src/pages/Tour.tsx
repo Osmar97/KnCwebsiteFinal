@@ -112,6 +112,14 @@ export default function TourPage() {
       <TourTopNav lang={lang} setLang={setLang} t={t} />
       <TourHero t={t} />
 
+      <TwoWaysSection
+        privateFromPrice={privateFromPrice}
+        groupFromPrice={groupFromPrice}
+        defaultCurrency={defaultCurrency}
+        t={t}
+        onScrollTo={scrollToId}
+      />
+
       <TourFeaturedTours
         tours={tours}
         availability={availability}
