@@ -15,12 +15,12 @@ import {
 import { useTourSubmissions } from "@/hooks/useTourSubmissions";
 import {
   IncludesSection,
+  TwoWaysSection,
   DestinationsSection,
   HowItWorksSection,
   NewsletterSection,
 } from "@/components/tour/TourStaticSections";
 import { TourFeaturedTours } from "@/components/tour/TourFeaturedTours";
-import { TourGroupSection } from "@/components/tour/TourGroupSection";
 import { PrivateTourSection, WaitlistSection } from "@/components/tour/TourFormSections";
 import { TourCTASection } from "@/components/tour/TourHeroCTA";
 
