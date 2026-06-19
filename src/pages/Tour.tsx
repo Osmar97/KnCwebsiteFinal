@@ -57,8 +57,25 @@ export default function TourPage() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // Group-tour cards are now sourced from the database (tour_type === 'group').
-  const groupTours = tours.filter((t) => t.tour_type === "group");
+  // Cheapest published prices for the "Two ways to explore" cards.
+  const fallbackMin = tours.length
+    ? Math.min(...tours.map((t) => Number(t.base_price) || Infinity))
+    : null;
+  const cheapestGroup = tours
+    .filter((t) => t.tour_type === "group")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const cheapestPrivate = tours
+    .filter((t) => t.tour_type === "private")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const defaultCurrency = tours[0]?.currency || "EUR";
+  const groupFromPrice = cheapestGroup ?? fallbackMin ?? null;
+  const privateFromPrice = cheapestPrivate ?? fallbackMin ?? null;
 
   // Destinations are derived from published tours. We deduplicate by the
   // primary destination + country so the section auto-updates whenever a new
