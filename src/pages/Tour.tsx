@@ -15,12 +15,12 @@ import {
 import { useTourSubmissions } from "@/hooks/useTourSubmissions";
 import {
   IncludesSection,
+  TwoWaysSection,
   DestinationsSection,
   HowItWorksSection,
   NewsletterSection,
 } from "@/components/tour/TourStaticSections";
 import { TourFeaturedTours } from "@/components/tour/TourFeaturedTours";
-import { TourGroupSection } from "@/components/tour/TourGroupSection";
 import { PrivateTourSection, WaitlistSection } from "@/components/tour/TourFormSections";
 import { TourCTASection } from "@/components/tour/TourHeroCTA";
 
@@ -57,8 +57,25 @@ export default function TourPage() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // Group-tour cards are now sourced from the database (tour_type === 'group').
-  const groupTours = tours.filter((t) => t.tour_type === "group");
+  // Cheapest published prices for the "Two ways to explore" cards.
+  const fallbackMin = tours.length
+    ? Math.min(...tours.map((t) => Number(t.base_price) || Infinity))
+    : null;
+  const cheapestGroup = tours
+    .filter((t) => t.tour_type === "group")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const cheapestPrivate = tours
+    .filter((t) => t.tour_type === "private")
+    .reduce<number | null>((min, t) => {
+      const p = Number(t.base_price);
+      return Number.isFinite(p) && (min === null || p < min) ? p : min;
+    }, null);
+  const defaultCurrency = tours[0]?.currency || "EUR";
+  const groupFromPrice = cheapestGroup ?? fallbackMin ?? null;
+  const privateFromPrice = cheapestPrivate ?? fallbackMin ?? null;
 
   // Destinations are derived from published tours. We deduplicate by the
   // primary destination + country so the section auto-updates whenever a new
@@ -95,6 +112,14 @@ export default function TourPage() {
       <TourTopNav lang={lang} setLang={setLang} t={t} />
       <TourHero t={t} />
 
+      <TwoWaysSection
+        privateFromPrice={privateFromPrice}
+        groupFromPrice={groupFromPrice}
+        defaultCurrency={defaultCurrency}
+        t={t}
+        onScrollTo={scrollToId}
+      />
+
       <TourFeaturedTours
         tours={tours}
         availability={availability}
@@ -109,14 +134,6 @@ export default function TourPage() {
       <DestinationsSection destinations={derivedDestinations} loading={toursLoading} t={t} />
       <TourCTASection t={t} />
       <HowItWorksSection t={t} />
-      <TourGroupSection
-        groupTours={groupTours}
-        availability={availability}
-        loading={toursLoading}
-        lang={lang}
-        t={t}
-        onJoinWaitlist={() => scrollToId("waitlist")}
-      />
       <PrivateTourSection t={t} lang={lang} />
       <WaitlistSection
         variant="waitlist"

@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/tour/Reveal";
 import { INCLUDES } from "@/components/tour/tour-data";
+import { formatPrice } from "@/lib/formatPrice";
 import { useToast } from "@/hooks/use-toast";
 
 type T = (path: string) => any;
@@ -19,6 +20,62 @@ export function IncludesSection({ t }: { t: T }) {
                 <div className="include-title">{items[i]?.title ?? item.title}</div>
               </div>
             ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+interface TwoWaysProps {
+  privateFromPrice: number | null;
+  groupFromPrice: number | null;
+  defaultCurrency: string;
+  t: T;
+  onScrollTo: (id: string) => void;
+}
+export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurrency, t, onScrollTo }: TwoWaysProps) {
+  const privateMeta = (t("two_ways.private.meta") as string[]) || [];
+  const groupMeta = (t("two_ways.group.meta") as string[]) || [];
+  const privateFrom = t("two_ways.private.from") as string;
+  const groupFrom = t("two_ways.group.from") as string;
+  const privatePriceText = privateFromPrice !== null
+    ? privateFrom.replace("{price}", formatPrice(privateFromPrice, defaultCurrency))
+    : t("two_ways.private.custom");
+  const groupPriceText = groupFromPrice !== null
+    ? groupFrom.replace("{price}", formatPrice(groupFromPrice, defaultCurrency))
+    : t("two_ways.group.soon");
+  return (
+    <section className="tour-types" id="overview">
+      <div className="t-container">
+        <div className="section-eyebrow light">{t("two_ways.eyebrow")}</div>
+        <h2 className="section-title light">{t("two_ways.title_1")}<br /><em>{t("two_ways.title_2")}</em></h2>
+        <Reveal>
+          <div className="tour-format-grid">
+            <a href="#private" className="format-card" onClick={(e) => { e.preventDefault(); onScrollTo("private"); }}>
+              <span className="format-label">{t("two_ways.private.label")}</span>
+              <h3>{t("two_ways.private.title")}</h3>
+              <p>{t("two_ways.private.desc")}</p>
+              <div className="format-meta">
+                {privateMeta.map((item, i) => (
+                  <div key={i} className="fmeta-item"><span className="fmeta-dot" />{item}</div>
+                ))}
+              </div>
+              <div className="format-price">{privatePriceText}</div>
+              <div className="format-arrow">→</div>
+            </a>
+            <a href="#waitlist" className="format-card" onClick={(e) => { e.preventDefault(); onScrollTo("waitlist"); }}>
+              <span className="format-label">{t("two_ways.group.label")}</span>
+              <h3>{t("two_ways.group.title")}</h3>
+              <p>{t("two_ways.group.desc")}</p>
+              <div className="format-meta">
+                {groupMeta.map((item, i) => (
+                  <div key={i} className="fmeta-item"><span className="fmeta-dot" />{item}</div>
+                ))}
+              </div>
+              <div className="format-price">{groupPriceText}</div>
+              <div className="format-arrow">→</div>
+            </a>
           </div>
         </Reveal>
       </div>

@@ -2010,13 +2010,16 @@ export type Database = {
       tour_destinations: {
         Row: {
           active: boolean
+          archived: boolean
           base_price_per_day_per_person: number
+          card_image_url: string | null
           created_at: string
           currency: string
           desc_en: string
           desc_fr: string
           desc_pt: string
           flag: string
+          hero_image_url: string | null
           id: string
           label_en: string
           label_fr: string
@@ -2025,19 +2028,23 @@ export type Database = {
           max_guests: number
           min_days: number
           min_guests: number
+          region: string | null
           slug: string
           sort_order: number
           updated_at: string
         }
         Insert: {
           active?: boolean
+          archived?: boolean
           base_price_per_day_per_person?: number
+          card_image_url?: string | null
           created_at?: string
           currency?: string
           desc_en?: string
           desc_fr?: string
           desc_pt?: string
           flag?: string
+          hero_image_url?: string | null
           id?: string
           label_en: string
           label_fr?: string
@@ -2046,19 +2053,23 @@ export type Database = {
           max_guests?: number
           min_days?: number
           min_guests?: number
+          region?: string | null
           slug: string
           sort_order?: number
           updated_at?: string
         }
         Update: {
           active?: boolean
+          archived?: boolean
           base_price_per_day_per_person?: number
+          card_image_url?: string | null
           created_at?: string
           currency?: string
           desc_en?: string
           desc_fr?: string
           desc_pt?: string
           flag?: string
+          hero_image_url?: string | null
           id?: string
           label_en?: string
           label_fr?: string
@@ -2067,6 +2078,7 @@ export type Database = {
           max_guests?: number
           min_days?: number
           min_guests?: number
+          region?: string | null
           slug?: string
           sort_order?: number
           updated_at?: string
