@@ -5,13 +5,10 @@ import "./Tour.css";
 import PreTourFormModal, { PreTourFormData } from "@/components/tour/PreTourFormModal";
 import TourDetailModal from "@/components/tour/TourDetailModal";
 import { useTours, type TourRow } from "@/hooks/useTours";
+import { useWhereWeGo } from "@/hooks/useWhereWeGo";
 import { TourTopNav } from "@/components/tour/TourTopNav";
 import { TourHero } from "@/components/tour/TourHero";
 import { TourFooter } from "@/components/tour/TourFooter";
-import {
-  countryFromFlag,
-  destBgClassFor,
-} from "@/components/tour/tour-data";
 import { useTourSubmissions } from "@/hooks/useTourSubmissions";
 import {
   IncludesSection,
@@ -36,6 +33,7 @@ export default function TourPage() {
   const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
   const [selectedTour, setSelectedTour] = useState<TourRow | null>(null);
   const { tours, availability, loading: toursLoading } = useTours();
+  const { cards: whereWeGoCards, loading: whereWeGoLoading } = useWhereWeGo();
   const { isSendingEnquiry, handleEnquiry, submitInlineForm } = useTourSubmissions();
 
   const t = (path: string) => {
