@@ -2174,6 +2174,60 @@ export type Database = {
           },
         ]
       }
+      tour_where_we_go: {
+        Row: {
+          country_name_en: string
+          country_name_fr: string | null
+          country_name_pt: string | null
+          created_at: string
+          description_en: string | null
+          description_fr: string | null
+          description_pt: string | null
+          id: string
+          image_url: string | null
+          published: boolean
+          sort_order: number
+          subtitle_en: string | null
+          subtitle_fr: string | null
+          subtitle_pt: string | null
+          updated_at: string
+        }
+        Insert: {
+          country_name_en: string
+          country_name_fr?: string | null
+          country_name_pt?: string | null
+          created_at?: string
+          description_en?: string | null
+          description_fr?: string | null
+          description_pt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          subtitle_en?: string | null
+          subtitle_fr?: string | null
+          subtitle_pt?: string | null
+          updated_at?: string
+        }
+        Update: {
+          country_name_en?: string
+          country_name_fr?: string | null
+          country_name_pt?: string | null
+          created_at?: string
+          description_en?: string | null
+          description_fr?: string | null
+          description_pt?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          subtitle_en?: string | null
+          subtitle_fr?: string | null
+          subtitle_pt?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tours: {
         Row: {
           badge: string | null
