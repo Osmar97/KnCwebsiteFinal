@@ -36,6 +36,7 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
         <Stat label="Properties" value={n(properties)} icon={Building2} to="/admin/properties" />
         <Stat label="Total Tours" value={n(tours)} icon={MapPin} to="/admin/tours" />
+        <Stat label="Where We Go" value="Manage" icon={Globe} to="/admin/tours/where-we-go" />
         <Stat label="Active Tours" value={n(toursPublished)} icon={CheckCircle2} accent="text-emerald-400" to="/admin/tours" />
         <Stat label="Draft Tours" value={n(toursDraft)} icon={FileEdit} accent="text-amber-400" to="/admin/tours" />
         <Stat label="Tour Bookings" value={n(bookings)} icon={Calendar} to="/admin/bookings" />

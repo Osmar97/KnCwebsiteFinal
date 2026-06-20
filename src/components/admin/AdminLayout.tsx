@@ -12,6 +12,7 @@ const NAV = [
   { to: "/admin/properties", label: "Properties", icon: Building2 },
   { to: "/admin/assets", label: "Assets", icon: FileBox },
   { to: "/admin/tours", label: "Tours", icon: MapPin },
+  { to: "/admin/tours/where-we-go", label: "Tours · Where We Go", icon: Globe },
   { to: "/admin/bookings", label: "Bookings", icon: Calendar },
   { to: "/admin/waitlist", label: "Waitlist", icon: ClipboardList },
   { to: "/admin/quotes", label: "Custom Quotes", icon: Sparkles },
