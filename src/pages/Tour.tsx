@@ -75,35 +75,6 @@ export default function TourPage() {
   const groupFromPrice = cheapestGroup ?? fallbackMin ?? null;
   const privateFromPrice = cheapestPrivate ?? fallbackMin ?? null;
 
-  // Destinations are derived from published tours. We deduplicate by the
-  // primary destination + country so the section auto-updates whenever a new
-  // tour is published from the admin dashboard.
-  // Public Tours page surfaces only the two supported markets: Portugal and Cabo Verde.
-  // We pick the first published tour we see for each country so the cards always render
-  // with a real hero image while keeping the public list strictly limited.
-  const PUBLIC_COUNTRIES = ["Portugal", "Cabo Verde"] as const;
-  const derivedDestinations = (() => {
-    const seen = new Set<string>();
-    const out: { key: string; bgClass: string; country: string; name: string; detail: string }[] = [];
-    tours.forEach((t) => {
-      const primary = t.destinations?.[0];
-      if (!primary) return;
-      const country = countryFromFlag(t.flag);
-      if (!PUBLIC_COUNTRIES.includes(country as typeof PUBLIC_COUNTRIES[number])) return;
-      if (seen.has(country)) return;
-      seen.add(country);
-      const rest = (t.destinations || []).slice(1).join(" · ");
-      out.push({
-        key: country,
-        bgClass: destBgClassFor(t.hero_image, t.flag),
-        country,
-        name: country,
-        detail: rest || country,
-      });
-    });
-    return out;
-  })();
-
   return (
     <div className="tour-page">
 
@@ -129,7 +100,7 @@ export default function TourPage() {
         onSelectTour={setSelectedTour}
         onRequestCustom={() => scrollToId("private")}
       />
-      <DestinationsSection destinations={derivedDestinations} loading={toursLoading} t={t} />
+      <DestinationsSection cards={whereWeGoCards} loading={whereWeGoLoading} lang={lang} t={t} />
       <TourCTASection t={t} />
       <HowItWorksSection t={t} />
       <PrivateTourSection t={t} lang={lang} />
