@@ -83,12 +83,22 @@ export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurren
   );
 }
 
+import type { WhereWeGoCard } from "@/data/whereWeGo";
+import type { Language } from "@/pages/TourTranslations";
+
 interface DestinationsProps {
-  destinations: { key: string; bgClass: string; country: string; name: string; detail: string }[];
+  cards: WhereWeGoCard[];
   loading: boolean;
+  lang: Language;
   t: T;
 }
-export function DestinationsSection({ destinations, loading, t }: DestinationsProps) {
+function pickField(card: WhereWeGoCard, base: "country_name" | "subtitle" | "description", lang: Language): string {
+  const key = `${base}_${lang}` as keyof WhereWeGoCard;
+  const fallback = `${base}_en` as keyof WhereWeGoCard;
+  const value = (card[key] as string | null) || (card[fallback] as string | null);
+  return (value ?? "").toString();
+}
+export function DestinationsSection({ cards, loading, lang, t }: DestinationsProps) {
   return (
     <section className="dest-section" id="destinations">
       <div className="t-container">
@@ -96,20 +106,36 @@ export function DestinationsSection({ destinations, loading, t }: DestinationsPr
         <h2 className="section-title">{t("destinations_section.title_1")}<br /><em>{t("destinations_section.title_2")}</em></h2>
         <Reveal>
           <div className="dest-grid">
-            {destinations.length === 0 && !loading && (
+            {cards.length === 0 && !loading && (
               <p style={{ opacity: 0.6 }}>{t("destinations_section.empty")}</p>
             )}
-            {destinations.map((d) => (
-              <div key={d.key} className="dest-card">
-                <div className={`dest-bg-inner ${d.bgClass}`} />
-                <div className="dest-ov" />
-                <div className="dest-cnt">
-                  <div className="dest-ctry">{d.country}</div>
-                  <div className="dest-name">{d.name}</div>
-                  <div className="dest-detail">{d.detail}</div>
+            {cards.map((c) => {
+              const country = pickField(c, "country_name", lang);
+              const subtitle = pickField(c, "subtitle", lang);
+              const description = pickField(c, "description", lang);
+              return (
+                <div key={c.id ?? country} className="dest-card">
+                  {c.image_url ? (
+                    <div
+                      className="dest-bg-inner"
+                      style={{
+                        backgroundImage: `url(${c.image_url})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  ) : (
+                    <div className="dest-bg-inner db-lisbon" />
+                  )}
+                  <div className="dest-ov" />
+                  <div className="dest-cnt">
+                    <div className="dest-ctry">{country}</div>
+                    <div className="dest-name">{country}</div>
+                    <div className="dest-detail">{subtitle || description}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Reveal>
       </div>
