@@ -545,6 +545,39 @@ export type Database = {
           },
         ]
       }
+      instagram_showcase_images: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          post_url: string | null
+          published: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          post_url?: string | null
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          post_url?: string | null
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       learning_paths: {
         Row: {
           country_id: string | null
@@ -1650,6 +1683,36 @@ export type Database = {
           file_url?: string | null
           id?: string
           title?: string
+        }
+        Relationships: []
+      }
+      site_social_links: {
+        Row: {
+          created_at: string
+          facebook_url: string
+          id: string
+          instagram_url: string
+          instagram_username: string
+          linkedin_url: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          facebook_url?: string
+          id?: string
+          instagram_url?: string
+          instagram_username?: string
+          linkedin_url?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          facebook_url?: string
+          id?: string
+          instagram_url?: string
+          instagram_username?: string
+          linkedin_url?: string
+          updated_at?: string
         }
         Relationships: []
       }
