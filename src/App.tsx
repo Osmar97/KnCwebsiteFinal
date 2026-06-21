@@ -36,6 +36,7 @@ import AdminPrivateTourAddons from "./pages/admin/AdminPrivateTourAddons";
 import AdminPrivateTourDates from "./pages/admin/AdminPrivateTourDates";
 import AdminPrivateTourIncluded from "./pages/admin/AdminPrivateTourIncluded";
 import AdminWhereWeGo from "./pages/admin/AdminWhereWeGo";
+import AdminSocialMedia from "./pages/admin/AdminSocialMedia";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -96,6 +97,7 @@ const App = () => (
               <Route path="/admin/private-tour/dates" element={<AdminPrivateTourDates />} />
               <Route path="/admin/private-tour/included" element={<AdminPrivateTourIncluded />} />
               <Route path="/admin/tours/where-we-go" element={<AdminWhereWeGo />} />
+              <Route path="/admin/site-settings/social-media" element={<AdminSocialMedia />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

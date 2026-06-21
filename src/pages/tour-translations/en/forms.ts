@@ -277,5 +277,16 @@ export const EN_FORMS = {
     "note": "No spam. Unsubscribe anytime.",
     "success_title": "Thank you",
     "success_desc": "You're on the list."
+  },
+  "instagram": {
+    "eyebrow": "Stay Close",
+    "heading_1": "Follow the ",
+    "heading_2": "journey.",
+    "body": "Discover property tours, investment opportunities, market insights, behind-the-scenes moments, and destination highlights from Portugal and Cabo Verde.",
+    "follow": "Follow",
+    "cta": "Follow on Instagram",
+    "open_profile": "Open Instagram profile",
+    "view_post": "View on Instagram",
+    "socials_label": "Social media"
   }
 } as const;
