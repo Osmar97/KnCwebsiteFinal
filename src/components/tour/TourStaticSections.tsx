@@ -1,7 +1,8 @@
 import { Reveal } from "@/components/tour/Reveal";
 import { INCLUDES } from "@/components/tour/tour-data";
 import { formatPrice } from "@/lib/formatPrice";
-import { useToast } from "@/hooks/use-toast";
+import { useSocialMedia } from "@/hooks/useSocialMedia";
+import { Instagram, Facebook, Linkedin } from "lucide-react";
 
 type T = (path: string) => any;
 
@@ -169,37 +170,103 @@ export function HowItWorksSection({ t }: { t: T }) {
   );
 }
 
-export function NewsletterSection({ t }: { t: T }) {
-  const { toast } = useToast();
+export function InstagramShowcaseSection({ t }: { t: T }) {
+  const { links, images, loading } = useSocialMedia();
+
+  const instagramUrl = links?.instagram_url || "https://www.instagram.com/ismaelgq_";
+  const username = links?.instagram_username || "ismaelgq_";
+  const facebookUrl = links?.facebook_url || "";
+  const linkedinUrl = links?.linkedin_url || "";
+
+  const grid = images.slice(0, 6);
+
   return (
-    <section className="nl-section">
-      <div className="t-container nl-grid">
-        <Reveal className="nl-text">
-          <div className="section-eyebrow">{t("newsletter.eyebrow")}</div>
-          <h2>
-            {t("newsletter.heading_1")}<em>{t("newsletter.heading_2")}</em>
+    <section className="ig-section">
+      <div className="t-container">
+        <Reveal className="ig-head">
+          <div className="section-eyebrow">{t("instagram.eyebrow")}</div>
+          <h2 className="ig-title">
+            {t("instagram.heading_1")}<em>{t("instagram.heading_2")}</em>
           </h2>
-          <p>{t("newsletter.body")}</p>
+          <p className="ig-desc">{t("instagram.body")}</p>
         </Reveal>
+
         <Reveal>
-          <form
-            className="nl-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const input = (e.currentTarget.elements.namedItem("email") as HTMLInputElement);
-              if (input?.value) {
-                toast({ title: t("newsletter.success_title"), description: t("newsletter.success_desc") });
-                input.value = "";
-              }
-            }}
+          <a
+            href={instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ig-profile"
+            aria-label={`${t("instagram.open_profile")} @${username}`}
           >
-            <div className="nl-row">
-              <input type="email" name="email" required placeholder={t("newsletter.placeholder")} />
-              <button type="submit">{t("newsletter.cta")}</button>
+            <div className="ig-avatar" aria-hidden="true">
+              <Instagram className="w-7 h-7" strokeWidth={1.5} />
             </div>
-            <p className="nl-note">{t("newsletter.note")}</p>
-          </form>
+            <div className="ig-profile-meta">
+              <div className="ig-profile-name">Kings 'n Company</div>
+              <div className="ig-profile-handle">@{username}</div>
+            </div>
+            <span className="ig-follow-btn">{t("instagram.follow")}</span>
+          </a>
         </Reveal>
+
+        <div className="ig-grid">
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => <div key={i} className="ig-tile ig-skeleton" aria-hidden="true" />)
+            : grid.length === 0
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <a
+                    key={i}
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ig-tile ig-tile-empty"
+                    aria-label={t("instagram.open_profile")}
+                  >
+                    <Instagram className="w-6 h-6" strokeWidth={1.4} />
+                  </a>
+                ))
+              : grid.map((img, i) => (
+                  <a
+                    key={img.id ?? i}
+                    href={img.post_url || instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ig-tile"
+                    aria-label={img.caption || t("instagram.view_post")}
+                  >
+                    <img src={img.image_url} alt={img.caption || ""} loading="lazy" />
+                    <span className="ig-tile-overlay" aria-hidden="true">
+                      <Instagram className="w-6 h-6" strokeWidth={1.5} />
+                    </span>
+                  </a>
+                ))}
+        </div>
+
+        <Reveal className="ig-cta-row">
+          <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="ig-cta">
+            <Instagram className="w-4 h-4" strokeWidth={1.6} />
+            <span>{t("instagram.cta")}</span>
+          </a>
+        </Reveal>
+
+        <div className="ig-socials" aria-label={t("instagram.socials_label")}>
+          {instagramUrl && (
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="ig-social-icon">
+              <Instagram className="w-5 h-5" strokeWidth={1.4} />
+            </a>
+          )}
+          {facebookUrl && (
+            <a href={facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="ig-social-icon">
+              <Facebook className="w-5 h-5" strokeWidth={1.4} />
+            </a>
+          )}
+          {linkedinUrl && (
+            <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="ig-social-icon">
+              <Linkedin className="w-5 h-5" strokeWidth={1.4} />
+            </a>
+          )}
+        </div>
       </div>
     </section>
   );
