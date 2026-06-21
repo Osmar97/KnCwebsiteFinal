@@ -15,7 +15,7 @@ import {
   TwoWaysSection,
   DestinationsSection,
   HowItWorksSection,
-  NewsletterSection,
+  InstagramShowcaseSection,
 } from "@/components/tour/TourStaticSections";
 import { TourFeaturedTours } from "@/components/tour/TourFeaturedTours";
 import { PrivateTourSection, WaitlistSection } from "@/components/tour/TourFormSections";
@@ -113,7 +113,7 @@ export default function TourPage() {
       />
       <IncludesSection t={t} />
       <TourCTASection t={t} />
-      <NewsletterSection t={t} />
+      <InstagramShowcaseSection t={t} />
       <TourFooter t={t} />
 
       <PreTourFormModal
