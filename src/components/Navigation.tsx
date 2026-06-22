@@ -1,15 +1,9 @@
-
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from '../assets/logo.png';
 import { useAdmin } from "@/contexts/AdminContext";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
