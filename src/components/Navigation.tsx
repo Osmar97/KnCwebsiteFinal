@@ -1,15 +1,9 @@
-
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from '../assets/logo.png';
 import { useAdmin } from "@/contexts/AdminContext";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -233,49 +227,13 @@ export const Navigation = () => {
             ))}
             
             {isAdminLoggedIn && (
-              <DropdownMenu>
-                <DropdownMenuTrigger className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group flex items-center gap-1`}>
-                  ADMIN
-                  <ChevronDown className="w-3 h-3" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-background border-border z-50">
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin" className="cursor-pointer">
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/properties" className="cursor-pointer">
-                      Properties
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/assets" className="cursor-pointer">
-                      Assets
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/tours" className="cursor-pointer">
-                      Tours
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/bookings" className="cursor-pointer">
-                      Bookings
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/waitlist" className="cursor-pointer">
-                      Waitlist
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/quotes" className="cursor-pointer">
-                      Custom Quotes
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Link
+                to="/admin"
+                className={`relative ${textColor} ${hoverColor} transition-colors duration-300 text-xs lg:text-sm tracking-wider font-light group`}
+              >
+                ADMIN
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gold transition-all duration-300 group-hover:w-full"></div>
+              </Link>
             )}
           </div>
 
@@ -304,6 +262,15 @@ export const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
+              {isAdminLoggedIn && (
+                <Link
+                  to="/admin"
+                  className={`block px-3 py-3 ${mobileTextColor} hover:text-gold hover:bg-gold/5 rounded-md transition-all duration-300 text-sm tracking-wider border-b border-gray-800 last:border-b-0`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  ADMIN
+                </Link>
+              )}
             </div>
           </div>
         )}
