@@ -37,6 +37,8 @@ import AdminPrivateTourDates from "./pages/admin/AdminPrivateTourDates";
 import AdminPrivateTourIncluded from "./pages/admin/AdminPrivateTourIncluded";
 import AdminWhereWeGo from "./pages/admin/AdminWhereWeGo";
 import AdminSocialMedia from "./pages/admin/AdminSocialMedia";
+import AdminLeadsInbox from "./pages/admin/AdminLeadsInbox";
+import AdminCompanyInfo from "./pages/admin/AdminCompanyInfo";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -98,6 +100,8 @@ const App = () => (
               <Route path="/admin/private-tour/included" element={<AdminPrivateTourIncluded />} />
               <Route path="/admin/tours/where-we-go" element={<AdminWhereWeGo />} />
               <Route path="/admin/site-settings/social-media" element={<AdminSocialMedia />} />
+              <Route path="/admin/site-settings/company" element={<AdminCompanyInfo />} />
+              <Route path="/admin/leads" element={<AdminLeadsInbox />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
