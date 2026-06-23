@@ -19,9 +19,10 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/co
 import { cn } from "@/lib/utils";
 
 type SubItem = { to: string; label: string };
+type SubSection = { heading: string; items: SubItem[] };
 type NavItem =
   | { kind: "link"; to: string; label: string; icon: any; exact?: boolean }
-  | { kind: "group"; key: string; label: string; icon: any; items: SubItem[] };
+  | { kind: "group"; key: string; label: string; icon: any; sections: SubSection[] };
 
 const NAV: NavItem[] = [
   { kind: "link", to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -32,14 +33,27 @@ const NAV: NavItem[] = [
     key: "tours",
     label: "Tours",
     icon: MapPin,
-    items: [
-      { to: "/admin/tours", label: "All Tours" },
-      { to: "/admin/tours/where-we-go", label: "Destinations · Where We Go" },
-      { to: "/admin/private-tour/destinations", label: "Private Tour · Destinations" },
-      { to: "/admin/private-tour/settings", label: "Private Tour · Settings" },
-      { to: "/admin/private-tour/addons", label: "Private Tour · Add-Ons" },
-      { to: "/admin/private-tour/included", label: "Private Tour · Included" },
-      { to: "/admin/private-tour/dates", label: "Private Tour · Dates" },
+    sections: [
+      {
+        heading: "Tours",
+        items: [{ to: "/admin/tours", label: "All Tours" }],
+      },
+      {
+        heading: "Destinations",
+        items: [
+          { to: "/admin/tours/where-we-go", label: "Where We Go" },
+          { to: "/admin/private-tour/destinations", label: "Private Tour Destinations" },
+        ],
+      },
+      {
+        heading: "Private Tour",
+        items: [
+          { to: "/admin/private-tour/settings", label: "Configuration" },
+          { to: "/admin/private-tour/dates", label: "Dates" },
+          { to: "/admin/private-tour/addons", label: "Add-Ons" },
+          { to: "/admin/private-tour/included", label: "Included Features" },
+        ],
+      },
     ],
   },
   { kind: "link", to: "/admin/bookings", label: "Bookings", icon: Calendar },
@@ -48,9 +62,18 @@ const NAV: NavItem[] = [
     key: "leads",
     label: "Leads",
     icon: Inbox,
-    items: [
-      { to: "/admin/waitlist", label: "Waitlist Requests" },
-      { to: "/admin/quotes", label: "Custom Quote Requests" },
+    sections: [
+      {
+        heading: "Inbox",
+        items: [{ to: "/admin/leads", label: "All Leads" }],
+      },
+      {
+        heading: "By Source",
+        items: [
+          { to: "/admin/waitlist", label: "Waitlist Requests" },
+          { to: "/admin/quotes", label: "Custom Quote Requests" },
+        ],
+      },
     ],
   },
   {
@@ -58,7 +81,15 @@ const NAV: NavItem[] = [
     key: "site",
     label: "Site Settings",
     icon: Settings,
-    items: [{ to: "/admin/site-settings/social-media", label: "Social Media" }],
+    sections: [
+      {
+        heading: "Brand",
+        items: [
+          { to: "/admin/site-settings/company", label: "Company Information" },
+          { to: "/admin/site-settings/social-media", label: "Social Media" },
+        ],
+      },
+    ],
   },
 ];
 
@@ -74,7 +105,8 @@ interface SidebarBodyProps {
 const SidebarBody = ({ pathname, onNavigate, onLogout }: SidebarBodyProps) => {
   const initialOpen: Record<string, boolean> = {};
   for (const n of NAV) {
-    if (n.kind === "group") initialOpen[n.key] = n.items.some((s) => isPathActive(pathname, s.to));
+    if (n.kind === "group")
+      initialOpen[n.key] = n.sections.some((sec) => sec.items.some((s) => isPathActive(pathname, s.to)));
   }
   const [open, setOpen] = useState<Record<string, boolean>>(initialOpen);
 
@@ -100,7 +132,8 @@ const SidebarBody = ({ pathname, onNavigate, onLogout }: SidebarBodyProps) => {
               </Link>
             );
           }
-          const groupActive = n.items.some((s) => isPathActive(pathname, s.to));
+          const allItems = n.sections.flatMap((s) => s.items);
+          const groupActive = allItems.some((s) => isPathActive(pathname, s.to));
           const isOpen = open[n.key] ?? groupActive;
           return (
             <div key={n.key}>
@@ -117,23 +150,32 @@ const SidebarBody = ({ pathname, onNavigate, onLogout }: SidebarBodyProps) => {
                 <ChevronDown className={cn("w-4 h-4 transition-transform", isOpen && "rotate-180")} />
               </button>
               {isOpen && (
-                <div className="ml-7 mt-0.5 mb-1 border-l border-gray-800 pl-2 space-y-0.5">
-                  {n.items.map((s) => {
-                    const active = isPathActive(pathname, s.to);
-                    return (
-                      <Link
-                        key={s.to}
-                        to={s.to}
-                        onClick={onNavigate}
-                        className={cn(
-                          "block px-3 py-2 rounded-md text-xs font-light tracking-wide min-h-[40px] flex items-center transition-colors",
-                          active ? "bg-gold/15 text-gold" : "text-gray-400 hover:text-gold hover:bg-gold/5",
-                        )}
-                      >
-                        {s.label}
-                      </Link>
-                    );
-                  })}
+                <div className="ml-7 mt-0.5 mb-1 border-l border-gray-800 pl-2 space-y-2">
+                  {n.sections.map((sec) => (
+                    <div key={sec.heading} className="space-y-0.5">
+                      {n.sections.length > 1 && (
+                        <p className="px-3 pt-1 text-[10px] uppercase tracking-widest text-gray-600">
+                          {sec.heading}
+                        </p>
+                      )}
+                      {sec.items.map((s) => {
+                        const active = isPathActive(pathname, s.to);
+                        return (
+                          <Link
+                            key={s.to}
+                            to={s.to}
+                            onClick={onNavigate}
+                            className={cn(
+                              "block px-3 py-2 rounded-md text-xs font-light tracking-wide min-h-[40px] flex items-center transition-colors",
+                              active ? "bg-gold/15 text-gold" : "text-gray-400 hover:text-gold hover:bg-gold/5",
+                            )}
+                          >
+                            {s.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
