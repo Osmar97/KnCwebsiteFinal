@@ -39,6 +39,8 @@ import AdminWhereWeGo from "./pages/admin/AdminWhereWeGo";
 import AdminSocialMedia from "./pages/admin/AdminSocialMedia";
 import AdminLeadsInbox from "./pages/admin/AdminLeadsInbox";
 import AdminCompanyInfo from "./pages/admin/AdminCompanyInfo";
+import AdminCRM from "./pages/admin/AdminCRM";
+import AdminCRMLeadDetail from "./pages/admin/AdminCRMLeadDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -102,6 +104,8 @@ const App = () => (
               <Route path="/admin/site-settings/social-media" element={<AdminSocialMedia />} />
               <Route path="/admin/site-settings/company" element={<AdminCompanyInfo />} />
               <Route path="/admin/leads" element={<AdminLeadsInbox />} />
+              <Route path="/admin/crm" element={<AdminCRM />} />
+              <Route path="/admin/crm/:source/:id" element={<AdminCRMLeadDetail />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

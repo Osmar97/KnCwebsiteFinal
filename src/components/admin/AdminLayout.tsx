@@ -14,6 +14,7 @@ import {
   Settings,
   Menu,
   ChevronDown,
+  Users,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -59,13 +60,16 @@ const NAV: NavItem[] = [
   { kind: "link", to: "/admin/bookings", label: "Bookings", icon: Calendar },
   {
     kind: "group",
-    key: "leads",
-    label: "Leads",
-    icon: Inbox,
+    key: "crm",
+    label: "CRM",
+    icon: Users,
     sections: [
       {
-        heading: "Inbox",
-        items: [{ to: "/admin/leads", label: "All Leads" }],
+        heading: "Pipeline",
+        items: [
+          { to: "/admin/crm", label: "All Leads & Pipeline" },
+          { to: "/admin/leads", label: "Quick Inbox" },
+        ],
       },
       {
         heading: "By Source",

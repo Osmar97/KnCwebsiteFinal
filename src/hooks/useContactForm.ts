@@ -24,9 +24,17 @@ export const useContactForm = () => {
 
     try {
       const payload = { ...formData, ...overrides };
-      const { error } = await supabase.functions.invoke('send-contact-email', {
-        body: payload,
+      // Persist to CRM (best-effort) in parallel with email send.
+      const persistP = supabase.from("contact_submissions").insert({
+        name: payload.name,
+        email: payload.email,
+        subject: payload.subject,
+        message: payload.message,
       });
+      const sendP = supabase.functions.invoke('send-contact-email', { body: payload });
+      const [persistRes, sendRes] = await Promise.all([persistP, sendP]);
+      if (persistRes.error) logger.error("contact_submissions insert failed", persistRes.error);
+      const { error } = sendRes;
 
       if (error) {
         throw error;

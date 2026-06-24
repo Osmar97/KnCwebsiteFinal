@@ -218,6 +218,39 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          status: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       countries: {
         Row: {
           created_at: string
@@ -431,6 +464,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      crm_lead_metadata: {
+        Row: {
+          assigned_to_email: string | null
+          country: string | null
+          created_at: string
+          id: string
+          last_contact_at: string | null
+          lead_score: number
+          source: string
+          source_id: string
+          status: string
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          assigned_to_email?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          last_contact_at?: string | null
+          lead_score?: number
+          source: string
+          source_id: string
+          status?: string
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          assigned_to_email?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          last_contact_at?: string | null
+          lead_score?: number
+          source?: string
+          source_id?: string
+          status?: string
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      crm_notes: {
+        Row: {
+          author_email: string
+          body: string
+          created_at: string
+          id: string
+          source: string
+          source_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_email: string
+          body: string
+          created_at?: string
+          id?: string
+          source: string
+          source_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_email?: string
+          body?: string
+          created_at?: string
+          id?: string
+          source?: string
+          source_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       deal_calculators: {
         Row: {

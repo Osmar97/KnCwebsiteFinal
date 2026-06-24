@@ -1,6 +1,6 @@
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Link } from "react-router-dom";
-import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, Inbox, Plus, Upload, Activity } from "lucide-react";
+import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, Inbox, Plus, Upload, Activity, Users } from "lucide-react";
 import { useAdminCounts } from "@/hooks/admin/useAdminCounts";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
@@ -93,7 +93,7 @@ const AdminDashboard = () => {
         <Stat label="Waitlist Requests" value={n(waitlist)} icon={ClipboardList} to="/admin/waitlist" />
         <Stat label="Custom Quote Requests" value={n(quotes)} icon={Sparkles} to="/admin/quotes" />
         <Stat label="All Leads" value={waitlist.isLoading || quotes.isLoading ? "…" : totalLeads} icon={Inbox} to="/admin/leads" />
-        <Stat label="Revenue" value="—" icon={Calendar} accent="text-gray-500" />
+        <Stat label="CRM Pipeline" value="Open" icon={Users} accent="text-gold" to="/admin/crm" />
       </div>
 
       {/* Quick Actions */}
