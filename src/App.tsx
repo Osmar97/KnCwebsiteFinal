@@ -41,6 +41,7 @@ import AdminLeadsInbox from "./pages/admin/AdminLeadsInbox";
 import AdminCompanyInfo from "./pages/admin/AdminCompanyInfo";
 import AdminCRM from "./pages/admin/AdminCRM";
 import AdminCRMLeadDetail from "./pages/admin/AdminCRMLeadDetail";
+import AdminCRMTasks from "./pages/admin/AdminCRMTasks";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -105,6 +106,7 @@ const App = () => (
               <Route path="/admin/site-settings/company" element={<AdminCompanyInfo />} />
               <Route path="/admin/leads" element={<AdminLeadsInbox />} />
               <Route path="/admin/crm" element={<AdminCRM />} />
+              <Route path="/admin/crm/tasks" element={<AdminCRMTasks />} />
               <Route path="/admin/crm/:source/:id" element={<AdminCRMLeadDetail />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
