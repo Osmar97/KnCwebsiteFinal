@@ -7,6 +7,13 @@ import {
   useCrmLead,
   useCrmNotes,
   useUpsertCrmMetadata,
+  useCrmTasksForLead,
+  useCreateCrmTask,
+  useUpdateCrmTask,
+  useDeleteCrmTask,
+  useEmailHistoryForRecipient,
+  type CrmTask,
+  type TaskPriority,
 } from "@/hooks/useCrm";
 import {
   CRM_STATUSES,
