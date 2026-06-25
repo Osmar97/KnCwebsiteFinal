@@ -37,8 +37,16 @@ const AdminCRMLeadDetail = () => {
   const notesQ = useCrmNotes(source, id);
   const upsert = useUpsertCrmMetadata();
   const addNote = useAddCrmNote();
+  const tasksQ = useCrmTasksForLead(source, id);
+  const createTask = useCreateCrmTask();
+  const updateTask = useUpdateCrmTask();
+  const deleteTask = useDeleteCrmTask();
+  const emailsQ = useEmailHistoryForRecipient(typeof id === "string" ? undefined : undefined);
   const [noteBody, setNoteBody] = useState("");
   const [tagInput, setTagInput] = useState("");
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskDue, setNewTaskDue] = useState("");
+  const [newTaskPriority, setNewTaskPriority] = useState<TaskPriority>("normal");
 
   if (isLoading) return <AdminLayout title="Lead"><p className="text-gray-400">Loading…</p></AdminLayout>;
   if (!lead) return (
