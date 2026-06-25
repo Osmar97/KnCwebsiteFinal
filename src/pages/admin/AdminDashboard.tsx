@@ -77,8 +77,22 @@ const useRecentActivity = () =>
 const AdminDashboard = () => {
   const { properties, toursPublished, bookings, waitlist, quotes } = useAdminCounts();
   const activity = useRecentActivity();
+  const leadsQ = useCrmLeads();
+  const tasksQ = useAllCrmTasks({ statuses: ["open", "in_progress"] });
   const n = (q: UseQueryResult<number>) => (q.isLoading ? "…" : q.data ?? 0);
   const totalLeads = (waitlist.data ?? 0) + (quotes.data ?? 0);
+
+  const leads = leadsQ.data ?? [];
+  const byStatus = CRM_STATUSES.map((s) => ({ s, count: leads.filter((l) => l.status === s).length }));
+  const maxStatus = Math.max(1, ...byStatus.map((b) => b.count));
+  const bySource: Record<CrmSource, number> = { waitlist: 0, quote: 0, contact: 0 };
+  for (const l of leads) bySource[l.source]++;
+  const maxSource = Math.max(1, ...Object.values(bySource));
+
+  const tasks = tasksQ.data ?? [];
+  const now = new Date();
+  const overdueTasks = tasks.filter((t) => t.due_date && new Date(t.due_date) < now);
+  const upcomingTasks = tasks.filter((t) => !t.due_date || new Date(t.due_date) >= now).slice(0, 5);
 
   return (
     <AdminLayout title="Dashboard" description="High-level overview of platform activity.">
