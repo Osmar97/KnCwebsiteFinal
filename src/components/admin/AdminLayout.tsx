@@ -68,6 +68,7 @@ const NAV: NavItem[] = [
         heading: "Pipeline",
         items: [
           { to: "/admin/crm", label: "All Leads & Pipeline" },
+          { to: "/admin/crm/tasks", label: "Tasks" },
           { to: "/admin/leads", label: "Quick Inbox" },
         ],
       },

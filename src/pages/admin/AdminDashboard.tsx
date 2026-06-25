@@ -1,10 +1,12 @@
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Link } from "react-router-dom";
-import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, Inbox, Plus, Upload, Activity, Users } from "lucide-react";
+import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, Inbox, Plus, Upload, Activity, Users, CheckSquare, AlertTriangle } from "lucide-react";
 import { useAdminCounts } from "@/hooks/admin/useAdminCounts";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useCrmLeads, useAllCrmTasks } from "@/hooks/useCrm";
+import { STATUS_LABELS, SOURCE_LABELS, statusColor, CRM_STATUSES, type CrmStatus, type CrmSource } from "@/lib/crm";
 
 interface StatProps {
   label: string;
@@ -75,8 +77,22 @@ const useRecentActivity = () =>
 const AdminDashboard = () => {
   const { properties, toursPublished, bookings, waitlist, quotes } = useAdminCounts();
   const activity = useRecentActivity();
+  const leadsQ = useCrmLeads();
+  const tasksQ = useAllCrmTasks({ statuses: ["open", "in_progress"] });
   const n = (q: UseQueryResult<number>) => (q.isLoading ? "…" : q.data ?? 0);
   const totalLeads = (waitlist.data ?? 0) + (quotes.data ?? 0);
+
+  const leads = leadsQ.data ?? [];
+  const byStatus = CRM_STATUSES.map((s) => ({ s, count: leads.filter((l) => l.status === s).length }));
+  const maxStatus = Math.max(1, ...byStatus.map((b) => b.count));
+  const bySource: Record<CrmSource, number> = { waitlist: 0, quote: 0, contact: 0 };
+  for (const l of leads) bySource[l.source]++;
+  const maxSource = Math.max(1, ...Object.values(bySource));
+
+  const tasks = tasksQ.data ?? [];
+  const now = new Date();
+  const overdueTasks = tasks.filter((t) => t.due_date && new Date(t.due_date) < now);
+  const upcomingTasks = tasks.filter((t) => !t.due_date || new Date(t.due_date) >= now).slice(0, 5);
 
   return (
     <AdminLayout title="Dashboard" description="High-level overview of platform activity.">
@@ -155,6 +171,85 @@ const AdminDashboard = () => {
             ))}
           </ul>
         )}
+      </div>
+
+      {/* CRM Widgets */}
+      <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="bg-gray-950 border border-gray-800 rounded-lg p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm uppercase tracking-widest text-gray-400 flex items-center gap-2">
+              <Users className="w-4 h-4 text-gold" /> Pipeline by stage
+            </h2>
+            <Link to="/admin/crm" className="text-[11px] text-gold hover:underline">Open CRM →</Link>
+          </div>
+          {leadsQ.isLoading ? <p className="text-gray-500 text-sm">Loading…</p> : (
+            <ul className="space-y-1.5">
+              {byStatus.map(({ s, count }) => (
+                <li key={s} className="flex items-center gap-2">
+                  <span className="text-[11px] text-gray-300 w-32 truncate">{STATUS_LABELS[s as CrmStatus]}</span>
+                  <div className="flex-1 h-2 bg-gray-900 rounded overflow-hidden">
+                    <div className={`h-full ${statusColor(s).split(" ").find((c) => c.startsWith("bg-")) ?? "bg-gold/40"}`} style={{ width: `${(count / maxStatus) * 100}%` }} />
+                  </div>
+                  <span className="text-xs text-gray-400 w-6 text-right">{count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="bg-gray-950 border border-gray-800 rounded-lg p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm uppercase tracking-widest text-gray-400 flex items-center gap-2">
+              <Inbox className="w-4 h-4 text-gold" /> Leads by source
+            </h2>
+            <span className="text-[11px] text-gray-500">{leads.length} total</span>
+          </div>
+          {leadsQ.isLoading ? <p className="text-gray-500 text-sm">Loading…</p> : (
+            <ul className="space-y-2">
+              {(Object.keys(bySource) as CrmSource[]).map((src) => (
+                <li key={src} className="flex items-center gap-2">
+                  <span className="text-xs text-gray-300 w-28">{SOURCE_LABELS[src]}</span>
+                  <div className="flex-1 h-3 bg-gray-900 rounded overflow-hidden">
+                    <div className="h-full bg-gold/60" style={{ width: `${(bySource[src] / maxSource) * 100}%` }} />
+                  </div>
+                  <span className="text-xs text-gray-400 w-8 text-right">{bySource[src]}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="bg-gray-950 border border-gray-800 rounded-lg p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm uppercase tracking-widest text-gray-400 flex items-center gap-2">
+              <CheckSquare className="w-4 h-4 text-gold" /> Tasks
+            </h2>
+            <Link to="/admin/crm/tasks" className="text-[11px] text-gold hover:underline">All tasks →</Link>
+          </div>
+          {tasksQ.isLoading ? <p className="text-gray-500 text-sm">Loading…</p> : (
+            <>
+              {overdueTasks.length > 0 && (
+                <p className="text-xs text-red-300 mb-2 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3" /> {overdueTasks.length} overdue
+                </p>
+              )}
+              {tasks.length === 0 ? (
+                <p className="text-xs text-gray-500">No open tasks.</p>
+              ) : (
+                <ul className="space-y-1.5">
+                  {upcomingTasks.map((t) => (
+                    <li key={t.id} className="text-xs">
+                      <Link to={`/admin/crm/${t.source}/${t.source_id}`} className="text-gray-200 hover:text-gold truncate block">
+                        {t.title}
+                      </Link>
+                      <span className="text-[10px] text-gray-500">{t.due_date ? new Date(t.due_date).toLocaleDateString() : "No due date"}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </AdminLayout>
   );

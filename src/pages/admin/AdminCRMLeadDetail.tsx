@@ -7,6 +7,13 @@ import {
   useCrmLead,
   useCrmNotes,
   useUpsertCrmMetadata,
+  useCrmTasksForLead,
+  useCreateCrmTask,
+  useUpdateCrmTask,
+  useDeleteCrmTask,
+  useEmailHistoryForRecipient,
+  type CrmTask,
+  type TaskPriority,
 } from "@/hooks/useCrm";
 import {
   CRM_STATUSES,
@@ -30,8 +37,16 @@ const AdminCRMLeadDetail = () => {
   const notesQ = useCrmNotes(source, id);
   const upsert = useUpsertCrmMetadata();
   const addNote = useAddCrmNote();
+  const tasksQ = useCrmTasksForLead(source, id);
+  const createTask = useCreateCrmTask();
+  const updateTask = useUpdateCrmTask();
+  const deleteTask = useDeleteCrmTask();
+  const emailsQ = useEmailHistoryForRecipient(lead?.email);
   const [noteBody, setNoteBody] = useState("");
   const [tagInput, setTagInput] = useState("");
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskDue, setNewTaskDue] = useState("");
+  const [newTaskPriority, setNewTaskPriority] = useState<TaskPriority>("normal");
 
   if (isLoading) return <AdminLayout title="Lead"><p className="text-gray-400">Loading…</p></AdminLayout>;
   if (!lead) return (
@@ -190,6 +205,103 @@ const AdminCRMLeadDetail = () => {
             <div className="mt-3">
               <Link to={sourceListLink(lead.source)} className="text-xs text-gold hover:underline">Open in {SOURCE_LABELS[lead.source]} →</Link>
             </div>
+          </Card>
+
+          <Card title="Tasks">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const title = newTaskTitle.trim();
+                if (!title) return;
+                createTask.mutate(
+                  {
+                    source: lead.source,
+                    source_id: lead.id,
+                    title,
+                    due_date: newTaskDue ? new Date(newTaskDue).toISOString() : null,
+                    priority: newTaskPriority,
+                    assigned_to_email: lead.assignedTo,
+                    created_by_email: supabaseUser?.email ?? null,
+                  },
+                  { onSuccess: () => { setNewTaskTitle(""); setNewTaskDue(""); setNewTaskPriority("normal"); } },
+                );
+              }}
+              className="space-y-2 mb-3"
+            >
+              <input
+                value={newTaskTitle}
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+                placeholder="New task…"
+                className="w-full bg-gray-900 border border-gray-800 rounded px-2 py-1.5 text-sm text-white"
+              />
+              <div className="flex gap-1">
+                <input
+                  type="datetime-local"
+                  value={newTaskDue}
+                  onChange={(e) => setNewTaskDue(e.target.value)}
+                  className="flex-1 bg-gray-900 border border-gray-800 rounded px-2 py-1 text-[11px] text-white"
+                />
+                <select
+                  value={newTaskPriority}
+                  onChange={(e) => setNewTaskPriority(e.target.value as TaskPriority)}
+                  className="bg-gray-900 border border-gray-800 rounded px-2 py-1 text-[11px] text-white"
+                >
+                  <option value="low">low</option>
+                  <option value="normal">normal</option>
+                  <option value="high">high</option>
+                  <option value="urgent">urgent</option>
+                </select>
+                <button type="submit" disabled={!newTaskTitle.trim()} className="text-xs px-3 py-1 bg-gold text-black rounded hover:opacity-90 disabled:opacity-40">Add</button>
+              </div>
+            </form>
+            <ul className="space-y-1.5 max-h-[300px] overflow-y-auto">
+              {(tasksQ.data ?? []).map((t: CrmTask) => (
+                <li key={t.id} className="flex items-start gap-2 bg-gray-900 border border-gray-800 rounded p-2">
+                  <input
+                    type="checkbox"
+                    checked={t.status === "done"}
+                    onChange={(e) => updateTask.mutate({ id: t.id, patch: { status: e.target.checked ? "done" : "open", completed_at: e.target.checked ? new Date().toISOString() : null } })}
+                    className="mt-1 accent-gold"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm ${t.status === "done" ? "line-through text-gray-500" : "text-white"}`}>{t.title}</p>
+                    <p className="text-[10px] text-gray-500">
+                      {t.due_date ? new Date(t.due_date).toLocaleString() : "No due date"} · {t.priority}
+                    </p>
+                  </div>
+                  <button onClick={() => { if (confirm("Delete?")) deleteTask.mutate(t.id); }} className="text-gray-600 hover:text-red-400 text-[10px]">✕</button>
+                </li>
+              ))}
+              {(tasksQ.data ?? []).length === 0 && <p className="text-xs text-gray-500">No tasks yet.</p>}
+            </ul>
+          </Card>
+
+          <Card title="Email history">
+            {emailsQ.isLoading ? (
+              <p className="text-xs text-gray-500">Loading…</p>
+            ) : !emailsQ.data?.available ? (
+              <p className="text-xs text-gray-500">Email tracking will appear here once email infrastructure is enabled.</p>
+            ) : emailsQ.data.entries.length === 0 ? (
+              <p className="text-xs text-gray-500">No emails sent to {lead.email} yet.</p>
+            ) : (
+              <ul className="space-y-1.5 max-h-[300px] overflow-y-auto">
+                {emailsQ.data.entries.map((e) => (
+                  <li key={e.id} className="bg-gray-900 border border-gray-800 rounded p-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs text-white truncate">{e.template_name ?? "email"}</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded border ${
+                        e.status === "sent" ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/10" :
+                        e.status === "dlq" || e.status === "failed" || e.status === "bounced" ? "border-red-500/40 text-red-300 bg-red-500/10" :
+                        e.status === "suppressed" ? "border-amber-500/40 text-amber-300 bg-amber-500/10" :
+                        "border-gray-700 text-gray-400"
+                      }`}>{e.status ?? "—"}</span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 mt-0.5">{new Date(e.created_at).toLocaleString()}</p>
+                    {e.error_message && <p className="text-[10px] text-red-400 mt-1 line-clamp-2">{e.error_message}</p>}
+                  </li>
+                ))}
+              </ul>
+            )}
           </Card>
         </div>
       </div>

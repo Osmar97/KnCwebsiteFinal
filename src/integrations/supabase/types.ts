@@ -537,6 +537,54 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_tasks: {
+        Row: {
+          assigned_to_email: string | null
+          completed_at: string | null
+          created_at: string
+          created_by_email: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: string
+          source: string
+          source_id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to_email?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by_email?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          source: string
+          source_id: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to_email?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by_email?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          source?: string
+          source_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       deal_calculators: {
         Row: {
           cash_flow: number | null
