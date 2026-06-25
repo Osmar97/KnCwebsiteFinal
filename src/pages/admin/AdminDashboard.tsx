@@ -1,10 +1,12 @@
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Link } from "react-router-dom";
-import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, Inbox, Plus, Upload, Activity, Users } from "lucide-react";
+import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, Inbox, Plus, Upload, Activity, Users, CheckSquare, AlertTriangle } from "lucide-react";
 import { useAdminCounts } from "@/hooks/admin/useAdminCounts";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useCrmLeads, useAllCrmTasks } from "@/hooks/useCrm";
+import { STATUS_LABELS, SOURCE_LABELS, statusColor, CRM_STATUSES, type CrmStatus, type CrmSource } from "@/lib/crm";
 
 interface StatProps {
   label: string;
