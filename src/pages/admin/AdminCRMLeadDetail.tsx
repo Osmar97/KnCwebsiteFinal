@@ -41,7 +41,7 @@ const AdminCRMLeadDetail = () => {
   const createTask = useCreateCrmTask();
   const updateTask = useUpdateCrmTask();
   const deleteTask = useDeleteCrmTask();
-  const emailsQ = useEmailHistoryForRecipient(typeof id === "string" ? undefined : undefined);
+  const emailsQ = useEmailHistoryForRecipient(lead?.email);
   const [noteBody, setNoteBody] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [newTaskTitle, setNewTaskTitle] = useState("");
