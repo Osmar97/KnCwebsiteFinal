@@ -241,7 +241,7 @@ const AdminLayout = ({ title, description, children, actions }: Props) => {
       <div className="pt-20 lg:pt-24">
         <div className="flex w-full max-w-[1600px] mx-auto">
           {/* Desktop sidebar */}
-          <aside className="hidden lg:flex lg:flex-col w-64 flex-shrink-0 border-r border-gray-800 bg-gray-950 min-h-[calc(100vh-6rem)] sticky top-24 self-start max-h-[calc(100vh-6rem)]">
+          <aside className="hidden lg:flex lg:flex-col w-64 flex-shrink-0 border-r border-gray-800 bg-gray-950 h-[calc(100vh-6rem)] sticky top-24 self-start overflow-hidden">
             <SidebarBody pathname={location.pathname} onLogout={handleLogout} />
           </aside>
 
