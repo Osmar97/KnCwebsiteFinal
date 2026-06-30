@@ -37,6 +37,6 @@ export function useUpdateQuoteStatus() {
       toast({ title: "Status updated" });
     },
     onError: (e: Error) =>
-      toast({ title: "Update failed", description: e.message, variant: "destructive" }),
+      toast({ title: "Update failed", description: e?.message ?? "Unknown error", variant: "destructive" }),
   });
 }
