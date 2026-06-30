@@ -15,6 +15,7 @@ import {
   Menu,
   ChevronDown,
   Users,
+  BarChart3,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ type NavItem =
 
 const NAV: NavItem[] = [
   { kind: "link", to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { kind: "link", to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { kind: "link", to: "/admin/properties", label: "Properties", icon: Building2 },
   { kind: "link", to: "/admin/assets", label: "Assets", icon: FileBox },
   {
