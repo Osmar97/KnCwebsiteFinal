@@ -1,0 +1,2 @@
+ALTER TABLE public.tour_custom_quote_requests DROP CONSTRAINT IF EXISTS tour_custom_quote_requests_status_check;
+ALTER TABLE public.tour_custom_quote_requests ADD CONSTRAINT tour_custom_quote_requests_status_check CHECK (status = ANY (ARRAY['new'::text,'in_review'::text,'contacted'::text,'quoted'::text,'won'::text,'lost'::text,'closed'::text]));
