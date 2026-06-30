@@ -32,7 +32,7 @@ export interface QuoteRow {
 export interface WaitlistRow {
   id: string;
   email: string | null;
-  nationality: string | null;
+  country: string | null;
   status: string | null;
   created_at: string;
 }
@@ -89,7 +89,7 @@ export const useAnalyticsData = () =>
       const [b, q, w, c, t, d, m] = await Promise.all([
         supabase.from("tour_bookings").select("id,tour_date_id,status,amount_paid,currency,customer_email,source,created_at").limit(5000),
         supabase.from("tour_custom_quote_requests").select("id,email,country,nationality,destinations,destination_slug,status,total_amount,deposit_amount,payment_status,currency,created_at").limit(5000),
-        supabase.from("tour_waitlist_requests").select("id,email,nationality,status,created_at").limit(5000),
+        supabase.from("tour_waitlist_requests").select("id,email,country,status,created_at").limit(5000),
         supabase.from("contact_submissions").select("id,email,status,created_at").limit(5000),
         supabase.from("tours").select("id,slug,name_en,status,destinations,base_price,currency").limit(1000),
         supabase.from("tour_dates").select("id,tour_id,start_date,end_date,capacity,sold_out").limit(2000),
@@ -231,7 +231,7 @@ export const useComputedAnalytics = (filters: AnalyticsFilters): { data: Compute
 
     const fWaitlist = waitlist.filter((w) => {
       if (!inRange(w.created_at, filters.start, filters.end)) return false;
-      if (!matchCountry(w.nationality)) return false;
+      if (!matchCountry(w.country)) return false;
       if (filters.source && filters.source !== "all" && filters.source !== "waitlist") return false;
       return true;
     });
