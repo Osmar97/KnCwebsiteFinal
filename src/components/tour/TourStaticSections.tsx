@@ -1,6 +1,14 @@
 import { Reveal } from "@/components/tour/Reveal";
 import { INCLUDES } from "@/components/tour/tour-data";
 import { formatPrice } from "@/lib/formatPrice";
+import { useEffect, useState } from "react";
+import { Instagram } from "lucide-react";
+import {
+  fetchIgImagesPublic,
+  fetchSocialLinks,
+  type IgImage,
+  type SocialLinks,
+} from "@/data/socialMedia";
 
 type T = (path: string) => any;
 
