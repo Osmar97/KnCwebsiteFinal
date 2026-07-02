@@ -1046,8 +1046,16 @@
   .tour-page .test-grid,
   .tour-page .group-grid { grid-template-columns: 1fr; }
   .tour-page .tour-tabs { overflow-x: auto; }
-  .tour-page .dest-grid { grid-template-columns: 1fr; }
-  .tour-page .dest-card { height: 240px; }
+  .tour-page .dest-section { padding: 64px 20px; }
+  .tour-page .dest-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-items: stretch;
+  }
+  .tour-page .dest-card { height: auto; width: 100%; aspect-ratio: 4 / 3; }
   .tour-page .how-section { padding: 64px 24px; }
   .tour-page .hero-stats { display: none; }
   .tour-page .tours-header { flex-direction: column; align-items: flex-start; gap: 16px; }
