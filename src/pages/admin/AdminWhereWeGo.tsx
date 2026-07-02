@@ -91,8 +91,24 @@ const AdminWhereWeGo = () => {
     setUploadingIdx(i);
     try {
       const url = await uploadWhereWeGoImage(file);
+      const current = rows[i];
+      const nextRow = { ...current, image_url: url };
       update(i, { image_url: url });
-      toast({ title: "Image uploaded" });
+      // Auto-persist so the public site picks up the image immediately.
+      if (current.id) {
+        try {
+          await upsertWhereWeGo(nextRow);
+          toast({ title: "Image uploaded & saved" });
+        } catch (err: any) {
+          toast({
+            title: "Uploaded, but save failed",
+            description: err.message + " — click Save to retry.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({ title: "Image uploaded", description: "Click Save to publish this card." });
+      }
     } catch (error: any) {
       toast({ title: "Upload failed", description: error.message, variant: "destructive" });
     } finally {
