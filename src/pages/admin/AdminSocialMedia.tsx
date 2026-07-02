@@ -108,8 +108,23 @@ const AdminSocialMedia = () => {
     setUploadingIdx(i);
     try {
       const url = await uploadIgImage(file);
+      const current = images[i];
+      const nextRow = { ...current, image_url: url };
       updateImg(i, { image_url: url });
-      toast({ title: "Image uploaded" });
+      if (current.id) {
+        try {
+          await upsertIgImage(nextRow);
+          toast({ title: "Image uploaded & saved" });
+        } catch (err: any) {
+          toast({
+            title: "Uploaded, but save failed",
+            description: err.message + " — click Save to retry.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({ title: "Image uploaded", description: "Click Save to publish this tile." });
+      }
     } catch (error: any) {
       toast({ title: "Upload failed", description: error.message, variant: "destructive" });
     } finally {
