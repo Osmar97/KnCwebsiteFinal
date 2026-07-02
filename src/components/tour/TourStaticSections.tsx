@@ -175,3 +175,109 @@ export function HowItWorksSection({ t }: { t: T }) {
     </div>
   );
 }
+
+// ── INSTAGRAM SHOWCASE ────────────────────────────────────────────────
+
+const DEFAULT_IG_HANDLE = "kingsncompany";
+const DEFAULT_IG_URL = "https://www.instagram.com/kingsncompany";
+
+export function InstagramShowcaseSection({ t }: { t: T }) {
+  const [links, setLinks] = useState<SocialLinks | null>(null);
+  const [images, setImages] = useState<IgImage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([fetchSocialLinks(), fetchIgImagesPublic()])
+      .then(([l, imgs]) => {
+        if (!mounted) return;
+        setLinks(l);
+        setImages(imgs.slice(0, 6));
+      })
+      .catch(() => { if (mounted) { setLinks(null); setImages([]); } })
+      .finally(() => { if (mounted) setLoading(false); });
+    return () => { mounted = false; };
+  }, []);
+
+  const profileUrl = links?.instagram_url?.trim() || DEFAULT_IG_URL;
+  const username = links?.instagram_username?.trim() || DEFAULT_IG_HANDLE;
+  const tiles: (IgImage | null)[] = images.length
+    ? images
+    : Array.from({ length: 6 }, () => null);
+
+  return (
+    <section className="ig-section" id="instagram">
+      <div className="t-container">
+        <div className="ig-head">
+          <div className="section-eyebrow">{t("instagram.eyebrow")}</div>
+          <h2 className="ig-title">
+            {t("instagram.heading_1")}<em>{t("instagram.heading_2")}</em>
+          </h2>
+          <p className="ig-desc">{t("instagram.body")}</p>
+        </div>
+
+        <a
+          href={profileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ig-profile"
+          aria-label={t("instagram.open_profile")}
+        >
+          <span className="ig-avatar" aria-hidden="true">
+            <Instagram size={26} strokeWidth={1.6} />
+          </span>
+          <span className="ig-profile-meta">
+            <span className="ig-profile-name">Kings 'n Company</span>
+            <span className="ig-profile-handle">@{username}</span>
+          </span>
+          <span className="ig-follow-btn">{t("instagram.follow")}</span>
+        </a>
+
+        <Reveal>
+          <div className="ig-grid">
+            {tiles.map((tile, i) => {
+              if (!tile) {
+                return (
+                  <div
+                    key={`ph-${i}`}
+                    className={`ig-tile ${loading ? "ig-skeleton" : "ig-tile-empty"}`}
+                    aria-hidden="true"
+                  >
+                    {!loading && <Instagram size={22} strokeWidth={1.4} />}
+                  </div>
+                );
+              }
+              const href = tile.post_url?.trim() || profileUrl;
+              const caption = tile.caption?.trim() || "";
+              return (
+                <a
+                  key={tile.id ?? i}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ig-tile-card"
+                  aria-label={caption || t("instagram.view_post")}
+                >
+                  <div className="ig-tile">
+                    <img src={tile.image_url} alt={caption || "Instagram post"} loading="lazy" />
+                    <span className="ig-tile-overlay">
+                      <Instagram size={26} strokeWidth={1.6} />
+                    </span>
+                  </div>
+                  {caption && <p className="ig-tile-caption">{caption}</p>}
+                </a>
+              );
+            })}
+          </div>
+        </Reveal>
+
+        <div className="ig-cta-row">
+          <a href={profileUrl} target="_blank" rel="noopener noreferrer" className="ig-cta">
+            <Instagram size={16} strokeWidth={1.8} />
+            {t("instagram.cta")}
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
