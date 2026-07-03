@@ -746,21 +746,6 @@
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
   max-width: 920px; margin: 0 auto;
 }
-.tour-page .ig-tile-card {
-  display: flex; flex-direction: column; gap: 10px;
-  text-decoration: none; color: inherit;
-  transition: transform 0.25s ease;
-}
-.tour-page .ig-tile-card:hover { transform: translateY(-3px); }
-.tour-page .ig-tile-caption {
-  font-size: 12px; line-height: 1.5; color: var(--muted);
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .tour-page .ig-tile {
   position: relative; display: block; aspect-ratio: 1 / 1;
   overflow: hidden; border-radius: 3px; background: #ece7dd;
@@ -819,23 +804,9 @@
 }
 @media (max-width: 768px) {
   .tour-page .ig-section { padding: 80px 0; }
-  .tour-page .ig-section > .t-container { padding-left: 20px; padding-right: 20px; }
-  .tour-page .ig-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    max-width: 520px;
-  }
-  .tour-page .ig-tile-caption { font-size: 11px; }
-  .tour-page .ig-profile {
-    flex-direction: column;
-    text-align: center;
-    gap: 12px;
-    padding: 20px 18px;
-    max-width: 340px;
-  }
-  .tour-page .ig-profile-meta { text-align: center; }
-  .tour-page .ig-follow-btn { margin-left: 0; width: 100%; text-align: center; }
-  .tour-page .ig-cta { width: 100%; max-width: 320px; justify-content: center; }
+  .tour-page .ig-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .tour-page .ig-profile { flex-wrap: wrap; gap: 12px; padding: 16px; }
+  .tour-page .ig-follow-btn { margin-left: auto; }
 }
 
 /* ── FOOTER ─────────────────────────────────────────────────────────── */
@@ -1075,16 +1046,8 @@
   .tour-page .test-grid,
   .tour-page .group-grid { grid-template-columns: 1fr; }
   .tour-page .tour-tabs { overflow-x: auto; }
-  .tour-page .dest-section { padding: 64px 20px; }
-  .tour-page .dest-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
-    justify-items: stretch;
-  }
-  .tour-page .dest-card { height: auto; width: 100%; aspect-ratio: 4 / 3; }
+  .tour-page .dest-grid { grid-template-columns: 1fr; }
+  .tour-page .dest-card { height: 240px; }
   .tour-page .how-section { padding: 64px 24px; }
   .tour-page .hero-stats { display: none; }
   .tour-page .tours-header { flex-direction: column; align-items: flex-start; gap: 16px; }
