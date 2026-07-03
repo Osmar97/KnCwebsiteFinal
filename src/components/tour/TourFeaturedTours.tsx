@@ -21,6 +21,11 @@ interface Props {
   onRequestCustom: () => void;
 }
 
+const isRenderableImageUrl = (value: string | null | undefined) => {
+  if (!value) return false;
+  return /^(https?:\/\/|\/|data:image\/|blob:)/i.test(value);
+};
+
 export function TourFeaturedTours({
   tours, availability, loading, activeTab, setActiveTab, lang, t, onSelectTour, onRequestCustom,
 }: Props) {
@@ -81,13 +86,24 @@ export function TourFeaturedTours({
             const cardRec = card as unknown as Record<string, unknown>;
             const name = pickLocalized(cardRec, "name", lang);
             const shortDesc = pickLocalized(cardRec, "short_desc", lang);
+            const heroImageUrl = isRenderableImageUrl(card.hero_image) ? card.hero_image : null;
+            const heroImageClass = heroImageUrl ? "" : (card.hero_image || "");
             const openModal = () => onSelectTour(card);
             return (
               <Reveal key={card.id} delay={i * 0.05}>
                 <div className="tour-card" onClick={openModal} role="button" tabIndex={0}
                   onKeyDown={(e) => e.key === "Enter" && openModal()}>
                   <div className="tour-img">
-                    <div className={`tour-img-inner ${card.hero_image || ""}`} />
+                    {heroImageUrl ? (
+                      <img
+                        src={heroImageUrl}
+                        alt={`${name} tour`}
+                        className="tour-img-inner tour-img-photo"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className={`tour-img-inner ${heroImageClass}`} />
+                    )}
                     {card.badge && <div className={`tour-badge ${card.badge_variant === "gold" ? "gold" : ""}`}>{card.badge}</div>}
                     {card.flag && <div className="tour-flag">{card.flag}</div>}
                     {next && cap > 0 ? (
