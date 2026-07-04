@@ -175,8 +175,6 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
 
   const instagramUrl = links?.instagram_url || "https://www.instagram.com/ismaelgq_";
   const username = links?.instagram_username || "ismaelgq_";
-  const facebookUrl = links?.facebook_url || "";
-  const linkedinUrl = links?.linkedin_url || "";
 
   const grid = images.slice(0, 6);
 
