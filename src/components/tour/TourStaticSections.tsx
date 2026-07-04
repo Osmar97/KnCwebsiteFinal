@@ -2,7 +2,7 @@ import { Reveal } from "@/components/tour/Reveal";
 import { INCLUDES } from "@/components/tour/tour-data";
 import { formatPrice } from "@/lib/formatPrice";
 import { useSocialMedia } from "@/hooks/useSocialMedia";
-import { Instagram } from "lucide-react";
+import { Instagram, Facebook, Linkedin } from "lucide-react";
 
 type T = (path: string) => any;
 
@@ -175,6 +175,8 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
 
   const instagramUrl = links?.instagram_url || "https://www.instagram.com/ismaelgq_";
   const username = links?.instagram_username || "ismaelgq_";
+  const facebookUrl = links?.facebook_url || "";
+  const linkedinUrl = links?.linkedin_url || "";
 
   const grid = images.slice(0, 6);
 
@@ -247,6 +249,24 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
             <span>{t("instagram.cta")}</span>
           </a>
         </Reveal>
+
+        <div className="ig-socials" aria-label={t("instagram.socials_label")}>
+          {instagramUrl && (
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="ig-social-icon">
+              <Instagram className="w-5 h-5" strokeWidth={1.4} />
+            </a>
+          )}
+          {facebookUrl && (
+            <a href={facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="ig-social-icon">
+              <Facebook className="w-5 h-5" strokeWidth={1.4} />
+            </a>
+          )}
+          {linkedinUrl && (
+            <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="ig-social-icon">
+              <Linkedin className="w-5 h-5" strokeWidth={1.4} />
+            </a>
+          )}
+        </div>
       </div>
     </section>
   );
