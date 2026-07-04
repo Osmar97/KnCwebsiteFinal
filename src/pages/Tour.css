@@ -793,7 +793,6 @@
 }
 .tour-page .ig-cta:hover { background: var(--gold); transform: translateY(-2px); }
 @media (max-width: 768px) {
-@media (max-width: 768px) {
   .tour-page .ig-section { padding: 80px 0; }
   .tour-page .ig-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .tour-page .ig-profile { flex-wrap: wrap; gap: 12px; padding: 16px; }
