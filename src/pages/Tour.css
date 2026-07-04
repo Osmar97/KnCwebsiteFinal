@@ -551,6 +551,82 @@
 }
 .tour-page .dest-detail { font-size: 11px; color: rgba(255,255,255,0.48); }
 
+/* ── WHERE WE GO CAROUSEL ────────────────────────────────────────────── */
+.tour-page .dest-carousel-wrap { margin-top: 56px; }
+.tour-page .wwg-viewport {
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  outline: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: pan-y;
+  mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+}
+.tour-page .wwg-viewport:active { cursor: grabbing; }
+.tour-page .wwg-viewport:focus-visible { box-shadow: 0 0 0 2px var(--gold-light); border-radius: 4px; }
+.tour-page .wwg-track {
+  display: flex;
+  gap: 20px;
+  will-change: transform;
+  transform: translate3d(0,0,0);
+}
+.tour-page .wwg-card {
+  position: relative;
+  flex: 0 0 auto;
+  width: calc((100% - 40px) / 2.8);
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--dark);
+  box-shadow: 0 6px 20px -8px rgba(20,15,10,0.25);
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+.tour-page .wwg-card:hover { box-shadow: 0 20px 40px -12px rgba(20,15,10,0.45); }
+.tour-page .wwg-imgwrap { position: absolute; inset: 0; overflow: hidden; }
+.tour-page .wwg-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+.tour-page .wwg-card:hover .wwg-img { transform: scale(1.06); }
+.tour-page .wwg-img-fallback { background: linear-gradient(150deg, #D4C4A2 0%, #B0906A 40%, #7A6548 100%); }
+.tour-page .wwg-ov {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,12,8,0.92) 0%, rgba(15,12,8,0.35) 45%, transparent 75%);
+  pointer-events: none;
+}
+.tour-page .wwg-cnt { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px; }
+.tour-page .wwg-ctry {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--gold-light); margin-bottom: 8px;
+}
+.tour-page .wwg-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px; font-weight: 400; color: var(--white); margin-bottom: 6px; line-height: 1.1;
+}
+.tour-page .wwg-detail { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+
+@media (max-width: 1024px) {
+  .tour-page .wwg-card { width: calc((100% - 20px) / 2); }
+}
+@media (max-width: 640px) {
+  .tour-page .wwg-track { gap: 14px; }
+  .tour-page .wwg-card { width: 82%; aspect-ratio: 4 / 5; border-radius: 6px; }
+  .tour-page .wwg-cnt { padding: 20px; }
+  .tour-page .wwg-name { font-size: 24px; }
+  .tour-page .wwg-viewport {
+    mask-image: linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20px, #000 calc(100% - 20px), transparent 100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-page .wwg-img, .tour-page .wwg-card { transition: none; }
+}
+
 /* ── HOW IT WORKS ────────────────────────────────────────────────────── */
 .tour-page .how-section {
   display: grid; grid-template-columns: 1fr 1fr;

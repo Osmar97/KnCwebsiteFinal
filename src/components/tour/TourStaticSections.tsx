@@ -86,6 +86,7 @@ export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurren
 
 import type { WhereWeGoCard } from "@/data/whereWeGo";
 import type { Language } from "@/pages/TourTranslations";
+import { WhereWeGoCarousel } from "@/components/tour/WhereWeGoCarousel";
 
 interface DestinationsProps {
   cards: WhereWeGoCard[];
@@ -106,37 +107,13 @@ export function DestinationsSection({ cards, loading, lang, t }: DestinationsPro
         <div className="section-eyebrow">{t("destinations_section.eyebrow")}</div>
         <h2 className="section-title">{t("destinations_section.title_1")}<br /><em>{t("destinations_section.title_2")}</em></h2>
         <Reveal>
-          <div className="dest-grid">
-            {cards.length === 0 && !loading && (
-              <p style={{ opacity: 0.6 }}>{t("destinations_section.empty")}</p>
-            )}
-            {cards.map((c) => {
-              const country = pickField(c, "country_name", lang);
-              const subtitle = pickField(c, "subtitle", lang);
-              const description = pickField(c, "description", lang);
-              return (
-                <div key={c.id ?? country} className="dest-card">
-                  {c.image_url ? (
-                    <div
-                      className="dest-bg-inner"
-                      style={{
-                        backgroundImage: `url(${c.image_url})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                  ) : (
-                    <div className="dest-bg-inner db-lisbon" />
-                  )}
-                  <div className="dest-ov" />
-                  <div className="dest-cnt">
-                    <div className="dest-ctry">{country}</div>
-                    <div className="dest-name">{country}</div>
-                    <div className="dest-detail">{subtitle || description}</div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="dest-carousel-wrap">
+            <WhereWeGoCarousel
+              cards={cards}
+              lang={lang}
+              loading={loading}
+              emptyLabel={t("destinations_section.empty") as string}
+            />
           </div>
         </Reveal>
       </div>
