@@ -792,20 +792,6 @@
   transition: background 0.25s ease, transform 0.25s ease;
 }
 .tour-page .ig-cta:hover { background: var(--gold); transform: translateY(-2px); }
-.tour-page .ig-socials {
-  display: flex; justify-content: center; align-items: center; gap: 18px;
-  margin-top: 36px;
-}
-.tour-page .ig-social-icon {
-  width: 42px; height: 42px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid var(--border-strong); color: var(--ink);
-  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
-}
-.tour-page .ig-social-icon:hover {
-  color: var(--white); background: var(--gold); border-color: var(--gold);
-  transform: translateY(-2px);
-}
 @media (max-width: 768px) {
   .tour-page .ig-section { padding: 80px 0; }
   .tour-page .ig-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
