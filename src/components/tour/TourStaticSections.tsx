@@ -247,24 +247,6 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
             <span>{t("instagram.cta")}</span>
           </a>
         </Reveal>
-
-        <div className="ig-socials" aria-label={t("instagram.socials_label")}>
-          {instagramUrl && (
-            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="ig-social-icon">
-              <Instagram className="w-5 h-5" strokeWidth={1.4} />
-            </a>
-          )}
-          {facebookUrl && (
-            <a href={facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="ig-social-icon">
-              <Facebook className="w-5 h-5" strokeWidth={1.4} />
-            </a>
-          )}
-          {linkedinUrl && (
-            <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="ig-social-icon">
-              <Linkedin className="w-5 h-5" strokeWidth={1.4} />
-            </a>
-          )}
-        </div>
       </div>
     </section>
   );
