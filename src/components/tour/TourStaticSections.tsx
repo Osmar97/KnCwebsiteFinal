@@ -220,14 +220,8 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
                 ))}
         </div>
 
-        <Reveal className="ig-cta-row">
-          <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="ig-cta">
-            <Instagram className="w-4 h-4" strokeWidth={1.6} />
-            <span>{t("instagram.cta")}</span>
-          </a>
-        </Reveal>
-
         <div className="ig-socials" aria-label={t("instagram.socials_label")}>
+
           {instagramUrl && (
             <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="ig-social-icon">
               <Instagram className="w-5 h-5" strokeWidth={1.4} />
