@@ -151,7 +151,6 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
   const { links, images, loading } = useSocialMedia();
 
   const instagramUrl = links?.instagram_url || "https://www.instagram.com/ismaelgq_";
-  const username = links?.instagram_username || "ismaelgq_";
   const facebookUrl = links?.facebook_url || "";
   const linkedinUrl = links?.linkedin_url || "";
 
@@ -168,9 +167,8 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
           <p className="ig-desc">{t("instagram.body")}</p>
         </Reveal>
 
-
-
         <div className="ig-grid">
+
           {loading
             ? Array.from({ length: 6 }).map((_, i) => <div key={i} className="ig-tile ig-skeleton" aria-hidden="true" />)
             : grid.length === 0
