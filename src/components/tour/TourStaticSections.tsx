@@ -168,23 +168,6 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
           <p className="ig-desc">{t("instagram.body")}</p>
         </Reveal>
 
-        <Reveal>
-          <a
-            href={instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ig-profile"
-            aria-label={`${t("instagram.open_profile")} @${username}`}
-          >
-            <div className="ig-avatar" aria-hidden="true">
-              <Instagram className="w-7 h-7" strokeWidth={1.5} />
-            </div>
-            <div className="ig-profile-meta">
-              <div className="ig-profile-name">Kings 'n Company</div>
-              <div className="ig-profile-handle">@{username}</div>
-            </div>
-          </a>
-        </Reveal>
 
 
         <div className="ig-grid">
