@@ -283,8 +283,6 @@ export const PT_FORMS = {
     "heading_1": "Siga a ",
     "heading_2": "jornada.",
     "body": "Descubra tours de propriedades, oportunidades de investimento, análises de mercado, momentos dos bastidores e destaques de destinos em Portugal e Cabo Verde.",
-    "follow": "Seguir",
-    "cta": "Seguir no Instagram",
     "open_profile": "Abrir perfil do Instagram",
     "view_post": "Ver no Instagram",
     "socials_label": "Redes sociais"
