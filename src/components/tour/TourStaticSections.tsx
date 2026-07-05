@@ -183,9 +183,9 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
               <div className="ig-profile-name">Kings 'n Company</div>
               <div className="ig-profile-handle">@{username}</div>
             </div>
-            <span className="ig-follow-btn">{t("instagram.follow")}</span>
           </a>
         </Reveal>
+
 
         <div className="ig-grid">
           {loading
