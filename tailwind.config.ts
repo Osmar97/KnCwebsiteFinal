@@ -75,6 +75,10 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
+			spacing: {
+				navbar: '72px',
+				'navbar-mobile': '64px'
+			},
 			keyframes: {
 				'accordion-down': {
 					from: {
@@ -112,23 +116,43 @@ export default {
 					'0%, 100%': { boxShadow: '0 0 20px rgba(160, 143, 102, 0.3)' },
 					'50%': { boxShadow: '0 0 40px rgba(160, 143, 102, 0.6)' }
 				},
-				'scroll-dot': {
-					'0%': { transform: 'translate(-50%, 0)', opacity: '0' },
-					'20%': { opacity: '1' },
-					'80%': { opacity: '1' },
-					'100%': { transform: 'translate(-50%, 18px)', opacity: '0' }
-				}
+			'scroll-dot': {
+				'0%': { transform: 'translate(-50%, 0)', opacity: '0' },
+				'20%': { opacity: '1' },
+				'80%': { opacity: '1' },
+				'100%': { transform: 'translate(-50%, 18px)', opacity: '0' }
 			},
-			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-				'float': 'float 6s ease-in-out infinite',
-				'slow-zoom': 'slow-zoom 20s ease-in-out infinite alternate',
-				'fade-up': 'fade-up 0.8s ease-out',
-				'slide-in-left': 'slide-in-left 0.8s ease-out',
-				'glow': 'glow 3s ease-in-out infinite',
-				'scroll-dot': 'scroll-dot 2s cubic-bezier(0.4, 0, 0.2, 1) infinite'
+			'nav-fade-in': {
+				'0%': { opacity: '0', transform: 'translateY(-4px)' },
+				'100%': { opacity: '1', transform: 'translateY(0)' }
+			},
+			'menu-fade-in': {
+				'0%': { opacity: '0' },
+				'100%': { opacity: '1' }
+			},
+			'menu-panel-in': {
+				'0%': { opacity: '0', transform: 'translateY(8px)' },
+				'100%': { opacity: '1', transform: 'translateY(0)' }
+			},
+			'menu-item-in': {
+				'0%': { opacity: '0', transform: 'translateY(12px)' },
+				'100%': { opacity: '1', transform: 'translateY(0)' }
 			}
+		},
+		animation: {
+			'accordion-down': 'accordion-down 0.2s ease-out',
+			'accordion-up': 'accordion-up 0.2s ease-out',
+			'float': 'float 6s ease-in-out infinite',
+			'slow-zoom': 'slow-zoom 20s ease-in-out infinite alternate',
+			'fade-up': 'fade-up 0.8s ease-out',
+			'slide-in-left': 'slide-in-left 0.8s ease-out',
+			'glow': 'glow 3s ease-in-out infinite',
+			'scroll-dot': 'scroll-dot 2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+			'nav-fade-in': 'nav-fade-in 480ms cubic-bezier(0.22, 1, 0.36, 1) both',
+			'menu-fade-in': 'menu-fade-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both',
+			'menu-panel-in': 'menu-panel-in 480ms cubic-bezier(0.22, 1, 0.36, 1) both',
+			'menu-item-in': 'menu-item-in 480ms cubic-bezier(0.22, 1, 0.36, 1) both'
+		}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
