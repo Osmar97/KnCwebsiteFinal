@@ -183,9 +183,9 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
               <div className="ig-profile-name">Kings 'n Company</div>
               <div className="ig-profile-handle">@{username}</div>
             </div>
-            <span className="ig-follow-btn">{t("instagram.follow")}</span>
           </a>
         </Reveal>
+
 
         <div className="ig-grid">
           {loading
@@ -220,14 +220,8 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
                 ))}
         </div>
 
-        <Reveal className="ig-cta-row">
-          <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="ig-cta">
-            <Instagram className="w-4 h-4" strokeWidth={1.6} />
-            <span>{t("instagram.cta")}</span>
-          </a>
-        </Reveal>
-
         <div className="ig-socials" aria-label={t("instagram.socials_label")}>
+
           {instagramUrl && (
             <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="ig-social-icon">
               <Instagram className="w-5 h-5" strokeWidth={1.4} />
