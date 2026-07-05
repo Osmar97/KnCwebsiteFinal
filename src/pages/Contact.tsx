@@ -12,7 +12,7 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navigation />
-      <div className="pt-16">
+      <div className="pt-[72px]">
         <Contact />
       </div>
       <GlobalCTA />
