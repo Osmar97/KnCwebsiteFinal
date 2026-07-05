@@ -1,6 +1,6 @@
 export const EN_TOURS = {
   "tours_section": {
-    "eyebrow": "Private Tours",
+    "eyebrow": "Group Tours",
     "title_1": "Choose Your",
     "title_2": "Ownership Journey",
     "request_custom": "Request Custom",
