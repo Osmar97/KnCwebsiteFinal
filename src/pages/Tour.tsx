@@ -113,7 +113,7 @@ export default function TourPage() {
       />
       <IncludesSection t={t} />
       <TourCTASection t={t} />
-      <InstagramShowcaseSection t={t} />
+      <InstagramShowcaseSection lang={lang} t={t} />
       <TourFooter t={t} />
 
       <PreTourFormModal

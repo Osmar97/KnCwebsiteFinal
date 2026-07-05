@@ -15,6 +15,7 @@ export type IgImage = {
   caption: string | null;
   sort_order: number;
   published: boolean;
+  created_at?: string;
 };
 
 const LINKS = "site_social_links" as const;

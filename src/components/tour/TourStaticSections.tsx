@@ -3,6 +3,7 @@ import { INCLUDES } from "@/components/tour/tour-data";
 import { formatPrice } from "@/lib/formatPrice";
 import { useSocialMedia } from "@/hooks/useSocialMedia";
 import { Instagram, Facebook, Linkedin } from "lucide-react";
+import type { Language } from "@/pages/TourTranslations";
 
 type T = (path: string) => any;
 
@@ -147,7 +148,7 @@ export function HowItWorksSection({ t }: { t: T }) {
   );
 }
 
-export function InstagramShowcaseSection({ t }: { t: T }) {
+export function InstagramShowcaseSection({ lang, t }: { lang: Language; t: T }) {
   const { links, images, loading } = useSocialMedia();
 
   const instagramUrl = links?.instagram_url || "https://www.instagram.com/ismaelgq_";
@@ -181,24 +182,47 @@ export function InstagramShowcaseSection({ t }: { t: T }) {
                     className="ig-tile ig-tile-empty"
                     aria-label={t("instagram.open_profile")}
                   >
-                    <Instagram className="w-6 h-6" strokeWidth={1.4} />
+                    <div className="ig-tile-imgwrap">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Instagram className="w-6 h-6" strokeWidth={1.4} />
+                      </div>
+                    </div>
                   </a>
                 ))
-              : grid.map((img, i) => (
-                  <a
-                    key={img.id ?? i}
-                    href={img.post_url || instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ig-tile"
-                    aria-label={img.caption || t("instagram.view_post")}
-                  >
-                    <img src={img.image_url} alt={img.caption || ""} loading="lazy" />
-                    <span className="ig-tile-overlay" aria-hidden="true">
-                      <Instagram className="w-6 h-6" strokeWidth={1.5} />
-                    </span>
-                  </a>
-                ))}
+              : grid.map((img, i) => {
+                  const postUrl = img.post_url || instagramUrl;
+                  return (
+                    <a
+                      key={img.id ?? i}
+                      href={postUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ig-tile"
+                      aria-label={img.caption || t("instagram.view_post")}
+                    >
+                      <div className="ig-tile-imgwrap">
+                        <img src={img.image_url} alt={img.caption || ""} loading="lazy" />
+                        <span className="ig-tile-overlay" aria-hidden="true">
+                          <Instagram className="w-6 h-6" strokeWidth={1.5} />
+                        </span>
+                      </div>
+                      {img.caption && (
+                        <div className="ig-tile-caption">
+                          {img.caption}
+                        </div>
+                      )}
+                      {img.created_at && (
+                        <div className="ig-tile-date">
+                          {new Date(img.created_at).toLocaleDateString(lang, {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </div>
+                      )}
+                    </a>
+                  );
+                })}
         </div>
 
         <div className="ig-socials" aria-label={t("instagram.socials_label")}>

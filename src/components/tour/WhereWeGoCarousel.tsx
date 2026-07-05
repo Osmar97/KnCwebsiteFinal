@@ -41,9 +41,14 @@ export function WhereWeGoCarousel({ cards, lang, emptyLabel, loading }: Props) {
 
   const measure = useCallback(() => {
     const track = trackRef.current;
-    if (!track) return;
-    halfWidthRef.current = track.scrollWidth / 2;
-  }, []);
+    if (!track || cards.length === 0) return;
+    const firstDupCard = track.children[cards.length] as HTMLElement;
+    if (firstDupCard) {
+      halfWidthRef.current = firstDupCard.offsetLeft;
+    } else {
+      halfWidthRef.current = track.scrollWidth / 2;
+    }
+  }, [cards.length]);
 
   useEffect(() => {
     measure();
