@@ -45,6 +45,7 @@ import AdminCRMLeadDetail from "./pages/admin/AdminCRMLeadDetail";
 import AdminCRMTasks from "./pages/admin/AdminCRMTasks";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminLayout from "./components/admin/AdminLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
