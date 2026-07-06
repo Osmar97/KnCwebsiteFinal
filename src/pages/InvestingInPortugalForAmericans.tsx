@@ -82,7 +82,7 @@ const InvestingInPortugalForAmericans = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navigation />
-      <main className="pt-24 pb-16">
+      <main className="pt-[76px] sm:pt-20 pb-16">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 prose prose-invert prose-headings:text-gold prose-a:text-gold">
           <header className="mb-10">
             <p className="text-gold text-sm tracking-widest font-light uppercase mb-4">

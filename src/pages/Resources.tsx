@@ -18,7 +18,7 @@ const ResourcesPage = () => {
     return (
       <div className="min-h-screen bg-white text-gray-900">
         <Navigation />
-        <div className="pt-16 bg-neutral-900">
+        <div className="pt-[76px] sm:pt-20 bg-neutral-900">
           <div className="py-8 px-4">
             <AdminPostsFeed />
           </div>
@@ -32,7 +32,7 @@ const ResourcesPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
       <Navigation />
       
-      <div className="pt-20 pb-16">
+      <div className="pt-[76px] sm:pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-16">

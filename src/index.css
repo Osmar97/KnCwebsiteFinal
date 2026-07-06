@@ -187,5 +187,9 @@
       transition: none !important;
       transform: none !important;
     }
+    
+    .knc-navbar[style*="translate3d"] {
+      transform: none !important;
+    }
   }
 }

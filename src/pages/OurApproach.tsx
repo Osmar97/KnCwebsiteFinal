@@ -17,7 +17,7 @@ const OurApproachPage = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navigation />
-      <div className="pt-16">
+      <div className="pt-[76px] sm:pt-20">
         <OurApproachHero />
         <GlobalSupport />
         <ExclusiveAccess />

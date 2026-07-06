@@ -54,7 +54,7 @@ const FreeResources = () => {
   return <div className="min-h-screen bg-gray-900">
       <Navigation />
       
-      <main className="pt-20">
+      <main className="pt-[76px] sm:pt-20">
         {/* Hero Section */}
         <section className="py-24 px-4 text-center">
           <div className="max-w-4xl mx-auto">

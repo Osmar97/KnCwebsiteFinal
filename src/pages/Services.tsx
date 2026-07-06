@@ -16,7 +16,7 @@ const ServicesPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-gray-100">
       <Navigation />
-      <div className="pt-[72px]">
+      <div className="pt-[76px] sm:pt-20">
         <PropertyOwnershipAcademy />
         <PropertyOwnershipConsultancy />
         <PropertyOwnershipTour />

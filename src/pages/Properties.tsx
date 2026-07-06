@@ -34,7 +34,7 @@ const Properties = () => {
     <div className="min-h-screen bg-black">
       <Navigation />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 pt-20 sm:pt-24">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-[76px] sm:pt-20 pb-12 sm:pb-16">
         <div className="mb-8 sm:mb-12">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Exclusive Properties</h1>
           <div className="h-1 w-24 bg-gold"></div>

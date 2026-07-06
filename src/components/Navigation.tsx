@@ -80,6 +80,7 @@ const NavLinkItem = ({
 export const Navigation = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isNavHidden, setIsNavHidden] = useState(false);
   const location = useLocation();
   const { isAdminLoggedIn } = useAdmin();
   const mobileId = useId();
@@ -91,6 +92,13 @@ export const Navigation = () => {
   const mobileTriggerRef = useRef<HTMLButtonElement | null>(null);
   const mobileCloseRef = useRef<HTMLButtonElement | null>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
+
+  // Scroll direction tracking for auto-hide
+  const lastScrollY = useRef(0);
+  const lastDirectionChangeY = useRef(0);
+  const scrollDirection = useRef<'up' | 'down'>('up');
+  const ticking = useRef(false);
+  const isAtTop = useRef(true);
 
   // Hero sentinel observer — drives scrolled state for the blur background.
   useEffect(() => {
@@ -202,6 +210,60 @@ export const Navigation = () => {
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
+  // Smart auto-hide navbar on scroll
+  useEffect(() => {
+    const HIDE_AFTER = 60;
+    const SHOW_AT_TOP = 10;
+    const DIR_THRESHOLD = 8;
+
+    const update = () => {
+      ticking.current = false;
+      const currentScrollY = Math.max(0, window.scrollY);
+
+      isAtTop.current = currentScrollY <= SHOW_AT_TOP;
+
+      if (isAtTop.current) {
+        setIsNavHidden(false);
+        lastScrollY.current = currentScrollY;
+        lastDirectionChangeY.current = currentScrollY;
+        scrollDirection.current = 'up';
+        return;
+      }
+
+      const delta = currentScrollY - lastScrollY.current;
+      const dir: 'up' | 'down' = delta > 0 ? 'down' : delta < 0 ? 'up' : scrollDirection.current;
+
+      if (dir !== scrollDirection.current) {
+        lastDirectionChangeY.current = currentScrollY;
+        scrollDirection.current = dir;
+      }
+
+      const distSinceFlip = Math.abs(currentScrollY - lastDirectionChangeY.current);
+
+      if (dir === 'down' && currentScrollY > HIDE_AFTER && distSinceFlip > DIR_THRESHOLD) {
+        setIsNavHidden(true);
+      } else if (dir === 'up' && distSinceFlip > DIR_THRESHOLD) {
+        setIsNavHidden(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    const onScroll = () => {
+      if (!ticking.current) {
+        ticking.current = true;
+        window.requestAnimationFrame(update);
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    lastScrollY.current = window.scrollY;
+    lastDirectionChangeY.current = window.scrollY;
+    update();
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   // On dark pages the navbar stays legible by always using white text.
   // Light pages use a tan tone (#85754E) which matches the rest of the brand.
   const useLightForeground = isTransparent;
@@ -231,7 +293,8 @@ export const Navigation = () => {
           height: scrolled
             ? "var(--knc-nav-height-scrolled, 60px)"
             : "var(--knc-nav-height, 76px)",
-          transition: "height 380ms cubic-bezier(0.22, 1, 0.36, 1)",
+          transition: "height 380ms cubic-bezier(0.22, 1, 0.36, 1), transform 280ms cubic-bezier(0.22, 1, 0.36, 1)",
+          transform: isNavHidden ? 'translate3d(0, -100%, 0)' : 'translate3d(0, 0, 0)',
         }}
       >
         <nav

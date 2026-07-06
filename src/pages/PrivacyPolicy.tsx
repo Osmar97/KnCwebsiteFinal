@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
     <div className="min-h-screen bg-black text-white">
       <Navigation />
       
-      <main className="pt-24 pb-16">
+      <main className="pt-[76px] sm:pt-20 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="prose prose-lg max-w-none text-gray-200">
             <h1 className="text-4xl font-light text-[#85754E] mb-8">Privacy Policy</h1>

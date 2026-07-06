@@ -12,7 +12,7 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navigation />
-      <div className="pt-[72px] sm:pt-20">
+      <div className="pt-[76px] sm:pt-20">
         <About />
       </div>
       <GlobalCTA />

@@ -53,7 +53,7 @@ const PropertyDetail = () => {
     <div className="min-h-screen bg-black text-white">
       <Navigation />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-[76px] sm:pt-20 pb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <Link to="/properties">
             <Button variant="ghost" className="text-gold hover:text-gold-light hover:bg-gold/10 min-h-[44px]">
