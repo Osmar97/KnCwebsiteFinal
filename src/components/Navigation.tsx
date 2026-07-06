@@ -16,6 +16,17 @@ const PRIMARY_NAV: NavItem[] = [
   { name: "Contact", href: "/contact" },
 ];
 
+const ROUTES_WITH_TRANSPARENT_NAV: ReadonlySet<string> = new Set(["/", "/services"]);
+
+const isRouteTransparent = (pathname: string): boolean => {
+  if (ROUTES_WITH_TRANSPARENT_NAV.has(pathname)) return true;
+  if (pathname.startsWith("/properties/")) return true;
+  return false;
+};
+
+const isPropertyRoute = (pathname: string): boolean =>
+  pathname === "/properties" || pathname.startsWith("/properties/");
+
 interface NavLinkProps {
   to: string;
   onNavigate?: () => void;
@@ -73,18 +84,71 @@ export const Navigation = () => {
   const { isAdminLoggedIn } = useAdmin();
   const mobileId = useId();
 
+  const isTransparent = isRouteTransparent(location.pathname);
+  const isPropertiesPage = isPropertyRoute(location.pathname);
+
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const mobileTriggerRef = useRef<HTMLButtonElement | null>(null);
   const mobileCloseRef = useRef<HTMLButtonElement | null>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
 
-  // Simple scroll listener — drives height shrink + shadow after 16px.
+  // Hero sentinel observer — drives scrolled state for the blur background.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    let observer: IntersectionObserver | null = null;
+    let mutationObserver: MutationObserver | null = null;
+    let rafId = 0;
+    const NAV_HEIGHT = 72;
+
+    const evaluate = (sentinel: HTMLElement) => {
+      const rect = sentinel.getBoundingClientRect();
+      setScrolled(rect.top <= NAV_HEIGHT);
+    };
+
+    const attach = () => {
+      const sentinel = document.querySelector<HTMLElement>("[data-hero-sentinel]");
+      if (!sentinel) {
+        setScrolled(true);
+        return;
+      }
+      evaluate(sentinel);
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          const passedTop =
+            !entry.isIntersecting && entry.boundingClientRect.top < NAV_HEIGHT;
+          setScrolled(passedTop);
+        },
+        { rootMargin: `-${NAV_HEIGHT}px 0px 0px 0px`, threshold: [0, 1] },
+      );
+      observer.observe(sentinel);
+    };
+
+    rafId = window.requestAnimationFrame(() => {
+      attach();
+      if (!document.querySelector("[data-hero-sentinel]")) {
+        mutationObserver = new MutationObserver(() => {
+          if (document.querySelector("[data-hero-sentinel]")) {
+            mutationObserver?.disconnect();
+            mutationObserver = null;
+            attach();
+          }
+        });
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
+      }
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      observer?.disconnect();
+      mutationObserver?.disconnect();
+    };
+  }, [location.pathname]);
+
+  // Reset scrolled state on non-hero pages and on route change.
+  useEffect(() => {
+    if (!isTransparent) {
+      setScrolled(true);
+    }
+  }, [isTransparent, location.pathname]);
 
   // Close mobile menu on route change.
   useEffect(() => {
@@ -138,21 +202,34 @@ export const Navigation = () => {
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
-  // Unified premium dark navbar across every public page.
-  const navbarBg = scrolled
-    ? "bg-black/85 backdrop-blur-xl backdrop-saturate-150 border-b border-white/10"
-    : "bg-black/60 backdrop-blur-lg backdrop-saturate-150 border-b border-white/5";
+  // On dark pages the navbar stays legible by always using white text.
+  // Light pages use a tan tone (#85754E) which matches the rest of the brand.
+  const useLightForeground = isTransparent;
 
-  const textColor = "text-white/90";
+  const navbarBg = (() => {
+    if (isPropertiesPage) {
+      return "bg-black/95 backdrop-blur-xl backdrop-saturate-150 border-b border-white/5";
+    }
+    if (!isTransparent) {
+      return "bg-black/90 backdrop-blur-xl backdrop-saturate-150 border-b border-white/5";
+    }
+    if (scrolled) {
+      return "bg-black/70 backdrop-blur-xl backdrop-saturate-150 border-b border-white/5";
+    }
+    return "bg-transparent border-b border-transparent";
+  })();
+
+  const textColor = useLightForeground ? "text-white" : "text-[#85754E]";
   const logoTextColor = "text-gold";
-  const subtitleColor = "text-white/50";
-  const navHeight = scrolled ? 60 : 72;
+  const subtitleColor = useLightForeground ? "text-white/50" : "text-gray-600";
 
   return (
     <>
       <header
-        className="knc-navbar fixed inset-x-0 top-0 z-50 will-change-transform transition-[height] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-        style={{ height: `${navHeight}px` }}
+        className="knc-navbar fixed inset-x-0 top-0 z-50 will-change-transform"
+        style={{
+          height: "var(--knc-nav-height, 72px)",
+        }}
       >
         <nav
           aria-label="Primary"
@@ -215,17 +292,13 @@ export const Navigation = () => {
               ))}
 
               {isAdminLoggedIn && (
-                <div className="ml-4 lg:ml-6 pl-4 lg:pl-6 border-l border-white/10">
-                  <NavLinkItem
-                    to="/admin"
-                    className={cn(
-                      "inline-flex items-center gap-1.5 px-2 lg:px-3 text-[11px] lg:text-[12px] text-white/60 hover:text-gold",
-                    )}
-                  >
-                    Admin
-                    <ArrowUpRight className="h-3 w-3 opacity-70" aria-hidden />
-                  </NavLinkItem>
-                </div>
+                <NavLinkItem
+                  to="/admin"
+                  className={cn("ml-1 lg:ml-2 inline-flex items-center gap-1.5 px-3 lg:px-4", textColor)}
+                >
+                  Admin
+                  <ArrowUpRight className="h-3.5 w-3.5 opacity-70" aria-hidden />
+                </NavLinkItem>
               )}
             </div>
 
