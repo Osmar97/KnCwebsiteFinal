@@ -16,7 +16,7 @@ export const HeroScrollContainer = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
   const lastScrollY = useRef(0);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   // Handle scroll with debouncing for performance
   useEffect(() => {
