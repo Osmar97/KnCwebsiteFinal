@@ -86,7 +86,6 @@ export function TwoWaysSection({ privateFromPrice, groupFromPrice, defaultCurren
 }
 
 import type { WhereWeGoCard } from "@/data/whereWeGo";
-import type { Language } from "@/pages/TourTranslations";
 import { WhereWeGoCarousel } from "@/components/tour/WhereWeGoCarousel";
 
 interface DestinationsProps {
