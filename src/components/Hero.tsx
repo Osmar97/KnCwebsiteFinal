@@ -1,5 +1,4 @@
 import HeroScrollContainer from "@/components/HeroScrollContainer";
-import "@/components/HeroScrollContainer.css";
 
 const HeroContent = () => {
   return null; // Nothing rendered
