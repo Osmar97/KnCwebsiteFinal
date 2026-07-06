@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { useComputedAnalytics, useAnalyticsData, defaultFilters, formatCurrency, type AnalyticsFilters } from "@/hooks/admin/useAnalytics";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -72,9 +72,10 @@ const AdminAnalytics = () => {
 
   if (isLoading || !data) {
     return (
-      <AdminLayout title="Analytics" description="Revenue, tour performance and CRM insights.">
+      <>
+        <AdminPageMeta title="Analytics" description="Revenue, tour performance and CRM insights." />
         <p className="text-gray-400 text-sm">Loading analytics…</p>
-      </AdminLayout>
+      </>
     );
   }
 
@@ -83,15 +84,16 @@ const AdminAnalytics = () => {
   const growthLabel = data.revenueGrowthPct === null ? "—" : `${data.revenueGrowthPct >= 0 ? "+" : ""}${data.revenueGrowthPct.toFixed(1)}%`;
 
   return (
-    <AdminLayout
-      title="Analytics"
-      description="Revenue, lead performance, booking performance and tour performance."
-      actions={
+    <>
+      <AdminPageMeta
+        title="Analytics"
+        description="Revenue, lead performance, booking performance and tour performance."
+      />
+      <div className="flex justify-end mb-4">
         <Button size="sm" variant="outline" className="border-gray-700 text-gray-200" onClick={() => raw.refetch()}>
           <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Refresh
         </Button>
-      }
-    >
+      </div>
       {/* Filters */}
       <div className="bg-gray-950 border border-gray-800 rounded-lg p-3 sm:p-4 mb-5">
         <div className="flex items-center gap-2 mb-3 text-gray-400 text-xs uppercase tracking-widest">
@@ -408,7 +410,7 @@ const AdminAnalytics = () => {
           </ChartCard>
         </TabsContent>
       </Tabs>
-    </AdminLayout>
+    </>
   );
 };
 

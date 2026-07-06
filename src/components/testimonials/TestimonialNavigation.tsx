@@ -21,6 +21,7 @@ export const TestimonialNavigation = ({
       <button 
         onClick={onPrevious}
         className="w-12 h-12 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+        aria-label="Previous testimonial"
       >
         <ChevronLeft className="w-5 h-5 text-gold" />
       </button>
@@ -35,6 +36,7 @@ export const TestimonialNavigation = ({
                 ? 'bg-gold scale-125' 
                 : 'bg-gray-600 hover:bg-gray-500'
             }`}
+            aria-label={`Go to testimonial ${index + 1}`}
           />
         ))}
       </div>
@@ -42,6 +44,7 @@ export const TestimonialNavigation = ({
       <button 
         onClick={onNext}
         className="w-12 h-12 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+        aria-label="Next testimonial"
       >
         <ChevronRight className="w-5 h-5 text-gold" />
       </button>

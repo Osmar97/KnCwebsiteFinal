@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { useCrmLeads, useUpsertCrmMetadata } from "@/hooks/useCrm";
 import {
   CRM_STATUSES,
@@ -61,10 +61,12 @@ const AdminCRM = () => {
   };
 
   return (
-    <AdminLayout
-      title="CRM"
-      description="Unified pipeline for every lead across waitlist, custom quotes, and contact form."
-      actions={
+    <>
+      <AdminPageMeta
+        title="CRM"
+        description="Unified pipeline for every lead across waitlist, custom quotes, and contact form."
+      />
+      <div className="flex justify-end mb-4">
         <div className="inline-flex rounded-md border border-gray-800 overflow-hidden">
           <button
             onClick={() => setView("list")}
@@ -79,8 +81,7 @@ const AdminCRM = () => {
             Pipeline
           </button>
         </div>
-      }
-    >
+      </div>
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
         {[
@@ -127,7 +128,7 @@ const AdminCRM = () => {
       ) : (
         <PipelineView leads={filtered} onDrop={onDrop} />
       )}
-    </AdminLayout>
+    </>
   );
 };
 

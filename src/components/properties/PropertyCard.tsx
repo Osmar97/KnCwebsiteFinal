@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Phone, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { formatPrice, CONTACT_PHONE, CONTACT_PHONE_LINK } from "@/lib/formatters";
+import { formatNumber, CONTACT_PHONE, CONTACT_PHONE_LINK } from "@/lib/formatPrice";
 import { useToast } from "@/hooks/use-toast";
 
 interface PropertyCardProps {
@@ -117,7 +117,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             </h3>
             <div className="text-left sm:text-right w-full sm:w-auto flex-shrink-0">
               <div className="text-2xl sm:text-2xl font-bold text-gold">
-                {formatPrice(property.price)} €
+                {formatNumber(property.price)}€
               </div>
             </div>
           </div>

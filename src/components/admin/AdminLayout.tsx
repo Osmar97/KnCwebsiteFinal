@@ -1,8 +1,9 @@
 import { ReactNode, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { useAdmin } from "@/contexts/AdminContext";
 import { AdminLogin } from "@/components/AdminLogin";
+import { useAdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import {
   LayoutDashboard,
   Building2,
@@ -203,9 +204,9 @@ const SidebarBody = ({ pathname, onNavigate, onLogout }: SidebarBodyProps) => {
 };
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
-  children: ReactNode;
+  children?: ReactNode;
   actions?: ReactNode;
 }
 
@@ -214,6 +215,17 @@ const AdminLayout = ({ title, description, children, actions }: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Support both prop-based and context-based metadata
+  let resolvedTitle = title;
+  let resolvedDescription = description;
+  try {
+    const ctx = useAdminPageMeta();
+    if (!title) resolvedTitle = ctx.meta.title;
+    if (!description) resolvedDescription = ctx.meta.description;
+  } catch {
+    // Not inside AdminPageMetaProvider — use props only
+  }
 
   if (!isAdminLoggedIn || !supabaseUser) {
     return (
@@ -276,12 +288,12 @@ const AdminLayout = ({ title, description, children, actions }: Props) => {
 
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5 sm:mb-6">
               <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gold break-words">{title}</h1>
-                {description && <p className="text-sm text-gray-400 mt-1">{description}</p>}
+                <h1 className="text-2xl sm:text-3xl font-bold text-gold break-words">{resolvedTitle}</h1>
+                {resolvedDescription && <p className="text-sm text-gray-400 mt-1">{resolvedDescription}</p>}
               </div>
               {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
             </div>
-            <div className="min-w-0">{children}</div>
+            <div className="min-w-0">{children ?? <Outlet />}</div>
           </main>
         </div>
       </div>

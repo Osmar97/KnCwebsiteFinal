@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
@@ -8,6 +9,10 @@ import BookingWidget from "@/components/booking/BookingWidget";
 
 const BookingForm = () => {
   useScrollToTop();
+
+  useEffect(() => {
+    document.title = "Booking — Kings 'n Company";
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">

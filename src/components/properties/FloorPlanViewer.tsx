@@ -253,6 +253,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
             disabled={scale <= Math.min(fitScale * 0.5, 0.3)}
             className="h-9 w-9 sm:h-10 sm:w-10"
             title="Zoom Out"
+            aria-label="Zoom out"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -266,6 +267,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
             disabled={scale >= 5}
             className="h-9 w-9 sm:h-10 sm:w-10"
             title="Zoom In"
+            aria-label="Zoom in"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -276,6 +278,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
             disabled={Math.abs(scale - fitScale) < 0.01}
             className="h-9 w-9 sm:h-10 sm:w-10"
             title="Reset Zoom"
+            aria-label="Reset zoom to fit"
           >
             <Maximize2 className="h-4 w-4" />
           </Button>
@@ -289,6 +292,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
               size="icon"
               onClick={handlePrevious}
               className="h-9 w-9 sm:h-10 sm:w-10"
+              aria-label="Previous floor plan"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -300,6 +304,7 @@ const FloorPlanViewer = ({ imageUrls, title }: FloorPlanViewerProps) => {
               size="icon"
               onClick={handleNext}
               className="h-9 w-9 sm:h-10 sm:w-10"
+              aria-label="Next floor plan"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

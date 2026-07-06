@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { useAdmin } from "@/contexts/AdminContext";
 import {
   useAddCrmNote,
@@ -48,11 +48,12 @@ const AdminCRMLeadDetail = () => {
   const [newTaskDue, setNewTaskDue] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState<TaskPriority>("normal");
 
-  if (isLoading) return <AdminLayout title="Lead"><p className="text-gray-400">Loading…</p></AdminLayout>;
+  if (isLoading) return <><AdminPageMeta title="Lead" /><p className="text-gray-400">Loading…</p></>;
   if (!lead) return (
-    <AdminLayout title="Lead not found">
+    <>
+      <AdminPageMeta title="Lead not found" />
       <Link to="/admin/crm" className="text-gold hover:underline">← Back to CRM</Link>
-    </AdminLayout>
+    </>
   );
 
   const update = (patch: Partial<{ status: CrmStatus; assigned_to_email: string | null; tags: string[]; lead_score: number; country: string | null; last_contact_at: string | null }>) => {
@@ -78,11 +79,14 @@ const AdminCRMLeadDetail = () => {
   };
 
   return (
-    <AdminLayout
-      title={lead.name}
-      description={`${SOURCE_LABELS[lead.source]} · ${lead.email}`}
-      actions={<Link to="/admin/crm" className="text-xs text-gold hover:underline">← All leads</Link>}
-    >
+    <>
+      <AdminPageMeta
+        title={lead.name}
+        description={`${SOURCE_LABELS[lead.source]} · ${lead.email}`}
+      />
+      <div className="flex justify-end mb-4">
+        <Link to="/admin/crm" className="text-xs text-gold hover:underline">← All leads</Link>
+      </div>
       <div className="grid lg:grid-cols-3 gap-4">
         {/* Left: profile */}
         <div className="space-y-4">
@@ -305,7 +309,7 @@ const AdminCRMLeadDetail = () => {
           </Card>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 

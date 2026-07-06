@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,8 +57,11 @@ const AdminPrivateTourIncluded = () => {
   };
 
   return (
-    <AdminLayout title="Private Tour · Included Items" description='Bullet list shown in the "What\u2019s included" section.'
-      actions={<Button onClick={() => setRows((r) => [...r, blank()])} className="bg-gold hover:bg-gold-dark text-black"><Plus className="w-4 h-4 mr-1" />New item</Button>}>
+    <>
+      <AdminPageMeta title="Private Tour · Included Items" description='Bullet list shown in the "What\u2019s included" section.' />
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setRows((r) => [...r, blank()])} className="bg-gold hover:bg-gold-dark text-black"><Plus className="w-4 h-4 mr-1" />New item</Button>
+      </div>
       {loading ? <p className="text-gray-400">Loading…</p> : (
         <div className="grid gap-3">
           {rows.map((r, i) => (
@@ -76,7 +79,7 @@ const AdminPrivateTourIncluded = () => {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

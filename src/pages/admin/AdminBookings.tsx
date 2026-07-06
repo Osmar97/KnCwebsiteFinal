@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { formatPrice } from "@/lib/formatPrice";
 import { fetchTourBookings } from "@/data/privateTour";
 
@@ -10,7 +10,8 @@ const AdminBookings = () => {
   });
 
   return (
-    <AdminLayout title="Tour Bookings" description="Confirmed bookings from Stripe checkout and manual entries.">
+    <>
+      <AdminPageMeta title="Tour Bookings" description="Confirmed bookings from Stripe checkout and manual entries." />
       {isLoading ? <p className="text-gray-400">Loading…</p> : (data?.length ?? 0) === 0 ? (
         <div className="bg-gray-950 border border-gray-800 rounded-lg p-8 text-center text-gray-400">No bookings yet.</div>
       ) : (
@@ -43,7 +44,7 @@ const AdminBookings = () => {
           </table>
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

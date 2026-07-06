@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,7 +47,8 @@ const AdminPrivateTourSettings = () => {
   };
 
   return (
-    <AdminLayout title="Private Tour · Settings" description="Global Private Tour configuration (duration, currency, deposit, promo).">
+    <>
+      <AdminPageMeta title="Private Tour · Settings" description="Global Private Tour configuration (duration, currency, deposit, promo)." />
       {loading ? <p className="text-gray-400">Loading…</p> : (
         <div className="bg-gray-950 border border-gray-800 rounded-lg p-5 max-w-2xl space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -93,7 +94,7 @@ const AdminPrivateTourSettings = () => {
           </Button>
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

@@ -49,6 +49,7 @@ export const ImageModal = ({ images, initialIndex, isOpen, onClose }: ImageModal
               size="icon"
               className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
               onClick={onClose}
+              aria-label="Close image viewer"
             >
               <X className="w-6 h-6" />
             </Button>
@@ -60,6 +61,7 @@ export const ImageModal = ({ images, initialIndex, isOpen, onClose }: ImageModal
                   size="icon"
                   className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20"
                   onClick={goToPrevious}
+                  aria-label="Previous image"
                 >
                   <ChevronLeft className="w-8 h-8" />
                 </Button>
@@ -68,6 +70,7 @@ export const ImageModal = ({ images, initialIndex, isOpen, onClose }: ImageModal
                   size="icon"
                   className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20"
                   onClick={goToNext}
+                  aria-label="Next image"
                 >
                   <ChevronRight className="w-8 h-8" />
                 </Button>

@@ -47,6 +47,27 @@ export function formatPrice(
  * Short numeric format with K/M suffix, still using the trailing currency
  * symbol (e.g. 260000 EUR -> "260K€"). Useful for stats / hero numbers.
  */
+/**
+ * Format a number using European style (periods for thousands, no decimals).
+ * Use this when you need just the formatted number without a currency symbol,
+ * e.g. property pages that append "€" separately: `{formatNumber(price)}€`.
+ */
+export function formatNumber(
+  amount: number | string | null | undefined,
+  options: { locale?: string } = {},
+): string {
+  const num = typeof amount === "string" ? Number(amount) : amount;
+  if (num === null || num === undefined || Number.isNaN(num)) return "";
+  return new Intl.NumberFormat(options.locale ?? "pt-PT", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(num);
+}
+
+/** Company contact phone number */
+export const CONTACT_PHONE = "+351 967 333 803";
+export const CONTACT_PHONE_LINK = "tel:+351967333803";
+
 export function formatPriceShort(
   amount: number | null | undefined,
   currency: string = "EUR",

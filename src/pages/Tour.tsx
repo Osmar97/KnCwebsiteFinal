@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { TRANSLATIONS, Language } from "./TourTranslations";
 import "./Tour.css";
@@ -25,6 +25,10 @@ import { TourCTASection } from "@/components/tour/TourHeroCTA";
 
 export default function TourPage() {
   useScrollToTop();
+
+  useEffect(() => {
+    document.title = "Property Tours — Kings 'n Company";
+  }, []);
 
   const [lang, setLang] = useState<Language>("en");
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);

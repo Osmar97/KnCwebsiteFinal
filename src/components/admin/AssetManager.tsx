@@ -235,6 +235,7 @@ export const AssetManager = ({ bucket, accept, maxSizeMb, label }: AssetManagerP
                     size="sm"
                     onClick={() => handleDelete(f.path)}
                     className="border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white"
+                    aria-label={`Delete file ${f.name}`}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>

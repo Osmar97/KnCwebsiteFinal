@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -9,8 +9,13 @@ import { ArrowRight, Mail, Download, BookOpen, TrendingUp, DollarSign, Trophy } 
 import { useToast } from "@/hooks/use-toast";
 import { usePosts } from "@/contexts/PostsContext";
 import { GlobalCTA } from "@/components/GlobalCTA";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const FreeResources = () => {
+  useEffect(() => {
+    document.title = "Free Resources — Kings 'n Company";
+  }, []);
+
   const [email, setEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
   const {
@@ -30,6 +35,7 @@ const FreeResources = () => {
       setIsSubscribing(false);
     }, 1000);
   };
+  const { getPostsByCategory, loading: postsLoading } = usePosts();
   const resourceCategories = [{
     title: "Real Estate Investment",
     icon: <TrendingUp className="w-8 h-8" />,
@@ -185,12 +191,20 @@ const FreeResources = () => {
             </h2>
             
             <div className="grid md:grid-cols-2 gap-6">
-              {(() => {
-              const {
-                getPostsByCategory
-              } = usePosts();
-              const articles = getPostsByCategory("article").slice(0, 4);
-              return articles.map((article, index) => <Card key={article.id} className="bg-gray-800/50 border-gray-700/50 overflow-hidden hover:bg-gray-800 transition-all duration-300 group">
+              {postsLoading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="bg-gray-800 rounded-lg overflow-hidden">
+                    <Skeleton className="h-48 w-full bg-gray-700" />
+                    <div className="p-6 space-y-3">
+                      <Skeleton className="h-5 w-3/4 bg-gray-700" />
+                      <Skeleton className="h-4 w-full bg-gray-700" />
+                      <Skeleton className="h-4 w-2/3 bg-gray-700" />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                getPostsByCategory("article").slice(0, 4).map((article, index) => (
+                  <Card key={article.id} className="bg-gray-800/50 border-gray-700/50 overflow-hidden hover:bg-gray-800 transition-all duration-300 group">
                     <CardContent className="p-0">
                       <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-8 border-b border-gray-700/50">
                         <h3 className="text-lg font-semibold text-white mb-2 leading-tight">
@@ -198,10 +212,10 @@ const FreeResources = () => {
                         </h3>
                         <p className="text-gray-400 text-sm">
                           {new Date(article.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
                         </p>
                       </div>
                       
@@ -214,8 +228,9 @@ const FreeResources = () => {
                         </Button>
                       </div>
                     </CardContent>
-                  </Card>);
-            })()}
+                  </Card>
+                ))
+              )}
             </div>
           </div>
         </section>

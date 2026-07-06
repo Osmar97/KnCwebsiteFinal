@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://kings-website-copycat-project.lovable.app/sitemap.xml
+Sitemap: https://kingsncompany.com/sitemap.xml

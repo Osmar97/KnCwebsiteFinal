@@ -1,4 +1,4 @@
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { useAdminQuotes, useUpdateQuoteStatus } from "@/hooks/admin/useAdminQuotes";
 
 const STATUS_OPTIONS = ["new", "in_review", "quoted", "won", "lost"];
@@ -8,7 +8,8 @@ const AdminQuotes = () => {
   const updateStatus = useUpdateQuoteStatus();
 
   return (
-    <AdminLayout title="Custom Quote Requests" description="Bespoke private-tour enquiries from the public site.">
+    <>
+      <AdminPageMeta title="Custom Quote Requests" description="Bespoke private-tour enquiries from the public site." />
       {isLoading ? <p className="text-gray-400">Loading…</p> : (data?.length ?? 0) === 0 ? (
         <div className="bg-gray-950 border border-gray-800 rounded-lg p-8 text-center text-gray-400">No custom quotes yet.</div>
       ) : (
@@ -39,7 +40,7 @@ const AdminQuotes = () => {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

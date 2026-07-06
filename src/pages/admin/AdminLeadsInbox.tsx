@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { supabase } from "@/integrations/supabase/client";
 
 type LeadSource = "waitlist" | "quote";
@@ -93,10 +93,11 @@ const AdminLeadsInbox = () => {
   }, [data, source, status, search]);
 
   return (
-    <AdminLayout
-      title="Leads Inbox"
-      description="All lead sources in one place — waitlist sign-ups and custom quote requests."
-    >
+    <>
+      <AdminPageMeta
+        title="Leads Inbox"
+        description="All lead sources in one place — waitlist sign-ups and custom quote requests."
+      />
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
         <input
           type="search"
@@ -196,7 +197,7 @@ const AdminLeadsInbox = () => {
           </div>
         </>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

@@ -156,6 +156,7 @@ export const SectionsCarousel = () => {
           <button 
             onClick={prevSlide} 
             className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gold/30 hover:border-gold/50"
+            aria-label="Previous slide"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -163,6 +164,7 @@ export const SectionsCarousel = () => {
           <button 
             onClick={nextSlide} 
             className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/50 hover:bg-black/70 text-white rounded-full items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gold/30 hover:border-gold/50"
+            aria-label="Next slide"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -176,6 +178,7 @@ export const SectionsCarousel = () => {
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === currentSlide ? 'bg-gold' : 'bg-gray-500/30'
                 }`}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>

@@ -141,12 +141,13 @@ export const PostCard = ({ post, isPublicView = false }: PostCardProps) => {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowEditDialog(true)}
+                  aria-label="Edit post"
                 >
                   <Edit className="w-4 h-4" />
                 </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline" size="sm" disabled={isDeleting}>
+                    <Button variant="outline" size="sm" disabled={isDeleting} aria-label="Delete post">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </AlertDialogTrigger>

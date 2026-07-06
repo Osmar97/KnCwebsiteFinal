@@ -1,4 +1,4 @@
-
+import { useEffect } from "react";
 import { Hero } from "@/components/Hero";
 import { Navigation } from "@/components/Navigation";
 import { SectionsCarousel } from "@/components/SectionsCarousel";
@@ -11,6 +11,10 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const Index = () => {
   useScrollToTop();
+
+  useEffect(() => {
+    document.title = "Kings 'n Company — International Real Estate & Investment";
+  }, []);
 
   return (
     <div className="min-h-screen bg-white text-gray-900 scroll-smooth">

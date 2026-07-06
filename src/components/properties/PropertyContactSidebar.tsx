@@ -3,7 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useContactForm } from "@/hooks/useContactForm";
-import { formatPrice } from "@/lib/formatters";
+import { formatNumber } from "@/lib/formatPrice";
 
 interface Props {
   propertyTitle?: string;
@@ -28,7 +28,7 @@ export const PropertyContactSidebar = ({
 
   const onSubmit = (e: React.FormEvent) => {
     const subject = `Property Inquiry: ${propertyTitle || "Property"}`;
-    const message = `Phone: ${phone}\n\nProperty: ${propertyTitle}\nLocation: ${propertyLocation}, ${propertyCity}\nPrice: ${formatPrice(propertyPrice || 0)}€\n\n${formData.message}`;
+    const message = `Phone: ${phone}\n\nProperty: ${propertyTitle}\nLocation: ${propertyLocation}, ${propertyCity}\nPrice: ${formatNumber(propertyPrice || 0)}€\n\n${formData.message}`;
     handleSubmit(e, () => setPhone(""), { subject, message });
   };
 

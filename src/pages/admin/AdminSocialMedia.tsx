@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -118,10 +118,11 @@ const AdminSocialMedia = () => {
   };
 
   return (
-    <AdminLayout
-      title="Site Settings · Social Media"
-      description="Manage social links and the Instagram showcase gallery shown on the public Tours page."
-    >
+    <>
+      <AdminPageMeta
+        title="Site Settings · Social Media"
+        description="Manage social links and the Instagram showcase gallery shown on the public Tours page."
+      />
       {loading ? (
         <p className="text-gray-400">Loading…</p>
       ) : (
@@ -282,7 +283,7 @@ const AdminSocialMedia = () => {
           </section>
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

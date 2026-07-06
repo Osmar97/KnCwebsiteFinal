@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Menu, X, ArrowUpRight } from "lucide-react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { useId } from "react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
-import { useAdmin } from "@/contexts/AdminContext";
+import { useNavigationScroll } from "@/hooks/useNavigationScroll";
+import { DesktopNav } from "./NavigationDesktop";
+import { MobileNav } from "./NavigationMobile";
 
 type NavItem = { name: string; href: string };
 
@@ -16,256 +17,22 @@ const PRIMARY_NAV: NavItem[] = [
   { name: "Contact", href: "/contact" },
 ];
 
-const ROUTES_WITH_TRANSPARENT_NAV: ReadonlySet<string> = new Set(["/", "/services"]);
-
-const isRouteTransparent = (pathname: string): boolean => {
-  if (ROUTES_WITH_TRANSPARENT_NAV.has(pathname)) return true;
-  if (pathname.startsWith("/properties/")) return true;
-  return false;
-};
-
-const isPropertyRoute = (pathname: string): boolean =>
-  pathname === "/properties" || pathname.startsWith("/properties/");
-
-interface NavLinkProps {
-  to: string;
-  onNavigate?: () => void;
-  className?: string;
-  activeClassName?: string;
-  variant?: "desktop" | "mobile";
-  children: React.ReactNode;
-}
-
-const NavLinkItem = ({
-  to,
-  onNavigate,
-  className,
-  activeClassName,
-  variant = "desktop",
-  children,
-}: NavLinkProps) => {
-  const desktopBase =
-    "text-xs lg:text-[13px]";
-  const mobileBase =
-    "min-h-[44px] py-3 text-base tracking-[0.18em] text-white/90";
-
-  return (
-    <NavLink
-      to={to}
-      end={to === "/"}
-      onClick={onNavigate}
-      data-variant={variant}
-      className={({ isActive }) =>
-        cn(
-          "knc-navbar-link knc-focus-ring",
-          variant === "desktop" && desktopBase,
-          variant === "mobile" && mobileBase,
-          isActive && (activeClassName ?? "text-gold"),
-          className,
-        )
-      }
-    >
-      {({ isActive }) => (
-        <span
-          data-active={isActive ? "true" : "false"}
-          className="knc-navbar-link__inner inline-flex items-center"
-        >
-          {children}
-        </span>
-      )}
-    </NavLink>
-  );
-};
-
 export const Navigation = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [isNavHidden, setIsNavHidden] = useState(false);
-  const location = useLocation();
-  const { isAdminLoggedIn } = useAdmin();
+  const {
+    mobileOpen,
+    setMobileOpen,
+    scrolled,
+    isNavHidden,
+    isTransparent,
+    isPropertiesPage,
+    mobileMenuRef,
+    mobileTriggerRef,
+    mobileCloseRef,
+    closeMobile,
+  } = useNavigationScroll();
+
   const mobileId = useId();
 
-  const isTransparent = isRouteTransparent(location.pathname);
-  const isPropertiesPage = isPropertyRoute(location.pathname);
-
-  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
-  const mobileTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const mobileCloseRef = useRef<HTMLButtonElement | null>(null);
-  const lastFocusedRef = useRef<HTMLElement | null>(null);
-
-  // Scroll direction tracking for auto-hide
-  const lastScrollY = useRef(0);
-  const lastDirectionChangeY = useRef(0);
-  const scrollDirection = useRef<'up' | 'down'>('up');
-  const ticking = useRef(false);
-  const isAtTop = useRef(true);
-
-  // Hero sentinel observer — drives scrolled state for the blur background.
-  useEffect(() => {
-    let observer: IntersectionObserver | null = null;
-    let mutationObserver: MutationObserver | null = null;
-    let rafId = 0;
-    const NAV_HEIGHT = 72;
-
-    const evaluate = (sentinel: HTMLElement) => {
-      const rect = sentinel.getBoundingClientRect();
-      setScrolled(rect.top <= NAV_HEIGHT);
-    };
-
-    const attach = () => {
-      const sentinel = document.querySelector<HTMLElement>("[data-hero-sentinel]");
-      if (!sentinel) {
-        setScrolled(true);
-        return;
-      }
-      evaluate(sentinel);
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          const passedTop =
-            !entry.isIntersecting && entry.boundingClientRect.top < NAV_HEIGHT;
-          setScrolled(passedTop);
-        },
-        { rootMargin: `-${NAV_HEIGHT}px 0px 0px 0px`, threshold: [0, 1] },
-      );
-      observer.observe(sentinel);
-    };
-
-    rafId = window.requestAnimationFrame(() => {
-      attach();
-      if (!document.querySelector("[data-hero-sentinel]")) {
-        mutationObserver = new MutationObserver(() => {
-          if (document.querySelector("[data-hero-sentinel]")) {
-            mutationObserver?.disconnect();
-            mutationObserver = null;
-            attach();
-          }
-        });
-        mutationObserver.observe(document.body, { childList: true, subtree: true });
-      }
-    });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      observer?.disconnect();
-      mutationObserver?.disconnect();
-    };
-  }, [location.pathname]);
-
-  // Reset scrolled state on non-hero pages and on route change.
-  useEffect(() => {
-    if (!isTransparent) {
-      setScrolled(true);
-    }
-  }, [isTransparent, location.pathname]);
-
-  // Close mobile menu on route change.
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
-
-  // Body scroll lock + focus management for mobile menu.
-  useEffect(() => {
-    if (!mobileOpen) return;
-
-    lastFocusedRef.current = document.activeElement as HTMLElement | null;
-
-    const previousOverflow = document.body.style.overflow;
-    const previousPaddingRight = document.body.style.paddingRight;
-    const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
-
-    document.body.style.overflow = "hidden";
-    if (scrollbarGap > 0) {
-      document.body.style.paddingRight = `${scrollbarGap}px`;
-    }
-
-    // Focus the first interactive element inside the menu after open.
-    const focusTimer = window.setTimeout(() => {
-      const firstFocusable = mobileMenuRef.current?.querySelector<HTMLElement>(
-        'a[href], button:not([disabled])',
-      );
-      firstFocusable?.focus();
-    }, 60);
-
-    return () => {
-      window.clearTimeout(focusTimer);
-      document.body.style.overflow = previousOverflow;
-      document.body.style.paddingRight = previousPaddingRight;
-      lastFocusedRef.current?.focus?.();
-    };
-  }, [mobileOpen]);
-
-  // ESC closes the mobile menu.
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        setMobileOpen(false);
-        mobileTriggerRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [mobileOpen]);
-
-  const closeMobile = useCallback(() => setMobileOpen(false), []);
-
-  // Smart auto-hide navbar on scroll
-  useEffect(() => {
-    const HIDE_AFTER = 60;
-    const SHOW_AT_TOP = 10;
-    const DIR_THRESHOLD = 8;
-
-    const update = () => {
-      ticking.current = false;
-      const currentScrollY = Math.max(0, window.scrollY);
-
-      isAtTop.current = currentScrollY <= SHOW_AT_TOP;
-
-      if (isAtTop.current) {
-        setIsNavHidden(false);
-        lastScrollY.current = currentScrollY;
-        lastDirectionChangeY.current = currentScrollY;
-        scrollDirection.current = 'up';
-        return;
-      }
-
-      const delta = currentScrollY - lastScrollY.current;
-      const dir: 'up' | 'down' = delta > 0 ? 'down' : delta < 0 ? 'up' : scrollDirection.current;
-
-      if (dir !== scrollDirection.current) {
-        lastDirectionChangeY.current = currentScrollY;
-        scrollDirection.current = dir;
-      }
-
-      const distSinceFlip = Math.abs(currentScrollY - lastDirectionChangeY.current);
-
-      if (dir === 'down' && currentScrollY > HIDE_AFTER && distSinceFlip > DIR_THRESHOLD) {
-        setIsNavHidden(true);
-      } else if (dir === 'up' && distSinceFlip > DIR_THRESHOLD) {
-        setIsNavHidden(false);
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    const onScroll = () => {
-      if (!ticking.current) {
-        ticking.current = true;
-        window.requestAnimationFrame(update);
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    lastScrollY.current = window.scrollY;
-    lastDirectionChangeY.current = window.scrollY;
-    update();
-
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  // On dark pages the navbar stays legible by always using white text.
-  // Light pages use a tan tone (#85754E) which matches the rest of the brand.
   const useLightForeground = isTransparent;
 
   const navbarBg = (() => {
@@ -293,8 +60,9 @@ export const Navigation = () => {
           height: scrolled
             ? "var(--knc-nav-height-scrolled, 60px)"
             : "var(--knc-nav-height, 76px)",
-          transition: "height 380ms cubic-bezier(0.22, 1, 0.36, 1), transform 280ms cubic-bezier(0.22, 1, 0.36, 1)",
-          transform: isNavHidden ? 'translate3d(0, -100%, 0)' : 'translate3d(0, 0, 0)',
+          transition:
+            "height 380ms cubic-bezier(0.22, 1, 0.36, 1), transform 280ms cubic-bezier(0.22, 1, 0.36, 1)",
+          transform: isNavHidden ? "translate3d(0, -100%, 0)" : "translate3d(0, 0, 0)",
         }}
       >
         <nav
@@ -345,40 +113,11 @@ export const Navigation = () => {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-0.5 lg:gap-1">
-              {PRIMARY_NAV.map((item) => (
-                <NavLinkItem
-                  key={item.href}
-                  to={item.href}
-                  className={cn("px-3 lg:px-4 py-2", textColor)}
-                >
-                  {item.name}
-                </NavLinkItem>
-              ))}
-
-              {isAdminLoggedIn && (
-                <>
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "ml-4 lg:ml-6 mr-1 h-4 w-px",
-                      useLightForeground ? "bg-white/20" : "bg-[#85754E]/25",
-                    )}
-                  />
-                  <NavLinkItem
-                    to="/admin"
-                    className={cn(
-                      "inline-flex items-center gap-1.5 px-3 lg:px-4 py-2 text-[11px] lg:text-[12px] opacity-70 hover:opacity-100",
-                      textColor,
-                    )}
-                  >
-                    Admin
-                    <ArrowUpRight className="h-3 w-3" aria-hidden />
-                  </NavLinkItem>
-                </>
-              )}
-            </div>
+            <DesktopNav
+              items={PRIMARY_NAV}
+              textColor={textColor}
+              useLightForeground={useLightForeground}
+            />
 
             {/* Mobile menu trigger */}
             <button
@@ -393,122 +132,28 @@ export const Navigation = () => {
               aria-controls={mobileId}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
             >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileOpen ? (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </nav>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      <div
-        id={mobileId}
-        ref={mobileMenuRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Site navigation"
-        aria-hidden={!mobileOpen}
-        className={cn(
-          "fixed inset-0 z-40 md:hidden",
-          "transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-          mobileOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none",
-        )}
-      >
-        <div
-          className="absolute inset-0 bg-black/85 backdrop-blur-2xl"
-          onClick={closeMobile}
-          aria-hidden
-        />
-        <div
-          className={cn(
-            "relative ml-auto h-full w-full max-w-sm bg-gradient-to-b from-black via-black to-neutral-950",
-            "border-l border-white/5 flex flex-col",
-            "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            mobileOpen ? "translate-x-0" : "translate-x-full",
-          )}
-        >
-          <div className="flex h-[72px] items-center justify-end px-4">
-            <button
-              ref={mobileCloseRef}
-              type="button"
-              onClick={closeMobile}
-              className={cn(
-                "knc-focus-ring inline-flex h-11 w-11 items-center justify-center rounded-md",
-                "text-white/90 hover:text-gold transition-colors",
-              )}
-              aria-label="Close menu"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          <nav
-            aria-label="Mobile"
-            className="flex-1 overflow-y-auto px-6 pb-10 pt-2"
-          >
-            <ul className="flex flex-col gap-1">
-              {PRIMARY_NAV.map((item, idx) => (
-                <li
-                  key={item.href}
-                  className={cn(
-                    "opacity-0",
-                    mobileOpen && "animate-menu-item-in",
-                  )}
-                  style={{
-                    animationDelay: mobileOpen ? `${80 + idx * 55}ms` : undefined,
-                    animationFillMode: "both",
-                  }}
-                >
-                  <NavLinkItem
-                    to={item.href}
-                    onNavigate={closeMobile}
-                    variant="mobile"
-                    className="block w-full border-b border-white/5"
-                  >
-                    <span className="flex w-full items-center justify-between">
-                      <span>{item.name}</span>
-                      <ArrowUpRight className="h-4 w-4 opacity-40" aria-hidden />
-                    </span>
-                  </NavLinkItem>
-                </li>
-              ))}
-            </ul>
-
-            {isAdminLoggedIn && (
-              <div
-                className={cn(
-                  "mt-8 border-t border-white/5 pt-6 opacity-0",
-                  mobileOpen && "animate-menu-item-in",
-                )}
-                style={{
-                  animationDelay: mobileOpen ? `${80 + PRIMARY_NAV.length * 55}ms` : undefined,
-                  animationFillMode: "both",
-                }}
-              >
-                <p className="text-[10px] tracking-[0.32em] text-white/40 mb-3">
-                  ADMIN
-                </p>
-                <NavLinkItem
-                  to="/admin"
-                  onNavigate={closeMobile}
-                  variant="mobile"
-                  className="block w-full min-h-[44px] text-gold"
-                >
-                  <span className="flex w-full items-center justify-between">
-                    <span>Open Dashboard</span>
-                    <ArrowUpRight className="h-4 w-4" aria-hidden />
-                  </span>
-                </NavLinkItem>
-              </div>
-            )}
-          </nav>
-
-          <div className="border-t border-white/5 px-6 py-5 text-[11px] tracking-[0.32em] text-white/40">
-            REAL ESTATE NETWORK
-          </div>
-        </div>
-      </div>
+      <MobileNav
+        items={PRIMARY_NAV}
+        mobileOpen={mobileOpen}
+        menuRef={mobileMenuRef}
+        closeRef={mobileCloseRef}
+        onClose={closeMobile}
+        mobileId={mobileId}
+      />
     </>
   );
 };

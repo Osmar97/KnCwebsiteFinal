@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchIgImagesPublic, fetchSocialLinks, type IgImage, type SocialLinks } from "@/data/socialMedia";
+import { logger } from "@/lib/logger";
 
 export function useSocialMedia() {
   const [links, setLinks] = useState<SocialLinks | null>(null);
@@ -15,7 +16,7 @@ export function useSocialMedia() {
         setLinks(l);
         setImages(i);
       } catch (err) {
-        console.error("useSocialMedia load failed", err);
+        logger.error("useSocialMedia load failed", err);
       } finally {
         if (mounted) setLoading(false);
       }

@@ -8,7 +8,7 @@ const TITLE = "Investing in Portugal Real Estate as an American — A Complete G
 const DESCRIPTION =
   "Comprehensive guide for US citizens investing in Portuguese real estate: D7 and D8 visas, tax implications, buying property from abroad, and relocation steps.";
 const URL =
-  "https://kings-website-copycat-project.lovable.app/resources/guides/investing-in-portugal-for-americans";
+  "https://kingsncompany.com/resources/guides/investing-in-portugal-for-americans";
 
 const InvestingInPortugalForAmericans = () => {
   useScrollToTop();

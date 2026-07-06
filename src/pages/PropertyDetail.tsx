@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useAdmin } from "@/contexts/AdminContext";
-import { formatPrice } from "@/lib/formatters";
+import { formatNumber } from "@/lib/formatPrice";
 import { PropertyImageCarousel } from "@/components/properties/PropertyImageCarousel";
 import FloorPlanViewer from "@/components/properties/FloorPlanViewer";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -16,6 +16,7 @@ import { X } from "lucide-react";
 import { FullscreenGallery } from "@/components/properties/FullscreenGallery";
 import { PropertyContactSidebar } from "@/components/properties/PropertyContactSidebar";
 import { PropertyInformation } from "@/components/properties/PropertyInformation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -43,7 +44,36 @@ const PropertyDetail = () => {
     navigate(`/admin/properties?edit=${id}`);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return (
+    <div className="min-h-screen bg-black text-white">
+      <Navigation />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-[76px] sm:pt-20 pb-8">
+        <Skeleton className="h-10 w-32 bg-gray-800 mb-6" />
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-4 mb-6">
+          <div className="flex-1">
+            <Skeleton className="h-10 w-2/3 bg-gray-800 mb-4" />
+            <Skeleton className="h-5 w-48 bg-gray-800" />
+          </div>
+          <Skeleton className="h-12 w-48 bg-gray-800" />
+        </div>
+        <div className="flex flex-wrap gap-4 mb-6">
+          <Skeleton className="h-6 w-24 bg-gray-800" />
+          <Skeleton className="h-6 w-28 bg-gray-800" />
+          <Skeleton className="h-6 w-36 bg-gray-800" />
+          <Skeleton className="h-6 w-32 bg-gray-800" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2 space-y-4">
+            <Skeleton className="h-96 w-full bg-gray-800" />
+            <Skeleton className="h-40 w-full bg-gray-800" />
+          </div>
+          <div>
+            <Skeleton className="h-64 w-full bg-gray-800" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   if (!property) return <div>Property not found</div>;
 
   const images = property.images || [];
@@ -90,7 +120,7 @@ const PropertyDetail = () => {
             <p className="text-sm sm:text-base text-gray-400">{property.location}, {property.city}</p>
           </div>
           <div className="text-left lg:text-right w-full lg:w-auto">
-            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gold">{formatPrice(property.price)}€</div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gold">{formatNumber(property.price)}€</div>
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ContactForm } from "@/components/ContactForm";
@@ -7,6 +8,10 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const Booking = () => {
   useScrollToTop();
+
+  useEffect(() => {
+    document.title = "Book a Consultation — Kings 'n Company";
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">

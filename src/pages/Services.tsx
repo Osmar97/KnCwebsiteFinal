@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { PropertyOwnershipAcademy } from "@/components/services/PropertyOwnershipAcademy";
 import { PropertyOwnershipConsultancy } from "@/components/services/PropertyOwnershipConsultancy";
@@ -12,6 +13,10 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const ServicesPage = () => {
   useScrollToTop();
+
+  useEffect(() => {
+    document.title = "Services — Kings 'n Company";
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-gray-100">

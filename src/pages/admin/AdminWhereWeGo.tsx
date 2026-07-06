@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -101,18 +101,19 @@ const AdminWhereWeGo = () => {
   };
 
   return (
-    <AdminLayout
-      title="Tours · Where We Go"
-      description="Manage the country cards displayed in the public WHERE WE GO section. Independent from Private Tour configuration."
-      actions={
+    <>
+      <AdminPageMeta
+        title="Tours · Where We Go"
+        description="Manage the country cards displayed in the public WHERE WE GO section. Independent from Private Tour configuration."
+      />
+      <div className="flex justify-end mb-4">
         <Button
           onClick={() => setRows((r) => [...r, blank(r.length + 1)])}
           className="bg-gold hover:bg-gold-dark text-black"
         >
           <Plus className="w-4 h-4 mr-1" /> New card
         </Button>
-      }
-    >
+      </div>
       {loading ? (
         <p className="text-gray-400">Loading…</p>
       ) : (
@@ -237,7 +238,7 @@ const AdminWhereWeGo = () => {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

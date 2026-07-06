@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { OurApproachHero } from "@/components/our-approach/OurApproachHero";
@@ -13,6 +14,10 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const OurApproachPage = () => {
   useScrollToTop();
+
+  useEffect(() => {
+    document.title = "Our Approach — Kings 'n Company";
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">

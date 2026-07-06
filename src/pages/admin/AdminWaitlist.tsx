@@ -1,4 +1,4 @@
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { useAdminWaitlist, useUpdateWaitlistStatus } from "@/hooks/admin/useAdminWaitlist";
 
 const STATUS_OPTIONS = ["new", "contacted", "converted", "closed"];
@@ -8,7 +8,8 @@ const AdminWaitlist = () => {
   const updateStatus = useUpdateWaitlistStatus();
 
   return (
-    <AdminLayout title="Waitlist Requests" description="Travelers who signed up to be notified.">
+    <>
+      <AdminPageMeta title="Waitlist Requests" description="Travelers who signed up to be notified." />
       {isLoading ? <p className="text-gray-400">Loading…</p> : (data?.length ?? 0) === 0 ? (
         <div className="bg-gray-950 border border-gray-800 rounded-lg p-8 text-center text-gray-400">No waitlist requests yet.</div>
       ) : (
@@ -33,7 +34,7 @@ const AdminWaitlist = () => {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useAllCrmTasks, useUpdateCrmTask, useDeleteCrmTask, type CrmTask, type TaskStatus } from "@/hooks/useCrm";
 import { SOURCE_LABELS } from "@/lib/crm";
@@ -54,7 +54,8 @@ const AdminCRMTasks = () => {
   };
 
   return (
-    <AdminLayout title="Tasks" description="Follow-ups across all leads.">
+    <>
+      <AdminPageMeta title="Tasks" description="Follow-ups across all leads." />
       <div className="flex flex-wrap gap-2 mb-4">
         <div className="inline-flex rounded-md overflow-hidden border border-gray-800">
           <button onClick={() => setScope("mine")} className={`px-3 py-1.5 text-xs ${scope === "mine" ? "bg-gold text-black" : "bg-gray-950 text-gray-300"}`}>My Tasks</button>
@@ -126,7 +127,7 @@ const AdminCRMTasks = () => {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

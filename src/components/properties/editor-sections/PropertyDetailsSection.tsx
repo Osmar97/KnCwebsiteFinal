@@ -268,12 +268,12 @@ function Counter({ label, value, setValue }: { label: string; value: number; set
     <div>
       <Label className="text-sm font-semibold mb-2 block">{label}</Label>
       <div className="flex items-center gap-4 max-w-sm">
-        <Button type="button" variant="outline" size="icon" onClick={() => setValue(Math.max(0, value - 1))}>
+        <Button type="button" variant="outline" size="icon" onClick={() => setValue(Math.max(0, value - 1))} aria-label="Decrease">
           <Minus className="w-4 h-4" />
         </Button>
         <Input type="number" value={value} onChange={(e) => setValue(parseInt(e.target.value) || 0)}
           className="text-center bg-white border-gray-300" />
-        <Button type="button" variant="outline" size="icon" onClick={() => setValue(value + 1)}>
+        <Button type="button" variant="outline" size="icon" onClick={() => setValue(value + 1)} aria-label="Increase">
           <Plus className="w-4 h-4" />
         </Button>
       </div>

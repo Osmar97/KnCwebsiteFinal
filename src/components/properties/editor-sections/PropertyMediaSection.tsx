@@ -46,12 +46,12 @@ export function PropertyMediaSection({
               <img src={url} alt="" className="w-full h-32 object-cover rounded border pointer-events-none" />
               <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 {idx > 0 && (
-                  <button type="button" onClick={() => moveImage(idx, "left")} className="bg-blue-500 text-white p-1 rounded-full" title="Mover para a esquerda">
+                  <button type="button" onClick={() => moveImage(idx, "left")} className="bg-blue-500 text-white p-1 rounded-full" title="Mover para a esquerda" aria-label="Move image left">
                     <ArrowLeft className="w-4 h-4" />
                   </button>
                 )}
                 {idx < imageUrls.length - 1 && (
-                  <button type="button" onClick={() => moveImage(idx, "right")} className="bg-blue-500 text-white p-1 rounded-full" title="Mover para a direita">
+                  <button type="button" onClick={() => moveImage(idx, "right")} className="bg-blue-500 text-white p-1 rounded-full" title="Mover para a direita" aria-label="Move image right">
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 )}
@@ -63,6 +63,7 @@ export function PropertyMediaSection({
                   toast({ title: "Imagem removida" });
                 }}
                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label={`Remove image ${idx + 1}`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -90,6 +91,7 @@ export function PropertyMediaSection({
                 type="button"
                 onClick={() => setFloorPlanUrls(floorPlanUrls.filter((_, i) => i !== idx))}
                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label={`Remove floor plan ${idx + 1}`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -113,6 +115,7 @@ export function PropertyMediaSection({
                 type="button"
                 onClick={() => setVideoUrls(videoUrls.filter((_, i) => i !== idx))}
                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label={`Remove video ${idx + 1}`}
               >
                 <X className="w-4 h-4" />
               </button>

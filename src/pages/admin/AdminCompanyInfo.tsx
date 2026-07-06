@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -82,10 +82,8 @@ const AdminCompanyInfo = () => {
   );
 
   return (
-    <AdminLayout
-      title="Company Information"
-      description="Public contact details used across the site."
-    >
+    <>
+      <AdminPageMeta title="Company Information" description="Public contact details used across the site." />
       {isLoading ? (
         <p className="text-gray-400">Loading…</p>
       ) : (
@@ -124,7 +122,7 @@ const AdminCompanyInfo = () => {
           </div>
         </form>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

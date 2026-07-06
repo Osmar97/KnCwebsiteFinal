@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
@@ -7,10 +7,14 @@ import { GlobalCTA } from "@/components/GlobalCTA";
 
 import PropertyCard from "@/components/properties/PropertyCard";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Properties = () => {
   const [sortBy, setSortBy] = useState("relevance");
+
+  useEffect(() => {
+    document.title = "Properties — Kings 'n Company";
+  }, []);
 
   const { data: properties, isLoading } = useQuery({
     queryKey: ["properties", sortBy],
@@ -45,8 +49,17 @@ const Properties = () => {
           <main>
 
             {isLoading ? (
-              <div className="flex justify-center items-center h-64">
-                <Loader2 className="w-8 h-8 animate-spin text-gold" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+                    <Skeleton className="h-56 w-full bg-gray-800" />
+                    <div className="p-4 space-y-3">
+                      <Skeleton className="h-5 w-3/4 bg-gray-800" />
+                      <Skeleton className="h-4 w-1/2 bg-gray-800" />
+                      <Skeleton className="h-3 w-full bg-gray-800" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : properties && properties.length > 0 ? (
               <div className="space-y-4 sm:space-y-6">

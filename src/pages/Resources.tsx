@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { AdminPostsFeed } from "@/components/AdminPostsFeed";
@@ -10,7 +10,11 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const ResourcesPage = () => {
   useScrollToTop();
-  
+
+  useEffect(() => {
+    document.title = "Resources — Kings 'n Company";
+  }, []);
+
   const { isAdminLoggedIn } = useAdmin();
   const [activeTab, setActiveTab] = useState<"all" | "articles" | "resources">("all");
   

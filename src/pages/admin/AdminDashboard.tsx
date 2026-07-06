@@ -1,4 +1,4 @@
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Link } from "react-router-dom";
 import { Building2, FileBox, MapPin, Calendar, ClipboardList, Sparkles, Inbox, Plus, Upload, Activity, Users, CheckSquare, AlertTriangle } from "lucide-react";
 import { useAdminCounts } from "@/hooks/admin/useAdminCounts";
@@ -95,7 +95,8 @@ const AdminDashboard = () => {
   const upcomingTasks = tasks.filter((t) => !t.due_date || new Date(t.due_date) >= now).slice(0, 5);
 
   return (
-    <AdminLayout title="Dashboard" description="High-level overview of platform activity.">
+    <>
+      <AdminPageMeta title="Dashboard" description="High-level overview of platform activity." />
       {/* Primary KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <Stat label="Total Properties" value={n(properties)} icon={Building2} to="/admin/properties" />
@@ -251,7 +252,7 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 };
 

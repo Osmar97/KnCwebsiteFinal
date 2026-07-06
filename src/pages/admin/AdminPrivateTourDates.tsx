@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,8 +68,11 @@ const AdminPrivateTourDates = () => {
   const tourName = (id: string) => tours.find((t) => t.id === id)?.name_en ?? "—";
 
   return (
-    <AdminLayout title="Private Tour · Available Dates" description="Upcoming dates available to bookers (shared with all tours)."
-      actions={<Button onClick={() => setRows((r) => [...r, blank(tours[0]?.id ?? "")])} className="bg-gold hover:bg-gold-dark text-black"><Plus className="w-4 h-4 mr-1" />New date</Button>}>
+    <>
+      <AdminPageMeta title="Private Tour · Available Dates" description="Upcoming dates available to bookers (shared with all tours)." />
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setRows((r) => [...r, blank(tours[0]?.id ?? "")])} className="bg-gold hover:bg-gold-dark text-black"><Plus className="w-4 h-4 mr-1" />New date</Button>
+      </div>
       {loading ? <p className="text-gray-400">Loading…</p> : rows.length === 0 ? (
         <p className="text-gray-400">No upcoming dates.</p>
       ) : (
@@ -101,7 +104,7 @@ const AdminPrivateTourDates = () => {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

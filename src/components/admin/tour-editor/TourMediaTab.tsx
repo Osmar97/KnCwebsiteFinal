@@ -27,7 +27,7 @@ export const TourMediaTab = ({
         {heroImage ? (
           <div className="relative w-48 h-32 rounded overflow-hidden border border-gray-800">
             <img src={heroImage} alt="hero" className="w-full h-full object-cover" />
-            <button onClick={onClearHero} className="absolute top-1 right-1 bg-black/70 rounded-full p-1">
+            <button onClick={onClearHero} className="absolute top-1 right-1 bg-black/70 rounded-full p-1" aria-label="Remove hero image">
               <X className="w-3 h-3 text-white" />
             </button>
           </div>
@@ -49,7 +49,7 @@ export const TourMediaTab = ({
         {gallery.map((url, i) => (
           <div key={i} className="relative aspect-video rounded overflow-hidden border border-gray-800">
             <img src={url} alt="" className="w-full h-full object-cover" />
-            <button onClick={() => onRemoveGalleryItem(i)} className="absolute top-1 right-1 bg-black/70 rounded-full p-1">
+            <button onClick={() => onRemoveGalleryItem(i)} className="absolute top-1 right-1 bg-black/70 rounded-full p-1" aria-label={`Remove gallery image ${i + 1}`}>
               <X className="w-3 h-3 text-white" />
             </button>
           </div>

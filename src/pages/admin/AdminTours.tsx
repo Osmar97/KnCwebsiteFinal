@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Pencil, Trash2, Copy, Archive, Eye, EyeOff } from "lucide-react";
@@ -46,25 +46,24 @@ const AdminTours = () => {
 
   if (editingId !== null) {
     return (
-      <AdminLayout title={editingId === "new" ? "New Tour" : "Edit Tour"} description="Manage tour content, dates, pricing and images.">
+      <>
+        <AdminPageMeta title={editingId === "new" ? "New Tour" : "Edit Tour"} description="Manage tour content, dates, pricing and images." />
         <TourEditor
           tourId={editingId === "new" ? null : editingId}
           onClose={() => { setEditingId(null); invalidate(); }}
         />
-      </AdminLayout>
+      </>
     );
   }
 
   return (
-    <AdminLayout
-      title="Manage Tours"
-      description="Create, edit, publish and archive tours. Changes appear live on the public site."
-      actions={
+    <>
+      <AdminPageMeta title="Manage Tours" description="Create, edit, publish and archive tours. Changes appear live on the public site." />
+      <div className="flex justify-end mb-4">
         <Button onClick={() => setEditingId("new")} className="bg-gold hover:bg-gold-dark text-black min-h-[44px]">
           <Plus className="w-4 h-4 mr-1" /> New Tour
         </Button>
-      }
-    >
+      </div>
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
         <Input
           placeholder="Search tours…"
@@ -153,7 +152,7 @@ const AdminTours = () => {
           ))}
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 

@@ -1,10 +1,15 @@
 
+import { useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 const PrivacyPolicy = () => {
   useScrollToTop();
+
+  useEffect(() => {
+    document.title = "Privacy Policy — Kings 'n Company";
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">

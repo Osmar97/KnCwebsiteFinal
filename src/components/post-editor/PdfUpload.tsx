@@ -146,6 +146,7 @@ export const PdfUpload = ({ pdfUrls, onPdfUrlsChange }: PdfUploadProps) => {
                   variant="destructive"
                   size="sm"
                   className="w-6 h-6 p-0"
+                  aria-label={`Remove PDF ${index + 1}`}
                 >
                   <X className="w-3 h-3" />
                 </Button>

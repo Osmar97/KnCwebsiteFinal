@@ -18,6 +18,7 @@ import TermsOfService from "./pages/TermsOfService";
 import { ArticleView } from "./components/resources/ArticleView";
 import { AdminProvider } from "./contexts/AdminContext";
 import { PostsProvider } from "./contexts/PostsContext";
+import { AdminPageMetaProvider } from "./contexts/AdminPageMetaContext";
 import FreeResources from "./pages/FreeResources";
 import InvestingInPortugalForAmericans from "./pages/InvestingInPortugalForAmericans";
 import Properties from "./pages/Properties";
@@ -42,6 +43,7 @@ import AdminCompanyInfo from "./pages/admin/AdminCompanyInfo";
 import AdminCRM from "./pages/admin/AdminCRM";
 import AdminCRMLeadDetail from "./pages/admin/AdminCRMLeadDetail";
 import AdminCRMTasks from "./pages/admin/AdminCRMTasks";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 
 const queryClient = new QueryClient({
@@ -74,9 +76,10 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
+          <ErrorBoundary>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/our-approach" element={<OurApproach />} />
@@ -90,26 +93,28 @@ const App = () => (
               />
               <Route path="/properties" element={<Properties />} />
               <Route path="/properties/:id" element={<PropertyDetail />} />
-              <Route path="/admin/properties" element={<AdminProperties />} />
-              <Route path="/admin/assets" element={<AdminAssets />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/tours" element={<AdminTours />} />
-              <Route path="/admin/bookings" element={<AdminBookings />} />
-              <Route path="/admin/waitlist" element={<AdminWaitlist />} />
-              <Route path="/admin/quotes" element={<AdminQuotes />} />
-              <Route path="/admin/private-tour/settings" element={<AdminPrivateTourSettings />} />
-              <Route path="/admin/private-tour/destinations" element={<AdminPrivateTourDestinations />} />
-              <Route path="/admin/private-tour/addons" element={<AdminPrivateTourAddons />} />
-              <Route path="/admin/private-tour/dates" element={<AdminPrivateTourDates />} />
-              <Route path="/admin/private-tour/included" element={<AdminPrivateTourIncluded />} />
-              <Route path="/admin/tours/where-we-go" element={<AdminWhereWeGo />} />
-              <Route path="/admin/site-settings/social-media" element={<AdminSocialMedia />} />
-              <Route path="/admin/site-settings/company" element={<AdminCompanyInfo />} />
-              <Route path="/admin/leads" element={<AdminLeadsInbox />} />
-              <Route path="/admin/crm" element={<AdminCRM />} />
-              <Route path="/admin/crm/tasks" element={<AdminCRMTasks />} />
-              <Route path="/admin/crm/:source/:id" element={<AdminCRMLeadDetail />} />
-              <Route path="/admin/analytics" element={<AdminAnalytics />} />
+              <Route path="/admin" element={<AdminPageMetaProvider><AdminLayout /></AdminPageMetaProvider>}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="properties" element={<AdminProperties />} />
+                <Route path="assets" element={<AdminAssets />} />
+                <Route path="tours" element={<AdminTours />} />
+                <Route path="bookings" element={<AdminBookings />} />
+                <Route path="waitlist" element={<AdminWaitlist />} />
+                <Route path="quotes" element={<AdminQuotes />} />
+                <Route path="private-tour/settings" element={<AdminPrivateTourSettings />} />
+                <Route path="private-tour/destinations" element={<AdminPrivateTourDestinations />} />
+                <Route path="private-tour/addons" element={<AdminPrivateTourAddons />} />
+                <Route path="private-tour/dates" element={<AdminPrivateTourDates />} />
+                <Route path="private-tour/included" element={<AdminPrivateTourIncluded />} />
+                <Route path="tours/where-we-go" element={<AdminWhereWeGo />} />
+                <Route path="site-settings/social-media" element={<AdminSocialMedia />} />
+                <Route path="site-settings/company" element={<AdminCompanyInfo />} />
+                <Route path="leads" element={<AdminLeadsInbox />} />
+                <Route path="crm" element={<AdminCRM />} />
+                <Route path="crm/tasks" element={<AdminCRMTasks />} />
+                <Route path="crm/:source/:id" element={<AdminCRMLeadDetail />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
+              </Route>
               <Route path="/booking" element={<Booking />} />
               <Route path="/booking-form" element={<BookingForm />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -119,6 +124,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
+          </ErrorBoundary>
         </TooltipProvider>
       </PostsProvider>
     </AdminProvider>

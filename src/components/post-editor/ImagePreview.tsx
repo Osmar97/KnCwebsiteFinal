@@ -29,6 +29,7 @@ export const ImagePreview = ({ images, onRemoveImage }: ImagePreviewProps) => {
               variant="destructive"
               size="sm"
               className="absolute top-1 right-1 w-6 h-6 p-0"
+              aria-label={`Remove image ${index + 1}`}
             >
               <X className="w-3 h-3" />
             </Button>

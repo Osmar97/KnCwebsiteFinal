@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminPageMeta } from "@/contexts/AdminPageMetaContext";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import PropertyEditor from "@/components/properties/PropertyEditor";
@@ -41,13 +41,14 @@ const AdminProperties = () => {
     }
   };
 
-  // Show property editor if in edit mode - wrap it in AdminLayout so sidebar remains visible
+  // Show property editor if in edit mode
   if (!showList) {
     return (
-      <AdminLayout
-        title={editingProperty ? "Edit Property" : "New Property"}
-        description={editingProperty ? editingProperty.title : "Create a new property listing."}
-      >
+      <>
+        <AdminPageMeta
+          title={editingProperty ? "Edit Property" : "New Property"}
+          description={editingProperty ? editingProperty.title : "Create a new property listing."}
+        />
         <PropertyEditor
           key={editingProperty?.id || 'new'}
           property={editingProperty}
@@ -58,23 +59,21 @@ const AdminProperties = () => {
             queryClient.invalidateQueries({ queryKey: ["admin-properties"] });
           }}
         />
-      </AdminLayout>
+      </>
     );
   }
 
   return (
-    <AdminLayout
-      title="Property Management"
-      description="Create, edit, publish and archive properties. Changes appear live on the public site."
-      actions={
+    <>
+      <AdminPageMeta title="Property Management" description="Create, edit, publish and archive properties. Changes appear live on the public site." />
+      <div className="flex justify-end mb-4">
         <Button
           onClick={() => { setEditingProperty(null); setShowList(false); }}
           className="bg-gold hover:bg-gold-dark text-black min-h-[44px]"
         >
           <Plus className="w-4 h-4 mr-1" /> Add Property
         </Button>
-      }
-    >
+      </div>
       {isLoading ? (
         <p className="text-gray-400">Loading…</p>
       ) : properties && properties.length > 0 ? (
@@ -139,7 +138,7 @@ const AdminProperties = () => {
           No properties found. Click "Add Property" to create one.
         </div>
       )}
-    </AdminLayout>
+    </>
   );
 };
 
