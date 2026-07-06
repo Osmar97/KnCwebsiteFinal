@@ -228,7 +228,10 @@ export const Navigation = () => {
       <header
         className="knc-navbar fixed inset-x-0 top-0 z-50 will-change-transform"
         style={{
-          height: "var(--knc-nav-height, 72px)",
+          height: scrolled
+            ? "var(--knc-nav-height-scrolled, 60px)"
+            : "var(--knc-nav-height, 76px)",
+          transition: "height 380ms cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
         <nav
@@ -240,7 +243,7 @@ export const Navigation = () => {
             scrolled && "shadow-[0_8px_30px_rgba(0,0,0,0.18)]",
           )}
         >
-          <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
             {/* Logo */}
             <Link
               to="/"
@@ -280,25 +283,37 @@ export const Navigation = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1 lg:gap-2">
+            <div className="hidden md:flex items-center gap-0.5 lg:gap-1">
               {PRIMARY_NAV.map((item) => (
                 <NavLinkItem
                   key={item.href}
                   to={item.href}
-                  className={cn("px-3 lg:px-4", textColor)}
+                  className={cn("px-3 lg:px-4 py-2", textColor)}
                 >
                   {item.name}
                 </NavLinkItem>
               ))}
 
               {isAdminLoggedIn && (
-                <NavLinkItem
-                  to="/admin"
-                  className={cn("ml-1 lg:ml-2 inline-flex items-center gap-1.5 px-3 lg:px-4", textColor)}
-                >
-                  Admin
-                  <ArrowUpRight className="h-3.5 w-3.5 opacity-70" aria-hidden />
-                </NavLinkItem>
+                <>
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "ml-4 lg:ml-6 mr-1 h-4 w-px",
+                      useLightForeground ? "bg-white/20" : "bg-[#85754E]/25",
+                    )}
+                  />
+                  <NavLinkItem
+                    to="/admin"
+                    className={cn(
+                      "inline-flex items-center gap-1.5 px-3 lg:px-4 py-2 text-[11px] lg:text-[12px] opacity-70 hover:opacity-100",
+                      textColor,
+                    )}
+                  >
+                    Admin
+                    <ArrowUpRight className="h-3 w-3" aria-hidden />
+                  </NavLinkItem>
+                </>
               )}
             </div>
 
