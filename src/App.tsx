@@ -1,4 +1,5 @@
 
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,29 +24,37 @@ import FreeResources from "./pages/FreeResources";
 import InvestingInPortugalForAmericans from "./pages/InvestingInPortugalForAmericans";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
-import AdminProperties from "./pages/admin/AdminProperties";
-import AdminAssets from "./pages/admin/AdminAssets";
 import TourPage from "./pages/Tour";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminTours from "./pages/admin/AdminTours";
-import AdminBookings from "./pages/admin/AdminBookings";
-import AdminWaitlist from "./pages/admin/AdminWaitlist";
-import AdminQuotes from "./pages/admin/AdminQuotes";
-import AdminPrivateTourSettings from "./pages/admin/AdminPrivateTourSettings";
-import AdminPrivateTourDestinations from "./pages/admin/AdminPrivateTourDestinations";
-import AdminPrivateTourAddons from "./pages/admin/AdminPrivateTourAddons";
-import AdminPrivateTourDates from "./pages/admin/AdminPrivateTourDates";
-import AdminPrivateTourIncluded from "./pages/admin/AdminPrivateTourIncluded";
-import AdminWhereWeGo from "./pages/admin/AdminWhereWeGo";
-import AdminSocialMedia from "./pages/admin/AdminSocialMedia";
-import AdminLeadsInbox from "./pages/admin/AdminLeadsInbox";
-import AdminCompanyInfo from "./pages/admin/AdminCompanyInfo";
-import AdminCRM from "./pages/admin/AdminCRM";
-import AdminCRMLeadDetail from "./pages/admin/AdminCRMLeadDetail";
-import AdminCRMTasks from "./pages/admin/AdminCRMTasks";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import AdminAnalytics from "./pages/admin/AdminAnalytics";
-import AdminLayout from "./components/admin/AdminLayout";
+
+// Admin is a heavy, rarely-visited bundle (charts, xlsx, editors) — load it on demand.
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminProperties = lazy(() => import("./pages/admin/AdminProperties"));
+const AdminAssets = lazy(() => import("./pages/admin/AdminAssets"));
+const AdminTours = lazy(() => import("./pages/admin/AdminTours"));
+const AdminBookings = lazy(() => import("./pages/admin/AdminBookings"));
+const AdminWaitlist = lazy(() => import("./pages/admin/AdminWaitlist"));
+const AdminQuotes = lazy(() => import("./pages/admin/AdminQuotes"));
+const AdminPrivateTourSettings = lazy(() => import("./pages/admin/AdminPrivateTourSettings"));
+const AdminPrivateTourDestinations = lazy(() => import("./pages/admin/AdminPrivateTourDestinations"));
+const AdminPrivateTourAddons = lazy(() => import("./pages/admin/AdminPrivateTourAddons"));
+const AdminPrivateTourDates = lazy(() => import("./pages/admin/AdminPrivateTourDates"));
+const AdminPrivateTourIncluded = lazy(() => import("./pages/admin/AdminPrivateTourIncluded"));
+const AdminWhereWeGo = lazy(() => import("./pages/admin/AdminWhereWeGo"));
+const AdminSocialMedia = lazy(() => import("./pages/admin/AdminSocialMedia"));
+const AdminLeadsInbox = lazy(() => import("./pages/admin/AdminLeadsInbox"));
+const AdminCompanyInfo = lazy(() => import("./pages/admin/AdminCompanyInfo"));
+const AdminCRM = lazy(() => import("./pages/admin/AdminCRM"));
+const AdminCRMLeadDetail = lazy(() => import("./pages/admin/AdminCRMLeadDetail"));
+const AdminCRMTasks = lazy(() => import("./pages/admin/AdminCRMTasks"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+
+const AdminFallback = () => (
+  <div className="min-h-screen bg-black flex items-center justify-center text-gold text-sm tracking-widest">
+    LOADING…
+  </div>
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -94,7 +103,16 @@ const App = () => (
               />
               <Route path="/properties" element={<Properties />} />
               <Route path="/properties/:id" element={<PropertyDetail />} />
-              <Route path="/admin" element={<AdminPageMetaProvider><AdminLayout /></AdminPageMetaProvider>}>
+              <Route
+                path="/admin"
+                element={
+                  <AdminPageMetaProvider>
+                    <Suspense fallback={<AdminFallback />}>
+                      <AdminLayout />
+                    </Suspense>
+                  </AdminPageMetaProvider>
+                }
+              >
                 <Route index element={<AdminDashboard />} />
                 <Route path="properties" element={<AdminProperties />} />
                 <Route path="assets" element={<AdminAssets />} />
