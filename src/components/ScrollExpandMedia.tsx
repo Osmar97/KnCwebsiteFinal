@@ -38,28 +38,38 @@ const ScrollExpandMedia = ({
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
+  const scrollProgressRef = useRef<number>(0);
+  const mediaFullyExpandedRef = useRef<boolean>(false);
+  const touchStartYRef = useRef<number>(0);
+  const isLockingScrollRef = useRef<boolean>(false);
+
   useEffect(() => {
     setScrollProgress(0);
     setShowContent(false);
     setMediaFullyExpanded(false);
+    scrollProgressRef.current = 0;
+    mediaFullyExpandedRef.current = false;
   }, [mediaType]);
 
   useEffect(() => {
     const handleWheel = (e: Event) => {
       const wheelEvent = e as unknown as WheelEvent;
-      if (mediaFullyExpanded && wheelEvent.deltaY < 0 && window.scrollY <= 5) {
+      if (mediaFullyExpandedRef.current && wheelEvent.deltaY < 0 && window.scrollY <= 5) {
         setMediaFullyExpanded(false);
+        mediaFullyExpandedRef.current = false;
         e.preventDefault();
-      } else if (!mediaFullyExpanded) {
+      } else if (!mediaFullyExpandedRef.current) {
         e.preventDefault();
         const scrollDelta = wheelEvent.deltaY * 0.0009;
         const newProgress = Math.min(
-          Math.max(scrollProgress + scrollDelta, 0),
+          Math.max(scrollProgressRef.current + scrollDelta, 0),
           1
         );
+        scrollProgressRef.current = newProgress;
         setScrollProgress(newProgress);
 
         if (newProgress >= 1) {
+          mediaFullyExpandedRef.current = true;
           setMediaFullyExpanded(true);
           setShowContent(true);
         } else if (newProgress < 0.75) {
@@ -70,47 +80,56 @@ const ScrollExpandMedia = ({
 
     const handleTouchStart = (e: Event) => {
       const touchEvent = e as unknown as TouchEvent;
+      touchStartYRef.current = touchEvent.touches[0].clientY;
       setTouchStartY(touchEvent.touches[0].clientY);
     };
 
     const handleTouchMove = (e: Event) => {
       const touchEvent = e as unknown as TouchEvent;
-      if (!touchStartY) return;
+      if (!touchStartYRef.current) return;
 
       const touchY = touchEvent.touches[0].clientY;
-      const deltaY = touchStartY - touchY;
+      const deltaY = touchStartYRef.current - touchY;
 
-      if (mediaFullyExpanded && deltaY < -20 && window.scrollY <= 5) {
+      if (mediaFullyExpandedRef.current && deltaY < -20 && window.scrollY <= 5) {
+        mediaFullyExpandedRef.current = false;
         setMediaFullyExpanded(false);
         e.preventDefault();
-      } else if (!mediaFullyExpanded) {
+      } else if (!mediaFullyExpandedRef.current) {
         e.preventDefault();
         const scrollFactor = deltaY < 0 ? 0.008 : 0.005;
         const scrollDelta = deltaY * scrollFactor;
         const newProgress = Math.min(
-          Math.max(scrollProgress + scrollDelta, 0),
+          Math.max(scrollProgressRef.current + scrollDelta, 0),
           1
         );
+        scrollProgressRef.current = newProgress;
         setScrollProgress(newProgress);
 
         if (newProgress >= 1) {
+          mediaFullyExpandedRef.current = true;
           setMediaFullyExpanded(true);
           setShowContent(true);
         } else if (newProgress < 0.75) {
           setShowContent(false);
         }
 
+        touchStartYRef.current = touchY;
         setTouchStartY(touchY);
       }
     };
 
     const handleTouchEnd = (): void => {
+      touchStartYRef.current = 0;
       setTouchStartY(0);
     };
 
     const handleScroll = (): void => {
-      if (!mediaFullyExpanded) {
+      if (isLockingScrollRef.current) return;
+      if (!mediaFullyExpandedRef.current && window.scrollY !== 0) {
+        isLockingScrollRef.current = true;
         window.scrollTo(0, 0);
+        isLockingScrollRef.current = false;
       }
     };
 
@@ -129,7 +148,7 @@ const ScrollExpandMedia = ({
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [scrollProgress, mediaFullyExpanded, touchStartY]);
+  }, []);
 
   useEffect(() => {
     const checkIfMobile = (): void => {

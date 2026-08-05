@@ -210,6 +210,15 @@ export function InstagramShowcaseSection({ lang, t }: { lang: Language; t: T }) 
                           {img.caption}
                         </div>
                       )}
+                      {img.created_at && (
+                        <div className="ig-tile-date">
+                          {new Date(img.created_at).toLocaleDateString(lang, {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </div>
+                      )}
                     </a>
                   );
                 })}
