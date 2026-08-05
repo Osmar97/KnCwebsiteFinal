@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, Suspense, useState } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { useAdmin } from "@/contexts/AdminContext";
@@ -293,7 +293,13 @@ const AdminLayout = ({ title, description, children, actions }: Props) => {
               </div>
               {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
             </div>
-            <div className="min-w-0">{children ?? <Outlet />}</div>
+            <div className="min-w-0">
+              {children ?? (
+                <Suspense fallback={<p className="text-gray-500 text-sm">Loading…</p>}>
+                  <Outlet />
+                </Suspense>
+              )}
+            </div>
           </main>
         </div>
       </div>
