@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { LogIn, LogOut, Shield } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +21,17 @@ export const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { isAdminLoggedIn, adminUser, supabaseUser, login, logout, loginAttempts, isLocked } = useAdmin();
   const { toast } = useToast();
+
+  // Radix locks scrolling and sets `pointer-events: none` on <body> while a modal is open.
+  // On successful login this component unmounts instantly (the admin UI replaces it), so
+  // Radix never runs its own cleanup and the whole page stays unclickable ("frozen").
+  useEffect(() => {
+    return () => {
+      document.body.style.pointerEvents = "";
+      document.body.style.removeProperty("overflow");
+      document.body.removeAttribute("data-scroll-locked");
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,13 +60,16 @@ export const AdminLogin = () => {
       const success = await login(email, password);
 
       if (success) {
+        setIsOpen(false);
+        document.body.style.pointerEvents = "";
+        document.body.style.removeProperty("overflow");
+        document.body.removeAttribute("data-scroll-locked");
         toast({
           title: "Login Successful",
           description: `Welcome back, ${adminUser?.name || "Admin"}! You now have full Supabase access.`,
         });
         setEmail("");
         setPassword("");
-        setIsOpen(false);
         setTimeout(() => {
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         }, 100);
@@ -129,6 +150,9 @@ export const AdminLogin = () => {
             <Shield className="w-5 h-5" />
             Secure Admin Login
           </DialogTitle>
+          <DialogDescription className="text-gray-400 text-sm">
+            Sign in with your admin credentials to access the back office.
+          </DialogDescription>
         </DialogHeader>
 
         {isLocked ? (
