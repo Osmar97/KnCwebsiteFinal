@@ -29,7 +29,7 @@ export const useCrmLeads = () =>
       const [waitlist, quotes, contacts, meta] = await Promise.all([
         supabase
           .from("tour_waitlist_requests")
-          .select("id,full_name,email,phone,nationality,status,created_at")
+          .select("id,full_name,email,phone,country,status,created_at")
           .order("created_at", { ascending: false })
           .limit(1000),
         supabase
@@ -73,7 +73,7 @@ export const useCrmLeads = () =>
           name: r.full_name ?? "—",
           email: r.email ?? "",
           phone: r.phone ?? null,
-          country: r.nationality ?? null,
+          country: r.country ?? null,
           subject: null,
           message: null,
           createdAt: r.created_at,
