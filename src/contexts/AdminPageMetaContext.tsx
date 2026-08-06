@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from "react";
 
 interface AdminPageMeta {
   title: string;
@@ -14,9 +14,15 @@ const AdminPageMetaContext = createContext<AdminPageMetaContextValue | null>(nul
 
 export function AdminPageMetaProvider({ children }: { children: ReactNode }) {
   const [meta, setMetaState] = useState<AdminPageMeta>({ title: "Admin" });
-  const setMeta = useCallback((m: AdminPageMeta) => setMetaState(m), []);
+  const setMeta = useCallback((m: AdminPageMeta) => {
+    setMetaState((current) =>
+      current.title === m.title && current.description === m.description ? current : m,
+    );
+  }, []);
+  const value = useMemo(() => ({ meta, setMeta }), [meta, setMeta]);
+
   return (
-    <AdminPageMetaContext.Provider value={{ meta, setMeta }}>
+    <AdminPageMetaContext.Provider value={value}>
       {children}
     </AdminPageMetaContext.Provider>
   );
@@ -30,7 +36,10 @@ export function useAdminPageMeta() {
 
 export function AdminPageMeta({ title, description }: AdminPageMeta) {
   const { setMeta } = useAdminPageMeta();
-  // Set meta on render (like document.title effect but synchronous)
-  setMeta({ title, description });
+
+  useEffect(() => {
+    setMeta({ title, description });
+  }, [description, setMeta, title]);
+
   return null;
 }
